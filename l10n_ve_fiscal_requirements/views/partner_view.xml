@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <data>
+
+      <record id="view_partner_form_dynamica" model="ir.ui.view">
+          <field name="name">res.partner.form.dynamica</field>
+          <field name="model">res.partner</field>
+          <field name="inherit_id" ref="base.view_partner_form"/>
+          <field name="arch" type="xml">
+            <xpath expr="//h1" position="after">
+                <div class="o_row">
+                    <field name="rif" attrs="{'required': [('company_type', '=', 'company')]}" placeholder="RIF" colspan="1" nolabel="1" style="width: 70%" />
+                    <field name="cedula" attrs="{'invisible': [('company_type', '=', 'company')], 'required': [('company_type', '=', 'person')]}" placeholder="Cédula" colspan="3" nolabel="1" style="width: 29%" />
+                </div>            
+            </xpath>
+
+        </field>
+      </record>
+  </data>
+</odoo>

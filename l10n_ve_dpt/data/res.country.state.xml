@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<data noupdate="0">
+	  
+	<!-- Estados -->
+	<record id="est_ve_AMA" model="res.country.state">
+		<field name="country_id" ref="base.ve"/>
+		<field name="code">AMA</field>
+		<field name="name">Amazonas</field>
+		<field name="ubigeo">02</field>
+	</record>
+
+	<record id="est_ve_ANZ" model="res.country.state">
+		<field name="country_id" ref="base.ve"/>
+		<field name="code">ANZ</field>
+		<field name="name">Anzoátegui</field>
+		<field name="ubigeo">03</field>
+	</record>
+	
+	<record id="est_ve_APU" model="res.country.state">
+		<field name="country_id" ref="base.ve"/>
+		<field name="code">APU</field>
+		<field name="name">Apure</field>
+		<field name="ubigeo">04</field>
+	</record>
+	
+	<record id="est_ve_ARA" model="res.country.state">
+		<field name="country_id" ref="base.ve"/>
+		<field name="code">ARA</field>
+		<field name="name">Aragua</field>
+		<field name="ubigeo">05</field>
+	</record>
+	
+	<record id="est_ve_BAR" model="res.country.state">
+		<field name="country_id" ref="base.ve"/>
+		<field name="code">BAR</field>
+		<field name="name">Barinas</field>
+		<field name="ubigeo">06</field>
+	</record>
+
+	<record id="est_ve_BOL" model="res.country.state">
+		<field name="country_id" ref="base.ve"/>
+		<field name="code">BOL</field>
+		<field name="name">Bolívar</field>
+		<field name="ubigeo">07</field>
+	</record>
+	
+	<record id="est_ve_CAR" model="res.country.state">
+		<field name="country_id" ref="base.ve"/>
+		<field name="code">CAR</field>
+		<field name="name">Carabobo</field>
+		<field name="ubigeo">08</field>
+	</record>
+	
+	<record id="est_ve_COJ" model="res.country.state">
+		<field name="country_id" ref="base.ve"/>
+		<field name="code">COJ</field>
+		<field name="name">Cojedes</field>
+		<field name="ubigeo">09</field>
+	</record>
+	
+	<record id="est_ve_DEA" model="res.country.state">
+		<field name="country_id" ref="base.ve"/>
+		<field name="code">DEA</field>
+		<field name="name">Delta Amacuro</field>
+		<field name="ubigeo">10</field>
+	</record>
+
+	<record id="est_ve_DTC" model="res.country.state">
+		<field name="country_id" ref="base.ve"/>
+		<field name="code">DTC</field>
+		<field name="name">Distrito Capital</field>
+		<field name ="ubigeo">01</field>
+	</record>
+
+	<record id="est_ve_FAL" model="res.country.state">
+		<field name="country_id" ref="base.ve"/>
+		<field name="code">FAL</field>
+		<field name="name">Falcón</field>
+		<field name="ubigeo">11</field>
+	</record>
+
+	<record id="est_ve_GUA" model="res.country.state">
+		<field name="country_id" ref="base.ve"/>
+		<field name="code">GUA</field>
+		<field name="name">Guárico</field>
+		<field name="ubigeo">12</field>
+	</record>
+
+	<record id="est_ve_LAR" model="res.country.state">
+		<field name="country_id" ref="base.ve"/>
+		<field name="code">LAR</field>
+		<field name="name">Lara</field>
+		<field name="ubigeo">13</field>
+	</record>
+
+	<record id="est_ve_MER" model="res.country.state">
+		<field name="country_id" ref="base.ve"/>
+		<field name="code">MER</field>
+		<field name="name">Mérida</field>
+		<field name="ubigeo">14</field>
+	</record>
+	
+	<record id="est_ve_MIR" model="res.country.state">
+		<field name="country_id" ref="base.ve"/>
+		<field name="code">MIR</field>
+		<field name="name">Miranda</field>
+		<field name="ubigeo">15</field>
+	</record>
+
+	<record id="est_ve_MON" model="res.country.state">
+		<field name="country_id" ref="base.ve"/>
+		<field name="code">MON</field>
+		<field name="name">Monagas</field>
+		<field name="ubigeo">16</field>
+	</record>
+
+	<record id="est_ve_NVE" model="res.country.state">
+		<field name="country_id" ref="base.ve"/>
+		<field name="code">NVE</field>
+		<field name="name">Nueva Esparta</field>
+		<field name="ubigeo">17</field>
+	</record>
+
+	<record id="est_ve_POR" model="res.country.state">
+		<field name="country_id" ref="base.ve"/>
+		<field name="code">POR</field>
+		<field name="name">Portuguesa</field>
+		<field name="ubigeo">18</field>
+	</record>
+
+	<record id="est_ve_SUC" model="res.country.state">
+		<field name="country_id" ref="base.ve"/>
+		<field name="code">SUC</field>
+		<field name="name">Sucre</field>
+		<field name="ubigeo">19</field>
+	</record>
+
+	<record id="est_ve_TAC" model="res.country.state">
+		<field name="country_id" ref="base.ve"/>
+		<field name="code">TAC</field>
+		<field name="name">Táchira</field>
+		<field name="ubigeo">20</field>
+	</record>
+
+	<record id="est_ve_TRU" model="res.country.state">
+		<field name="country_id" ref="base.ve"/>
+		<field name="code">TRU</field>
+		<field name="name">Trujillo</field>
+		<field name="ubigeo">21</field>
+	</record>
+	
+	<record id="est_ve_VAR" model="res.country.state">
+		<field name="country_id" ref="base.ve"/>
+		<field name="code">VAR</field>
+		<field name="name">Vargas</field>
+		<field name="ubigeo">24</field>
+	</record>
+
+	<record id="est_ve_YAR" model="res.country.state">
+		<field name="country_id" ref="base.ve"/>
+		<field name="code">YAR</field>
+		<field name="name">Yaracuy</field>
+		<field name="ubigeo">22</field>
+	</record>
+
+	<record id="est_ve_ZUL" model="res.country.state">
+		<field name="country_id" ref="base.ve"/>
+		<field name="code">ZUL</field>
+		<field name="name">Zulia</field>
+		<field name="ubigeo">23</field>
+	</record>
+
+	<record id="est_ve_DPF" model="res.country.state">
+		<field name="country_id" ref="base.ve"/>
+		<field name="code">DPF</field>
+		<field name="name">Dependencias Federales</field>
+		<field name="ubigeo">25</field>
+	</record>
+
+	</data>
+</odoo>
