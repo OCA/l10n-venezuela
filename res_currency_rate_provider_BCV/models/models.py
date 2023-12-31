@@ -10,10 +10,11 @@ from odoo import fields, models
 
 _logger = logging.getLogger(__name__)
 
+TIMEOUT = 5000
 MONEDAS = {"EUR": "euro", "CNY": "yuan", "TRY": "lira", "RUB": "rublo", "USD": "dolar"}
 CARACAS_TZ = pytz.timezone(
     "America/Caracas"
-)  ## se necesita porque la hora de bcv es de vzla
+)  # se necesita porque la hora de bcv es de vzla
 
 
 class ResCompany(models.Model):
@@ -50,7 +51,7 @@ class ResCompany(models.Model):
 
         rslt = {}
         try:
-            fetched_data = requests.get(request_url, verify=False)
+            fetched_data = requests.get(request_url, verify=False, timeout=TIMEOUT)
         except Exception as e:
             _logger.error("%s, %s", self._name, e)
             return rslt
