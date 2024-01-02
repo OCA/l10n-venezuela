@@ -3,7 +3,7 @@
     "summary": """OCA version for BCV scrapping rates
        """,
     "version": "16.0.1.1.2",
-    "development_status": "Production/Stable",
+    "development_status": "Beta",
     "category": "Financial Management/Configuration",
     "website": "https://github.com/OCA/l10n-venezuela",
     "author": "Luis Pinzón, Odoo Community Association (OCA)",
