@@ -53,7 +53,7 @@ class ResCompany(models.Model):
         try:
             fetched_data = requests.get(request_url, verify=False, timeout=TIMEOUT)
         except Exception as e:
-            _logger.error("%s, %s", self._name, e)
+            _logger.debug("%s, %s", self._name, e)
             return rslt
 
         available_currency_names = available_currencies
@@ -73,6 +73,6 @@ class ResCompany(models.Model):
 
                     rslt[currency_name] = (1.0 / value, dt)
             except Exception as e:
-                _logger.error("%s, %s", self._name, e)
+                _logger.debug("%s, %s", self._name, e)
 
         return rslt
