@@ -17,7 +17,11 @@ TODO: add repo description.
 
 [//]: # (addons)
 
-This part will be replaced when running the oca-gen-addons-table script from OCA/maintainer-tools.
+Available addons
+----------------
+addon | version | maintainers | summary
+--- | --- | --- | ---
+[res_currency_rate_provider_BCV](res_currency_rate_provider_BCV/) | 16.0.1.1.2 | [![lapinzon](https://github.com/lapinzon.png?size=30px)](https://github.com/lapinzon) | OCA version for BCV scrapping rates
 
 [//]: # (end addons)
 
