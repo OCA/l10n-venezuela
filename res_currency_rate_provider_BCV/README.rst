@@ -72,6 +72,7 @@ Contributors
 ~~~~~~~~~~~~
 
 * Luis Pinzón elpinzon@gmail.com
+* Mauricio Gonzalez Falcon <maugfalcon1@gmail.com>
 
 Maintainers
 ~~~~~~~~~~~
@@ -89,10 +90,14 @@ promote its widespread use.
 .. |maintainer-lapinzon| image:: https://github.com/lapinzon.png?size=40px
     :target: https://github.com/lapinzon
     :alt: lapinzon
+.. |maintainer-maucoder| image:: https://github.com/maucoderGit.png?size=40px
+    :target: https://github.com/maucoderGit
+    :alt: maucoderGit
 
 Current `maintainer <https://odoo-community.org/page/maintainer-role>`__:
 
-|maintainer-lapinzon| 
+|maintainer-lapinzon|
+|maintainer-maucoder|
 
 This module is part of the `OCA/l10n-venezuela <https://github.com/OCA/l10n-venezuela/tree/16.0/res_currency_rate_provider_BCV>`_ project on GitHub.
 

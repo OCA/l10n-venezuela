@@ -4,8 +4,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 16.0\n"
+"Project-Id-Version: Odoo Server 16.0-20240104\n"
 "Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-01-14 18:47+0000\n"
+"PO-Revision-Date: 2024-01-14 18:47+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -40,7 +42,7 @@ msgstr "Banco central de Venezuela"
 #. module: res_currency_rate_provider_BCV
 #: model:ir.model,name:res_currency_rate_provider_BCV.model_res_currency_rate_provider
 msgid "Currency Rates Provider"
-msgstr "Proveedor de tasas"
+msgstr "Proveedor de Tipos de Cambio"
 
 #. module: res_currency_rate_provider_BCV
 #: model:ir.model.fields,field_description:res_currency_rate_provider_BCV.field_res_currency_rate_provider__service
@@ -50,4 +52,4 @@ msgstr "Proveedor"
 #. module: res_currency_rate_provider_BCV
 #: model_terms:ir.ui.view,arch_db:res_currency_rate_provider_BCV.res_currency_rate_update_wizard_form
 msgid "Se tomará la tasa de Hoy"
-msgstr "Se obtendra la tasa de hoy"
+msgstr ""
