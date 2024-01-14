@@ -6,7 +6,6 @@
         <field name="inherit_id" ref="currency_rate_update.res_currency_rate_provider_form_view"/>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='service']" position="after">
-                <field name="currency_name"/>
                 <div
                     attrs="{'invisible':['|',('service','!=','bcv'),('currency_name','in', ['VES', 'VEF', 'VED', 'Bs'])]}"
                     class="alert alert-warning"
