@@ -13,6 +13,7 @@
     "installable": True,
     "depends": ["currency_rate_update"],
     "data": [
-        "views/views.xml",
+        "views/res_currency_rate_update_wizard.xml",
+        "views/res_currency_rate_provider.xml",
     ],
 }

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="res_currency_rate_provider_bdv_form" model="ir.ui.view">
+        <field name="name">res.currency.rate.provider.form</field>
+        <field name="model">res.currency.rate.provider</field>
+        <field name="inherit_id" ref="currency_rate_update.res_currency_rate_provider_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='service']" position="after">
+                <div
+                    attrs="{'invisible':['|',('service','!=','bcv'),('currency_name','in', ['VES', 'VEF', 'VED', 'Bs'])]}"
+                    class="alert alert-warning"
+                    colspan="2"
+                    role="alert"
+                >
+                    <strong>Warning!</strong>
+                    You are using Venezuelan Central Bank (BCV) exchange rate
+                    service with a base currency different to Venezuelan Bolivar.
+                    <br />
+                    As long as the BCV only provides
+                    exchange rates based on Bolivar, other foreign currency
+                    rates are recalculated and might differ from real rates.
+                </div>
+            </xpath>
+        </field>
+    </record>
+</odoo>
