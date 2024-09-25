@@ -1,9 +1,9 @@
-[![Build Status](https://travis-ci.org/laslabs/odoo-{project_repo}.svg?branch=9.0)](https://travis-ci.org/laslabs/odoo-{project_repo}?branch=9.0)
+[![Build Status](https://travis-ci.org/laslabs/odoo-{project_repo}.svg?branch=10.0)](https://travis-ci.org/laslabs/odoo-{project_repo}?branch=10.0)
 
 # Venezuelan accounting localization
 ---
 
-This project aim to deal with modules related to venezuelan accounting localization
+This project aim to deal with modules related to Venezuelan accounting localization
  
 ## Available addons
 ----------------
@@ -31,4 +31,3 @@ addon | version | summary
 This module is maintained by [Empero C.A ](https://empero.com.ve)
 
 * https://github.com/EmperoVE/odoo-venezuela
-
