@@ -1,9 +1,20 @@
-Venezuela Localization.
----
+[![Runbot Status](https://runbot.odoo-community.org/runbot/badge/flat/189/7.0.svg)](https://runbot.odoo-community.org/runbot/repo/github-com-oca-web-189)
+[![Build Status](https://travis-ci.org/OCA/l10n-venezuela.svg?branch=7.0)](https://travis-ci.org/OCA/l10n-venezuela)
+[![codecov](https://codecov.io/gh/OCA/l10n-venezuela/branch/7.0/graph/badge.svg)](https://codecov.io/gh/OCA/l10n-venezuela)
 
-We are preparing the migration until then, you can follow the original project in.
+Localización venezolana de OpenERP
+==================================
 
-[Odoo Venezuela Team.](https://github.com/odoo-venezuela/odoo-venezuela)
+Repositorio de código del proyecto de la localización venezolana para el software
+de gestión integral OpenERP.
+
+La localización venezolana de OpenERP incluye:
+
+* Módulos para adaptar el sistema a los requisitos fiscales y contables
+  venezolanas.
+* Traducciones a los términos oficiales del país.
+
+Para más información, dirigirse a [Odoo Venezuela Team](https://github.com/odoo-venezuela/odoo-venezuela).
 
 <!-- prettier-ignore-start -->
 
