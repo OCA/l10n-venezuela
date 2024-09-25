@@ -14,7 +14,7 @@ La localización venezolana de OpenERP incluye:
   venezolanas.
 * Traducciones a los términos oficiales del país.
 
-Para más información, dirigirse a [Odoo Venezuela Team](https://github.com/Vauxoo/odoo-venezuela/tree/9.0).
+Para más información, dirigirse a [Vauxoo Team](https://github.com/Vauxoo/odoo-venezuela/tree/9.0).
 
 <!-- prettier-ignore-start -->
 
