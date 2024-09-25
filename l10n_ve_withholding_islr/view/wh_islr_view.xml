@@ -1,0 +1,8 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<openerp>
+    <data>
+
+        <menuitem id="menu_wh_configuration_islr" name="Income Withholding" parent="l10n_ve_fiscal_requirements.menu_finance_fiscal_settings"/>
+
+    </data>
+</openerp>

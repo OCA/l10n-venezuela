@@ -1,0 +1,18 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<openerp>
+    <data noupdate="1">
+
+        <!-- Sequences type for account.wh.iva --> 
+
+        <record id="seq_type_account_wh_iva" model="ir.sequence.type">
+            <field name="name">Sale Vat Withholding</field>
+            <field name="code">account.wh.iva</field>
+        </record>
+
+        <record id="seq_type_account_wh_iva_purchase" model="ir.sequence.type">
+            <field name="name">Purchase Vat Withholding</field>
+            <field name="code">account.wh.iva.in_invoice</field>
+        </record>
+
+    </data>
+</openerp>

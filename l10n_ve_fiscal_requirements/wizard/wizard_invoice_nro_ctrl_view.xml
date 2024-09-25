@@ -1,0 +1,33 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<openerp>
+    <data>
+        <record id="view_wizard_invoice_nro_ctrl" model="ir.ui.view">
+            <field name="name">view.wizard.invoice.nro.ctrl</field>
+            <field name="model">wizard.invoice.nro.ctrl</field>
+            <field name="arch" type="xml">
+                <form string="Create an invoice to justify the damaged one" version="7.0">
+                    <group colspan="8" col="8">
+                        <field name="invoice_id"/>
+                        <field name="date"/>
+                    </group>
+                    <separator string="Are you sure you want to do this?" colspan="4"/>
+                    <field name="sure"/>
+                     <group colspan="8" col="8">
+                            <button icon="gtk-cancel" special="cancel" string="Cancel"/>
+                            <button icon="gtk-ok" name="create_invoice" string="Create Invoice" type="object"/>
+                     </group>
+                </form>
+            </field>
+        </record>
+        <record id="wizard_invoice_nro_control_action" model="ir.actions.act_window">
+            <field name="name">Create null paper</field>
+            <field name="res_model">wizard.invoice.nro.ctrl</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="view_wizard_invoice_nro_ctrl"/>
+            <field name="target">new</field>
+            <field name="context">{'menu': True}</field>
+        </record>
+        <menuitem name="Declare damaged paper" id="wizard_invoice_nro_ctrl_action" parent="account.menu_finance_receivables" action="wizard_invoice_nro_control_action" sequence="200"/>
+    </data>
+</openerp>

@@ -1,0 +1,566 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<openerp>
+    <data>
+
+        <!--
+        Minimal Account
+        -->
+        <record id="a_islr" model="account.account">
+            <field name="code">XX2002</field>
+            <field name="name">Servicios de analistas, programadores y soporte</field>
+            <field ref="account.rev" name="parent_id"/>
+            <field name="type">other</field>
+            <field name="user_type" ref="account.data_account_type_income"/>
+        </record>
+
+        <record id="islr_rec" model="account.account">
+            <field name="code">XX11006</field>
+            <field name="name">Impuestos sobre la Renta por Cobrar(ISLR)</field>
+            <field ref="account.cas" name="parent_id"/>
+            <field name="type">other</field>
+            <field name="user_type" ref="account.data_account_type_asset"/>
+        </record>
+        
+        <record id="islr_pay" model="account.account">
+            <field name="code">XX1114</field>
+            <field name="name">Impuestos sobre la Renta por Pagar(ISLR)</field>
+            <field ref="account.cli" name="parent_id"/>
+            <field name="type">other</field>
+            <field name="user_type" ref="account.data_account_type_liability"/>
+        </record>
+
+        <!--Concepts 
+            Just adding accounts to concepts to be able to execute the withholding     
+        -->
+        <record id="islr_wh_concept_hprof_no_mercantiles" model="islr.wh.concept">
+            <field name="property_retencion_islr_payable" ref="islr_pay"/>
+            <field name="property_retencion_islr_receivable" ref="islr_rec"/>
+        </record>
+        
+        <record id="islr_wh_concept_pago_contratistas" model="islr.wh.concept">
+            <field name="property_retencion_islr_payable" ref="islr_pay"/>
+            <field name="property_retencion_islr_receivable" ref="islr_rec"/>
+        </record>
+
+        <record id="islr_wh_concept_no_apply_withholding" model="islr.wh.concept">
+            <field name="property_retencion_islr_payable" ref="islr_pay"/>
+            <field name="property_retencion_islr_receivable" ref="islr_rec"/>
+        </record>
+
+        <record id="islr_wh_concept_cualquie_cosa_menos_sueldos" model="islr.wh.concept">
+            <field name="property_retencion_islr_payable" ref="islr_pay"/>
+            <field name="property_retencion_islr_receivable" ref="islr_rec"/>
+        </record>
+
+        <record id="islr_wh_concept_pagos_transportes_y_fletes" model="islr.wh.concept">
+            <field name="property_retencion_islr_payable" ref="islr_pay"/>
+            <field name="property_retencion_islr_receivable" ref="islr_rec"/>
+        </record>
+
+        <record id="islr_wh_concept_pagos_de_servicios_publicitarios" model="islr.wh.concept">
+            <field name="property_retencion_islr_payable" ref="islr_pay"/>
+            <field name="property_retencion_islr_receivable" ref="islr_rec"/>
+        </record>
+
+        <record id="islr_wh_concept_pagos_administradores_en_el_pais" model="islr.wh.concept">
+            <field name="property_retencion_islr_payable" ref="islr_pay"/>
+            <field name="property_retencion_islr_receivable" ref="islr_rec"/>
+        </record>
+
+        <record id="islr_wh_concept_sueldos_y_salarios" model="islr.wh.concept">
+            <field name="property_retencion_islr_payable" ref="islr_pay"/>
+            <field name="property_retencion_islr_receivable" ref="islr_rec"/>
+        </record>
+
+        <record id="islr_wh_concept_hprof_mancomunados_no_mercantiles" model="islr.wh.concept">
+            <field name="property_retencion_islr_payable" ref="islr_pay"/>
+            <field name="property_retencion_islr_receivable" ref="islr_rec"/>
+        </record>
+
+        <record id="islr_wh_concept_hprof_jinetes_entrenadores_preparadores" model="islr.wh.concept">
+            <field name="property_retencion_islr_payable" ref="islr_pay"/>
+            <field name="property_retencion_islr_receivable" ref="islr_rec"/>
+        </record>
+
+        <record id="islr_wh_concept_hprof_sin_relacion_otras_instituciones" model="islr.wh.concept">
+            <field name="property_retencion_islr_payable" ref="islr_pay"/>
+            <field name="property_retencion_islr_receivable" ref="islr_rec"/>
+        </record>
+
+        <record id="islr_wh_concept_comisiones_venta_inmuebles" model="islr.wh.concept">
+            <field name="property_retencion_islr_payable" ref="islr_pay"/>
+            <field name="property_retencion_islr_receivable" ref="islr_rec"/>
+        </record>
+
+        <record id="islr_rh_concept_interes_capital_invertido_en_renta" model="islr.wh.concept">
+            <field name="property_retencion_islr_payable" ref="islr_pay"/>
+            <field name="property_retencion_islr_receivable" ref="islr_rec"/>
+        </record>
+
+        <record id="islr_wh_concept_int_prestamos_exterior" model="islr.wh.concept">
+            <field name="property_retencion_islr_payable" ref="islr_pay"/>
+            <field name="property_retencion_islr_receivable" ref="islr_rec"/>
+        </record>
+
+        <record id="islr_wh_concept_intereses_por_personas_juridicas_o_comunidades" model="islr.wh.concept">
+            <field name="property_retencion_islr_payable" ref="islr_pay"/>
+            <field name="property_retencion_islr_receivable" ref="islr_rec"/>
+        </record>
+
+        <record id="islr_wh_concept_exhibicion_de_peliculas" model="islr.wh.concept">
+            <field name="property_retencion_islr_payable" ref="islr_pay"/>
+            <field name="property_retencion_islr_receivable" ref="islr_rec"/>
+        </record>
+
+        <record id="islr_wh_concept_regalias" model="islr.wh.concept">
+            <field name="property_retencion_islr_payable" ref="islr_pay"/>
+            <field name="property_retencion_islr_receivable" ref="islr_rec"/>
+        </record>
+
+        <record id="islr_wh_concept_asistencia_tecnica" model="islr.wh.concept">
+            <field name="property_retencion_islr_payable" ref="islr_pay"/>
+            <field name="property_retencion_islr_receivable" ref="islr_rec"/>
+        </record>
+
+        <record id="islr_wh_concept_servicios_tecnologicos" model="islr.wh.concept">
+            <field name="property_retencion_islr_payable" ref="islr_pay"/>
+            <field name="property_retencion_islr_receivable" ref="islr_rec"/>
+        </record>
+
+        <record id="islr_wh_concept_primas_seguros_reaseguros" model="islr.wh.concept">
+            <field name="property_retencion_islr_payable" ref="islr_pay"/>
+            <field name="property_retencion_islr_receivable" ref="islr_rec"/>
+        </record>
+
+        <record id="islr_wh_concept_juegos_y_apuestas" model="islr.wh.concept">
+            <field name="property_retencion_islr_payable" ref="islr_pay"/>
+            <field name="property_retencion_islr_receivable" ref="islr_rec"/>
+        </record>
+
+        <record id="islr_wh_concept_loterias_e_hipodromos" model="islr.wh.concept">
+            <field name="property_retencion_islr_payable" ref="islr_pay"/>
+            <field name="property_retencion_islr_receivable" ref="islr_rec"/>
+        </record>
+
+        <record id="islr_wh_concept_pagos_propietarios_animales_carrera_premios" model="islr.wh.concept">
+            <field name="property_retencion_islr_payable" ref="islr_pay"/>
+            <field name="property_retencion_islr_receivable" ref="islr_rec"/>
+        </record>
+
+        <record id="islr_wh_concept_pago_arrendadores_en_el_pais" model="islr.wh.concept">
+            <field name="property_retencion_islr_payable" ref="islr_pay"/>
+            <field name="property_retencion_islr_receivable" ref="islr_rec"/>
+        </record>
+
+        <record id="islr_wh_concept_canon_arrendamiento_bienes_en_el_pais" model="islr.wh.concept">
+            <field name="property_retencion_islr_payable" ref="islr_pay"/>
+            <field name="property_retencion_islr_receivable" ref="islr_rec"/>
+        </record>
+
+        <record id="islr_wh_concept_tarjetas_de_credito_cualquier_concepto" model="islr.wh.concept">
+            <field name="property_retencion_islr_payable" ref="islr_pay"/>
+            <field name="property_retencion_islr_receivable" ref="islr_rec"/>
+        </record>
+
+        <record id="islr_wh_concept_tarjetas_de_credito_gasolina" model="islr.wh.concept">
+            <field name="property_retencion_islr_payable" ref="islr_pay"/>
+            <field name="property_retencion_islr_receivable" ref="islr_rec"/>
+        </record>
+
+        <record id="islr_wh_concept_seguros_prestacion" model="islr.wh.concept">
+            <field name="property_retencion_islr_payable" ref="islr_pay"/>
+            <field name="property_retencion_islr_receivable" ref="islr_rec"/>
+        </record>
+
+        <record id="islr_wh_concept_pago_seguros_reparacion_damage" model="islr.wh.concept">
+            <field name="property_retencion_islr_payable" ref="islr_pay"/>
+            <field name="property_retencion_islr_receivable" ref="islr_rec"/>
+        </record>
+
+        <record id="islr_wh_concept_pagos_seguros_a_clinicas" model="islr.wh.concept">
+            <field name="property_retencion_islr_payable" ref="islr_pay"/>
+            <field name="property_retencion_islr_receivable" ref="islr_rec"/>
+        </record>
+
+        <record id="islr_wh_concept_fondos_de_comercio_en_el_pais" model="islr.wh.concept">
+            <field name="property_retencion_islr_payable" ref="islr_pay"/>
+            <field name="property_retencion_islr_receivable" ref="islr_rec"/>
+        </record>
+
+        <record id="islr_wh_concept_pub_emisoras" model="islr.wh.concept">
+            <field name="property_retencion_islr_payable" ref="islr_pay"/>
+            <field name="property_retencion_islr_receivable" ref="islr_rec"/>
+        </record>
+
+        <!--Sequence-->
+        <record id="seq_wh_islr_purchase_type" model="ir.sequence.type">
+            <field name="name">Retencion de ISLR Compra</field>
+            <field name="code">account.journal.islr.purchase</field>
+        </record>
+
+        <record id="seq_wh_islr_purchase_journal" model="ir.sequence">
+            <field name="name">Retencion de ISLR Compra</field>
+            <field name="code">account.journal.islr.purchase</field>
+            <field name="prefix">RE:</field>
+            <field name="padding">6</field>
+            <field name="number_increment">1</field>
+        </record>
+
+        <record id="seq_wh_islr_sale_type" model="ir.sequence.type">
+            <field name="name">Retencion de ISLR Venta</field>
+            <field name="code">account.journal.islr.sale</field>
+        </record>
+
+        <record id="seq_wh_islr_sale_journal" model="ir.sequence">
+            <field name="name">Retencion de ISLR Venta</field>
+            <field name="code">account.journal.islr.sale</field>
+            <field name="prefix">RE:</field>
+            <field name="padding">6</field>
+            <field name="number_increment">1</field>
+        </record>
+        _
+        <!--
+        Product
+        -->
+
+        <record id="product.product_product_4" model="product.product">
+            <field name="concept_id" ref="islr_wh_concept_hprof_no_mercantiles"/>
+        </record>
+
+        <!--
+        Journal
+        -->
+
+        <record id="withholding_purchase_journal" model="account.journal">
+            <field name="name">DIARIO DE ISLR COMPRA</field>
+            <field name="code">ISLR1</field>
+            <field name="type">islr_purchase</field>
+            <field name="sequence_id" ref="seq_wh_islr_purchase_journal"/>
+        </record>
+        
+        <record id="withholding_sale_journal" model="account.journal">
+            <field name="name">DIARIO DE ISLR VENTA</field>
+            <field name="code">ISLR2</field>
+            <field name="type">islr_sale</field>
+            <field name="sequence_id" ref="seq_wh_islr_sale_journal"/>
+        </record>
+
+        <!--
+        Invoices Suppliers
+        -->
+        <!--
+        Invoices Suppliers:
+        Testing invoice without product_id and a withholding concept with an amount higher 
+        to the minimal to be computed.
+        -->
+
+        <record id="demo_islr_invoice_0" model="account.invoice">
+            <field name="journal_id" ref="account.expenses_journal"/>
+            <field name="nro_ctrl">00-786347</field>
+            <field name="supplier_invoice_number">libre-0003873</field>
+            <field name="type">in_invoice</field>
+            <field name="account_id" ref="account.a_pay"/>
+            <field name="partner_id" ref="l10n_ve_fiscal_requirements.f_req_partner_1"/>
+        </record>
+        
+        <record id="account_invoice_line_0" model="account.invoice.line">
+            <field name="account_id" ref="account.a_expense"/>
+            <field name="invoice_id" ref="demo_islr_invoice_0"/>
+            <field eval="350000.0" name="price_unit"/>
+            <field eval="2.0" name="quantity"/>
+            <field name="concept_id" ref="l10n_ve_withholding_islr.islr_wh_concept_hprof_no_mercantiles"/>
+            <field name="name">Testing "Higher to minimal amount in concepts"</field>
+        </record>
+        <!--
+        Invoices Suppliers:
+        Testing invoice without product_id and a withholding concept with an amount lower 
+        to the minimal to be computed.
+        -->
+        <record id="demo_islr_invoice_1" model="account.invoice">
+            <field name="journal_id" ref="account.expenses_journal"/>
+            <field name="nro_ctrl">00-786348</field>
+            <field name="supplier_invoice_number">libre-0003874</field>
+            <field name="type">in_invoice</field>
+            <field name="account_id" ref="account.a_pay"/>
+            <field name="partner_id" ref="l10n_ve_fiscal_requirements.f_req_partner_2"/>
+        </record>
+        
+        <record id="account_invoice_line_1" model="account.invoice.line">
+            <field name="account_id" ref="account.a_expense"/>
+            <field name="invoice_id" ref="demo_islr_invoice_1"/>
+            <field eval="100.0" name="price_unit"/>
+            <field eval="2.0" name="quantity"/>
+            <field name="concept_id" ref="l10n_ve_withholding_islr.islr_wh_concept_hprof_no_mercantiles"/>
+            <field name="name">Testing "Lower to minimal amount in concepts"</field>
+        </record>
+
+        <!--
+        Invoices Suppliers:
+        Testing invoice without product_id and a withholding concept with an amount lower 
+        to the minimal without compute by UT to be computed with a concept with only 1 criteria for whi
+        it should return an WH income with 0.
+        -->
+        <record id="demo_islr_invoice_2" model="account.invoice">
+            <field name="journal_id" ref="account.expenses_journal"/>
+            <field name="nro_ctrl">00-786349</field>
+            <field name="supplier_invoice_number">libre-0003879</field>
+            <field name="type">in_invoice</field>
+            <field name="account_id" ref="account.a_pay"/>
+            <field name="partner_id" ref="l10n_ve_fiscal_requirements.f_req_partner_2"/>
+        </record>
+        
+        <record id="account_invoice_line_2" model="account.invoice.line">
+            <field name="account_id" ref="account.a_expense"/>
+            <field name="invoice_id" ref="demo_islr_invoice_2"/>
+            <field eval="100.0" name="price_unit"/>
+            <field eval="2.0" name="quantity"/>
+            <field name="concept_id" ref="l10n_ve_withholding_islr.islr_wh_concept_pago_contratistas"/>
+            <field name="name">Testing "Lower to 83.33 minimal amount in UT."</field>
+        </record>
+        <!--
+        Invoices Suppliers:
+        Same as base case, but the partner is a contact not a partner the withholding should be
+        done and compared with the commercial entity
+        -->
+        <record id="demo_islr_invoice_3" model="account.invoice">
+            <field name="journal_id" ref="account.expenses_journal"/>
+            <field name="nro_ctrl">00-786350</field>
+            <field name="supplier_invoice_number">libre-0003880</field>
+            <field name="type">in_invoice</field>
+            <field name="account_id" ref="account.a_pay"/>
+            <field name="partner_id" ref="l10n_ve_fiscal_requirements.f_req_partner_9"/>
+        </record>
+        
+        <record id="account_invoice_line_3" model="account.invoice.line">
+            <field name="account_id" ref="account.a_expense"/>
+            <field name="invoice_id" ref="demo_islr_invoice_3"/>
+            <field eval="100.0" name="price_unit"/>
+            <field eval="2.0" name="quantity"/>
+            <field name="concept_id" ref="l10n_ve_withholding_islr.islr_wh_concept_pago_contratistas"/>
+            <field name="name">Testing "Lower to 83.33 minimal amount in UT."</field>
+        </record>
+        <!--
+        <record id="account_invoice_2" model="account.invoice">
+            <field eval="1180000.0" name="check_total"/>
+            <field name="journal_id" ref="account.expenses_journal"/>
+            <field name="currency_id" ref="base.VEF"/>
+            <field name="nro_ctrl">00-65323</field>
+            <field name="user_id" ref="base.user_demo"/>
+            <field name="supplier_invoice_number">libre-003873</field>
+            <field name="reference_type">none</field>
+            <field name="company_id" ref="base.main_company"/>
+            <field name="state">draft</field>
+            <field name="type">in_invoice</field>
+            <field name="status">no_pro</field>
+            <field name="account_id" ref="account.a_pay"/>
+            <field eval="0" name="reconciled"/>
+            <field eval="1182000.1" name="amount_untaxed"/>
+            <field eval="1182000.1" name="amount_total"/>
+            <field name="partner_id" ref="l10n_ve_withholding_islr.res_partner_gutierrezrrohgere0"/>
+        </record>
+        
+        <record id="account_invoice_line_facturapersonanaturalresidenciada1" model="account.invoice.line">
+            <field eval="0" name="apply_wh"/>
+            <field name="account_id" ref="l10n_ve_withholding_islr.a_islr"/>
+            <field name="invoice_id" ref="account_invoice_2"/>
+            <field eval="591000.0" name="price_unit"/>
+            <field eval="1182000.1" name="price_subtotal"/>
+            <field name="company_id" ref="base.main_company"/>
+            <field eval="2.0" name="quantity"/>
+            <field name="partner_id" ref="l10n_ve_withholding_islr.res_partner_gutierrezrrohgere0"/>
+            <field name="concept_id" ref="l10n_ve_withholding_islr.islr_wh_concept_hprof_no_mercantiles"/>
+            <field name="name">Factura2. Persona Natural Residenciada</field>
+        </record>
+
+        <record id="account_invoice_3" model="account.invoice">
+            <field eval="2424000.0" name="check_total"/>
+            <field name="journal_id" ref="account.expenses_journal"/>
+            <field name="currency_id" ref="base.VEF"/>
+            <field name="nro_ctrl">00-0003873298</field>
+            <field eval="0" name="sin_cred"/>
+            <field name="user_id" ref="base.user_demo"/>
+            <field name="supplier_invoice_number">libre-00238738</field>
+            <field name="reference_type">none</field>
+            <field name="company_id" ref="base.main_company"/>
+            <field name="state">draft</field>
+            <field name="type">in_invoice</field>
+            <field name="status">no_pro</field>
+            <field name="account_id" ref="account.a_pay"/>
+            <field eval="0" name="reconciled"/>
+            <field eval="2424000.0" name="amount_untaxed"/>
+            <field eval="2424000.0" name="amount_total"/>
+            <field name="partner_id" ref="l10n_ve_withholding_islr.res_partner_viajesmirandaca0"/>
+        </record>
+        
+        <record id="account_invoice_line_facturapersonajuridicanodomiciliada0" model="account.invoice.line">
+            <field eval="0" name="apply_wh"/>
+            <field name="account_id" ref="l10n_ve_withholding_islr.a_islr"/>
+            <field name="invoice_id" ref="account_invoice_3"/>
+            <field eval="1212000.0" name="price_unit"/>
+            <field eval="2424000.0" name="price_subtotal"/>
+            <field name="company_id" ref="base.main_company"/>
+            <field eval="2.0" name="quantity"/>
+            <field name="partner_id" ref="l10n_ve_withholding_islr.res_partner_viajesmirandaca0"/>
+            <field name="concept_id" ref="l10n_ve_withholding_islr.islr_wh_concept_pago_contratistas"/>
+            <field name="name">Factura 4. Persona Juridica No Domiciliada</field>
+        </record>
+
+        <record id="account_invoice_4" model="account.invoice">
+            <field eval="1568000.0" name="check_total"/>
+            <field name="journal_id" ref="account.expenses_journal"/>
+            <field name="currency_id" ref="base.VEF"/>
+            <field name="nro_ctrl">00-00084787</field>
+            <field eval="0" name="sin_cred"/>
+            <field name="user_id" ref="base.user_demo"/>
+            <field name="supplier_invoice_number">libre-0082387</field>
+            <field name="reference_type">none</field>
+            <field name="company_id" ref="base.main_company"/>
+            <field name="state">draft</field>
+            <field name="type">in_invoice</field>
+            <field name="status">no_pro</field>
+            <field name="account_id" ref="account.a_pay"/>
+            <field eval="0" name="reconciled"/>
+            <field eval="1568000.0" name="amount_untaxed"/>
+            <field eval="1568000.0" name="amount_total"/>
+            <field name="partner_id" ref="l10n_ve_withholding_islr.res_partner_nhomarhernandez0"/>
+        </record>
+        
+        <record id="account_invoice_line_facturapersonanaturalnoresidente0" model="account.invoice.line">
+            <field eval="0" name="apply_wh"/>
+            <field name="account_id" ref="l10n_ve_withholding_islr.a_islr"/>
+            <field name="invoice_id" ref="account_invoice_4"/>
+            <field eval="784000.0" name="price_unit"/>
+            <field eval="1568000.0" name="price_subtotal"/>
+            <field name="company_id" ref="base.main_company"/>
+            <field eval="2.0" name="quantity"/>
+            <field name="partner_id" ref="l10n_ve_withholding_islr.res_partner_nhomarhernandez0"/>
+            <field name="concept_id" ref="l10n_ve_withholding_islr.islr_wh_concept_pago_contratistas"/>
+            <field name="name">Factura 3. Persona Natural no Residente</field>
+        </record>
+        
+
+
+        <record id="account_invoice_5" model="account.invoice">
+            <field name="currency_id" ref="base.VEF"/>
+            <field name="journal_id" ref="account.sales_journal"/>
+            <field name="nro_ctrl">00-562115613156</field>
+            <field eval="0" name="sin_cred"/>
+            <field name="user_id" ref="base.user_demo"/>
+            <field name="reference_type">none</field>
+            <field name="company_id" ref="base.main_company"/>
+            <field name="state">draft</field>
+            <field name="type">out_invoice</field>
+            <field name="status">no_pro</field>
+            <field name="account_id" ref="account.a_recv"/>
+            <field eval="0" name="reconciled"/>
+            <field eval="6000000.0" name="amount_untaxed"/>
+            <field eval="6000000.0" name="amount_total"/>
+            <field name="partner_id" ref="l10n_ve_withholding_islr.res_partner_3"/>
+        </record>
+        <record id="account_invoice_line_domiciliado0" model="account.invoice.line">
+            <field eval="0" name="apply_wh"/>
+            <field name="account_id" ref="l10n_ve_withholding_islr.a_islr"/>
+            <field name="invoice_id" ref="account_invoice_5"/>
+            <field eval="3000000.0" name="price_unit"/>
+            <field eval="6000000.0" name="price_subtotal"/>
+            <field name="company_id" ref="base.main_company"/>
+            <field eval="2.0" name="quantity"/>
+            <field name="partner_id" ref="l10n_ve_withholding_islr.res_partner_3"/>
+            <field name="concept_id" ref="l10n_ve_withholding_islr.islr_wh_concept_pago_contratistas"/>
+            <field name="name">Factura4 CU.Persona Juridica No Domiciliado</field>
+        </record>
+        <record id="account_invoice_6" model="account.invoice">
+            <field name="currency_id" ref="base.VEF"/>
+            <field name="journal_id" ref="account.sales_journal"/>
+            <field name="nro_ctrl">00-8975452</field>
+            <field eval="0" name="sin_cred"/>
+            <field name="user_id" ref="base.user_demo"/>
+            <field name="reference_type">none</field>
+            <field name="company_id" ref="base.main_company"/>
+            <field name="state">draft</field>
+            <field name="type">out_invoice</field>
+            <field name="status">no_pro</field>
+            <field name="account_id" ref="account.a_recv"/>
+            <field eval="0" name="reconciled"/>
+            <field eval="1370000.65" name="amount_untaxed"/>
+            <field eval="1370000.65" name="amount_total"/>
+            <field name="partner_id" ref="l10n_ve_withholding_islr.res_partner_1"/>
+        </record>
+        <record id="account_invoice_line_factura6" model="account.invoice.line">
+            <field eval="0" name="apply_wh"/>
+            <field name="account_id" ref="l10n_ve_withholding_islr.a_islr"/>
+            <field name="invoice_id" ref="account_invoice_6"/>
+            <field eval="685000.0" name="price_unit"/>
+            <field eval="1370000.65" name="price_subtotal"/>
+            <field name="company_id" ref="base.main_company"/>
+            <field eval="2.0" name="quantity"/>
+            <field name="partner_id" ref="l10n_ve_withholding_islr.res_partner_1"/>
+            <field name="concept_id" ref="l10n_ve_withholding_islr.islr_wh_concept_pago_contratistas"/>
+            <field name="name">Fact3 CUS. Persona Juridica Domiciliada</field>
+        </record>
+              
+        <record id="account_invoice_7" model="account.invoice">
+            <field name="currency_id" ref="base.VEF"/>
+            <field name="journal_id" ref="account.sales_journal"/>
+            <field name="nro_ctrl">00-545413165</field>
+            <field eval="0" name="sin_cred"/>
+            <field name="user_id" ref="base.user_demo"/>
+            <field name="reference_type">none</field>
+            <field name="company_id" ref="base.main_company"/>
+            <field name="state">draft</field>
+            <field name="type">out_invoice</field>
+            <field name="status">no_pro</field>
+            <field name="account_id" ref="account.a_recv"/>
+            <field eval="0" name="reconciled"/>
+            <field eval="6000000.0" name="amount_untaxed"/>
+            <field eval="6000000.0" name="amount_total"/>
+            <field name="partner_id" ref="l10n_ve_withholding_islr.res_partner_4"/>
+        </record>
+        <record id="account_invoice_line_factura2" model="account.invoice.line">
+            <field eval="0" name="apply_wh"/>
+            <field name="account_id" ref="l10n_ve_withholding_islr.a_islr"/>
+            <field name="invoice_id" ref="account_invoice_7"/>
+            <field eval="3000000.0" name="price_unit"/>
+            <field eval="6000000.0" name="price_subtotal"/>
+            <field name="company_id" ref="base.main_company"/>
+            <field eval="2.0" name="quantity"/>
+            <field name="partner_id" ref="l10n_ve_withholding_islr.res_partner_4"/>
+            <field name="concept_id" ref="l10n_ve_withholding_islr.islr_wh_concept_hprof_no_mercantiles"/>
+            <field name="name">Factura 2 Customer. Persona Natural No Residenciada</field>
+        </record>
+
+        <record id="account_invoice_8" model="account.invoice">
+            <field name="currency_id" ref="base.VEF"/>
+            <field name="journal_id" ref="account.sales_journal"/>
+            <field name="nro_ctrl">00-5642165</field>
+            <field eval="0" name="sin_cred"/>
+            <field name="user_id" ref="base.user_demo"/>
+            <field name="reference_type">none</field>
+            <field name="company_id" ref="base.main_company"/>
+            <field name="state">draft</field>
+            <field name="type">out_invoice</field>
+            <field name="status">no_pro</field>
+            <field name="account_id" ref="account.a_recv"/>
+            <field eval="0" name="reconciled"/>
+            <field eval="3999999.4" name="amount_untaxed"/>
+            <field eval="3999999.4" name="amount_total"/>
+            <field name="partner_id" ref="l10n_ve_withholding_islr.res_partner_2"/>
+        </record>
+        <record id="account_invoice_line_factura3" model="account.invoice.line">
+            <field eval="0" name="apply_wh"/>
+            <field name="account_id" ref="l10n_ve_withholding_islr.a_islr"/>
+            <field name="invoice_id" ref="account_invoice_8"/>
+            <field eval="2000000.0" name="price_unit"/>
+            <field eval="3999999.4" name="price_subtotal"/>
+            <field name="company_id" ref="base.main_company"/>
+            <field eval="2.0" name="quantity"/>
+            <field name="partner_id" ref="l10n_ve_withholding_islr.res_partner_2"/>
+            <field name="concept_id" ref="l10n_ve_withholding_islr.islr_wh_concept_hprof_no_mercantiles"/>
+            <field name="name">Factura 1 Customer. Persona Natural Residenciada</field>
+        </record>
+
+-->
+
+
+    </data>
+</openerp>
