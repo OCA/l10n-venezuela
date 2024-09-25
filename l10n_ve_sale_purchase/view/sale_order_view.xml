@@ -1,0 +1,41 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<openerp>
+    <data>
+    
+    
+    
+            <record model="ir.ui.view" id="view_sale_order_line_tree_islr">
+                <field name="name">sale_order_line_tree_islr</field>
+                <field name="model">sale.order.line</field>
+                <field name="inherit_id" ref="sale.view_order_line_tree"/>
+                <field name="arch" type="xml">
+                    <field name="invoiced" position="after">
+                        <field name="concept_id"/>
+                    </field>
+                </field>
+            </record>
+
+            <record model="ir.ui.view" id="view_sale_order_line_form_islr">
+                <field name="name">sale_order_line_form_islr</field>
+                <field name="model">sale.order.line</field>
+                <field name="inherit_id" ref="sale.view_order_line_form2"/>
+                <field name="arch" type="xml">
+                    <field name="invoiced" position="after">
+                        <field name="concept_id" required="1"/>
+                    </field>
+                </field>
+            </record>
+
+            <record model="ir.ui.view" id="view_sale_order_form_concept">
+                <field name="name">sale_order_form_concept</field>
+                <field name="model">sale.order</field>
+                <field name="inherit_id" ref="sale.view_order_form"/>
+                <field name="arch" type="xml">
+                    <xpath expr="//field[@name='order_line']//field[@name='discount']" position="after">
+                        <field name="concept_id" required="1"/>
+                    </xpath>
+                </field>
+            </record>
+
+    </data>
+</openerp>

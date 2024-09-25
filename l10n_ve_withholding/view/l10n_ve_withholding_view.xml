@@ -1,0 +1,76 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<openerp>
+    <data>
+    
+<!--
+    Generic menu for all modules of vat, income withholding and municipal
+-->
+        <menuitem id="menu_wh_configuration" name="Withholdings" parent="l10n_ve_fiscal_requirements.menu_finance_fiscal_settings"/>
+        <menuitem id="menu_withholdings" name="Withholdings" parent="account.menu_finance"/>
+
+<!--        <menuitem id="menu_wh_customer" name="Customer Withholding" parent="account.menu_finance_receivables" sequence="300"/>-->
+<!--        <menuitem id="menu_wh_suppiler" name="Supplier Withholding" parent="account.menu_finance_payables" sequence="300"/>-->
+<!--
+        Generic view Purchase Invoice for vat, income withholdings and municipal
+-->
+        
+        <record id="wh_inv_supplier" model="ir.ui.view">
+            <field name="name">account.invoice.supplier.wh.form</field>
+            <field name="model">account.invoice</field>
+            <field name="inherit_id" ref="account.invoice_supplier_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//page[@string='Invoice']" position="after">
+                   <page string="Withholdings">
+                        <separator colspan="4" string="xsep" invisible='1'/>
+                        <separator colspan="4" string="vsep"/>
+                        <separator colspan="4" string="isep"/>
+                        <separator colspan="4" string="rsep"/>
+                        <separator colspan="4" string="msep" invisible='1'/>
+                    </page> 
+                </xpath>
+            </field>
+        </record>
+        
+<!--
+        Generic view Sale Invoice for vat, income withholding and municipal
+-->
+        
+        <record id="wh_inv_customer" model="ir.ui.view">
+            <field name="name">account.invoice.customer.wh.form</field>
+            <field name="model">account.invoice</field>
+            <field name="inherit_id" ref="account.invoice_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//page[@string='Invoice Lines']" position="after">
+                   <page string="Withholdings">
+                        <separator colspan="4" string="xsep" invisible='1'/>
+                        <separator colspan="4" string="vsep"/>
+                        <separator colspan="4" string="isep"/>
+                        <separator colspan="4" string="rsep"/>
+                        <separator colspan="4" string="msep" invisible='1'/>
+                    </page> 
+                </xpath>
+            </field>
+        </record>
+        
+<!--
+        Generic view of Parnets for vat, income withholding and municipal
+-->
+
+        <record id="wh_partner" model="ir.ui.view">
+            <field name="name">res.partner.form.wh</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="l10n_ve_fiscal_requirements.view_partner_form_ve"/>
+            <field name="arch" type="xml">
+                <xpath expr="//page[@string='Internal Notes']" position="after">
+                   <page string="Withholdings">
+                        <separator colspan="4" string="vsep"/>
+                        <newline/>
+                        <separator colspan="4" string="isep"/>
+                        <newline/>
+                        <separator colspan="4" string="rsep"/>
+                    </page> 
+                </xpath>
+            </field>
+        </record>        
+    </data>
+</openerp>

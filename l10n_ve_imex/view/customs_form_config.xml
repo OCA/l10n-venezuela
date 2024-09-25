@@ -1,0 +1,112 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<openerp>
+    <data>
+    
+<!--
+customs_form_config    
+-->
+
+        <record id="view_customs_form_config_form" model="ir.ui.view">
+            <field name="name">customs.form.config.form</field>
+            <field name="model">customs.form.config</field>
+            <field name="arch" type="xml">
+                <form string="Customs Form Config" version="7.0">
+					<header>
+<!--
+						<field name="state" widget="statusbar" statusbar_visible="draft,open,done" statusbar_colors='{"draft":"blue","open":"green","done":"red"}' />
+-->
+                    </header>
+                     <group col="4" colspan="4">
+                    <field name="company_id"/>
+                    <field name="journal_id"/>
+                    </group>
+				</form>
+			</field>
+		</record>
+
+
+        <record id="view_customs_form_config_tree" model="ir.ui.view">
+            <field name="name">customs.form.config.tree</field>
+            <field name="model">customs.form.config</field>
+            <field name="arch" type="xml">
+                <tree string="Customs Form Config">
+                    <field name="company_id"/>
+                    <field name="journal_id"/>
+                </tree>
+            </field>
+        </record>
+
+
+<!--
+customs_facility    
+-->
+
+        <record id="view_customs_facility_form" model="ir.ui.view">
+            <field name="name">customs.facility.form</field>
+            <field name="model">customs.facility</field>
+            <field name="arch" type="xml">
+                <form string="Customs" version="7.0">
+					<header>
+<!--
+						<field name="state" widget="statusbar" statusbar_visible="draft,open,done" statusbar_colors='{"draft":"blue","open":"green","done":"red"}' />
+-->
+                    </header>
+                    <group col="4" colspan="4">
+                    <field name="code"/>
+                    <field name="name"/>
+                    </group>
+				</form>
+			</field>
+		</record>
+
+
+        <record id="view_customs_facility_tree" model="ir.ui.view">
+            <field name="name">customs.facility.tree</field>
+            <field name="model">customs.facility</field>
+            <field name="arch" type="xml">
+                <tree string="Customs">
+                    <field name="code"/>
+                    <field name="name"/>
+                </tree>
+            </field>
+        </record>
+
+
+<!--
+customs_facility_tax_codes    
+-->
+
+        <record id="view_customs_duty_form" model="ir.ui.view">
+            <field name="name">customs.duty.form</field>
+            <field name="model">customs.duty</field>
+            <field name="arch" type="xml">
+                <form string="Custom Taxes" version="7.0">
+                    <group>
+                        <field name="code"/>
+                        <field name="name"/>
+                        <field name="ref"/>
+                        <field name="partner_id"/>
+                        <field name="account_id" attrs="{'required':[('vat_detail','=',False)],'readonly':[('vat_detail','=',True)]}"/>
+                        <field name="vat_detail"/>
+                        <field name="sequence"/>
+                        <field name="company_id"/>
+                    </group>
+				</form>
+			</field>
+		</record>
+
+
+        <record id="view_customs_duty_tree" model="ir.ui.view">
+            <field name="name">customs.duty.tree</field>
+            <field name="model">customs.duty</field>
+            <field name="arch" type="xml">
+                <tree string="Custom Taxes">
+                    <field name="code"/>
+                    <field name="name"/>
+                    <field name="ref"/>
+                </tree>
+            </field>
+        </record>
+
+    </data>
+</openerp>

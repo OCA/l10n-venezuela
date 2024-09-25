@@ -1,0 +1,113 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<openerp>
+    <data>
+
+        <record id="view_customs_form_form" model="ir.ui.view">
+            <field name="name">customs.form.form</field>
+            <field name="model">customs.form</field>
+            <field name="arch" type="xml">
+                <form string="Seniat" version="7.0">
+                    <header>
+                        <button name="button_open" icon="gtk-go-forward" string="Open" states="draft,done" colspan="1"/>
+                        <button name="button_done" icon="gtk-ok" string="Done" states="open" colspan="1"/>
+                        <button name="button_cancel" icon="gtk-cancel" string="Cancel" states="draft,open" colspan="1"/>
+                        <button name="button_draft" icon="terp-stock_effects-object-colorize" string="Reset to draft" states="cancel" colspan="1"/>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,open,done" statusbar_colors="{&quot;draft&quot;:&quot;blue&quot;,&quot;open&quot;:&quot;green&quot;,&quot;done&quot;:&quot;red&quot;}"/>
+                    </header>
+                    <group col="4" colspan="4">
+                        <field name="name"/>
+                        <field name="ref"/>
+                        <field name="broker_id"/>
+                        <field name="date"/>
+                    </group>
+                    <notebook colspan="4">
+                        <page string="General info">
+                            <group col="4" colspan="4">
+                                <field name="ref_reg"/>
+                                <field name="date_reg"/>
+                                <field name="ref_liq"/>
+                                <field name="date_liq"/>
+                            </group>
+                            <group col="4" colspan="4">
+                                <field name="customs_facility_id" colspan="4"/>
+                            </group>
+                            <field name="cfl_ids" colspan="4" nolabel="1">
+                                <tree string="Tax lines">
+                                    <field name="tax_code"/>
+                                    <field name="amount" sum="Amount total"/>
+                                </tree>
+                                <form string="Tax lines" version="7.0">
+                                    <group col="8" colspan="8">
+                                        <field name="tax_code" colspan="6"/>
+                                        <field name="amount"/>
+                                    </group>
+                                    <field name="vat_detail" invisible="1"/>
+                                    <field name="imex_tax_line" colspan="4" nolabel="1" required="1" attrs="{'invisible':[('vat_detail','!=',True)]}">
+                                        <tree string="Vat tax detail" editable="bottom">
+<!--
+                                            <field name="cfl_id" invisible="1" on_change="on_change_cfl_id(cfl_id)"/>
+-->
+                                            <field name="imex_inv_id" on_change="on_change_invoice_id(imex_inv_id)"
+                                                   domain="[('customs_form_id','!=', False)]"/>
+
+                                            <field name="partner_id"/>
+                                            <field name="supplier_invoice_number"/>
+                                            <field name="tax_id" domain="[('type_tax_use', '=', 'purchase')]" widget="selection" on_change="on_change_tax_id(tax_id)"/>
+                                            <field name="name"  invisible="1"/>
+                                            <field name="account_id" invisible="1"/>
+                                            <field name="base" invisible="1"/>
+                                            <field name="amount" invisible="1"/>
+                                            <field name="base_amount" on_change="on_change_amount(tax_id, base_amount, tax_amount)"/>
+                                            <field name="tax_amount" on_change="on_change_amount(tax_id, base_amount, tax_amount)" sum="Tax amount total"/>
+                                        </tree>
+                                        <form version="7.0">
+<!--
+                                            <field name="cfl_id" invisible="1" on_change="on_change_cfl_id(cfl_id)"/>
+-->
+                                            <field name="imex_inv_id" on_change="on_change_invoice_id(imex_inv_id)"/>
+                                            <field name="partner_id"/>
+                                            <field name="supplier_invoice_number"/>
+                                            <field name="tax_id" domain="[('type_tax_use', '=', 'purchase')]" widget="selection" on_change="on_change_tax_id(tax_id)"/>
+                                            <field name="base_amount" on_change="on_change_amount(tax_id, base_amount, tax_amount)"/>
+                                            <field name="tax_amount" on_change="on_change_amount(tax_id, base_amount, tax_amount)"/>
+                                            <field name="account_id"/>
+                                            <field name="name"/>
+                                        </form>
+                                    </field>
+                                </form>
+                            </field>
+                            <group>
+                                <field name="amount_total"/>
+                            </group>
+                        </page>
+                        <page string="Other">
+                            <label string="Notes" colspan="4"/>
+                            <field name="narration" colspan="4" nolabel="1"/>
+                            <field name="move_id"/>
+                            <field name="company_id"/>
+                        </page>
+                    </notebook>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_customs_form_tree" model="ir.ui.view">
+            <field name="name">customs.form.tree</field>
+            <field name="model">customs.form</field>
+            <field name="arch" type="xml">
+                <tree string="SENIAT" colors="red:state in ('draft');gray:state in ('cancel');darkgreen:state in ('open')">
+                    <field name="name"/>
+                    <field name="ref"/>
+                    <field name="broker_id"/>
+                    <field name="ref_liq"/>
+                    <field name="date_liq"/>
+                    <field name="customs_facility_id"/>
+                    <field name="amount_total"/>
+                    <field name="state" invisible="1"/>
+                </tree>
+            </field>
+        </record>
+
+
+    </data>
+</openerp>

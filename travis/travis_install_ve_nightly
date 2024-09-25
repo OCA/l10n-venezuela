@@ -1,0 +1,23 @@
+#!/bin/bash
+
+set -v
+
+##VE PACKAGES
+apt-get install python-libxml2
+
+##ADDONS-VAUXOO PACKAGES#FIXME: This modules make error use or not use it
+pip install recaptcha-client egenix-mx-base
+
+##ODOO PACKAGES#FIXME: This package should be within the main script
+pip install PyWebDAV mygengo
+#sudo apt-get install pdftotext antiword
+apt-get install poppler-utils # pdftotext is here
+apt-get install antiword
+
+# Deprecated with sudo: false and packages in travis-ci. Commented FYI of local installation
+# Install webkit and patched process
+# apt-get install libxfont1 xfonts-utils xfonts-75dpi xfonts-base xfonts-encodings
+# wget http://download.gna.org/wkhtmltopdf/0.12/0.12.2.1/wkhtmltox-0.12.2.1_linux-trusty-amd64.deb -O wk.deb
+# dpkg -i wk.deb
+
+exit 0

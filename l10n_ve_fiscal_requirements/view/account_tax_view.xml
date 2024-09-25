@@ -1,0 +1,24 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<openerp>
+    <data>
+
+
+
+        <!-- 
+        =====================================================
+        Taxs Extension
+        =====================================================
+        -->
+
+        <record id="account_tax_applicability_2" model="ir.ui.view">
+            <field name="name">account.tax.applicability</field>
+            <field name="model">account.tax</field>
+            <field name="inherit_id" ref="account.view_tax_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='active']" position="after">
+                    <field name="appl_type" groups="account.group_account_manager"/>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</openerp>
