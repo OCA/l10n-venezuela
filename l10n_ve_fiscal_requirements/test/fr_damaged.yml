@@ -1,0 +1,91 @@
+-
+  6. Fiscal requirements damaged paper tests
+-
+  6.1 Before creating the invoice let's open the period
+-
+  !python {model: account.period}: |
+    import time
+    ap_ids = self.search(cr, uid, [('code', '=',time.strftime('%m/%Y'))])
+    assert ap_ids, 'There are no periods for the current date'
+    self.action_draft(cr, uid, ap_ids)
+    inv_brw = self.browse(cr, uid, ap_ids)
+    for ap in inv_brw:
+        assert ap.state == 'draft', 'Period couldn\'t be opened'
+-
+  6.2 I create a new customer sale invoice with tax
+-
+  !record {model: account.invoice, id: test_fr04}:
+    type: out_invoice
+    company_id: base.main_company
+    currency_id: base.EUR
+    date_invoice: !eval time.strftime('%Y-%m-%d')
+    account_id: account.a_recv
+    invoice_line:
+      - product_id: product.product_product_3
+        quantity: 5
+        uos_id: product.product_uom_unit
+        price_unit: 20
+        name: Fiscal Requirements Sale Invoice
+        account_id: account.a_sale
+        invoice_line_tax_id:
+        - iva_sale1
+    journal_id: account.sales_journal
+    partner_id: f_req_partner_2
+    reference_type: none
+    nro_ctrl: 112233
+-
+  6.3 I check that Initially customer invoice is in the "Draft" state
+-
+  !assert {model: account.invoice, id: test_fr04}:
+    - state == 'draft'
+-
+  6.4 I change the state of invoice to "Proforma2" by clicking PRO-FORMA button
+-
+  !workflow {model: account.invoice, action: invoice_proforma2, ref: test_fr04}
+-
+  6.5 I check that the invoice state is now "Proforma2"
+-
+  !assert {model: account.invoice, id: test_fr04}:
+    - state == 'proforma2'
+-
+  6.6 I create invoice by clicking on Create button
+-
+  !workflow {model: account.invoice, action: invoice_open, ref: test_fr04}
+-
+  6.7 I check that the invoice state is "Open"
+-
+  !assert {model: account.invoice, id: test_fr04, string: Invoice is not in open state}:
+    - state == 'open'
+-
+  6.8 Update company account for damaged paper
+-
+  !python {model: res.company}: |
+    self.write(cr, uid, [ref("base.main_company")], {'acc_id' : ref("account.a_sale")})
+-
+  6.9 Verify that the company has proper configuration
+-
+  !assert {model: res.company, id: base.main_company}:
+    - acc_id.id
+-
+  6.10 Update journals to allow cancelation
+-
+  !python {model: account.journal}: |
+    self.write(cr, uid, [ref('account.sales_journal')], {'update_posted': True})
+-
+  6.11 Verify that the journal was properly updated
+-
+  !assert {model: account.journal, id: account.sales_journal}:
+    - update_posted == True
+-
+  6.12 I try create a damaged paper
+-
+  !python {model: wizard.invoice.nro.ctrl}: |
+    inv_obj = self.pool.get("account.invoice")
+    inv_brw = inv_obj.browse(cr, uid, ref("test_fr04"))
+    self.action_invoice_create(cr, uid, [], None, inv_brw)
+-
+  6.13 Verify that invoice was properly updated
+-
+  !assert {model: account.invoice, id: test_fr04 }:
+    - move_id.state == 'draft'
+    - state == 'paid'

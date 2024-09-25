@@ -1,0 +1,24 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<openerp>
+    <data>
+<!--
+    =====================================================
+    Partners Extension
+    =====================================================
+-->
+        <record id="partner_wh_src" model="ir.ui.view">
+            <field name="name">res.partner.form.wh.src</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="l10n_ve_withholding.wh_partner"/>
+            <field name="arch" type="xml">
+                <xpath expr="//page[@string='Withholdings']" position="inside">
+                    <separator string="Social Responsability Commitment Withholding"/> 
+                        <group col="4" colspan="2">
+                                <field name="wh_src_agent"/>
+                                <field name="wh_src_rate"/>
+                        </group>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</openerp>

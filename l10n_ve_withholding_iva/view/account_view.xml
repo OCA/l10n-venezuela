@@ -1,0 +1,35 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<openerp>
+    <data>
+
+
+
+	<!-- 
+	=====================================================
+	Taxs Extension
+	=====================================================
+	-->  
+
+        <record id="account_tax_wh_iva" model="ir.ui.view">
+            <field name="name">account.tax.wh.iva</field>
+            <field name="model">account.tax</field>
+            <field name="inherit_id" ref="account.view_tax_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='active']" position="after">
+                    <field name="ret"/>
+                </xpath>
+                <xpath expr="//field[@name='tax_sign']" position="after">
+                    <field name="wh_vat_collected_account_id" domain="[('type','&lt;&gt;','view'),('type','&lt;&gt;','consolidation')]" attrs="{'required':[('ret','=',True)]}"/>
+                    <label colspan="2" nolabel="1" string="This account will be used when applying a withhold to an Invoice"/>
+                </xpath>
+                <xpath expr="//field[@name='ref_tax_sign']" position="after">
+                    <field name="wh_vat_paid_account_id" domain="[('type','&lt;&gt;','view'),('type','&lt;&gt;','consolidation')]" attrs="{'required':[('ret','=',True)]}"/>
+                    <label colspan="2" nolabel="1" string="This account will be used when applying a withhold to a Refund"/>
+                </xpath>
+            </field>
+        </record>
+
+
+
+    </data>
+</openerp>

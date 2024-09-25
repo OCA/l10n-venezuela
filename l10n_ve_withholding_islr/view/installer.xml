@@ -1,0 +1,61 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<openerp>
+  <data>
+    <record id="wh_islr_config_view" model="ir.ui.view">
+        <field name="name">Configure your ISLR Withholdings</field>
+        <field name="model">wh.islr.config</field>
+        <field name="inherit_id" ref="base.res_config_view_base"/>
+        <field name="arch" type="xml">
+          <data>
+            <form position="attributes" version="7.0">
+              <attribute name="string">Income withholding Configuration</attribute>
+            </form>
+            
+            <xpath expr="//group[@string=&quot;res_config_contents&quot;]" position="before">
+                 <group colspan="4" col="8">
+                   <group colspan="1" width="220">
+                    <label align="0.0" string="Configure your company's income withholding" width="200" colspan="2"/>
+                   </group>
+                   <separator orientation="vertical" colspan="1" rowspan="15"/>
+                   <group colspan="6">
+                     <separator string="Configure Venezuelan income Withholding" colspan="4"/>
+                     <group string="res_config_contents"/>
+                   </group>
+                 </group>
+                    
+                
+            </xpath>
+              
+              
+            <group string="res_config_contents" position="replace">
+              <field name="journal_purchase" groups="base.group_extended"/>
+              <newline/>
+              <field name="journal_sale" groups="base.group_extended"/>
+              <newline/>
+              <field name="account_purchase" groups="base.group_extended"/>
+              <newline/>
+              <field name="account_sale" groups="base.group_extended"/>
+              <newline/>
+              <field name="wh_agent" groups="base.group_extended"/>
+            </group>
+            <xpath expr="//button[@name=&quot;action_skip&quot;]" position="replace"/>
+          </data>
+        </field>
+    </record>
+    <record id="action_config_wh_islr" model="ir.actions.act_window">
+        <field name="name">Configure Income Withholding</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">wh.islr.config</field>
+        <field name="view_id" ref="wh_islr_config_view"/>
+        <field name="view_type">form</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+    <!-- register configuration wizard -->
+    <record id="config_wizard_step_wh_islr" model="ir.actions.todo">
+        <field name="action_id" ref="action_config_wh_islr"/>
+        <field name="sequence">45</field>
+        <field name="groups_id" eval="[(6,0,[ref('base.group_no_one')])]"/>
+    </record>
+  </data>
+</openerp>

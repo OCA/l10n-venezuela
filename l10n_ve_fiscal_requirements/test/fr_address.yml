@@ -1,0 +1,50 @@
+-
+  4. Fiscal requirements Check Commercial Partner
+-
+  4.1 I create an Customer Invoice with a Vauxoo's Contact
+-
+  !record { model: account.invoice, id: fr_test_invoice_customer }:
+    company_id: base.main_company
+    currency_id: base.EUR
+    account_id: account.a_recv
+    journal_id: account.sales_journal
+    partner_id: f_req_partner_10
+    invoice_line:
+      - product_id: product.product_product_5
+        quantity: 10.0
+-
+  I check that Initially customer invoice is in the "Draft" state
+-
+  !assert {model: account.invoice, id: fr_test_invoice_customer}:
+    - state == 'draft'
+-
+  I change the state of invoice to "Proforma2" by clicking PRO-FORMA button
+-
+  !workflow {model: account.invoice, action: invoice_proforma2, ref: fr_test_invoice_customer}
+-
+  I check that the invoice state is now "Proforma2"
+-
+  !assert {model: account.invoice, id: fr_test_invoice_customer}:
+    - state == 'proforma2'
+-
+  I check that there is no move attached to the invoice
+-
+  !python {model: account.invoice}: |
+    acc_id=self.browse(cr, uid, ref("fr_test_invoice_customer"))
+    assert (not acc_id.move_id), "Move falsely created at pro-forma"
+-
+  I create invoice by clicking on Create button
+-
+  !workflow {model: account.invoice, action: invoice_open, ref: fr_test_invoice_customer}
+-
+  I check that the invoice state is "Open"
+-
+  !assert {model: account.invoice, id: fr_test_invoice_customer}:
+    - state == 'open'
+-
+  I check that now there is a move attached to the invoice & belongs to Vauxoo
+-
+  !python {model: account.invoice}: |
+    acc_id=self.browse(cr, uid, ref("fr_test_invoice_customer"))
+    assert acc_id.move_id, "Move not created for open invoice"
+    assert acc_id.move_id.partner_id.id == ref('base.res_partner_23'), "Something has gone wrong in this invoice"
