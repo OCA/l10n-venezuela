@@ -1,0 +1,150 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<odoo>
+    <data>
+        <record id="view_wh_islr_tree_customer" model="ir.ui.view">
+            <field name="name">account.wh.islr.tree.customer</field>
+            <field name="model">account.wh.islr</field>
+            <field name="arch" type="xml">
+                <tree string="Retenciones de ISLR">
+                    <field name="name"/>
+                    <field name="customer_doc_number"/>
+                    <field name="partner_id"/>
+                    <field name="state"/>
+                </tree>
+            </field>
+        </record>
+        <record id="view_wh_islr_tree_supplier" model="ir.ui.view">
+            <field name="name">account.wh.islr.tree.supplier</field>
+            <field name="model">account.wh.islr</field>
+            <field name="arch" type="xml">
+                <tree string="Retenciones de ISLR">
+                    <field name="name"/>
+                    <field name="number"/>
+                    <field name="partner_id"/>
+                    <field name="state"/>
+                </tree>
+            </field>
+        </record>
+
+
+        <record id="view_wh_islr_form" model="ir.ui.view">
+            <field name="name">account.wh.islr.form</field>
+            <field name="model">account.wh.islr</field>
+            <field name="arch" type="xml">
+                <form string="Retención ISLR Proveedor">
+                    <header>
+                        <button name="action_confirm" states="draft" string="Confirmar" class="oe_highlight" type="object"/>
+                        <button name="action_done" states="confirmed" string="Realizar" class="oe_highlight" type="object"/>
+                        <button name="action_draft" states="confirmed,cancel" string="Cancelar" class="oe_highlight" type="object"/>
+                        <button name="action_cancel_draft" colspan="2" states="done" string="Enviar a borrador" type="object" class="oe_highlight"/>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,confirmed,done"/>
+                    </header>
+                    <sheet>
+                        <group col="4">
+                            <field name="name"/>
+                            <field name="company_id"/>
+                            <field name="partner_id"/>
+                            <field name="currency_id" invisibble="1"/>
+                            <field name="account_id"/>
+                            <!--field name="type"/-->
+                            <field name="number"/>
+                            <field name="date"/>
+                        </group>
+                        <group colspan="4" col="6" string='Retenciones'>
+                            <field name='invoice_id' domain="[('type','=','in_invoice'), ('partner_id','=',partner_id)]"/>
+                            <field name='porc_islr'/>
+                            <field name='ret_amount'/>
+                            <field name="amount_invoice"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+
+        <record id="view_wh_islr_form_customer" model="ir.ui.view">
+            <field name="name">account.wh.islr.form.customer</field>
+            <field name="model">account.wh.islr</field>
+            <field name="arch" type="xml">
+                <form string="Retención ISLR Cliente">
+                    <header>
+                        <button name="action_confirm" states="draft" string="Confirmar" class="oe_highlight" type="object"/>
+                        <button name="action_done" states="confirmed" string="Realizar" class="oe_highlight" type="object"/>
+                        <button name="action_draft" states="confirmed,cancel" string="Cancelar" class="oe_highlight" type="object"/>
+                        <button name="action_cancel_draft" colspan="2" states="done" string="Enviar a borrador" type="object" class="oe_highlight"/>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,confirmed,done"/>
+                    </header>
+                    <sheet>
+                        <group col="4">
+                            <field name="name"/>
+                           <field name="company_id"/>
+                            <field name="partner_id"/>
+                            <field name="currency_id" invisibble="1"/>
+                            <field name="account_id"/>
+                            <!--field name="type"/-->
+                            <field name="customer_doc_number" attrs="{'required': True}"/>
+                            <field name="date"/>
+                        </group>
+                        <group colspan="4" col="6" string='Retenciones'>
+                            <field name='invoice_id' domain="[('type','=','out_invoice'), ('partner_id','=',partner_id)]"/>
+                            <field colspan='2' name='porc_islr'/>
+                            <field name='ret_amount'/>
+                             <field name="amount_invoice"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        
+
+        <record model="ir.actions.act_window" id="action_account_wh_islr_customer">
+            <field name="name">Retención ISLR Cliente</field>
+            <field name="res_model">account.wh.islr</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[('type','in',('out_invoice', 'out_refund'))]</field>
+            <field name="context">{'default_type':'out_invoice', 'type':'out_invoice', 'journal_type': 'sale'}</field>
+        </record>
+        <record model="ir.actions.act_window.view" id="act_wv_account_wh_islr_customer_tree">
+            <field name="sequence" eval="10"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="view_wh_islr_tree_customer"/>
+            <field name="act_window_id" ref="action_account_wh_islr_customer"/>
+        </record>
+        <record model="ir.actions.act_window.view" id="act_wv_account_wh_islr_customer_form">
+            <field name="sequence" eval="20"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_wh_islr_form_customer"/>
+            <field name="act_window_id" ref="action_account_wh_islr_customer"/>
+        </record>
+
+        <menuitem id="menu_action_account_wh_islr_customer" name="Retención ISLR Cliente" parent="account.menu_finance_receivables" action="action_account_wh_islr_customer"/>
+
+        <record model="ir.actions.act_window" id="action_account_wh_islr_supplier">
+            <field name="name">Retención ISLR Proveedor</field>
+            <field name="res_model">account.wh.islr</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[('type','in',('in_invoice', 'in_refund'))]</field>
+            <field name="context">{'default_type': 'in_invoice', 'type': 'in_invoice', 'journal_type': 'purchase'}</field>
+        </record>
+        
+        <record model="ir.actions.act_window.view" id="act_wv_account_wh_islr_supplier_tree">
+            <field name="sequence" eval="10"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="view_wh_islr_tree_supplier"/>
+            <field name="act_window_id" ref="action_account_wh_islr_supplier"/>
+        </record>
+        <record model="ir.actions.act_window.view" id="act_wv_account_wh_islr_supplier_form">
+            <field name="sequence" eval="20"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_wh_islr_form"/>
+            <field name="act_window_id" ref="action_account_wh_islr_supplier"/>
+        </record>
+
+        <menuitem id="menu_action_account_wh_islr_supplier" name="Retención ISLR Proveedor" parent="account.menu_finance_payables" action="action_account_wh_islr_supplier"/>
+
+    </data>
+</odoo>

@@ -1,0 +1,33 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<odoo>
+    <data>
+        <record model="ir.ui.view" id="account_invoice_form_inherited">
+            <field name="name">account.invoice_form_inh</field>
+            <field name="model">account.invoice</field>
+            <field name="inherit_id" ref="account.invoice_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='fiscal_position_id']" position="before">
+                    <field name="is_scripture"/>
+                    <field name="wh_id"/>
+                </xpath>      
+            </field>
+        </record>
+        <record model="ir.ui.view" id="account.invoice_supplier_form_inherited">
+            <field name="name">account.invoice_supplier_form_inh</field>
+            <field name="model">account.invoice</field>
+            <field name="inherit_id" ref="account.invoice_supplier_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='date_invoice']" position="after">
+                    <field name="vendor_invoice_number" attrs="{'required':[('type','=','in_invoice')]}"/>
+                </xpath>
+                <xpath expr="//field[@name='date_invoice']" position="after">
+                    <field name="control_invoice_number" attrs="{'required':[('type','=','in_invoice')]}"/>
+                </xpath>
+                <xpath expr="//field[@name='fiscal_position_id']" position="before">
+                    <field name="is_scripture"/>
+                    <field name="wh_id"/>
+                </xpath>     
+            </field>
+        </record>
+    </data>
+</odoo>

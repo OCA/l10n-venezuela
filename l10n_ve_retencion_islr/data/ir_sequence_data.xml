@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!-- Sequences for sale.order -->
+        <record id="seq_wh_order" model="ir.sequence">
+            <field name="name">Withholding Vat Out Invoice</field>
+            <field name="code">account.wh.islr.in_invoice</field>
+            <field name="prefix">%(year)s%(month)s</field>
+            <field name="implementation">no_gap</field>
+            <field name="padding">8</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+    </data>
+</odoo>

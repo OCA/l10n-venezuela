@@ -1,0 +1,9 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<odoo>
+    <act_window id="action_account_account_type"
+    	name="account type"
+    	res_model="account.account.type"
+    	view_mode="tree,form"/>
+    <menuitem id="menu_account_account_type" name="Tipos de Cuenta" parent="account.account_account_menu" 
+    	sequence="9" action="action_account_account_type"/>
+</odoo>

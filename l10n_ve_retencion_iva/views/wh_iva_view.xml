@@ -1,0 +1,197 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<odoo>
+    <data>
+        <record id="view_wh_iva_line_tree" model="ir.ui.view">
+            <field name="name">account.wh.iva.line.tree</field>
+            <field name="model">account.wh.iva.line</field>
+            <field name="arch" type="xml">
+                <tree string="Líneas de Retención">
+                    <field name="invoice_id"/>
+                    <field name="ret_tax"/>
+                    <field name="amount_tax"/>
+                    <field name="rate_amount"/>
+                    <field name="ret_amount"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_wh_iva_line_form" model="ir.ui.view">
+            <field name="name">account.wh.iva.line.form</field>
+            <field name="model">account.wh.iva.line</field>
+            <field name="arch" type="xml">
+                <form string="Líneas de Retención">
+                    <notebook>
+                        <page string="Facturas a retener">
+                            <group colspan="4">
+                                <field name="invoice_id"/>
+                                <field name="ret_tax"/>
+                                <field name="amount_tax"/>
+                                <field name="rate_amount"/>
+                                <field name="base_tax"/>
+                                <field name="ret_amount"/>
+                            </group>
+                        </page>
+                    </notebook>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_wh_iva_tree_customer" model="ir.ui.view">
+            <field name="name">account.wh.iva.tree.customer</field>
+            <field name="model">account.wh.iva</field>
+            <field name="arch" type="xml">
+                <tree string="Retenciones de IVA">
+                    <field name="name"/>
+                     <field name="customer_doc_number"/>
+                    <field name="partner_id"/>
+                    <field name="state"/>
+                </tree>
+            </field>
+        </record>
+        <record id="view_wh_iva_tree_supplier" model="ir.ui.view">
+            <field name="name">account.wh.iva.tree.vendorr</field>
+            <field name="model">account.wh.iva</field>
+            <field name="arch" type="xml">
+                <tree string="Retenciones de IVA">
+                    <field name="name"/>
+                     <field name="number"/>
+                    <field name="partner_id"/>
+                    <field name="state"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_wh_iva_form" model="ir.ui.view">
+            <field name="name">account.wh.iva.form</field>
+            <field name="model">account.wh.iva</field>
+            <field name="arch" type="xml">
+                <form string="Retención IVA Proveedor">
+
+                    <header>
+                        <button name="action_confirm" states="draft" string="Confirmar" class="oe_highlight" type="object"/>
+                        <button name="action_done" states="confirmed" string="Realizar" class="oe_highlight" type="object"/>
+                        <button name="action_draft" states="confirmed,cancel" string="Cancelar" class="oe_highlight" type="object"/>
+                        <button name="action_cancel_draft" colspan="2" states="done" string="Enviar a borrador" type="object" class="oe_highlight"/>
+                        <button name="generate_lines" states="draft" string="Generar" class="oe_highlight" type="object"/>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,confirmed,done"/>
+                    </header>
+                    <sheet>
+                        <group col="4">
+                            <field name="company_id"/>
+                            <field name="partner_id"/>
+                            <field name="name"/>
+                            <field name="currency_id"/>
+                            <field name="account_id"/>
+                            <!--field name="type"/-->
+                            <field name="number"/>
+                            <field name="date_from"/>
+                            <field name="date_to"/>
+                            <field name="fortnight"/>
+                            <field name="journal_id"/>
+                        </group>
+                        <group string='Retenciones'>
+                            <field colspan="4" name="wh_lines" nolabel="1" widget="one2many_list" readonly="1"/>
+                        </group>
+                        <group col="2" colspan="2">
+                            <field name="total_tax_ret"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+
+
+        <record id="view_wh_iva_form_customer" model="ir.ui.view">
+            <field name="name">account.wh.iva.form.customer</field>
+            <field name="model">account.wh.iva</field>
+            <field name="arch" type="xml">
+                <form string="Retención IVA Cliente">
+                    <header>
+                        <button name="action_confirm" states="draft" string="Confirmar" class="oe_highlight" type="object"/>
+                        <button name="action_done" states="confirmed" string="Realizar" class="oe_highlight" type="object"/>
+                        <button name="action_draft" states="confirmed,cancel" string="Cancelar" class="oe_highlight" type="object"/>
+                        <button name="action_cancel_draft" colspan="2" states="done" string="Enviar a borrador" type="object" class="oe_highlight"/>
+                        <button name="generate_lines" states="draft" string="Generar" class="oe_highlight" type="object"/>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,confirmed,done"/>
+                    </header>
+                    <sheet>
+                        <group col="4">
+                           <field name="company_id"/>
+                            <field name="partner_id"/>
+                            <field name="name"/>
+                            <field name="currency_id"/>
+                            <field name="account_id"/>
+                            <!--field name="type"/-->
+                            <!--field name="number"/-->
+                            <field name="customer_doc_number" attrs="{'required': True}"/>
+                            <field name="date_from"/>
+                            <field name="date_to"/>
+                            <field name="fortnight"/>
+                            <field name="journal_id"/>
+                        </group>
+                        <group string='Retenciones'>
+                            <field colspan="4" name="wh_lines" nolabel="1" widget="one2many_list" readonly="1"/>
+                        </group>
+                            <group col="2" colspan="2">
+                                <field name="total_tax_ret"/>
+                            </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        
+
+        <record model="ir.actions.act_window" id="action_account_wh_iva_customer">
+            <field name="name">Retención IVA Cliente</field>
+            <field name="res_model">account.wh.iva</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[('type','in',('out_invoice', 'out_refund'))]</field>
+            <field name="context">{'default_type':'out_invoice', 'type':'out_invoice', 'journal_type': 'sale'}</field>
+        </record>
+        <record model="ir.actions.act_window.view" id="act_wv_account_wh_iva_customer_tree">
+            <field name="sequence" eval="10"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="view_wh_iva_tree_customer"/>
+            <field name="act_window_id" ref="action_account_wh_iva_customer"/>
+        </record>
+        <record model="ir.actions.act_window.view" id="act_wv_account_wh_iva_customer_form">
+            <field name="sequence" eval="20"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_wh_iva_form_customer"/>
+            <field name="act_window_id" ref="action_account_wh_iva_customer"/>
+        </record>
+
+        <menuitem id="menu_action_account_wh_iva_customer" name="Retención IVA Cliente" parent="account.menu_finance_receivables" action="action_account_wh_iva_customer"/>
+
+
+
+        <record model="ir.actions.act_window" id="action_account_wh_iva_supplier">
+            <field name="name">Retención IVA Proveedor</field>
+            <field name="res_model">account.wh.iva</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[('type','in',('in_invoice', 'in_refund'))]</field>
+            <field name="context">{'default_type': 'in_invoice', 'type': 'in_invoice', 'journal_type': 'purchase'}</field>
+        </record>
+        
+        <record model="ir.actions.act_window.view" id="act_wv_account_wh_iva_supplier_tree">
+            <field name="sequence" eval="10"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="view_wh_iva_tree_supplier"/>
+            <field name="act_window_id" ref="action_account_wh_iva_supplier"/>
+        </record>
+        <record model="ir.actions.act_window.view" id="act_wv_account_wh_iva_supplier_form">
+            <field name="sequence" eval="20"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_wh_iva_form"/>
+            <field name="act_window_id" ref="action_account_wh_iva_supplier"/>
+        </record>
+
+        <menuitem id="menu_action_account_wh_iva_supplier" name="Retención IVA Proveedor" parent="account.menu_finance_payables" action="action_account_wh_iva_supplier"/>
+
+    </data>
+</odoo>

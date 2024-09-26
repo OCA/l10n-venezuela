@@ -1,0 +1,30 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<odoo>
+    <data>
+
+
+
+	<!-- 
+	=====================================================
+	Taxs Extension
+	=====================================================
+	-->  
+
+        <record id="account_tax_wh_iva" model="ir.ui.view">
+            <field name="name">account.tax.wh.iva</field>
+            <field name="model">account.tax</field>
+            <field name="inherit_id" ref="account.view_tax_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='type_tax_use']" position="after">
+                    <field name="ret"/>
+                </xpath>
+                <xpath expr="//field[@name='active']" position="after">
+                    <field name="wh_vat_collected_account_id" attrs="{'required':[('ret','=',True)]}"/>
+                </xpath>
+                <xpath expr="//field[@name='tax_adjustment']" position="after">
+                    <field name="wh_vat_paid_account_id"  attrs="{'required':[('ret','=',True)]}"/>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

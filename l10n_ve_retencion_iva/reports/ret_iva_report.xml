@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <data>
+    
+    <report id="l10n_ve_retencion_iva.report_ret_iva" 
+            model="account.wh.iva"
+            string="Comprobante de retención"
+            name="l10n_ve_retencion_iva.report_wh_iva_template" 
+            report_type="qweb-html"/>
+    <template id="report_wh_iva_template"> 
+      <t t-call="report.html_container"> 
+        <t t-call="report.external_layout"> 
+          <div class="page">
+          <h2>Comprobante de Retención de Impuesto al Valor Agregado</h2>
+          <h4>Número Comprobante <span t-field="docs.number"/></h4> 
+            <div class="row">
+              <div class="col-sm-6">
+                <div class="row">
+                  <strong>Fecha de emisión: </strong><span t-field="docs.date_to"/>
+                </div>
+                <div class="row">
+                  <strong>Agente de Retención: </strong><span t-field="docs.company_id"/>
+                </div>
+                <div class="row">
+                  <strong>Rif Agente de Retención: </strong><span t-field="docs.company_id.rif"/>
+                </div>
+                <div class="row">
+                  <strong>Direción Fiscal Agente de Retención: </strong><span t-field="docs.company_id.street"/>, <span t-field="docs.company_id.street2"/> <span t-field="docs.company_id.city"/>, estado: <span t-field="docs.company_id.state_id"/> 
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="row">
+                  <strong>Año Fiscal: </strong> 2017
+                </div>
+                <div class="row">
+                  <strong>Razon Social Sujeto Retenido: </strong><span t-field="docs.partner_id"/>
+                </div>
+                <div class="row">
+                  <strong>Rif Sujeto Retenido: </strong><span t-field="docs.partner_id.rif"/>
+                </div>
+                <div class="row">
+                  <strong>Direción Fiscal Sujeto Retenido: </strong><span t-field="docs.partner_id.street"/>, <span t-field="docs.partner_id.street2"/> <span t-field="docs.partner_id.city"/>, estado: <span t-field="docs.partner_id.state_id"/> 
+                </div>
+              </div>
+            </div>
+            <table class="table table-condensed">
+              <thead>
+                <tr>
+                  <th>Fecha</th>
+                  <th>Nro Comprob.</th>
+                  <th>Nro Fact</th>
+                  <th>Nro Control</th>
+                  <th>Compras + IVA </th>
+                  <th>Base Imponible</th>
+                  <th>%</th>
+                  <th>impuesto</th>
+                  <th>IVA Ret.</th>
+                </tr>
+              </thead>
+              <tbody class="invoice_tbody">
+                <tr t-foreach="docs.wh_lines" t-as="l">
+                        <td><span t-field="l.invoice_id.date_invoice"/></td>
+                        <td><span t-field="docs.number"/></td>
+                        <td><span t-field="l.invoice_id.vendor_invoice_number"/></td>
+                        <td><span t-field="l.invoice_id.control_invoice_number"/></td>
+                        <td><span t-esc="l.base_tax+l.amount_tax"/></td>
+                        <td><span t-field="l.base_tax"/></td>
+                        <td><span t-field="l.rate_amount"/></td>
+                        <td><span t-field="l.amount_tax"/></td>
+                        <td><span t-field="l.ret_amount"/></td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="row">
+              <div class="col-sm-6">
+                <strong>______________________________ </strong>
+                <p>Firma y sello del Sujeto Retenido</p>
+              </div>
+              <div class="col-sm-6">
+                <strong>______________________________ </strong>
+                <p>Firma y sello del Agente de Retención</p>
+              </div>
+            </div>
+            <div class="row">
+              <strong>Fecha de Entrega: </strong>
+            </div>
+          </div> 
+        </t> 
+      </t> 
+    </template>
+  </data>
+</odoo>

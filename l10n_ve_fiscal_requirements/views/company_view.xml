@@ -1,0 +1,32 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<odoo>
+    <data>
+
+        <record id="res_company_view_inherited" model="ir.ui.view">
+            <field name="name">res_company_view_inh</field>
+            <field name="model">res.company</field>
+            <field name="inherit_id" ref="base.view_company_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='vat']" position="replace">
+                    <field name="rif"/>
+                </xpath>
+                <xpath expr="//field[@name='vat_check_vies']" position="attributes">
+                    <attribute name="invisible">True</attribute>
+                </xpath>
+                <xpath expr="//notebook" position="inside">
+                    <page name="contabilidad" string="Contabilidad">
+                        <group col="4" colspan="2">
+                            <field name="purchase_iva_ret_account"/> 
+                            <field name="sale_iva_ret_account"/>
+                            
+                        </group> 
+                        <group col="4" colspan="2">
+                            <field name="purchase_islr_ret_account"/>
+                            <field name="sale_islr_ret_account"/>
+                        </group>
+                    </page>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

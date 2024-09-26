@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <data>
+    <report id="l10n_ve_retencion_islr.report_ret_islr" 
+            model="account.wh.islr"
+            string="Comprobante de retención"
+            name="l10n_ve_retencion_islr.report_wh_islr_template" 
+            report_type="qweb-html"/>
+    <template id="report_wh_islr_template"> 
+      <t t-call="report.html_container"> 
+        <t t-call="report.external_layout"> 
+          <div class="page">
+            <h1>Comprobante de Retención de Impuesto Sobre La Renta</h1>
+            <div class="row">
+              <div class="col-sm-4">
+                <strong>Número de comprobante: </strong><span t-field="docs.number"/>
+              </div>
+              <div class="col-sm-4">
+                <strong>Año: 2017</strong>
+              </div>
+              <div class="col-sm-4">
+                <strong>Fecha: </strong> <span t-field="docs.date"/>
+              </div>
+            </div>
+
+            <div class="row">
+            <hr>
+            </hr>
+              <h3>Agente de Retención</h3>
+            </div>
+              <div class="col-sm-6">
+                <strong>Razon Social: </strong><span t-field="docs.company_id"/>
+              </div>
+              <div class="col-sm-6">
+                <strong>Rif: </strong><span t-field="docs.company_id.rif"/>
+              </div>
+              <div class="col-sm-12">
+                  <strong>Domicilio Fiscal: </strong><span t-field="docs.company_id.street"/>, <span t-field="docs.company_id.street2"/> <span t-field="docs.company_id.city"/>, estado: <span t-field="docs.company_id.state_id"/> 
+              </div>
+              <hr>
+              </hr>
+
+            <div class="row">
+              <h3>Sujeto Retenido</h3>
+            </div>
+            <div class="col-sm-6">
+                <strong>Razon Social: </strong><span t-field="docs.partner_id"/>
+              </div>
+              <div class="col-sm-6">
+                <strong>Rif: </strong><span t-field="docs.partner_id.rif"/>
+              </div>
+              <div class="col-sm-12">
+                  <strong>Domicilio Fiscal: </strong><span t-field="docs.partner_id.street"/>, <span t-field="docs.partner_id.street2"/> <span t-field="docs.partner_id.city"/>, estado: <span t-field="docs.partner_id.state_id"/> 
+              </div>
+              <hr>
+              </hr>
+            <div class="row">
+              <h3>Detalle Impuesto Retenido</h3>
+            </div>
+            <div class="row">
+              <div class="col-sm-4">
+                <strong>Número de Factura: </strong><span t-field="docs.invoice_id.vendor_invoice_number"/>
+              </div>
+              <div class="col-sm-4">
+                <strong>Número de control: </strong><span t-field="docs.invoice_id.control_invoice_number"/>
+
+              </div>
+              <div class="col-sm-4">
+                <strong>Fecha de Emisión: </strong><span t-field="docs.date"/>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-sm-10">
+                <strong>Monto Total: </strong><span t-field="docs.invoice_id.amount_total"/>
+              </div>
+            </div>
+              <div class="row">
+                <div class="col-sm-10">
+                  <strong>% Impuesto retenido: </strong><span t-field="docs.porc_islr"/>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-sm-10">
+                  <strong>Monto Impuesto Retenido: </strong><span t-field="docs.ret_amount"/>
+                </div>
+              </div>
+            
+            <hr>
+            </hr>
+            <div class="row">
+              <div class="col-sm-6">
+                <strong>______________________________ </strong>
+                <p>Firma y sello del Sujeto Retenido</p>
+              </div>
+              <div class="col-sm-6">
+                <strong>______________________________ </strong>
+                <p>Firma y sello del Agente de Retención</p>
+              </div>
+            </div>
+          </div> 
+        </t> 
+      </t> 
+    </template>
+  </data>
+</odoo>
