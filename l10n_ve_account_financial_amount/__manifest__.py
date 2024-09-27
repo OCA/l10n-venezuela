@@ -4,16 +4,12 @@
     "author": "ADHOC SA",
     "license": "AGPL-3",
     "category": "Accounting",
-    "depends": [
-        "account",
-    ],
+    "depends": ["account",],
     "data": [
-        'security/account_debt_management_security.xml',
-        'wizard/res_config_settings_views.xml',
+        "security/account_debt_management_security.xml",
+        "wizard/res_config_settings_views.xml",
     ],
-    "demo": [
-    ],
-    'images': [
-    ],
-    'installable': True,
+    "demo": [],
+    "images": [],
+    "installable": True,
 }

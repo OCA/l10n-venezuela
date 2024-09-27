@@ -18,26 +18,21 @@
 #
 ##############################################################################
 {
-    'author': 'ADHOC SA',
-    'website': 'www.adhoc.com.ar',
-    'license': 'AGPL-3',
-    'category': 'Accounting & Finance',
-    'data': [
-        'wizards/res_config_settings_views.xml',
-        'views/account_tax_view.xml',
-        'views/account_payment_group_view.xml',
-        'views/account_payment_view.xml',
-        'security/ir.model.access.csv',
+    "author": "ADHOC SA",
+    "website": "https://github.com/OCA/l10n-spain",
+    "license": "AGPL-3",
+    "category": "Accounting & Finance",
+    "data": [
+        "wizards/res_config_settings_views.xml",
+        "views/account_tax_view.xml",
+        "views/account_payment_group_view.xml",
+        "views/account_payment_view.xml",
+        "security/ir.model.access.csv",
     ],
-    'demo': [
-        'demo/withholding_demo.xml',
-    ],
-    'depends': [
-        'l10n_ve_account_payment_group',
-        'l10n_ve_account_withholding',
-    ],
-    'installable': True,
-    'name': 'Automatic Withholdings on Payments',
-    'test': [],
-    'version': "13.0.1.0.0",
+    "demo": ["demo/withholding_demo.xml",],
+    "depends": ["l10n_ve_account_payment_group", "l10n_ve_account_withholding",],
+    "installable": True,
+    "name": "Automatic Withholdings on Payments",
+    "test": [],
+    "version": "13.0.1.0.0",
 }
