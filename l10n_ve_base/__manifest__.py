@@ -20,7 +20,7 @@
         Adicionalmente se registran datos de localización relacionados con otros
         Modelos.
     """,
-    "author": "SINAPSYS GLOBAL SA || MASTERCORE SAS",
+    "author": "SINAPSYS GLOBAL SA, MASTERCORE SAS, Odoo Community Association (OCA)",
     "website": "https://github.com/OCA/l10n-spain",
     "version": "13.0.1",
     "category": "Localization",

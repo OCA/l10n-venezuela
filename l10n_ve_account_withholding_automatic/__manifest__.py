@@ -18,7 +18,7 @@
 #
 ##############################################################################
 {
-    "author": "ADHOC SA",
+    "author": "ADHOC SA, SINAPSYS GLOBAL SA, MASTERCORE SAS, Odoo Community Association (OCA)",
     "website": "https://github.com/OCA/l10n-spain",
     "license": "AGPL-3",
     "category": "Accounting & Finance",
