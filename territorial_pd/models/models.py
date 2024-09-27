@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ################################################################################
 # Author: SINAPSYS GLOBAL SA || MASTERCORE SAS
 # Copyleft: 2020-Present.
@@ -6,56 +5,44 @@
 #
 #
 ################################################################################
-from odoo import models, fields
+from odoo import fields, models
 
 
 class Parish(models.Model):
     """Modelo Parish."""
 
-    _name = 'res.country.state.municipality.parish'
-    _description = 'Venezuelan Parish'
-    _order = 'name'
+    _name = "res.country.state.municipality.parish"
+    _description = "Venezuelan Parish"
+    _order = "name"
     name = fields.Char(
-        string='Parroquia',
-        size=100,
-        required=True,
-        help='Nombre de la Parroquia'
+        string="Parroquia", size=100, required=True, help="Nombre de la Parroquia"
     )
     code = fields.Char(
-        string='Código',
-        size=6,
-        required=True,
-        help='Código de la Parroquia'
+        string="Código", size=6, required=True, help="Código de la Parroquia"
     )
     municipality_id = fields.Many2one(
-        'res.country.state.municipality',
-        string='Municipio',
-        help='Municipio al que pertenece la Parroquia'
+        "res.country.state.municipality",
+        string="Municipio",
+        help="Municipio al que pertenece la Parroquia",
     )
 
 
 class Municipality(models.Model):
     """Modelo Municipality."""
 
-    _name = 'res.country.state.municipality'
-    _description = 'Municipality'
-    _order = 'name'
+    _name = "res.country.state.municipality"
+    _description = "Municipality"
+    _order = "name"
     name = fields.Char(
-        string='Municipio',
-        size=100,
-        required=True,
-        help='Nombre del Municipio'
+        string="Municipio", size=100, required=True, help="Nombre del Municipio"
     )
     code = fields.Char(
-        string=u'Código',
-        size=5,
-        required=True,
-        help='Código de Municipio'
+        string=u"Código", size=5, required=True, help="Código de Municipio"
     )
     state_id = fields.Many2one(
-        'res.country.state',
-        string='Estado',
-        help='Estado al que pertenece el Municipio'
+        "res.country.state",
+        string="Estado",
+        help="Estado al que pertenece el Municipio",
     )
     parish_ids = fields.One2many(
         string="Parroquias",
@@ -68,7 +55,7 @@ class Municipality(models.Model):
 class State(models.Model):
     """Modelo extendido res.country.state."""
 
-    _inherit = 'res.country.state'
+    _inherit = "res.country.state"
     municipality_ids = fields.One2many(
         string="Municipios",
         comodel_name="res.country.state.municipality",
@@ -80,9 +67,7 @@ class State(models.Model):
 class Country(models.Model):
     """Modelo extendido res.country."""
 
-    _inherit = 'res.country'
+    _inherit = "res.country"
     nationality = fields.Char(
-        string='Nacionalidad',
-        required=False,
-        help='Nacionalidad'
+        string="Nacionalidad", required=False, help="Nacionalidad"
     )

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 # Author: SINAPSYS GLOBAL SA || MASTERCORE SAS
 # Copyleft: 2020-Present.
@@ -6,21 +5,26 @@
 #
 #
 ###############################################################################
-from odoo import models, fields, api, _
-from odoo.exceptions import UserError, ValidationError
-from datetime import datetime
 import logging
+from datetime import datetime
+
+from odoo import _, fields, models
+from odoo.exceptions import ValidationError
 
 _logger = logging.getLogger(__name__)
+
 
 class AccountMove(models.Model):
     _inherit = "account.move"
 
     l10n_ve_document_number = fields.Char(
-        'Control Number', size=80,
+        "Control Number",
+        size=80,
         help="Number used to manage pre-printed invoices, by law you will"
-             " need to put here this number to be able to declarate on"
-             " Fiscal reports correctly.",store=True)
+        " need to put here this number to be able to declarate on"
+        " Fiscal reports correctly.",
+        store=True,
+    )
 
     def get_taxes_values(self):
         """
@@ -42,22 +46,22 @@ class AccountMove(models.Model):
     def post(self):
         super(AccountMove, self).post()
         for rec in self:
-            if rec.state == 'posted' and rec.l10n_ve_document_number == False:
-                if rec.type in ['out_invoice']:
-                    today = datetime.strptime(
-                        str(fields.Date.today()), "%Y-%m-%d")
-                    invoice_date = datetime.strptime(
-                        str(rec.invoice_date), "%Y-%m-%d")
+            if rec.state == "posted" and not condrec.l10n_ve_document_number:
+                if rec.type in ["out_invoice"]:
+                    today = datetime.strptime(str(fields.Date.today()), "%Y-%m-%d")
+                    invoice_date = datetime.strptime(str(rec.invoice_date), "%Y-%m-%d")
                     if invoice_date > today:
                         raise ValidationError(
-                            _("La factura no puede ser mayor a la fecha actual"+
-                                " por favor verifique la fecha de su factura."))
-                    if rec.journal_id.sequence_control_id:        
-                        l10n_ve_document_number = rec.env[
-                            'ir.sequence'].next_by_code(rec.journal_id.\
-                                sequence_control_id.code)
-                        rec.write({
-                            'l10n_ve_document_number': l10n_ve_document_number})
+                            _(
+                                "La factura no puede ser mayor a la fecha actual"
+                                + " por favor verifique la fecha de su factura."
+                            )
+                        )
+                    if rec.journal_id.sequence_control_id:
+                        l10n_ve_document_number = rec.env["ir.sequence"].next_by_code(
+                            rec.journal_id.sequence_control_id.code
+                        )
+                        rec.write({"l10n_ve_document_number": l10n_ve_document_number})
                     # else:
                     #     raise ValidationError(
                     # _("El diario por el cual está emitiendo la factura no"+

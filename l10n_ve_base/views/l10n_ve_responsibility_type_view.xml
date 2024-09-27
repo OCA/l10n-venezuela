@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <odoo>
 
     <record id="view_seniat_responsibility_type_form" model="ir.ui.view">
@@ -7,9 +7,9 @@
         <field name="arch" type="xml">
             <form string="Seniat Responsibility Type">
                 <group>
-                    <field name="name"/>
-                    <field name='code'/>
-                    <field name='active'/>
+                    <field name="name" />
+                    <field name='code' />
+                    <field name='active' />
                 </group>
             </form>
         </field>
@@ -20,9 +20,9 @@
         <field name="model">l10n_ve.responsibility.type</field>
         <field name="arch" type="xml">
             <tree string="Seniat Responsibility Type" decoration-muted="(not active)">
-                <field name="name"/>
-                <field name="code"/>
-                <field name='active'/>
+                <field name="name" />
+                <field name="code" />
+                <field name='active' />
             </tree>
         </field>
     </record>
@@ -32,10 +32,12 @@
         <field name="res_model">l10n_ve.responsibility.type</field>
     </record>
 
-    <menuitem 
-        name="Responsibility Types" 
-        action="action_seniat_responsibility_type" 
-        id="menu_seniat_responsibility_type" 
-        sequence="10" parent="menu_seniat_config"/>
+    <menuitem
+        name="Responsibility Types"
+        action="action_seniat_responsibility_type"
+        id="menu_seniat_responsibility_type"
+        sequence="10"
+        parent="menu_seniat_config"
+    />
 
 </odoo>
