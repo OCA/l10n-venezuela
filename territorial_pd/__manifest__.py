@@ -15,7 +15,7 @@
     "website": "https://github.com/OCA/l10n-venezuela",
     "category": "Localization",
     "license": "LGPL-3",
-    "version": "0.1",
+    "version": "13.0.1.0.1",
     "depends": ["base", "contacts"],
     "data": [
         "data/res.country.csv",

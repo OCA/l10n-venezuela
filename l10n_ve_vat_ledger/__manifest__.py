@@ -9,7 +9,7 @@
     "name": "Localización Vat Ledger Venezuela",
     "author": "SINAPSYS GLOBAL SA, MASTERCORE SAS, Odoo Community Association (OCA)",
     "website": "https://github.com/OCA/l10n-venezuela",
-    "version": "13.0.2",
+    "version": "13.0.1.0.2",
     "category": "Localization",
     "license": "AGPL-3",
     "depends": ["account", "l10n_ve_base", "l10n_ve_withholding", "report_xlsx"],
