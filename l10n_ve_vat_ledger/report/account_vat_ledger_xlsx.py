@@ -191,11 +191,8 @@ class AccountVatLedgerXlsx(models.AbstractModel):
                     INNER JOIN account_move_line AS l ON g.to_pay_line_id=l.id
                     WHERE t.type_tax_use='%s'
                     AND t.withholding_type='partner_tax' AND l.move_id=%d
-                    """ % (
-                        "customer",
-                        invoice.id,
-                    )
-                    self._cr.execute(sql)
+                    """
+                    self._cr.execute(sql, (tuple("customer", invoice.id),))
                     res = self._cr.fetchone()
                     reten = 0.00
                     if res:
