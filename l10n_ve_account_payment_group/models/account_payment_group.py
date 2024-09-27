@@ -624,4 +624,4 @@ class AccountPaymentGroup(models.Model):
                     name += " " + rec.display_name
         return name
 
-        OP - X
+        # OP - X
