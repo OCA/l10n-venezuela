@@ -9,7 +9,7 @@
 from odoo import _, api, exceptions, fields, models
 
 
-class res_partner_bank(models.Model):
+class ResPartnerBank(models.Model):
     """inherit for res_partner_bank"""
 
     _inherit = "res.partner.bank"
@@ -37,7 +37,7 @@ class res_partner_bank(models.Model):
     def create(self, vals):
         if not vals["bank_id"]:
             raise exceptions.UserError(_(u"Debe Seleccionar la Entidad Bancaria."))
-        res = super(res_partner_bank, self).create(vals)
+        res = super(ResPartnerBank, self).create(vals)
         return res
 
     def write(self, vals):
@@ -47,5 +47,5 @@ class res_partner_bank(models.Model):
         if "acc_number" in vals:
             if not vals.get("acc_number", False):
                 raise exceptions.UserError(_(u"Debe indicar el numero de cuenta."))
-        res = super(res_partner_bank, self).write(vals)
+        res = super(ResPartnerBank, self).write(vals)
         return res

@@ -9,7 +9,7 @@
 from odoo import _, api, exceptions, models
 
 
-class res_bank(models.Model):
+class ResBank(models.Model):
     """inherit for res_bank"""
 
     _inherit = "res.bank"
@@ -24,7 +24,7 @@ class res_bank(models.Model):
         #     raise exceptions.UserError(
         #         _(u'Debe indicar el Código de la Entidad Bancaria.')
         #     )
-        res = super(res_bank, self).create(vals)
+        res = super(ResBank, self).create(vals)
         return res
 
     def write(self, vals):
@@ -38,5 +38,5 @@ class res_bank(models.Model):
         #         raise exceptions.UserError(
         #             _(u'Debe indicar el Código de la Entidad Bancaria.')
         #         )
-        res = super(res_bank, self).write(vals)
+        res = super(ResBank, self).write(vals)
         return res
