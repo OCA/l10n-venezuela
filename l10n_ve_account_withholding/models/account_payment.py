@@ -82,8 +82,8 @@ class AccountPayment(models.Model):
             )
             if len(rep_lines) != 1:
                 raise UserError(
-                    "En los impuestos de retención debe haber una línea de repartición de tipo tax para pagos y otra"
-                    "para reembolsos"
+                    "En los impuestos de retención debe haber una línea de repartición "
+                    "de tipo tax para pagos y otra para reembolsos"
                 )
             account = rep_lines.account_id
             # if not accounts on taxes then we use accounts of journal

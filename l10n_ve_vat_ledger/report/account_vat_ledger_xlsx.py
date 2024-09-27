@@ -181,11 +181,16 @@ class AccountVatLedgerXlsx(models.AbstractModel):
                             sheet.write(row, 14, 0, line)
 
                     sql = """
-                    SELECT p.withholding_number AS number_wh,p.amount AS amount_wh,l.move_id AS invoice
-                    FROM  account_tax AS t INNER JOIN account_payment  AS p ON t.id=p.tax_withholding_id
-                    INNER JOIN account_move_line_payment_group_to_pay_rel AS g ON p.payment_group_id=g.payment_group_id
+                    SELECT p.withholding_number AS number_wh,
+                           p.amount AS amount_wh,
+                           l.move_id AS invoice
+                    FROM  account_tax AS t
+                    INNER JOIN account_payment AS p ON t.id=p.tax_withholding_id
+                    INNER JOIN account_move_line_payment_group_to_pay_rel AS g
+                    ON p.payment_group_id=g.payment_group_id
                     INNER JOIN account_move_line AS l ON g.to_pay_line_id=l.id
-                    WHERE t.type_tax_use='%s' AND t.withholding_type='partner_tax' AND l.move_id=%d
+                    WHERE t.type_tax_use='%s'
+                    AND t.withholding_type='partner_tax' AND l.move_id=%d
                     """ % (
                         "customer",
                         invoice.id,

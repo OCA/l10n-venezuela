@@ -86,8 +86,10 @@ class AccountPayment(models.Model):
 
     @api.onchange("payment_group_id")
     def onchange_payment_group_id(self):
-        # now we change this according when use save & new the context from the payment was erased and we need to use some data.
-        # this change is due this odoo change https://github.com/odoo/odoo/commit/c14b17c4855fd296fd804a45eab02b6d3566bb7a
+        # now we change this according when use save & new the context
+        # from the payment was erased and we need to use some data.
+        # this change is due this odoo change
+        # https://github.com/odoo/odoo/commit/c14b17c4855fd296fd804a45eab02b6d3566bb7a
         if self.payment_group_id:
             self.payment_group_company_id = self.payment_group_id.company_id
             self.payment_date = self.payment_group_id.payment_date
@@ -383,14 +385,16 @@ class AccountPayment(models.Model):
         for rec in self:
             moves_vals = super(AccountPayment, rec)._prepare_payment_moves()
             for move_vals in moves_vals:
-                # If we have a communication on payment group append it before payment communication
+                # If we have a communication on payment group append it
+                # before payment communication
                 if rec.payment_group_id.communication:
                     move_vals["ref"] = "%s%s" % (
                         self.payment_group_id.communication,
                         move_vals["ref"] or "",
                     )
 
-                # Si se esta forzando importe en moneda de cia, usamos este importe para debito/credito
+                # Si se esta forzando importe en moneda de cia, usamos este
+                # importe para debito/credito
                 if rec.force_amount_company_currency:
                     for line in move_vals["line_ids"]:
                         if line[2].get("debit"):
