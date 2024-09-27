@@ -10,11 +10,11 @@ class AccountTax(models.Model):
     _inherit = "account.tax"
 
     amount_type = fields.Selection(
-        selection_add=([("partner_tax", "Alícuota en el Partner"),])
+        selection_add=([("partner_tax", "Alícuota en el Partner")])
     )
     withholding_type = fields.Selection(
         selection_add=(
-            [("tabla_islr", "Tabla ISLR"), ("partner_tax", "Alícuota en el Partner"),]
+            [("tabla_islr", "Tabla ISLR"), ("partner_tax", "Alícuota en el Partner")]
         )
     )
 

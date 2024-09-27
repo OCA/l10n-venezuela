@@ -121,7 +121,7 @@ class AccountPaymentGroupInvoiceWizard(models.TransientModel):
         self.journal_id = self.env["account.journal"].search(journal_domain, limit=1)
         # usually debit/credit note will be for the payment difference
         self.amount_total = abs(self.payment_group_id.payment_difference)
-        return {"domain": {"journal_id": journal_domain, "tax_ids": tax_domain,}}
+        return {"domain": {"journal_id": journal_domain, "tax_ids": tax_domain}}
 
     def get_invoice_vals(self):
         self.ensure_one()

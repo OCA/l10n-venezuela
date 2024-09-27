@@ -53,7 +53,7 @@ class BandaCaculo(models.Model):
         help="Monto para expresar la cantidad que no entra a retención",
     )
     type_amount = fields.Selection(
-        [("ut", "Unidad Tributaria"), ("bs", "Bolivares"),],
+        [("ut", "Unidad Tributaria"), ("bs", "Bolivares")],
         "Tipo de monto",
         help="Tipo por el cual expresan los montos minimos o maximos",
     )
@@ -65,7 +65,7 @@ class BandaCaculo(models.Model):
         "Porcentaje de retención", compute="_compute_complete_percentage",
     )
     type_subtracting_rel = fields.Selection(
-        [("no_amount", "Sin Sustraendo"), ("amount", "Con Sustraendo"),], "Tipo Calculo"
+        [("no_amount", "Sin Sustraendo"), ("amount", "Con Sustraendo")], "Tipo Calculo"
     )
 
     @api.depends("withholding_percentage")
@@ -96,7 +96,7 @@ class SeniatTablaIslr(models.Model):
         "Porcentaje Base de retención", help="% Base Retención"
     )
     type_subtracting = fields.Selection(
-        [("no_amount", "Sin Sustraendo"), ("amount", "Con Sustraendo"),], "Tipo Calculo"
+        [("no_amount", "Sin Sustraendo"), ("amount", "Con Sustraendo")], "Tipo Calculo"
     )
     banda_calculo_ids = fields.Many2many(
         "banda.calculo",

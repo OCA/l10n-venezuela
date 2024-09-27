@@ -43,7 +43,7 @@ class AccountTax(models.Model):
     )
     withholding_advances = fields.Boolean("Advances are Withholdable?", default=True,)
     withholding_accumulated_payments = fields.Selection(
-        [("month", "Month"), ("year", "Year"),],
+        [("month", "Month"), ("year", "Year")],
         string="Accumulated Payments",
         help="If none is selected, then payments are not accumulated",
     )

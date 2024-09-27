@@ -5,7 +5,7 @@
     "website": "https://github.com/OCA/l10n-venezuela",
     "license": "AGPL-3",
     "category": "Accounting",
-    "depends": ["account",],
+    "depends": ["account"],
     "data": [
         "security/account_debt_management_security.xml",
         "wizard/res_config_settings_views.xml",

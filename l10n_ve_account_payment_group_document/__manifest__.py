@@ -5,7 +5,7 @@
     "website": "https://github.com/OCA/l10n-venezuela",
     "license": "AGPL-3",
     "category": "Accounting",
-    "depends": ["l10n_latam_invoice_document", "l10n_ve_account_payment_group",],
+    "depends": ["l10n_latam_invoice_document", "l10n_ve_account_payment_group"],
     "data": [
         "view/account_payment_group_view.xml",
         "view/account_payment_receiptbook_view.xml",

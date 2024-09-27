@@ -9,7 +9,7 @@
     "license": "AGPL-3",
     "application": False,
     "installable": True,
-    "external_dependencies": {"python": [], "bin": [],},
+    "external_dependencies": {"python": [], "bin": []},
     "depends": [
         "l10n_ve_account_financial_amount",
         # for fixes related to domains and company_id field on form view

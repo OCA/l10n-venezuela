@@ -16,7 +16,7 @@ class ResPartner(models.Model):
     _inherit = "res.partner"
 
     vat_retention = fields.Selection(
-        [("75", " 75%"), ("100", "100%"),], "Retención I.V.A",
+        [("75", " 75%"), ("100", "100%")], "Retención I.V.A",
     )
     seniat_partner_type_id = fields.Many2one(
         "seniat.partner.type", "Tipo de persona para la retención ISLR",
