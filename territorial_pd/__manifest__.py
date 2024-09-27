@@ -20,7 +20,7 @@
         It is integrated with the base Odoo models res.country
         and res.country.state
     """,
-    "author": "Sinapsys Global SA",
+    "author": "SINAPSYS GLOBAL SA, MASTERCORE SAS, Odoo Community Association (OCA)",
     "website": "http://sinapsys.global",
     "category": "Localization",
     "version": "14.0.1",

@@ -14,7 +14,7 @@
         la **Localización Venezuela** que agrega características y datos
         necesarios para la generacion de los libros Iva ventas/ Compras.
     """,
-    "author": "SINAPSYS GLOBAL SA || MASTERCORE SAS",
+    "author": "SINAPSYS GLOBAL SA, MASTERCORE SAS, Odoo Community Association (OCA)",
     "website": "https://github.com/OCA/l10n-venezuela",
     "version": "13.0.1",
     "category": "Localization",

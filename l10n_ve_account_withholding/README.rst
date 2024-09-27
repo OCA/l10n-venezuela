@@ -51,7 +51,8 @@ Authors
 ~~~~~~~
 
 * ADHOC SA
-* SINAPSYS GLOBAL SA || MASTERCORE SA
+* SINAPSYS GLOBAL SA
+* MASTERCORE SAS
 
 Maintainers
 ~~~~~~~~~~~
