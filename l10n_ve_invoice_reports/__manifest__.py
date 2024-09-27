@@ -7,12 +7,6 @@
 {
     "name": "Comprobantes para Factura Venezolana",
     "version": "14.0.0.1",
-    "description": """
-    **Comprobantes para Factura Venezolana**
-
-    ¡Felicidades!. Este es el módulo para Generar Comprobantes PDF de
-    Factura Venezolana para la implementación de la **Localización Venezolana**
-    """,
     "author": "SINAPSYS GLOBAL SA, MASTERCORE SAS, Odoo Community Association (OCA)",
     "website": "https://github.com/OCA/l10n-venezuela",
     "license": "AGPL-3",
