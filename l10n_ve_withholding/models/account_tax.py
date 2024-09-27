@@ -22,7 +22,7 @@ class AccountTax(models.Model):
         commercial_partner = payment_group.commercial_partner_id
 
         force_withholding_amount_type = None
-        if self.withholding_type == "partner_tax" and payment_group.iva == True:
+        if self.withholding_type == "partner_tax" and payment_group.iva is True:
             alicuota_retencion = self.get_partner_alicuot(commercial_partner)
             alicuota = int(alicuota_retencion) / 100.0
             force_withholding_amount_type = self.withholding_amount_type
