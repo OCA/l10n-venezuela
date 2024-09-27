@@ -7,11 +7,11 @@ from odoo import models
 
 class PaymentTransaction(models.Model):
 
-    _inherit = 'payment.transaction'
+    _inherit = "payment.transaction"
 
     def _reconcile_after_transaction_done(self):
         # Validate invoices automatically upon the transaction is posted.
-        invoices = self.mapped('invoice_ids').filtered(lambda inv: inv.state == 'draft')
+        invoices = self.mapped("invoice_ids").filtered(lambda inv: inv.state == "draft")
         invoices.action_post()
 
         # Create & Post the payments.

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ################################################################################
 # Author      : SINAPSYS GLOBAL SA || MASTERCORE SAS
 # Copyright(c): 2021-Present.

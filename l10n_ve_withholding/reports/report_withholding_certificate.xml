@@ -1,50 +1,65 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <odoo>
     <template id="report_withholding_certificate_document">
         <t t-call="web.external_layout">
             <t t-set="o" t-value="o.with_context(lang=lang)" />
             <div class="page">
                 <div>
-                    <br/>
-                    <t t-set="report_date" t-value="o.date"/>
-                    <t t-set="report_number" t-value="o.withholding_number or o.name"/>
-                    <t t-set="report_name" t-value="'CERTIFICADO DE RETENCIÓN'"/>
-                    <t t-set="header_address" t-value="o.company_id.partner_id"/>
+                    <br />
+                    <t t-set="report_date" t-value="o.date" />
+                    <t t-set="report_number" t-value="o.withholding_number or o.name" />
+                    <t t-set="report_name" t-value="'CERTIFICADO DE RETENCIÓN'" />
+                    <t t-set="header_address" t-value="o.company_id.partner_id" />
                     <div class="text-right">
-                        <h4><b><t t-esc="report_name"/></b></h4>
+                        <h4><b><t t-esc="report_name" /></b></h4>
                         <p style="font-size: 14px;">
-                            <b>N° de Comprobante: </b><span t-esc="report_number"/><br/>
-                            <b>Fecha de emisión: </b><span t-esc="report_date"/><br/>
-                            <b>Periodo Fiscal: </b><span t-esc="o._get_fiscal_period(report_date)"/>
+                            <b>N° de Comprobante: </b><span t-esc="report_number" /><br
+                            />
+                            <b>Fecha de emisión: </b><span t-esc="report_date" /><br />
+                            <b>Periodo Fiscal: </b><span
+                                t-esc="o._get_fiscal_period(report_date)"
+                            />
                         </p>
                     </div>
-                </div><br/>
+                </div><br />
                 <div id="informations" class="row mt8 mb8">
                     <div class="col-6">
 
                         <!-- IDENTIFICACION (SUJETO A RETENCIÓN) -->
 
                         <!-- (1) Apellido uy Nombre: Denominicacion o Razon Soclial -->
-                        <strong>Sujeto a Retención: </strong><span t-field="o.partner_id.name"/>
+                        <strong>Sujeto a Retención: </strong><span
+                            t-field="o.partner_id.name"
+                        />
                         <!-- (2) RIF -->
-                        <t t-if="o.partner_id.vat and o.partner_id.l10n_latam_identification_type_id.name">
-                            <br/>
-                            <strong>R.I.F:</strong> <span t-field="o.partner_id.l10n_latam_identification_type_id.l10n_ve_code"/>-<span t-field="o.partner_id.vat"/>
+                        <t
+                            t-if="o.partner_id.vat and o.partner_id.l10n_latam_identification_type_id.name"
+                        >
+                            <br />
+                            <strong>R.I.F:</strong> <span
+                                t-field="o.partner_id.l10n_latam_identification_type_id.l10n_ve_code"
+                            />-<span t-field="o.partner_id.vat" />
 
                         </t>
                         <!-- (3) Responsabilidad -->
-                        <br/>
-                        <strong>Tipo de Contribuyente: </strong><span t-field="o.partner_id.l10n_ve_responsibility_type_id"/>
+                        <br />
+                        <strong>Tipo de Contribuyente: </strong><span
+                            t-field="o.partner_id.l10n_ve_responsibility_type_id"
+                        />
                         <!-- (4) Domicilio Comercial -->
-                        <br/>
-                        <span t-esc="o.partner_id" t-options='{"widget": "contact", "fields": ["address"], "no_marker": True, "no_tag_br": True}'/>
+                        <br />
+                        <span
+                            t-esc="o.partner_id"
+                            t-options='{"widget": "contact", "fields": ["address"], "no_marker": True, "no_tag_br": True}'
+                        />
 
                     </div>
                 </div>
                 <table class="table table-sm o_main_table">
                     <thead>
                         <tr>
-                            <th class="text-center" colspan="2"><strong>Datos de la retención practicada</strong></th>
+                            <th class="text-center" colspan="2"><strong
+                                >Datos de la retención practicada</strong></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -53,7 +68,11 @@
                                 Por Concepto:
                             </td>
                             <td class="text-left">
-                                <span t-field="o.payment_group_id.regimen_islr_id.code_seniat"/> - <span t-field="o.payment_group_id.regimen_islr_id.activity_name"/>
+                                <span
+                                    t-field="o.payment_group_id.regimen_islr_id.code_seniat"
+                                /> - <span
+                                    t-field="o.payment_group_id.regimen_islr_id.activity_name"
+                                />
                             </td>
                         </tr>
                         <tr>
@@ -61,13 +80,18 @@
                                 Comprobante que origina la retención:
                             </td>
                             <td class="text-left">
-                                <t t-foreach="o.payment_group_id.to_pay_move_line_ids" t-as="i">
-                                    Nro: <span t-field="i.move_id.l10n_ve_document_number"/>, 
+                                <t
+                                    t-foreach="o.payment_group_id.to_pay_move_line_ids"
+                                    t-as="i"
+                                >
+                                    Nro: <span
+                                        t-field="i.move_id.l10n_ve_document_number"
+                                    />,
                                     <t t-if="i.move_id.move_type == out_invoice">
-                                        Fact: <span t-field="i.move_id.name"/>
+                                        Fact: <span t-field="i.move_id.name" />
                                     </t>
                                     <t t-else="">
-                                        Fact: <span t-field="i.move_id.ref"/>
+                                        Fact: <span t-field="i.move_id.ref" />
                                     </t>
                                 </t>
                             </td>
@@ -77,7 +101,7 @@
                                 Importe del comprobante que origina la retención:
                             </td>
                             <td class="text-left">
-                                <span t-field="o.withholding_base_amount"/>
+                                <span t-field="o.withholding_base_amount" />
                             </td>
                         </tr>
                         <tr>
@@ -85,7 +109,7 @@
                                 Porcentaje Aplicado:
                             </td>
                             <td class="text-left">
-                                <span t-field="o.comment_withholding"/>
+                                <span t-field="o.comment_withholding" />
                             </td>
                         </tr>
                         <tr>
@@ -93,23 +117,23 @@
                                 Importe de la retención:
                             </td>
                             <td class="text-left">
-                                <span t-field="o.amount"/>
+                                <span t-field="o.amount" />
                             </td>
                         </tr>
                     </tbody>
                 </table>
-                <br/><br/><br/>
+                <br /><br /><br />
             </div>
             <div class="row">
-                <br/><br/><br/>
-                <div class="col-2"></div>
+                <br /><br /><br />
+                <div class="col-2" />
                 <div name="footer_left_column" class="col-4">
-                    ________________________ <br/>
+                    ________________________ <br />
                     Agente de Retención
                 </div>
-                <div class="col-2"></div>
+                <div class="col-2" />
                 <div name="footer_right_column" class="col-4">
-                    _______________________<br/>
+                    _______________________<br />
                     Beneficiario
                 </div>
             </div>
@@ -119,8 +143,11 @@
     <template id="report_withholding_certificate">
         <t t-call="web.html_container">
             <t t-foreach="docs" t-as="o">
-                <t t-set="lang" t-value="o.partner_id.lang"/>
-                <t t-call="l10n_ve_withholding.report_withholding_certificate_document" t-lang="lang"/>
+                <t t-set="lang" t-value="o.partner_id.lang" />
+                <t
+                    t-call="l10n_ve_withholding.report_withholding_certificate_document"
+                    t-lang="lang"
+                />
             </t>
         </t>
     </template>

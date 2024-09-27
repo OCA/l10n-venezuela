@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 # Author: SINAPSYS GLOBAL SA || MASTERCORE SAS
 # Copyleft: 2020-Present.
@@ -6,19 +5,24 @@
 #
 #
 ###############################################################################
-from odoo import models, fields, api, _
 import logging
 
+from odoo import fields, models
+
 _logger = logging.getLogger(__name__)
+
 
 class AccountMove(models.Model):
     _inherit = "account.move"
 
     l10n_ve_document_number = fields.Char(
-        'Control Number', size=80,
+        "Control Number",
+        size=80,
         help="Number used to manage pre-printed invoices, by law you will"
-             " need to put here this number to be able to declarate on"
-             " Fiscal reports correctly.",store=True)
+        " need to put here this number to be able to declarate on"
+        " Fiscal reports correctly.",
+        store=True,
+    )
 
     def get_taxes_values(self):
         """
@@ -40,13 +44,12 @@ class AccountMove(models.Model):
     def _post(self, soft):
         super(AccountMove, self)._post(soft)
         for rec in self:
-            if rec.state == 'posted' and rec.l10n_ve_document_number == False:
-                if rec.move_type in ['out_invoice','out_refund']:
-                    l10n_ve_document_number = rec.env[
-                        'ir.sequence'].next_by_code(
-                            'account.move.document.number')
-                    rec.write(
-                        {'l10n_ve_document_number': l10n_ve_document_number})
+            if rec.state == "posted" and rec.l10n_ve_document_number == False:
+                if rec.move_type in ["out_invoice", "out_refund"]:
+                    l10n_ve_document_number = rec.env["ir.sequence"].next_by_code(
+                        "account.move.document.number"
+                    )
+                    rec.write({"l10n_ve_document_number": l10n_ve_document_number})
 
 
 class AccountMoveLine(models.Model):

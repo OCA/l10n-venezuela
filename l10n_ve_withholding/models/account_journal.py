@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 # Author: SINAPSYS GLOBAL SA || MASTERCORE SAS
 # Copyleft: 2020-Present.
@@ -6,27 +5,28 @@
 #
 #
 ###############################################################################
-from odoo import models, fields, api, _
+from odoo import api, fields, models
 
 
 class AccountJournal(models.Model):
     _inherit = "account.journal"
 
     sequence_control_id = fields.Many2one(
-        'ir.sequence',
-        'Sequence control number',
+        "ir.sequence",
+        "Sequence control number",
         copy=False,
         help="Checks numbering sequence.",
     )
     next_control_number = fields.Integer(
-        'Next Number Control',
-        compute='_compute_next_control_number',
+        "Next Number Control",
+        compute="_compute_next_control_number",
     )
     current_control_number = fields.Integer(
-        'Current Number Control',
-        compute='_compute_current_control_number',
+        "Current Number Control",
+        compute="_compute_current_control_number",
     )
-    @api.depends('sequence_control_id')
+
+    @api.depends("sequence_control_id")
     def _compute_next_control_number(self):
         for rec in self:
             if rec.sequence_control_id:
@@ -34,12 +34,13 @@ class AccountJournal(models.Model):
             else:
                 rec.next_control_number = 0
 
-    @api.depends('sequence_control_id')
+    @api.depends("sequence_control_id")
     def _compute_current_control_number(self):
         for rec in self:
             if rec.sequence_control_id:
-                rec.current_control_number = rec.sequence_control_id.\
-                    number_next_actual - rec.sequence_control_id.\
-                    number_increment
+                rec.current_control_number = (
+                    rec.sequence_control_id.number_next_actual
+                    - rec.sequence_control_id.number_increment
+                )
             else:
                 rec.current_control_number = 0

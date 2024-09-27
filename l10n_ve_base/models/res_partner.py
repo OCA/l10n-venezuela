@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ################################################################################
 # Author: SINAPSYS GLOBAL SA || MASTERCORE SAS
 # Copyleft: 2020-Present.
@@ -6,86 +5,80 @@
 #
 #
 ################################################################################
-from odoo import models, fields, api, _
-from odoo.exceptions import UserError
+from odoo import api, fields, models
 
 
 class ResPartner(models.Model):
-    _inherit = 'res.partner'
+    _inherit = "res.partner"
     country_id = fields.Many2one(
-        'res.country',
-        string=u'País',
-        ondelete='restrict',
-        help=u"País",
-        default=lambda self: self.env['res.country'].search(
-            [('name', '=', 'Venezuela')]
-        )[0].id
+        "res.country",
+        string="País",
+        ondelete="restrict",
+        help="País",
+        default=lambda self: self.env["res.country"]
+        .search([("name", "=", "Venezuela")])[0]
+        .id,
     )
     state_id = fields.Many2one(
-        "res.country.state",
-        string='Estado',
-        ondelete='restrict',
-        help=u"Estado"
+        "res.country.state", string="Estado", ondelete="restrict", help="Estado"
     )
     municipality_id = fields.Many2one(
         "res.country.state.municipality",
         string="Municipio",
         domain="[('state_id', '=', state_id)]",
-        ondelete='restrict',
-        help=u"Municipio"
+        ondelete="restrict",
+        help="Municipio",
     )
     parish_id = fields.Many2one(
         "res.country.state.municipality.parish",
         string="Parroquia",
-        ondelete='restrict',
+        ondelete="restrict",
         domain="[('municipality_id', '=', municipality_id)]",
-        help=u"Parroquia"
+        help="Parroquia",
     )
     l10n_latam_identification_type_id = fields.Many2one(
-        'l10n_latam.identification.type', string="Identification Type",
-        index=True, auto_join=True,
+        "l10n_latam.identification.type",
+        string="Identification Type",
+        index=True,
+        auto_join=True,
         # default=lambda self: self.env.ref('l10n_ve_base.it_civ'),
-        help="The type of identification")
+        help="The type of identification",
+    )
     l10n_ve_responsibility_type_id = fields.Many2one(
-        'l10n_ve.responsibility.type', string='SENIAT Responsibility Type', 
-        index=True, help='Defined by SENIAT to identify the type of '
-        'responsibilities that a person or a legal entity could have and that '
-        'impacts in the type of operations and requirements they need.')
+        "l10n_ve.responsibility.type",
+        string="SENIAT Responsibility Type",
+        index=True,
+        help="Defined by SENIAT to identify the type of "
+        "responsibilities that a person or a legal entity could have and that "
+        "impacts in the type of operations and requirements they need.",
+    )
 
-    @api.onchange('state_id')
+    @api.onchange("state_id")
     def _onchange_state_id(self):
         if self.state_id:
             return {
-                'value': {
-                    'municipality_id': '',
-                    'parish_id': ''
-                },
-                'domain': {
-                    'municipality_id': [
-                        ('state_id', '=', self.state_id.id)
-                    ]
-                },
+                "value": {"municipality_id": "", "parish_id": ""},
+                "domain": {"municipality_id": [("state_id", "=", self.state_id.id)]},
             }
         else:
-            return {'domain': {'state_id': []}}
+            return {"domain": {"state_id": []}}
 
-    @api.onchange('municipality_id')
+    @api.onchange("municipality_id")
     def _onchange_municipality_id(self):
         if self.municipality_id:
-            return {'value': {'parish_id': ''}}
+            return {"value": {"parish_id": ""}}
 
-    @api.onchange('country_id')
+    @api.onchange("country_id")
     def _onchange_country(self):
         return {
-            'value': {
-                'l10n_ve_responsibility_type_id': ''
-            },
+            "value": {"l10n_ve_responsibility_type_id": ""},
         }
-    @api.constrains('vat', 'l10n_latam_identification_type_id')
+
+    @api.constrains("vat", "l10n_latam_identification_type_id")
     def check_vat(self):
-        """ Since we validate more documents than the vat for Venezuelan partners (RIF, CI) we
-        extend this method in order to process it. """
-        #TODO create validation method for each type of vat
+        """Since we validate more documents than the vat for Venezuelan partners (RIF, CI) we
+        extend this method in order to process it."""
+        # TODO create validation method for each type of vat
         l10n_ve_partners = self.filtered(lambda x: x.l10n_latam_identification_type_id)
-        #l10n_ve_partners.l10n_ve_identification_validation()
+        # l10n_ve_partners.l10n_ve_identification_validation()
         return super(ResPartner, self - l10n_ve_partners).check_vat()

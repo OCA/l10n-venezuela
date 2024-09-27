@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ###############################################################################
 # Author: SINAPSYS GLOBAL SA || MASTERCORE SAS
 # Copyleft: 2020-Present.
@@ -7,19 +6,19 @@
 #
 ###############################################################################
 
-from odoo import api, fields, models, _, exceptions
-from odoo.exceptions import UserError
+from odoo import _, api, exceptions, models
+
 
 class res_bank(models.Model):
     """inherit for res_bank"""
 
-    _inherit = 'res.bank'
+    _inherit = "res.bank"
 
     @api.model
     def create(self, vals):
-        if not vals['name']:
+        if not vals["name"]:
             raise exceptions.UserError(
-                _(u'Debe indicar el Nombre de la Entidad Bancaria.')
+                _("Debe indicar el Nombre de la Entidad Bancaria.")
             )
         # if not vals['bic']:
         #     raise exceptions.UserError(
@@ -29,10 +28,10 @@ class res_bank(models.Model):
         return res
 
     def write(self, vals):
-        if 'name' in vals:
-            if not vals.get('name', False):
+        if "name" in vals:
+            if not vals.get("name", False):
                 raise exceptions.UserError(
-                    _(u'Debe indicar el Nombre de la Entidad Bancaria.')
+                    _("Debe indicar el Nombre de la Entidad Bancaria.")
                 )
         # if 'bic' in vals:
         #     if not vals.get('bic', False):
