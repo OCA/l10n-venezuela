@@ -208,7 +208,7 @@ class AccountPayment(models.Model):
         only works sending it on partner
         """
         res = super(AccountPayment, self)._compute_destination_account_id()
-        for rec in self.filtered(
+        for _rec in self.filtered(
             lambda x: not x.invoice_ids and x.payment_type != "transfer"
         ):
             partner = self.partner_id.with_context(force_company=self.company_id.id)
