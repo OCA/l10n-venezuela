@@ -15,7 +15,7 @@
     "website": "http://sinapsys.global",
     "category": "Localization",
     "license": "LGPL-3",
-    "version": "14.0.1",
+    "version": "14.0.1.0.1",
     "depends": ["base", "contacts"],
     "data": [
         "data/res.country.csv",

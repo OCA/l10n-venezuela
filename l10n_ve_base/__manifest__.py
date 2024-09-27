@@ -9,7 +9,7 @@
     "name": "Localización Venezuela Base",
     "author": "SINAPSYS GLOBAL SA, MASTERCORE SAS, Odoo Community Association (OCA)",
     "website": "https://github.com/OCA/l10n-venezuela",
-    "version": "14.0.1",
+    "version": "14.0.1.0.0",
     "category": "Localization",
     "license": "AGPL-3",
     "depends": ["base", "contacts", "l10n_ve", "territorial_pd", "l10n_latam_base"],
