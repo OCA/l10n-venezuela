@@ -8,7 +8,7 @@
 {
     "name": "Localización Withholding Venezuela",
     "author": "SINAPSYS GLOBAL SA, MASTERCORE SAS, Odoo Community Association (OCA)",
-    "website": "http://sinapsys.global",
+    "website": "https://github.com/OCA/l10n-venezuela",
     "version": "13.0.1",
     "category": "Localization",
     "license": "AGPL-3",

@@ -2,6 +2,7 @@
     "name": "Payment Groups with Accounting Documents",
     "version": "13.0.1.0.0",
     "author": "ADHOC SA, SINAPSYS GLOBAL SA, MASTERCORE SAS, Odoo Community Association (OCA)",
+    "website": "https://github.com/OCA/l10n-venezuela",
     "license": "AGPL-3",
     "category": "Accounting",
     "depends": ["l10n_latam_invoice_document", "l10n_ve_account_payment_group",],
