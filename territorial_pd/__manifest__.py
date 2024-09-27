@@ -23,6 +23,7 @@
     "author": "SINAPSYS GLOBAL SA, MASTERCORE SAS, Odoo Community Association (OCA)",
     "website": "http://sinapsys.global",
     "category": "Localization",
+    "license": "LGPL-3",
     "version": "14.0.1",
     "depends": ["base", "contacts"],
     "data": [
