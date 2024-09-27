@@ -7,13 +7,6 @@
 ###############################################################################
 {
     "name": "Localización Withholding Venezuela",
-    "description": """
-        **Localización VENEZUELA Withholding**
-
-        ¡Felicidades!. Este es el módulo Withholding para la implementación de
-        la **Localización Venezuela** que agrega características y datos
-        necesarios para un correcto ejercicio fiscal de su empresa.
-    """,
     "author": "SINAPSYS GLOBAL SA, MASTERCORE SAS, Odoo Community Association (OCA)",
     "website": "http://sinapsys.global",
     "version": "13.0.1",
