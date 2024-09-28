@@ -26,7 +26,7 @@ class AccountPaymentGroup(models.Model):
     regimen_islr_id = fields.Many2one("seniat.tabla.islr", "Aplicativo ISLR")
     partner_regimen_islr_ids = fields.Many2many(
         "seniat.tabla.islr",
-        compute="_partner_regimenes_islr",
+        compute="_compute_partner_regimenes_islr",
     )
     # This field is to be used by invoice in multicurrency
     selected_finacial_debt_currency = fields.Monetary(
@@ -43,7 +43,7 @@ class AccountPaymentGroup(models.Model):
     )
 
     @api.depends("partner_id.seniat_regimen_islr_ids")
-    def _partner_regimenes_islr(self):
+    def _compute_partner_regimenes_islr(self):
         """
         Lo hacemos con campo computado y no related para que solo se setee
         y se exija si es pago a proveedor
