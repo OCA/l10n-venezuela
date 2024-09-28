@@ -4,7 +4,7 @@
         <field name='name'>Account VAT Ledger</field>
         <field name="model">account.vat.ledger</field>
         <field name='arch' type='xml'>
-            <tree string="VAT Ledger">
+            <tree>
                 <field name="name" />
                 <field name="company_id" groups="base.group_multi_company" />
                 <field name="state" />
@@ -16,7 +16,7 @@
         <field name='name'>Account VAT Ledger</field>
         <field name="model">account.vat.ledger</field>
         <field name='arch' type='xml'>
-            <form string="VAT Ledger">
+            <form>
                 <field name="type" invisible="1" />
                 <header>
                     <!-- <button name="action_print" string="Print" states="draft" type="object" class="oe_highlight"/> -->

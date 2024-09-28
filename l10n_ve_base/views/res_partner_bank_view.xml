@@ -23,7 +23,7 @@
       <field name="model">res.partner.bank</field>
       <field name="type">tree</field>
       <field name="arch" type="xml">
-        <tree string="Cuentas bancarias">
+        <tree>
           <field name="bank_id" />
           <field name="acc_number" />
           <field name="l10n_ve_acc_type" string="Tipo de cuenta" />

@@ -5,7 +5,7 @@
         <field name="name">seniat.tabla.islr.tree</field>
         <field name="model">seniat.tabla.islr</field>
         <field name="arch" type="xml">
-            <tree string="SENIAT Tabla de calculo ISLR">
+            <tree>
                 <field name="code_seniat" />
                 <field name="activity_name" />
                 <field name="code_identification_seniat" />

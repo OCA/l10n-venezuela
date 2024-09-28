@@ -24,7 +24,7 @@
         <field name="name">account.payment.receiptbook.tree</field>
         <field name="model">account.payment.receiptbook</field>
         <field name="arch" type="xml">
-            <tree string="Receipt Books">
+            <tree>
                 <field name="sequence" widget="handle" />
                 <field name="name" />
                 <field name="report_partner_id" />

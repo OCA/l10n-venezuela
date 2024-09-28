@@ -5,7 +5,7 @@
         <field name="name">seniat.factor.tree</field>
         <field name="model">seniat.factor</field>
         <field name="arch" type="xml">
-            <tree string="SENIAT Factor de calculo ISLR" editable="top">
+            <tree editable="top">
                 <field name="date" />
                 <field name="amount" />
             </tree>
