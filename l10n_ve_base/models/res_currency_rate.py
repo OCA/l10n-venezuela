@@ -15,7 +15,7 @@ from odoo.exceptions import UserError
 _logger = logging.getLogger(__name__)
 
 
-class resCurrencyRate(models.Model):
+class ResCurrencyRate(models.Model):
     _inherit = "res.currency.rate"
 
     rate = fields.Float(
@@ -25,7 +25,7 @@ class resCurrencyRate(models.Model):
     )
 
 
-class resCurrency(models.Model):
+class ResCurrency(models.Model):
     _inherit = "res.currency"
 
     rate = fields.Float(
