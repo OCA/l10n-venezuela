@@ -197,7 +197,7 @@
         <field name="header_line" eval="False" />
         <field name="header_spacing">10</field>
         <field name="dpi">110</field>
-        <field name="orientation">Landscape</field>
+        <!-- <field name="orientation">Landscape</field> -->
     </record>
 
     <report
