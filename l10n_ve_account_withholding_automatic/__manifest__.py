@@ -17,9 +17,7 @@
         "views/account_payment_view.xml",
         "security/ir.model.access.csv",
     ],
-    "demo": [
-        "demo/withholding_demo.xml",
-    ],
+    # "demo": "demo/withholding_demo.xml",],
     "depends": [
         "l10n_ve_account_payment_group",
         "l10n_ve_account_withholding",
