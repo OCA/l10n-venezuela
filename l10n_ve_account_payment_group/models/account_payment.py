@@ -361,14 +361,16 @@ class AccountPayment(models.Model):
         all_move_vals = []
         for rec in self:
             move_vals = super(AccountPayment, rec)._prepare_payment_moves()
-            # If we have a communication on payment group append it before payment communication
+            # If we have a communication on payment group append it
+            # before payment communication
             if rec.payment_group_id.communication:
                 move_vals[0]["ref"] = "%s%s" % (
                     self.payment_group_id.communication,
                     move_vals[0]["ref"] or "",
                 )
 
-            # Si se esta forzando importe en moneda de cia, usamos este importe para debito/credito
+            # Si se esta forzando importe en moneda de cia, usamos este
+            # importe para debito/credito
             if rec.force_amount_company_currency:
                 for line in move_vals[0]["line_ids"]:
                     if line[2].get("debit"):
