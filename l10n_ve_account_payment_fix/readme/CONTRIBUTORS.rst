@@ -1,0 +1,5 @@
+-   ADHOC SA, SINAPSYS GLOBAL SA, MASTERCORE SAS
+    -   Reydi Hernández  \<<rhe@sinapsys.global>\>
+    -   Freddy Arraez  \<<far@sinapsys.global>\>
+-   Venezuelan Odoo Community
+    - Leonardo J. Caballero G. \<<leonardocaballero@gmail.com>\>

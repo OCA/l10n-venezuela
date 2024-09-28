@@ -57,9 +57,9 @@ that explains its license.
 
 <a href="https://github.com/odoo-mastercore" title="Mastercore Sinapsys Global"><img src="https://avatars.githubusercontent.com/u/33432708?v=4" alt="Mastercore Sinapsys Global" width="100px" height="100px"/></a>
 
-# Colaboradores
+# Contributors
 
--   Mastercore Sinapsys Global
+-   SINAPSYS GLOBAL SA, MASTERCORE SAS
     -   Reydi Hernández  \<<rhe@sinapsys.global>\>
     -   Freddy Arraez  \<<far@sinapsys.global>\>
 -   Venezuelan Odoo Community
