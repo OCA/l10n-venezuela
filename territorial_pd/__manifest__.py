@@ -12,7 +12,7 @@
         This is a Module that contains Municipaly and
         Parish Models for deeper political division of Country and State""",
     "author": "SINAPSYS GLOBAL SA, MASTERCORE SAS, Odoo Community Association (OCA)",
-    "website": "http://sinapsys.global",
+    "website": "https://github.com/OCA/l10n-venezuela",
     "category": "Localization",
     "license": "LGPL-3",
     "version": "14.0.1.0.1",
