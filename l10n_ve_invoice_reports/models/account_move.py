@@ -29,7 +29,7 @@ class AccountMove(models.Model):
             return last_rate
 
     def amount_str_in_company_currency(self, amount, currency_id, date):
-        for _rec in self:
+        for rec in self:
             result = 0.00
             if currency_id and date:
                 rate = rec.invoice_rate(currency_id, date)
