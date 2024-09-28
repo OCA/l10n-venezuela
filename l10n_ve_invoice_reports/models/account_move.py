@@ -15,7 +15,7 @@ class AccountMove(models.Model):
     _inherit = "account.move"
 
     def invoice_rate(self, currency_id, invoice_date):
-        for rec in self:
+        for _rec in self:
             last_rate = (
                 self.env["res.currency.rate"]
                 .search(
@@ -29,7 +29,7 @@ class AccountMove(models.Model):
             return last_rate
 
     def amount_str_in_company_currency(self, amount, currency_id, date):
-        for rec in self:
+        for _rec in self:
             result = 0.00
             if currency_id and date:
                 rate = rec.invoice_rate(currency_id, date)
