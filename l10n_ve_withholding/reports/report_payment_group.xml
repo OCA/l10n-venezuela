@@ -119,7 +119,7 @@
                                 <span> (</span>
                                 <span
                                         t-field="line.signed_amount"
-                                        t-field-options='{"widget": "monetary",  "display_currency": "line.currency_id"}'
+                                        t-options='{"widget": "monetary",  "display_currency": "line.currency_id"}'
                                     />
                                 <span>)</span>
                               </t>
