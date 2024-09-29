@@ -70,3 +70,8 @@ However, each module can have a totally different license. Consult each module's
     -   Freddy Arraez  \<<far@sinapsys.global>\>
 -   Venezuelan Odoo Community
     - Leonardo J. Caballero G. \<<leonardocaballero@gmail.com>\>
+
+----
+OCA, or the [Odoo Community Association](http://odoo-community.org/), is a nonprofit
+organization whose mission is to support the collaborative development of Odoo features
+and promote its widespread use.

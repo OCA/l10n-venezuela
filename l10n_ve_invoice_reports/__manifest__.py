@@ -12,7 +12,7 @@
     ¡Felicidades!. Este es el módulo para Generar Comprobantes PDF de
     Factura Venezolana para la implementación de la **Localización Venezolana**
     """,
-    "author": "SINAPSYS GLOBAL SA || MASTERCORE SAS",
+    "author": "SINAPSYS GLOBAL SA, MASTERCORE SAS, Odoo Community Association (OCA)",
     "website": "https://github.com/OCA/l10n-venezuela",
     "license": "AGPL-3",
     "category": "Localization / Venezuela",

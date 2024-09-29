@@ -7,7 +7,7 @@
         por tipo de contacto
 
     """,
-    "author": "SINAPSYS GLOBAL SA || MASTERCORE SAS",
+    "author": "SINAPSYS GLOBAL SA, MASTERCORE SAS, Odoo Community Association (OCA)",
     "website": "https://github.com/OCA/l10n-venezuela",
     "version": "15.0.1",
     "category": "Localization",

@@ -14,7 +14,7 @@
         la **Localización Venezuela** que agrega características y datos
         necesarios para un correcto ejercicio fiscal de su empresa.
     """,
-    "author": "SINAPSYS GLOBAL SA || MASTERCORE SAS",
+    "author": "SINAPSYS GLOBAL SA, MASTERCORE SAS, Odoo Community Association (OCA)",
     "website": "https://github.com/OCA/l10n-venezuela",
     "version": "15.0.0.13",
     "category": "Localization",
