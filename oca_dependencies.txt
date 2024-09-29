@@ -7,7 +7,7 @@
 # To depend on the standard version of sale-workflow, use:
 # sale-workflow
 #
-# To explicitely give the URL of a fork, and still use the version specified in
+# To explicitly give the URL of a fork, and still use the version specified in
 # .travis.yml, use:
 # sale-workflow https://github.com/OCA/sale-workflow
 #

@@ -5,7 +5,7 @@
 para un correcto ejercicio fiscal de su empresa.
 
 Este módulo extiende algunos modelos base de Odoo relacionados a Datos de
-la Compañia/Configuración, Clientes y Proveedores; Datos de la División
+la Compañía/Configuración, Clientes y Proveedores; Datos de la División
 Politico Territorial; Datos de Cuenta Bancaria y Moneda.
 Adicionalmente se registran datos de localización relacionados con otros
 Modelos.
