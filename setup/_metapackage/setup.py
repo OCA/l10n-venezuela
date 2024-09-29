@@ -17,6 +17,7 @@ setuptools.setup(
         'odoo13-addon-l10n_ve_base',
         'odoo13-addon-l10n_ve_vat_ledger',
         'odoo13-addon-l10n_ve_withholding',
+        'odoo13-addon-territorial_pd',
     ],
     classifiers=[
         'Programming Language :: Python',
