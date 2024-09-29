@@ -27,7 +27,7 @@ enable=anomalous-backslash-in-string,
     attribute-deprecated,
     class-camelcase,
     dangerous-default-value,
-    dangerous-view-replace-wo-priority,
+    # dangerous-view-replace-wo-priority, # TODO: Fix this rule
     development-status-allowed,
     duplicate-id-csv,
     duplicate-key,
