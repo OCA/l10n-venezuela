@@ -5,10 +5,9 @@
 #
 #
 ###############################################################################
-from odoo import models, api, fields, _
-from odoo.exceptions import ValidationError
-import json
 import logging
+
+from odoo import api, fields, models
 
 _logger = logging.getLogger(__name__)
 
@@ -19,42 +18,44 @@ class AccountPaymentGroup(models.Model):
 
     # this field is to be used by vat retention
     selected_debt_taxed = fields.Monetary(
-        string='Selected Debt taxed',
-        compute='_compute_selected_debt_taxed',
+        string="Selected Debt taxed",
+        compute="_compute_selected_debt_taxed",
     )
-    iva = fields.Boolean('¿Aplicar Retención IVA?')
-    islr = fields.Boolean('¿Aplicar Retención ISLR?')
-    regimen_islr_id = fields.Many2one(
-        'seniat.tabla.islr', 
-        'Aplicativo ISLR'
-    )
+    iva = fields.Boolean("¿Aplicar Retención IVA?")
+    islr = fields.Boolean("¿Aplicar Retención ISLR?")
+    regimen_islr_id = fields.Many2one("seniat.tabla.islr", "Aplicativo ISLR")
     partner_regimen_islr_ids = fields.Many2many(
-        'seniat.tabla.islr',
-        compute='_partner_regimenes_islr',
+        "seniat.tabla.islr",
+        compute="_partner_regimenes_islr",
     )
-    #This field is to be used by invoice in multicurrency
+    # This field is to be used by invoice in multicurrency
     selected_finacial_debt = fields.Monetary(
-        string='Selected Financial Debt',
-        compute='_compute_selected_debt_financial',
+        string="Selected Financial Debt",
+        compute="_compute_selected_debt_financial",
     )
     selected_finacial_debt_currency = fields.Monetary(
-        string='Selected Financial Debt in foreign currency',
-        compute='_compute_selected_debt_financial',
+        string="Selected Financial Debt in foreign currency",
+        compute="_compute_selected_debt_financial",
     )
     debt_multicurrency = fields.Boolean(
-        string='debt is in foreign currency?', default=False,
+        string="debt is in foreign currency?",
+        default=False,
     )
-    selected_debt_currency_id = fields.Many2one("res.currency",
-        string='Selected Debt in foreign currency',
+    selected_debt_currency_id = fields.Many2one(
+        "res.currency",
+        string="Selected Debt in foreign currency",
     )
     withholding_distributin_islr = fields.Boolean(
-        '¿Aplicar varios conceptos de ISLR?',
-        default=False,)
+        "¿Aplicar varios conceptos de ISLR?",
+        default=False,
+    )
     withholding_distributin_islr_ids = fields.One2many(
-        'withholding.distribution.islr', 'payment_group_id',
-        string='Distribucion de conceptos')
+        "withholding.distribution.islr",
+        "payment_group_id",
+        string="Distribucion de conceptos",
+    )
 
-    @api.onchange('withholding_distributin_islr')
+    @api.onchange("withholding_distributin_islr")
     def _onchange_withholding_distributin_islr(self):
         for rec in self:
             if rec.withholding_distributin_islr:
@@ -63,56 +64,66 @@ class AccountPaymentGroup(models.Model):
                 if to_pay.move_id.invoice_line_ids:
                     for li in to_pay.move_id.invoice_line_ids:
                         if not li.product_id.product_tmpl_id.disable_islr:
-                            withholding_distributin_islr_ids.append((0, 0, {
-                                'payment_group_id': rec.id,
-                                'move_line_id': li.id,
-                            }))
+                            withholding_distributin_islr_ids.append(
+                                (
+                                    0,
+                                    0,
+                                    {
+                                        "payment_group_id": rec.id,
+                                        "move_line_id": li.id,
+                                    },
+                                )
+                            )
                 rec.withholding_distributin_islr_ids = withholding_distributin_islr_ids
             else:
                 rec.withholding_distributin_islr_ids = False
 
-    @api.depends('partner_id.seniat_regimen_islr_ids')
+    @api.depends("partner_id.seniat_regimen_islr_ids")
     def _partner_regimenes_islr(self):
         """
         Lo hacemos con campo computado y no related para que solo se setee
         y se exija si es pago a proveedor
         """
         for rec in self:
-            if rec.partner_type == 'supplier':
+            if rec.partner_type == "supplier":
                 rec.partner_regimen_islr_ids = rec.partner_id.seniat_regimen_islr_ids
             else:
-                rec.partner_regimen_islr_ids = rec.env['seniat.tabla.islr']
+                rec.partner_regimen_islr_ids = rec.env["seniat.tabla.islr"]
 
     @api.depends(
-        'to_pay_move_line_ids.amount_residual',
-        'to_pay_move_line_ids.amount_residual_currency',
-        'to_pay_move_line_ids.currency_id',
-        'to_pay_move_line_ids.move_id',
-        'payment_date',
-        'currency_id',
+        "to_pay_move_line_ids.amount_residual",
+        "to_pay_move_line_ids.amount_residual_currency",
+        "to_pay_move_line_ids.currency_id",
+        "to_pay_move_line_ids.move_id",
+        "payment_date",
+        "currency_id",
     )
     def _compute_selected_debt_taxed(self):
         for rec in self:
             selected_debt_taxed = 0.0
             for line in rec.to_pay_move_line_ids._origin:
-                #this is conditional used to vat retention
+                # this is conditional used to vat retention
                 for li in line.move_id.line_ids:
-                    if li.name in ['IVA (16.0%) compras','IVA (8.0%) compras','IVA (31.0%) compras']:
-                        if line.move_id.move_type == 'in_refund':
+                    if li.name in [
+                        "IVA (16.0%) compras",
+                        "IVA (8.0%) compras",
+                        "IVA (31.0%) compras",
+                    ]:
+                        if line.move_id.move_type == "in_refund":
                             selected_debt_taxed += li.credit
                         else:
                             selected_debt_taxed += li.debit
             rec.selected_debt_taxed = selected_debt_taxed
 
     @api.depends(
-        'to_pay_move_line_ids.amount_residual',
-        'to_pay_move_line_ids.amount_residual_currency',
-        'to_pay_move_line_ids.currency_id',
-        'to_pay_move_line_ids.move_id',
-        'payment_date',
-        'currency_id',
-        'partner_id',
-        'selected_debt',
+        "to_pay_move_line_ids.amount_residual",
+        "to_pay_move_line_ids.amount_residual_currency",
+        "to_pay_move_line_ids.currency_id",
+        "to_pay_move_line_ids.move_id",
+        "payment_date",
+        "currency_id",
+        "partner_id",
+        "selected_debt",
     )
     def _compute_selected_debt_financial(self):
         for rec in self:
@@ -124,34 +135,60 @@ class AccountPaymentGroup(models.Model):
                     selected_finacial_debt_currency += line.amount_residual_currency
                     rec.debt_multicurrency = True
                     rec.selected_debt_currency_id = line.move_id.currency_id.id
-                elif line.move_id.currency_id.id != rec.company_id.currency_id.id and rec.debt_multicurrency:
+                elif (
+                    line.move_id.currency_id.id != rec.company_id.currency_id.id
+                    and rec.debt_multicurrency
+                ):
                     selected_finacial_debt_currency += line.amount_residual_currency
                     rec.debt_multicurrency = True
                 else:
                     rec.debt_multicurrency = False
                 if rec.debt_multicurrency:
                     last_rate = 0
-                    last_rate = self.env['res.currency.rate'].search([
-                        ('currency_id', '=', rec.selected_debt_currency_id.id),
-                        ('name', '=', rec.payment_date)
-                    ], limit=1).rate
+                    last_rate = (
+                        self.env["res.currency.rate"]
+                        .search(
+                            [
+                                ("currency_id", "=", rec.selected_debt_currency_id.id),
+                                ("name", "=", rec.payment_date),
+                            ],
+                            limit=1,
+                        )
+                        .rate
+                    )
                     if last_rate == 0:
-                        last_rate = self.env['res.currency.rate'].search([
-                            ('currency_id', '=', rec.selected_debt_currency_id.id),
-                        ], limit=1).rate
+                        last_rate = (
+                            self.env["res.currency.rate"]
+                            .search(
+                                [
+                                    (
+                                        "currency_id",
+                                        "=",
+                                        rec.selected_debt_currency_id.id,
+                                    ),
+                                ],
+                                limit=1,
+                            )
+                            .rate
+                        )
                     if last_rate == 0:
                         last_rate = 1
                     rate = round((1 / last_rate), 4)
-                    finacial_debt_currency = selected_finacial_debt_currency*rate
+                    finacial_debt_currency = selected_finacial_debt_currency * rate
                     selected_finacial_debt += finacial_debt_currency
                 else:
                     selected_finacial_debt += line.amount_residual
-                    #selected_debt += line.move_id.amount_residual
-            sign = rec.partner_type == 'supplier' and -1.0 or 1.0
+                    # selected_debt += line.move_id.amount_residual
+            sign = rec.partner_type == "supplier" and -1.0 or 1.0
             rec.selected_finacial_debt = selected_finacial_debt * sign
             rec.selected_finacial_debt_currency = selected_finacial_debt_currency * sign
 
-    @api.depends('selected_debt', 'debt_multicurrency','selected_finacial_debt', 'unreconciled_amount',)
+    @api.depends(
+        "selected_debt",
+        "debt_multicurrency",
+        "selected_finacial_debt",
+        "unreconciled_amount",
+    )
     def _compute_to_pay_amount(self):
         for rec in self:
             if rec.selected_finacial_debt != rec.selected_debt:
@@ -159,7 +196,7 @@ class AccountPaymentGroup(models.Model):
             else:
                 rec.to_pay_amount = rec.selected_debt + rec.unreconciled_amount
 
-    @api.onchange('to_pay_amount')
+    @api.onchange("to_pay_amount")
     def _inverse_to_pay_amount(self):
         for rec in self:
             if rec.selected_finacial_debt != rec.selected_debt:

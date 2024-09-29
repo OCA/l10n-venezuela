@@ -1,7 +1,11 @@
-<?xml version="1.0"?>
+<?xml version="1.0" ?>
 <odoo noupdate="1">
     <data>
-        <record id="action_account_vat_ledger_report_xlsx" context="{'no_key_lines':True}" model="ir.actions.report">
+        <record
+            id="action_account_vat_ledger_report_xlsx"
+            context="{'no_key_lines':True}"
+            model="ir.actions.report"
+        >
             <field name="name">Account Vat Ledger Xlsx</field>
             <field name="type">ir.actions.report</field>
             <field name="model">account.vat.ledger</field>

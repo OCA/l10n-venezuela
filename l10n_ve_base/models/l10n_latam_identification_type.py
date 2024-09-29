@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ###############################################################################
 # Author: SINAPSYS GLOBAL SA || MASTERCORE SAS
 # Copyleft: 2020-Present.
@@ -7,7 +6,7 @@
 #
 ###############################################################################
 
-from odoo import api, fields, models, _
+from odoo import fields, models
 
 
 class L10nLatamIdentificationType(models.Model):

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <odoo>
 
     <record id="view_seniat_tabla_islr_tree" model="ir.ui.view">
@@ -6,10 +6,10 @@
         <field name="model">seniat.tabla.islr</field>
         <field name="arch" type="xml">
             <tree string="SENIAT Tabla de calculo ISLR">
-                <field name="code_seniat"/>
-                <field name="activity_name"/>
+                <field name="code_seniat" />
+                <field name="activity_name" />
                 <field name="code_identification_seniat" />
-                <field name="seniat_partner_type_id"/>
+                <field name="seniat_partner_type_id" />
             </tree>
         </field>
     </record>
@@ -21,7 +21,7 @@
             <form string="SENIAT Tabla de calculo ISLR">
                 <sheet>
                     <div class="oe_title">
-                      <label for="activity_name" class="oe_edit_only"/>
+                      <label for="activity_name" class="oe_edit_only" />
                       <h2>
                         <field name="activity_name" />
                       </h2>
@@ -33,7 +33,7 @@
                             <field name="seniat_partner_type_id" />
                         </group>
                         <group>
-                            <field name="code_identification_seniat" required="1"/>
+                            <field name="code_identification_seniat" required="1" />
                             <field name="factor_id" />
                             <field name="withholding_base_percentage" />
                         </group>
@@ -43,8 +43,11 @@
                             <group>
                                 <group>
                                     <field name="type_subtracting" />
-                                    <field name="banda_calculo_ids" widget="one2many"
-                                        context="{'default_type_subtracting_rel': type_subtracting}"/>
+                                    <field
+                                        name="banda_calculo_ids"
+                                        widget="one2many"
+                                        context="{'default_type_subtracting_rel': type_subtracting}"
+                                    />
                                 </group>
                             </group>
                         </page>
@@ -62,7 +65,7 @@ u
             <form string="Banda de calculo del ISLR">
                 <sheet>
                     <group>
-                        <field name="type_subtracting_rel" invisible="1"/>
+                        <field name="type_subtracting_rel" invisible="1" />
                         <group>
                             <field name="type_amount" />
                             <field name="amount_minimum" />
@@ -70,7 +73,10 @@ u
                         </group>
                         <group>
                             <field name="withholding_percentage" />
-                            <field name="withholding_amount" attrs="{'invisible': [('type_subtracting_rel', '!=', 'amount')]}"/>
+                            <field
+                                name="withholding_amount"
+                                attrs="{'invisible': [('type_subtracting_rel', '!=', 'amount')]}"
+                            />
                         </group>
                     </group>
                 </sheet>
@@ -84,9 +90,12 @@ u
         <field name="res_model">seniat.tabla.islr</field>
         <field name="view_mode">tree,form</field>
     </record>
-    <menuitem 
-        name="Tabla de calculo ISLR" 
-        action="act_seniat_tabla_islr" id="menu_action_seniat_tabla_islr" 
-        sequence="85" parent="l10n_ve_base.menu_seniat_config"/>
+    <menuitem
+        name="Tabla de calculo ISLR"
+        action="act_seniat_tabla_islr"
+        id="menu_action_seniat_tabla_islr"
+        sequence="85"
+        parent="l10n_ve_base.menu_seniat_config"
+    />
 
 </odoo>

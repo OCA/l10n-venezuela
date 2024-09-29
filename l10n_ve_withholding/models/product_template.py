@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 # Author: SINAPSYS GLOBAL SA || MASTERCORE SAS
 # Copyleft: 2022-Present.
@@ -6,12 +5,10 @@
 #
 #
 ###############################################################################
-from odoo import models, fields, api
+from odoo import fields, models
 
 
 class ProductTemplate(models.Model):
     _inherit = "product.template"
 
-
-    disable_islr = fields.Boolean('No sujeto a ISLR')
-
+    disable_islr = fields.Boolean("No sujeto a ISLR")
