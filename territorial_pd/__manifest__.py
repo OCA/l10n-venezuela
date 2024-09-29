@@ -9,7 +9,7 @@
     "name": "Municipalities and Parishes",
     "summary": """
         Political Division Module.
-        This is a Module that contains Municipaly and
+        This is a Module that contains Municipally and
         Parish Models for deeper political division of Country and State""",
     "description": """
         Political Division Module.
