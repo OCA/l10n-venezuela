@@ -46,7 +46,7 @@ class AccountMove(models.Model):
     def post(self):
         super(AccountMove, self).post()
         for rec in self:
-            if rec.state == "posted" and not condrec.l10n_ve_document_number:
+            if rec.state == "posted" and not rec.l10n_ve_document_number:
                 if rec.type in ["out_invoice"]:
                     today = datetime.strptime(str(fields.Date.today()), "%Y-%m-%d")
                     invoice_date = datetime.strptime(str(rec.invoice_date), "%Y-%m-%d")
