@@ -36,7 +36,7 @@ class AccountBankStatementLine(models.Model):
     def process_reconciliation(
         self, counterpart_aml_dicts=None, payment_aml_rec=None, new_aml_dicts=None
     ):
-        """ Pass reconcilation parameters by context in order to
+        """Pass reconcilation parameters by context in order to
         capture them in the post() method and be able to get a better
         partner_id/partner_type interpetration
         """

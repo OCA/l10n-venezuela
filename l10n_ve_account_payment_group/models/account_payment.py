@@ -244,7 +244,7 @@ class AccountPayment(models.Model):
 
     @api.model
     def infer_partner_info(self, vals):
-        """ Odoo way to to interpret the partner_id, partner_type is not
+        """Odoo way to to interpret the partner_id, partner_type is not
         usefull for us because in some time they leave this ones empty and
         we need them in order to create the payment group.
 
@@ -284,9 +284,9 @@ class AccountPayment(models.Model):
 
     @api.model
     def create(self, vals):
-        """ When payments are created from bank reconciliation create the
+        """When payments are created from bank reconciliation create the
         Payment group before creating payment to avoid raising error, only
-        apply when the all the counterpart account are receivable/payable """
+        apply when the all the counterpart account are receivable/payable"""
         # Si viene counterpart_aml entonces estamos viniendo de una
         # conciliacion desde el wizard
         aml_data = (

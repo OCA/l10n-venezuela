@@ -284,8 +284,8 @@ class AccountPaymentGroup(models.Model):
             )
 
     def action_payment_sent(self):
-        """ Open a window to compose an email, with the edi payment template
-            message loaded by default
+        """Open a window to compose an email, with the edi payment template
+        message loaded by default
         """
         self.ensure_one()
         template = self.env.ref(
@@ -436,8 +436,7 @@ class AccountPaymentGroup(models.Model):
             rec.unreconciled_amount = rec.to_pay_amount - rec.selected_debt
 
     def onchange(self, values, field_name, field_onchange):
-        """ Fix this issue https://github.com/ingadhoc/account-payment/issues/189
-        """
+        """Fix this issue https://github.com/ingadhoc/account-payment/issues/189"""
         fields = []
         for field in field_onchange.keys():
             if field.startswith("to_pay_move_line_ids."):
