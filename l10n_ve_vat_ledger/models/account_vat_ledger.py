@@ -115,12 +115,13 @@ class AccountVatLedger(models.Model):
             elif rec.type == "purchase":
                 ledger_type = _("Compras")
             if rec.date_from and rec.date_to:
-                name = _("Libro IVA ({0})  {1} - {2}").format(
+                name = _(
+                    "Libro IVA (%(ledger_type)s) %(date_from)s - %(platform)s",
                     ledger_type,
-                    rec.date_from
+                    date_from=rec.date_from
                     and fields.Date.from_string(rec.date_from).strftime(date_format)
                     or "",
-                    rec.date_to
+                    date_to=rec.date_to
                     and fields.Date.from_string(rec.date_to).strftime(date_format)
                     or "",
                 )

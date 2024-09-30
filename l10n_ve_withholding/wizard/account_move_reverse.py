@@ -15,7 +15,11 @@ class AccountMoveReversal(models.TransientModel):
 
     def _prepare_default_reversal(self, move):
         return {
-            "ref": _("Reversión de: %s, %s") % (move.name, self.reason)
+            "ref": _(
+                "Reversión de: %(move_name)s %(reason)s",
+                move_name=move.name,
+                reason=self.reason,
+            )
             if self.reason
             else _("Reversión de: %s") % (move.name),
             "date": self.date or move.date,

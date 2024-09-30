@@ -248,9 +248,10 @@ class AccountTax(models.Model):
                 except Exception as e:
                     raise ValidationError(
                         _(
-                            'Could not eval rule domain "%s".\n'
-                            "This is what we get:\n%s"
-                            % (tax.withholding_user_error_domain, e)
+                            'Could not eval rule domain "%(withholding_user_error_domain)s".\n'
+                            "This is what we get:\n%(error)s",
+                            withholding_user_error_domain=tax.withholding_user_error_domain,
+                            error=e,
                         )
                     )
                 domain.append(("id", "=", payment_group.id))
