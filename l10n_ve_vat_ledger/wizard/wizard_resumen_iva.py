@@ -110,7 +110,10 @@ class ResumenIVA(models.TransientModel):
 
             sheet2.merge_range("A1:D1", obj.company_id.name, title_style)
             # sheet2.merge_range('A2:D2', obj.company_id.vat, title_style)
-            # sheet2.merge_range('A3:G3', obj.name + ' ' + 'Libro de IVA Compras' + ' ' + 'mes' + ' ' + 'Año', title_style)
+            # sheet2.merge_range(
+            #     'A3:G3', obj.name + ' ' + 'Libro de IVA Compras' + ' ' + 'mes' + ' ' + 'Año',
+            #     title_style
+            # )
 
             # DEBITOS FISCALES
             sheet2.merge_range("A7:D7", "DEBITOS FISCALES", title_style)

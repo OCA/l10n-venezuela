@@ -27,7 +27,8 @@ class ResPartner(models.Model):
                 ):
                     raise ValidationError(
                         _(
-                            "El tipo de identificación no corresponde con la compañía tipo persona"
+                            "El tipo de identificación no corresponde ",
+                            "con la compañía tipo persona",
                         )
                     )
             elif record.company_type == "company":
@@ -38,6 +39,7 @@ class ResPartner(models.Model):
                 ):
                     raise ValidationError(
                         _(
-                            "El tipo de identificación no corresponde con la compañía tipo compañía"
+                            "El tipo de identificación no corresponde ",
+                            "con la compañía tipo compañía",
                         )
                     )

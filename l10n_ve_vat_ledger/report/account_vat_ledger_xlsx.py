@@ -122,17 +122,17 @@ class AccountVatLedgerXlsx(models.AbstractModel):
             sheet.set_column(5, 28, 30)
             sheet.set_column(5, 29, 30)
             sheet.set_column(5, 30, 30)
-            # _____________________________________________________________________________________
-            # _____________________________________________________________________________________
+            # __________________________________________________________________________________
+            # __________________________________________________________________________________
             if obj.type == "purchase":
 
                 sheet.merge_range("A1:D1", obj.company_id.name, title_style)
                 sheet.merge_range(
                     "A2:D2",
                     _(
-                        "%(company_identification_type)s-%(company_vat)s",
-                        company_identification_type=obj.company_id.l10n_latam_identification_type_id.l10n_ve_code,
-                        company_vat=obj.company_id.vat,
+                        "%(id_type)s-%(vat)s",
+                        id_type=obj.company_id.l10n_latam_identification_type_id.l10n_ve_code,
+                        vat=obj.company_id.vat,
                     ),
                     title_style,
                 )
@@ -184,13 +184,19 @@ class AccountVatLedgerXlsx(models.AbstractModel):
             elif obj.type == "sale":
 
                 sheet.merge_range("A1:D1", obj.company_id.name, title_style)
-                # sheet.merge_range('E2:S2', 'LIBRO DE VENTAS (FECHA DESDE:' + ' ' + str(obj.date_from) + ' ' + 'HASTA:' + ' ' + str(obj.date_from) + ')', title)
+                # sheet.merge_range(
+                #     'E2:S2',
+                #     'LIBRO DE VENTAS (FECHA DESDE:' + ' ' +
+                #     str(obj.date_from) + ' ' + 'HASTA:' + ' ' +
+                #     str(obj.date_from) + ')',
+                #     title
+                # )
                 sheet.merge_range(
                     "A2:D2",
                     _(
-                        "%(company_identification_type)s-%(company_vat)s",
-                        company_identification_type=obj.company_id.l10n_latam_identification_type_id.l10n_ve_code,
-                        company_vat=obj.company_id.vat,
+                        "%(id_type)s-%(vat)s",
+                        id_type=obj.company_id.l10n_latam_identification_type_id.l10n_ve_code,
+                        vat=obj.company_id.vat,
                     ),
                     title_style,
                 )
@@ -520,7 +526,12 @@ class AccountVatLedgerXlsx(models.AbstractModel):
                         line,
                     )
                     # Tipo de Proveedor Compras
-                    # sheet.write(row, 10, invoice.partner_id.l10n_ve_responsibility_type_id.name or 'FALSE', line)
+                    # sheet.write(
+                    #     row,
+                    #     10,
+                    #     invoice.partner_id.l10n_ve_responsibility_type_id.name
+                    #     or 'FALSE', line
+                    # )
 
                     # Total Compras con IVA
                     sheet.write(row, 11, (invoice.amount_total_signed * -1.00), line)

@@ -32,7 +32,8 @@ class UniVat(models.Model):
                 if len(same_vats) > 1:
                     raise ValidationError(
                         _(
-                            "Ya se encuentra registrado el Número de Identificación %(vat)s para el Contacto (%(same_vats_name)s)",
+                            "Ya se encuentra registrado el Número de Identificación ",
+                            "%(vat)s para el Contacto (%(same_vats_name)s)",
                             vat=rec.vat,
                             same_vats_name=same_vats[0].name,
                         )
