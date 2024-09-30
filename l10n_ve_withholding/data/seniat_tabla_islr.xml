@@ -604,7 +604,7 @@
     </record>
 
 
-        <!-- bloque 8 -->
+    <!-- bloque 8 -->
     <!--<record id="tax_retencion_073" model="seniat.tabla.islr">-->
         <!--<field name="code_seniat">073</field>-->
         <!--<field name="activity_name">Fletes Pagados a Personas Naturales o Jurídicas Domiciliadas en el Pais</field>-->

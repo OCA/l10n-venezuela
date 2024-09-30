@@ -33,7 +33,7 @@ class AccountTax(models.Model):
 
         force_withholding_amount_type = None
         if self.withholding_type == "partner_tax" and payment_group.iva is True:
-            alicuota_retencion = self.get_partner_alicuot(commercial_partner)
+            alicuota_retencion = self.get_partner_aliquot(commercial_partner)
             alicuota = int(alicuota_retencion) / 100.0
             force_withholding_amount_type = self.withholding_amount_type
 
@@ -212,24 +212,24 @@ class AccountTax(models.Model):
 
     def get_partner_alicuota_percepcion(self, partner, date):
         if partner and date:
-            arba = self.get_partner_alicuot(partner)
+            arba = self.get_partner_aliquot(partner)
             return arba.alicuota_percepcion / 100.0
         return 0.0
 
-    def get_partner_alicuot(self, partner):
+    def get_partner_aliquot(self, partner):
         self.ensure_one()
         if partner.vat_retention:
-            alicuot = partner.vat_retention
+            aliquot = partner.vat_retention
         else:
             raise UserError(
                 _(
                     'Si utiliza Cálculo de impuestos igual a "Alícuota en el '
-                    'Partner", debe setear el campo de retención de IVA'
-                    " en la ficha del partner, seccion Compra"
+                    'Partner", debe definir el campo de retención de IVA'
+                    " en la ficha del partner, sección Compra"
                 )
             )
 
-        return alicuot
+        return aliquot
 
     # TODO:Ubicar una mejor forma de hacer el inherit
     def create_payment_withholdings(self, payment_group):  # noqa: C901
@@ -257,7 +257,7 @@ class AccountTax(models.Model):
                 domain.append(("id", "=", payment_group.id))
                 if payment_group.search(domain):
                     raise ValidationError(tax.withholding_user_error_message)
-            _logger.warning("------------------------------- PENDEINTE")
+            _logger.warning("------------------------------- PENDIENTE")
             _logger.warning(payment_group)
             if payment_group.withholding_distributin_islr_ids:
                 _logger.warning("-------------------------")
@@ -359,8 +359,8 @@ class AccountTax(models.Model):
                 vals = tax.get_withholding_vals(payment_group)
                 # we set computed_withholding_amount, hacemos round porque
                 # si no puede pasarse un valor con mas decimales del que se ve
-                # y terminar dando error en el asiento por debitos y creditos no
-                # son iguales, algo parecido hace odoo en el compute_all de taxes
+                # y terminar dando error en el asiento por débitos y créditos no
+                # son iguales, algo parecido hace Odoo en el compute_all de taxes
                 currency = payment_group.currency_id
                 period_withholding_amount = currency.round(
                     vals.get("period_withholding_amount", 0.0)

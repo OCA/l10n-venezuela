@@ -18,7 +18,7 @@ class AccountPayment(models.Model):
     comment_withholding = fields.Char("Comment withholding")
     concept_withholding = fields.Char("Concept withholding")
     withholding_distribution_ids = fields.One2many(
-        "withholding.distribution", "payment_id", string="distribucion de retencion"
+        "withholding.distribution", "payment_id", string="distribución de retención"
     )
     withholding_number_state = fields.Boolean(
         string="Número de retención editable",
@@ -43,22 +43,22 @@ class AccountPayment(models.Model):
         for rec in self:
             if rec.other_currency and rec.payment_group_id:
                 if rec.payment_group_id.payments_amount <= 0:
-                    rec.amount = rec.payment_group_id.selected_finacial_debt
+                    rec.amount = rec.payment_group_id.selected_financial_debt
                 if rec.payment_group_id and rec.payment_group_id.payments_amount > 0:
                     rec.amount = 0
                     payments_amount = (
-                        rec.payment_group_id.selected_finacial_debt
+                        rec.payment_group_id.selected_financial_debt
                         - rec.payment_group_id.payments_amount
                     )
                     rec.amount = rec.company_id.currency_id._convert(
                         payments_amount, rec.currency_id, rec.company_id, rec.date
                     )
             if not rec.other_currency and rec.payment_group_id:
-                rec.amount = rec.payment_group_id.selected_finacial_debt
+                rec.amount = rec.payment_group_id.selected_financial_debt
                 if rec.payment_group_id and rec.payment_group_id.payments_amount > 0:
                     payments_amount = rec.payment_group_id.payments_amount - rec.amount
                     rec.amount = (
-                        rec.payment_group_id.selected_finacial_debt - payments_amount
+                        rec.payment_group_id.selected_financial_debt - payments_amount
                     )
 
     @api.onchange("date")

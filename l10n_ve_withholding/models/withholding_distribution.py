@@ -19,6 +19,6 @@ class WithholdingDistribution(models.Model):
     payment_id = fields.Many2one("account.payment", string="Pago")
     invoice_amount = fields.Float("Base")
     tax_amount = fields.Float("Monto Impuesto")
-    alic = fields.Float("alicuota")
+    alic = fields.Float("Alícuota")
     withholding_amount = fields.Float("Monto Retenido")
     untaxed_amount = fields.Float("Monto exento")

@@ -20,19 +20,19 @@ class AccountMove(models.Model):
         "Control Number",
         size=80,
         help="Number used to manage pre-printed invoices, by law you will"
-        " need to put here this number to be able to declarate on"
+        " need to put here this number to be able to declarare on"
         " Fiscal reports correctly.",
         store=True,
     )
     applied_withholding_tax = fields.Boolean(
-        "Retencion de IVA aplicada",
+        "Retención de IVA aplicada",
         compute="_compute_applied_withholding",
         store=True,
         copy=False,
         default=False,
     )
     applied_withholding_islr = fields.Boolean(
-        "Retencion de ISLR aplicada",
+        "Retención de ISLR aplicada",
         compute="_compute_applied_withholding",
         store=True,
         copy=False,
@@ -69,7 +69,7 @@ class AccountMove(models.Model):
         Hacemos esto para disponer de fecha de factura y cia para calcular
         impuesto con código python.
         Aparentemente no se puede cambiar el contexto a cosas que se llaman
-        desde un onchange (ver https://github.com/odoo/odoo/issues/7472)
+        desde un evento onChange (ver https://github.com/odoo/odoo/issues/7472)
         entonces usamos este artilugio
         """
         invoice_date = self.invoice_date or fields.Date.context_today(self)

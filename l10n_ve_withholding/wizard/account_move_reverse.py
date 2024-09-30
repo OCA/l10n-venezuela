@@ -35,9 +35,9 @@ class AccountMoveReversal(models.TransientModel):
 
     # TODO: ver si esto es necesario.
     # def reverse_moves(self):
-    #     """ Forzamos el seteo limpio"""
+    #     """ Forzamos el definir limpio"""
     #     res = super(AccountMoveReversal, self).reverse_moves()
-    #     #Nunca esta pasando por aqui.
+    #     # Nunca esta pasando por aquí.
     #     for rec in self:
     #         self.move_ids.l10n_ve_document_number = ""
     #     return res

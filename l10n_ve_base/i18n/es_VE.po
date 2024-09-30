@@ -116,7 +116,7 @@ msgstr "Creado por"
 #: model:ir.model.fields,field_description:l10n_ve_base.field_currency_rate_wizard__create_date
 #: model:ir.model.fields,field_description:l10n_ve_base.field_l10n_ve_responsibility_type__create_date
 msgid "Created on"
-msgstr "Creado en"
+msgstr "Creado el"
 
 #. module: l10n_ve_base
 #: model:ir.model.fields.selection,name:l10n_ve_base.selection__res_partner_bank__l10n_ve_acc_type__ahorro

@@ -11,4 +11,4 @@ from odoo import fields, models
 class ProductTemplate(models.Model):
     _inherit = "product.template"
 
-    disable_islr = fields.Boolean("No sujeto a ISLR")
+    disable_islr = fields.Boolean("¿No está sujeto al ISLR?")

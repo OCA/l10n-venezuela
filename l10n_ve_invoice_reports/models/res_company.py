@@ -9,7 +9,7 @@ from odoo import api, models
 
 class ResCompany(models.Model):
     """
-    Modificación del registro de la Compañia default para la inclusión de
+    Modificación del registro de la Compañía default para la inclusión de
     la plantilla «boxed».
     """
 

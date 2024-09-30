@@ -118,8 +118,8 @@ class ResumenIVA(models.TransientModel):
             #     title_style
             # )
 
-            # DEBITOS FISCALES
-            sheet2.merge_range("A7:D7", "DEBITOS FISCALES", title_style)
+            # DÉBITOS FISCALES
+            sheet2.merge_range("A7:D7", "DÉBITOS FISCALES", title_style)
             sheet2.merge_range(
                 "A8:D8", "Total Ventas Internas No Gravadas ", title_style
             )
@@ -149,14 +149,14 @@ class ResumenIVA(models.TransientModel):
                 "Total Notas de Débito o recargos aplicadas en Ventas ",
                 title_style,
             )
-            sheet2.merge_range("A15:D15", "Total de Dèbitos Fiscales ", title_style)
+            sheet2.merge_range("A15:D15", "Total de Débitos Fiscales ", title_style)
             sheet2.merge_range("A16:D16", "Total IGTF Percibido ", title_style)
 
             # CREDITOS FISCALES
             sheet2.merge_range(
                 "A19:D19", "Total Compras Internas No Gravadas ", title_style
             )
-            sheet2.merge_range("A20:D20", "Total Compras de Importaciòn", title_style)
+            sheet2.merge_range("A20:D20", "Total Compras de Importación", title_style)
             sheet2.merge_range(
                 "A21:D21",
                 "Total Compras  Internas afectadas sólo alícuota general 16.00 ",
@@ -178,21 +178,21 @@ class ResumenIVA(models.TransientModel):
             sheet2.merge_range(
                 "A25:D25", "Total Notas de Débito  aplicadas en Compras ", title_style
             )
-            sheet2.merge_range("A26:D26", "Total de Crèditos Fiscales ", title_style)
+            sheet2.merge_range("A26:D26", "Total de Créditos Fiscales ", title_style)
             sheet2.merge_range("A27:D27", "Total IGTF Pagado", title_style)
 
             # AUTOLIQUIDACION
-            sheet2.merge_range("A30:D30", "AUTOLIQUIDACION", title_style)
+            sheet2.merge_range("A30:D30", "AUTOLIQUIDACIÓN", title_style)
             sheet2.merge_range("A31:D31", "Total Cuota Tributaria ", title_style)
             sheet2.merge_range(
                 "A32:D32",
-                "Excedente de Crèdito Fiscal para el mes Siguiente",
+                "Excedente de Crédito Fiscal para el mes Siguiente",
                 title_style,
             )
             sheet2.merge_range(
                 "A33:D33", "Retenciones Acumuladas por Descontar ", title_style
             )
-            sheet2.merge_range("A34:D34", "Retenciones del Perìodo", title_style)
+            sheet2.merge_range("A34:D34", "Retenciones del Período", title_style)
             sheet2.merge_range("A35:D35", "Total Retenciones", title_style)
             sheet2.merge_range(
                 "A36:D36", "Retenciones del IVA Soportadas y Descontadas", title_style
@@ -214,7 +214,7 @@ class ResumenIVA(models.TransientModel):
             sheet2.write(14, 5, " 7 ", title_style)
             sheet2.write(15, 5, " 8 ", title_style)
 
-            sheet2.write(6, 6, "Dèbito Fiscal", title_style)
+            sheet2.write(6, 6, "Débito Fiscal", title_style)
             sheet2.write(7, 6, " 0 ", title_style)
             sheet2.write(8, 6, " 1 ", title_style)
             sheet2.write(9, 6, " 2 ", title_style)
@@ -236,7 +236,7 @@ class ResumenIVA(models.TransientModel):
             sheet2.write(25, 5, " 6 ", title_style)
             sheet2.write(26, 5, " 7 ", title_style)
 
-            sheet2.write(18, 6, "Dèbito Fiscal", title_style)
+            sheet2.write(18, 6, "Débito Fiscal", title_style)
             sheet2.write(19, 6, " 0 ", title_style)
             sheet2.write(20, 6, " 1 ", title_style)
             sheet2.write(21, 6, " 2 ", title_style)
@@ -247,7 +247,7 @@ class ResumenIVA(models.TransientModel):
             sheet2.write(26, 6, " 7 ", title_style)
 
             # (primer numero celdas hacia abajo, segundo numero columnas de lado )
-            # sheet2.write(18, 6, 'Dèbito Fiscal', title_style)
+            # sheet2.write(18, 6, 'Débito Fiscal', title_style)
             sheet2.write(30, 6, " 0 ", title_style)
             sheet2.write(31, 6, " 1 ", title_style)
             sheet2.write(32, 6, " 2 ", title_style)

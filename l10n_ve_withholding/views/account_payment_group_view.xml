@@ -38,12 +38,12 @@
                     options="{'currency_field': 'currency_id'}"
                 />
                 <field
-                    name="selected_finacial_debt"
+                    name="selected_financial_debt"
                     attrs="{'invisible': ['|',('debt_multicurrency', '=', False),  ('state', 'not in', ['draft', 'confirmed'])]}"
                     options="{'currency_field': 'currency_id'}"
                 />
                 <field
-                    name="selected_finacial_debt_currency"
+                    name="selected_financial_debt_currency"
                     attrs="{'invisible': ['|',('debt_multicurrency', '=', False),  ('state', 'not in', ['draft', 'confirmed'])]}"
                     options="{'currency_field': 'selected_debt_currency_id'}"
                 />
