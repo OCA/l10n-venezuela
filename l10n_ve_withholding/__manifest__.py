@@ -18,6 +18,8 @@
         "account_withholding",
         "account_withholding_automatic",
         "account_debit_note",
+        "account_payment_group",
+        "account_ux",
     ],
     "data": [
         "data/account_tax_withholding_template.xml",
