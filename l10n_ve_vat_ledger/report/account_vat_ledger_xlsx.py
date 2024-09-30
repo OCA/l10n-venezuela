@@ -651,7 +651,9 @@ class AccountVatLedgerXlsx(models.AbstractModel):
 
                                 ## BASE IMPONIBLE 31%
                                 elif linel.tax_ids[0].amount == 31.00:
-                                    print("####### ENTRO ENBASE IMPONIBLE #########")
+                                    _logger.info(
+                                        "####### ENTRO ENBASE IMPONIBLE #########"
+                                    )
                                     base_imponible_31 += (
                                         linel.debit
                                         if linel.credit == 0
@@ -1292,8 +1294,8 @@ class AccountVatLedgerXlsx(models.AbstractModel):
                     )
                     ###### IGTF
                     sheet.write(row, 26, "", line)
-                    print(reten)
-                    print(retenciones)
+                    _logger.info(reten)
+                    _logger.info(retenciones)
                     retenciones.remove(reten)
                     row += 1
 
