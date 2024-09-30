@@ -12,7 +12,7 @@ from odoo import fields, models
 _logger = logging.getLogger(__name__)
 
 
-class withholdingDistributionIslr(models.Model):
+class WithholdingDistributionIslr(models.Model):
     _name = "withholding.distribution.islr"
     _description = "withholding distribution ISLR"
 
