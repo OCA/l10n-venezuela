@@ -1,6 +1,10 @@
-[![Runbot Status](https://runbot.odoo-community.org/runbot/badge/flat/189/15.0.svg)](https://runbot.odoo-community.org/runbot/repo/github-com-oca-web-189)
-[![Build Status](https://travis-ci.org/OCA/l10n-venezuela.svg?branch=15.0)](https://travis-ci.org/OCA/l10n-venezuela)
+[![Runboat](https://img.shields.io/badge/runboat-Try%20me-875A7B.png)](https://runboat.odoo-community.org/builds?repo=OCA/l10n-venezuela&target_branch=15.0)
+[![Pre-commit Status](https://github.com/OCA/l10n-venezuela/actions/workflows/pre-commit.yml/badge.svg?branch=15.0)](https://github.com/OCA/l10n-venezuela/actions/workflows/pre-commit.yml?query=branch%3A15.0)
+[![Build Status](https://github.com/OCA/l10n-venezuela/actions/workflows/test.yml/badge.svg?branch=15.0)](https://github.com/OCA/l10n-venezuela/actions/workflows/test.yml?query=branch%3A15.0)
 [![codecov](https://codecov.io/gh/OCA/l10n-venezuela/branch/15.0/graph/badge.svg)](https://codecov.io/gh/OCA/l10n-venezuela)
+[![Translation Status](https://translation.odoo-community.org/widgets/l10n-venezuela-15.0/-/svg-badge.svg)](https://translation.odoo-community.org/engage/l10n-venezuela-15.0/?utm_source=widget)
+
+<!-- /!\ do not modify above this line -->
 
 # Localización venezolana de Odoo
 
