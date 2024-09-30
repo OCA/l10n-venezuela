@@ -58,7 +58,7 @@ msgstr "Ciudad"
 #. module: l10n_ve_base
 #: model_terms:ir.ui.view,arch_db:l10n_ve_base.consult_currency_wizard_confirm
 msgid "Close"
-msgstr "Cerca"
+msgstr "Cerrar"
 
 #. module: l10n_ve_base
 #: model:ir.model.fields,field_description:l10n_ve_base.field_l10n_ve_responsibility_type__code
@@ -435,7 +435,7 @@ msgstr "Código Postal"
 #. module: l10n_ve_base
 #: model:ir.actions.act_window,name:l10n_ve_base.action_currency_rate_wizard
 msgid "currency_rate_wizard"
-msgstr "currency_rate_wizard"
+msgstr "Asistente de tipo de cambio"
 
 #. module: l10n_ve_base
 #: model_terms:ir.ui.view,arch_db:l10n_ve_base.currency_rate_wizard_form
