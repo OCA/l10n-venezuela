@@ -54,18 +54,6 @@ However, each module can have a totally different license, as long as they adher
 policy. Consult each module's `__manifest__.py` file, which contains a `license` key
 that explains its license.
 
-# Authors
-
-<a href="https://github.com/odoo-mastercore" title="SINAPSYS GLOBAL SA, MASTERCORE SAS"><img src="https://avatars.githubusercontent.com/u/33432708?v=4" alt="SINAPSYS GLOBAL SA, MASTERCORE SAS" width="100px" height="100px"/></a>
-
-# Contributors
-
--   SINAPSYS GLOBAL SA, MASTERCORE SAS
-    -   Reydi Hernández  \<<rhe@sinapsys.global>\>
-    -   Freddy Arraez  \<<far@sinapsys.global>\>
--   Venezuelan Odoo Community
-    - Leonardo J. Caballero G. \<<leonardocaballero@gmail.com>\>
-
 ----
 OCA, or the [Odoo Community Association](http://odoo-community.org/), is a nonprofit
 organization whose mission is to support the collaborative development of Odoo features
