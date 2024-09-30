@@ -33,8 +33,9 @@ Political Division Module.
 This Module contains all States, Municipalities and
 Parishes of Venezuela.
 
-It is integrated with the base Odoo models res.country
-and res.country.state
+It is integrated with the base Odoo models for deeper
+political division of Country (res.country) and State
+and (res.country.state)
 
 **Table of contents**
 
@@ -90,11 +91,14 @@ Authors
 Contributors
 ~~~~~~~~~~~~
 
--   ADHOC SA, SINAPSYS GLOBAL SA, MASTERCORE SAS
-    -   Reydi Hernández  \<<rhe@sinapsys.global>\>
-    -   Freddy Arraez  \<<far@sinapsys.global>\>
--   Venezuelan Odoo Community
-    - Leonardo J. Caballero G. \<<leonardocaballero@gmail.com>\>
+* `SINAPSYS GLOBAL SA, MASTERCORE SAS <https://www.mastercore.us/>`__:
+
+  * Reydi Hernández  <rhe@sinapsys.global>
+  * Freddy Arraez  <far@sinapsys.global>
+
+* `Venezuelan Odoo Community <https://github.com/OCA/l10n-venezuela>`_:
+
+  * Leonardo J. Caballero G. <leonardocaballero@gmail.com>
 
 Other credits
 ~~~~~~~~~~~~~
