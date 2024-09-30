@@ -39,12 +39,13 @@ addon | version | maintainers | summary
 
 ## Licenses
 
-This repository is licensed under [GNU AFFERO GENERAL PUBLIC LICENSE](LICENSE.txt).
+This repository is licensed under [AGPL-3.0](LICENSE.txt).
 
-However, each module can have a totally different license. Consult each module's
-`__manifest__.py` file, which contains a `license` key that explains its license.
+However, each module can have a totally different license, as long as they adhere to Odoo Community Association (OCA)
+policy. Consult each module's `__manifest__.py` file, which contains a `license` key
+that explains its license.
 
-# Autor
+# Authors
 
 <a href="https://github.com/odoo-mastercore" title="SINAPSYS GLOBAL SA, MASTERCORE SAS"><img src="https://avatars.githubusercontent.com/u/33432708?v=4" alt="SINAPSYS GLOBAL SA, MASTERCORE SAS" width="100px" height="100px"/></a>
 
