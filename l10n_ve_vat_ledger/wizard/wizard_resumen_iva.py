@@ -64,7 +64,7 @@ class ResumenIVA(models.TransientModel):
 
             sheet.set_column(0, 0, 9)
             # style nuevo
-            cell_format = workbook.add_format(
+            cell_format = workbook.add_format(  # noqa: F841
                 {
                     "bold": 1,
                     "border": 1,
@@ -76,7 +76,7 @@ class ResumenIVA(models.TransientModel):
                 }
             )
 
-            cell_format_1 = workbook.add_format(
+            cell_format_1 = workbook.add_format(  # noqa: F841
                 {
                     "bold": 1,
                     "border": 1,
@@ -86,7 +86,7 @@ class ResumenIVA(models.TransientModel):
                 }
             )
 
-            cell_format_2 = workbook.add_format(
+            cell_format_2 = workbook.add_format(  # noqa: F841
                 {
                     "bold": 1,
                     "border": 1,
@@ -96,15 +96,15 @@ class ResumenIVA(models.TransientModel):
                 }
             )
 
-            title = workbook.add_format(
+            title = workbook.add_format(  # noqa: F841
                 {"bold": 1, "border": 1, "align": "center", "valign": "vcenter"}
             )
 
             title_style = workbook.add_format({"bold": 1, "border": 1, "align": "left"})
 
-            line = workbook.add_format({"border": 1, "align": "center"})
+            line = workbook.add_format({"border": 1, "align": "center"})  # noqa: F841
 
-            date_line = workbook.add_format(
+            date_line = workbook.add_format(  # noqa: F841
                 {"border": 1, "num_format": "dd-mm-yyyy", "align": "center"}
             )
 

@@ -36,8 +36,8 @@ class AccountVatLedgerXlsx(models.AbstractModel):
         for obj in account_vat:
             report_name = obj.name
             sheet = workbook.add_worksheet(report_name[:31])
-            title = workbook.add_format({"bold": True})
-            bold = workbook.add_format({"bold": True, "border": 1})
+            title = workbook.add_format({"bold": True})  # noqa: F841
+            bold = workbook.add_format({"bold": True, "border": 1})  # noqa: F841
 
             # Resumen IVA
             # sheet2 = workbook.add_worksheet('Resumen consolidado de IVA')
@@ -75,7 +75,7 @@ class AccountVatLedgerXlsx(models.AbstractModel):
                 }
             )
 
-            title = workbook.add_format(
+            title = workbook.add_format(  # noqa: F841
                 {"bold": 1, "border": 1, "align": "center", "valign": "vcenter"}
             )
 
