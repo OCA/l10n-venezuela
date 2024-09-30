@@ -70,12 +70,7 @@
                 >
                     <group colspan="2">
                         <field name="withholding_distributin_islr_ids">
-                            <tree
-                                string="Lineas de factura"
-                                create="false"
-                                delete="0"
-                                editable="bottom"
-                            >
+                            <tree create="false" delete="0" editable="bottom">
                                 <field name="payment_group_id" invisible="1" />
                                 <field name="move_line_id" invisible="1" />
                                 <field name="product_id" />
