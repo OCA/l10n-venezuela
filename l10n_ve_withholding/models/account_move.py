@@ -51,13 +51,13 @@ class AccountMove(models.Model):
                 if (
                     rec._get_reconciled_payments()
                     .mapped("payment_group_id")
-                    .filtered(lambda x: x.iva == True)
+                    .filtered(lambda x: x.iva is True)
                 ):
                     applied_withholding_tax = True
                 if (
                     rec._get_reconciled_payments()
                     .mapped("payment_group_id")
-                    .filtered(lambda x: x.islr == True)
+                    .filtered(lambda x: x.islr is True)
                 ):
                     applied_withholding_islr = True
 
@@ -85,7 +85,7 @@ class AccountMove(models.Model):
         res = super(AccountMove, self)._post(soft)
         for rec in self:
             if (
-                (rec.state == "posted" and rec.l10n_ve_document_number == False)
+                (rec.state == "posted" and not rec.l10n_ve_document_number)
                 or rec.move_type == "out_refund"
                 and rec.l10n_ve_document_number == ""
             ):
