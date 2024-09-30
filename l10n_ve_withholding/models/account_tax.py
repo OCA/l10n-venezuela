@@ -246,7 +246,7 @@ class AccountTax(models.Model):
                 try:
                     domain = literal_eval(tax.withholding_user_error_domain)
                 except Exception as e:
-                    raise ValidationError(
+                    raise ValidationError(  # noqa: B904
                         _(
                             'Could not eval rule domain "%(withholding_user_error_domain)s".\n'
                             "This is what we get:\n%(error)s",
