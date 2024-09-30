@@ -78,7 +78,7 @@ class AccountMove(models.Model):
             self.env.context.invoice_date = invoice_date
             self.env.context.invoice_company = self.company_id
         except Exception:
-            pass
+            _logger.info("An Exception occurred")
         return super().get_taxes_values()
 
     def _post(self, soft=True):
@@ -117,5 +117,5 @@ class AccountMoveLine(models.Model):
             self.env.context.invoice_date = invoice_date
             self.env.context.invoice_company = self.company_id
         except Exception:
-            pass
+            _logger.info("An Exception occurred")
         return super()._compute_price()

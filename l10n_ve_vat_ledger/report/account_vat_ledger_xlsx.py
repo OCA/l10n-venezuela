@@ -25,7 +25,7 @@ class AccountVatLedgerXlsx(models.AbstractModel):
             try:
                 results.append(a_dict[id])
             except KeyError:
-                pass
+                _logger.info("An KeyError Exception occurred")
             return a_dict
 
         # Return value ignored.

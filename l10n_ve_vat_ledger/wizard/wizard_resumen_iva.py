@@ -5,6 +5,7 @@
 import base64
 import io
 import json
+import logging
 from datetime import datetime, timedelta
 from io import BytesIO
 
@@ -14,6 +15,8 @@ import pandas as pd
 import xlsxwriter
 
 from odoo import fields, models
+
+_logger = logging.getLogger(__name__)
 
 
 class ResumenIVA(models.TransientModel):
@@ -37,7 +40,7 @@ class ResumenIVA(models.TransientModel):
             try:
                 results.append(a_dict[id])
             except KeyError:
-                pass
+                _logger.info("An KeyError Exception occurred")
             return a_dict
 
         # Return value ignored.
