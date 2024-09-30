@@ -35,22 +35,6 @@ addon | version | maintainers | summary
 
 <!-- prettier-ignore-end -->
 
-## Instalación
-
-Para instalar los módulos, debe seguir el siguiente orden:
-- territorial_pd
-- l10n_ve_base
-- l10n_ve_withholding
-- l10n_ve_vat_ledger
-
-### Dependencias
-
-Dependencias de los módulos externos:
-- account_payment_group
-- account_witthholding
-- account_witthholding_automatic
-- account_ux
-
 ## Licenses
 
 This repository is licensed under [GNU AFFERO GENERAL PUBLIC LICENSE](LICENSE.txt).
