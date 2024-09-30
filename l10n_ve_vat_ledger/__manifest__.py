@@ -13,6 +13,7 @@
     "category": "Localization",
     "license": "AGPL-3",
     "depends": ["account", "l10n_ve_base", "l10n_ve_withholding", "report_xlsx"],
+    "external_dependencies": {"python": ["pandas"]},
     "data": [
         "security/security.xml",
         "security/ir.model.access.csv",
