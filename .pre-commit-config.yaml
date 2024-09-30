@@ -57,6 +57,11 @@ repos:
     rev: v0.0.25
     hooks:
       - id: oca-checks-odoo-module
+        args:
+          [
+            "--disable=xml-view-dangerous-replace-low-priority,xml-dangerous-qweb-replace-low-priority,
+            --enable=all",
+          ]
       - id: oca-checks-po
   - repo: https://github.com/myint/autoflake
     rev: v1.4

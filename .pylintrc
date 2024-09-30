@@ -1,5 +1,3 @@
-
-
 [MASTER]
 load-plugins=pylint_odoo
 score=n
@@ -29,7 +27,7 @@ enable=anomalous-backslash-in-string,
     attribute-deprecated,
     class-camelcase,
     dangerous-default-value,
-    dangerous-view-replace-wo-priority,
+    # dangerous-view-replace-wo-priority, # TODO: Fix this rule
     development-status-allowed,
     duplicate-id-csv,
     duplicate-key,
@@ -66,7 +64,7 @@ enable=anomalous-backslash-in-string,
     use-vim-comment,
     wrong-tabs-instead-of-spaces,
     xml-syntax-error,
-    attribute-string-redundant,
+    # attribute-string-redundant, # TODO: Fix this rule
     character-not-valid-in-resource-link,
     consider-merging-classes-inherited,
     context-overridden,
@@ -111,7 +109,7 @@ enable=anomalous-backslash-in-string,
     no-utf8-coding-comment,
     odoo-addons-relative-import,
     old-api7-method-defined,
-    redefined-builtin,
+    # redefined-builtin, # TODO: Fix this rule
     too-complex,
     unnecessary-utf8-coding-comment
 

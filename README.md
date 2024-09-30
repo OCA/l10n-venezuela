@@ -1,15 +1,23 @@
-
 [![Runboat](https://img.shields.io/badge/runboat-Try%20me-875A7B.png)](https://runboat.odoo-community.org/builds?repo=OCA/l10n-venezuela&target_branch=15.0)
 [![Pre-commit Status](https://github.com/OCA/l10n-venezuela/actions/workflows/pre-commit.yml/badge.svg?branch=15.0)](https://github.com/OCA/l10n-venezuela/actions/workflows/pre-commit.yml?query=branch%3A15.0)
 [![Build Status](https://github.com/OCA/l10n-venezuela/actions/workflows/test.yml/badge.svg?branch=15.0)](https://github.com/OCA/l10n-venezuela/actions/workflows/test.yml?query=branch%3A15.0)
 [![codecov](https://codecov.io/gh/OCA/l10n-venezuela/branch/15.0/graph/badge.svg)](https://codecov.io/gh/OCA/l10n-venezuela)
-[![Translation Status](https://translation.odoo-community.org/widgets/l10n-venezuela-15-0/-/svg-badge.svg)](https://translation.odoo-community.org/engage/l10n-venezuela-15-0/?utm_source=widget)
+[![Translation Status](https://translation.odoo-community.org/widgets/l10n-venezuela-15.0/-/svg-badge.svg)](https://translation.odoo-community.org/engage/l10n-venezuela-15.0/?utm_source=widget)
 
 <!-- /!\ do not modify above this line -->
 
-# l10n-venezuela
+# Localización venezolana de Odoo
 
-TODO: add repo description.
+Repositorio de código del proyecto de la localización venezolana para el software
+de gestión integral Odoo.
+
+La localización venezolana de Odoo incluye:
+
+* Módulos para adaptar el sistema a los requisitos fiscales y contables
+  venezolanas.
+* Traducciones a los términos oficiales del país.
+
+Para más información, dirigirse a [SINAPSYS GLOBAL SA, MASTERCORE SAS Team](https://github.com/odoo-mastercore/odoo-venezuela/tree/15.0).
 
 <!-- /!\ do not modify below this line -->
 
@@ -17,7 +25,17 @@ TODO: add repo description.
 
 [//]: # (addons)
 
-This part will be replaced when running the oca-gen-addons-table script from OCA/maintainer-tools.
+# Available addons
+
+addon | version | maintainers | summary
+---   | ---     | ---         | ---
+[l10n_ve_base](l10n_ve_base/) | 15.0.1.0.0 | <a href="https://github.com/odoo-mastercore" title="SINAPSYS GLOBAL SA, MASTERCORE SAS"><img src="https://avatars.githubusercontent.com/u/33432708?v=4" alt="SINAPSYS GLOBAL SA, MASTERCORE SAS" width="30px" height="30px"></a> | Localización Venezuela Base
+[l10n_ve_invoice_reports](l10n_ve_invoice_reports/) | 15.0.1.0.0 | <a href="https://github.com/odoo-mastercore" title="SINAPSYS GLOBAL SA, MASTERCORE SAS"><img src="https://avatars.githubusercontent.com/u/33432708?v=4" alt="SINAPSYS GLOBAL SA, MASTERCORE SAS" width="30px" height="30px"></a> | Comprobantes para Factura Venezolana
+[l10n_ve_vat_ledger](l10n_ve_vat_ledger/) | 15.0.1.0.8 | <a href="https://github.com/odoo-mastercore" title="SINAPSYS GLOBAL SA, MASTERCORE SAS"><img src="https://avatars.githubusercontent.com/u/33432708?v=4" alt="SINAPSYS GLOBAL SA, MASTERCORE SAS" width="30px" height="30px"></a> | Localización Vat Ledger Venezuela
+[l10n_ve_withholding](l10n_ve_withholding/) | 15.0.1.0.13 | <a href="https://github.com/odoo-mastercore" title="SINAPSYS GLOBAL SA, MASTERCORE SAS"><img src="https://avatars.githubusercontent.com/u/33432708?v=4" alt="SINAPSYS GLOBAL SA, MASTERCORE SAS" width="30px" height="30px"></a> | Localización Withholding Venezuela
+[territorial_pd](territorial_pd/) | 15.0.1.0.1 | <a href="https://github.com/odoo-mastercore" title="SINAPSYS GLOBAL SA, MASTERCORE SAS"><img src="https://avatars.githubusercontent.com/u/33432708?v=4" alt="SINAPSYS GLOBAL SA, MASTERCORE SAS" width="30px" height="30px"></a> | Venezuela Municipalities and Parishes
+[unique_vat_by_partner](unique_vat_by_partner/) | 15.0.1.0.0 | <a href="https://github.com/odoo-mastercore" title="SINAPSYS GLOBAL SA, MASTERCORE SAS"><img src="https://avatars.githubusercontent.com/u/33432708?v=4" alt="SINAPSYS GLOBAL SA, MASTERCORE SAS" width="30px" height="30px"></a> | Unique VAT by Partner
+[vat_type_partner](vat_type_partner/) | 15.0.1.0.0 | <a href="https://github.com/odoo-mastercore" title="SINAPSYS GLOBAL SA, MASTERCORE SAS"><img src="https://avatars.githubusercontent.com/u/33432708?v=4" alt="SINAPSYS GLOBAL SA, MASTERCORE SAS" width="30px" height="30px"></a> | VAT type by Partner
 
 [//]: # (end addons)
 
@@ -25,7 +43,7 @@ This part will be replaced when running the oca-gen-addons-table script from OCA
 
 ## Licenses
 
-This repository is licensed under [AGPL-3.0](LICENSE).
+This repository is licensed under [AGPL-3.0](LICENSE.txt).
 
 However, each module can have a totally different license, as long as they adhere to Odoo Community Association (OCA)
 policy. Consult each module's `__manifest__.py` file, which contains a `license` key
