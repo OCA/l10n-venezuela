@@ -13,7 +13,9 @@ La localización venezolana de Odoo incluye:
   venezolanas.
 * Traducciones a los términos oficiales del país.
 
-Para más información, dirigirse a [Mastercore Sinapsys Global Team](https://github.com/odoo-mastercore/odoo-venezuela/tree/15.0).
+Para más información, dirigirse a [SINAPSYS GLOBAL SA, MASTERCORE SAS Team](https://github.com/odoo-mastercore/odoo-venezuela/tree/15.0).
+
+<!-- /!\ do not modify below this line -->
 
 <!-- prettier-ignore-start -->
 
@@ -23,13 +25,13 @@ Para más información, dirigirse a [Mastercore Sinapsys Global Team](https://gi
 
 addon | version | maintainers | summary
 ---   | ---     | ---         | ---
-[l10n_ve_base](l10n_ve_base/) | 15.0.1 | <a href="https://github.com/odoo-mastercore" title="SIN | <a href="https://github.com/odoo-mastercore" title="Mastercore Sinapsys Global"><img src="https://avatars.githubusercontent.com/u/33432708?v=4" alt="Mastercore Sinapsys Global" width="30px" height="30px"></a> | Localización Venezuela Base
-[l10n_ve_invoice_reports](l10n_ve_invoice_reports/) | 15.0.1.0.0 | <a href="https://github.com/odoo-mastercore" title="Mastercore Sinapsys Global"><img src="https://avatars.githubusercontent.com/u/33432708?v=4" alt="Mastercore Sinapsys Global" width="30px" height="30px"></a> | Comprobantes para Factura Venezolana
-[l10n_ve_vat_ledger](l10n_ve_vat_ledger/) | 15.0.1.0.8 | <a href="https://github.com/odoo-mastercore" title="Mastercore Sinapsys Global"><img src="https://avatars.githubusercontent.com/u/33432708?v=4" alt="Mastercore Sinapsys Global" width="30px" height="30px"></a> | Localización Vat Ledger Venezuela
-[l10n_ve_withholding](l10n_ve_withholding/) | 15.0.1.0.13 | <a href="https://github.com/odoo-mastercore" title="Mastercore Sinapsys Global"><img src="https://avatars.githubusercontent.com/u/33432708?v=4" alt="Mastercore Sinapsys Global" width="30px" height="30px"></a> | Localización Withholding Venezuela
-[territorial_pd](territorial_pd/) | 15.0.1.0.1 | <a href="https://github.com/odoo-mastercore" title="Mastercore Sinapsys Global"><img src="https://avatars.githubusercontent.com/u/33432708?v=4" alt="Mastercore Sinapsys Global" width="30px" height="30px"></a> | Venezuela Municipalities and Parishes
-[unique_vat_by_partner](unique_vat_by_partner/) | 15.0.1.0.0 | <a href="https://github.com/odoo-mastercore" title="Mastercore Sinapsys Global"><img src="https://avatars.githubusercontent.com/u/33432708?v=4" alt="Mastercore Sinapsys Global" width="30px" height="30px"></a> | Unique VAT by Partner
-[vat_type_partner](vat_type_partner/) | 15.0.1.0.0 | <a href="https://github.com/odoo-mastercore" title="Mastercore Sinapsys Global"><img src="https://avatars.githubusercontent.com/u/33432708?v=4" alt="Mastercore Sinapsys Global" width="30px" height="30px"></a> | VAT type by Partner
+[l10n_ve_base](l10n_ve_base/) | 15.0.1.0.0 | <a href="https://github.com/odoo-mastercore" title="SINAPSYS GLOBAL SA, MASTERCORE SAS"><img src="https://avatars.githubusercontent.com/u/33432708?v=4" alt="SINAPSYS GLOBAL SA, MASTERCORE SAS" width="30px" height="30px"></a> | Localización Venezuela Base
+[l10n_ve_invoice_reports](l10n_ve_invoice_reports/) | 15.0.1.0.0 | <a href="https://github.com/odoo-mastercore" title="SINAPSYS GLOBAL SA, MASTERCORE SAS"><img src="https://avatars.githubusercontent.com/u/33432708?v=4" alt="SINAPSYS GLOBAL SA, MASTERCORE SAS" width="30px" height="30px"></a> | Comprobantes para Factura Venezolana
+[l10n_ve_vat_ledger](l10n_ve_vat_ledger/) | 15.0.1.0.8 | <a href="https://github.com/odoo-mastercore" title="SINAPSYS GLOBAL SA, MASTERCORE SAS"><img src="https://avatars.githubusercontent.com/u/33432708?v=4" alt="SINAPSYS GLOBAL SA, MASTERCORE SAS" width="30px" height="30px"></a> | Localización Vat Ledger Venezuela
+[l10n_ve_withholding](l10n_ve_withholding/) | 15.0.1.0.13 | <a href="https://github.com/odoo-mastercore" title="SINAPSYS GLOBAL SA, MASTERCORE SAS"><img src="https://avatars.githubusercontent.com/u/33432708?v=4" alt="SINAPSYS GLOBAL SA, MASTERCORE SAS" width="30px" height="30px"></a> | Localización Withholding Venezuela
+[territorial_pd](territorial_pd/) | 15.0.1.0.1 | <a href="https://github.com/odoo-mastercore" title="SINAPSYS GLOBAL SA, MASTERCORE SAS"><img src="https://avatars.githubusercontent.com/u/33432708?v=4" alt="SINAPSYS GLOBAL SA, MASTERCORE SAS" width="30px" height="30px"></a> | Venezuela Municipalities and Parishes
+[unique_vat_by_partner](unique_vat_by_partner/) | 15.0.1.0.0 | <a href="https://github.com/odoo-mastercore" title="SINAPSYS GLOBAL SA, MASTERCORE SAS"><img src="https://avatars.githubusercontent.com/u/33432708?v=4" alt="SINAPSYS GLOBAL SA, MASTERCORE SAS" width="30px" height="30px"></a> | Unique VAT by Partner
+[vat_type_partner](vat_type_partner/) | 15.0.1.0.0 | <a href="https://github.com/odoo-mastercore" title="SINAPSYS GLOBAL SA, MASTERCORE SAS"><img src="https://avatars.githubusercontent.com/u/33432708?v=4" alt="SINAPSYS GLOBAL SA, MASTERCORE SAS" width="30px" height="30px"></a> | VAT type by Partner
 
 [//]: # (end addons)
 
@@ -44,11 +46,11 @@ However, each module can have a totally different license. Consult each module's
 
 # Autor
 
-<a href="https://github.com/odoo-mastercore" title="Mastercore Sinapsys Global"><img src="https://avatars.githubusercontent.com/u/33432708?v=4" alt="Mastercore Sinapsys Global" width="100px" height="100px"/></a>
+<a href="https://github.com/odoo-mastercore" title="SINAPSYS GLOBAL SA, MASTERCORE SAS"><img src="https://avatars.githubusercontent.com/u/33432708?v=4" alt="SINAPSYS GLOBAL SA, MASTERCORE SAS" width="100px" height="100px"/></a>
 
-# Colaboradores
+# Contributors
 
--   Mastercore Sinapsys Global
+-   SINAPSYS GLOBAL SA, MASTERCORE SAS
     -   Reydi Hernández  \<<rhe@sinapsys.global>\>
     -   Elvis Paez  \<<epa@sinapsys.global>\>
     -   Freddy Arraez  \<<far@sinapsys.global>\>
