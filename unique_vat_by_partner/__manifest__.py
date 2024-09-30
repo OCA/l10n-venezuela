@@ -6,4 +6,5 @@
     "category": "Localization",
     "license": "AGPL-3",
     "depends": ["base", "contacts", "l10n_ve_base"],
+    "external_dependencies": {"python": ["pandas"]},
 }
