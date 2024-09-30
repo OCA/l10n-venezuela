@@ -342,7 +342,7 @@ class AccountVatLedgerXlsx(models.AbstractModel):
 
             date_reference = obj.date_from
 
-            for idx, invoice in enumerate(invoices):
+            for _idx, invoice in enumerate(invoices):
                 if obj.type == "purchase":
                     if date_reference <= invoice.invoice_date:
                         while date_reference < invoice.invoice_date:

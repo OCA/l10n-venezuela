@@ -14,7 +14,7 @@ class AccountMove(models.Model):
     reversed_entry_code = fields.Char(compute="_compute_reversed_entry_code")
 
     def invoice_rate(self, currency_id, invoice_date):
-        for rec in self:
+        for _rec in self:
             last_rate = (
                 self.env["res.currency.rate"]
                 .search(
