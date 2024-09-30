@@ -133,8 +133,7 @@ class AccountVatLedgerXlsx(models.AbstractModel):
                         "%(company_identification_type)s-%(company_vat)s",
                         company_identification_type=obj.company_id.l10n_latam_identification_type_id.l10n_ve_code,
                         company_vat=obj.company_id.vat,
-                    )
-
+                    ),
                     title_style,
                 )
                 sheet.merge_range(
