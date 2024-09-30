@@ -96,6 +96,8 @@ class AccountPaymentGroup(models.Model):
             sign = rec.partner_type == "supplier" and -1.0 or 1.0
             rec.selected_financial_debt = selected_financial_debt * sign
             rec.selected_debt = selected_debt * sign
-            rec.selected_financial_debt_currency = selected_financial_debt_currency * sign
+            rec.selected_financial_debt_currency = (
+                selected_financial_debt_currency * sign
+            )
             rec.selected_debt_untaxed = selected_debt_untaxed * sign
             rec.selected_debt_taxed = selected_debt_taxed
