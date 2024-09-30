@@ -25,5 +25,5 @@ class AccountTaxWithholdingRule(models.Model):
         "Percentage", digits=(16, 4), help="Enter % ratio between 0-1."
     )
     fix_amount = fields.Float(
-        "Amount", digits="Account", help="Fixed Amount after percentaje"
+        "Amount", digits="Account", help="Fixed Amount after percentage"
     )

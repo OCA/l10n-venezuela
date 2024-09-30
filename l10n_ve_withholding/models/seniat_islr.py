@@ -60,7 +60,7 @@ class SeniatFactor(models.Model):
     )
 
 
-class BandaCaculo(models.Model):
+class BandaCalculo(models.Model):
     _name = "banda.calculo"
     _description = "Modelo para registrar la banda de calculo del ISLR"
     _rec_name = "complete_percentage"
@@ -79,7 +79,7 @@ class BandaCaculo(models.Model):
             ("bs", "Bolivares"),
         ],
         "Tipo de monto",
-        help="Tipo por el cual expresan los montos minimos o maximos",
+        help="Tipo por el cual expresan las cantidades mínimas o máximas",
     )
     withholding_percentage = fields.Float(
         "Porcentaje de retención", help="% Base Retención"

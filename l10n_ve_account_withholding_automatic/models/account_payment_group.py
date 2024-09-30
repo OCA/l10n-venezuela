@@ -62,7 +62,7 @@ class AccountPaymentGroup(models.Model):
         self.ensure_one()
         # Por compatibilidad con public_budget aceptamos
         # pagos en otros estados no validados donde el matched y
-        # unmatched no se computaron, por eso agragamos la condición
+        # unmatched no se computaron, por eso agregamos la condición
         if self.state == "posted":
             untaxed_field = "matched_amount_untaxed"
             total_field = "matched_amount"
@@ -102,7 +102,7 @@ class AccountPaymentGroup(models.Model):
             ):
                 raise ValidationError(
                     _(
-                        "Seleccionó deuda por %s pero aparentente desea pagar "
+                        "Seleccionó deuda por %s pero aparentemente desea pagar "
                         " %s. En la deuda seleccionada hay algunos comprobantes de"
                         " mas que no van a poder ser pagados (%s). Deberá quitar "
                         " dichos comprobantes de la deuda seleccionada para poder "
@@ -129,8 +129,8 @@ class AccountPaymentGroup(models.Model):
         elif withholding_advances:
             # si el pago esta publicado obtenemos los valores de los importes
             # conciliados (porque el pago pudo prepararse como adelanto
-            # pero luego haberse conciliado y en ese caso lo estariamos sumando
-            # dos veces si lo usamos como base de otros pagos). Si estan los
+            # pero luego haberse conciliado y en ese caso lo estaríamos sumando
+            # dos veces si lo usamos como base de otros pagos). Si están los
             # campos withholdable_advanced_amount y unreconciled_amount le
             # sacamos el proporcional correspondiente
             if self.state == "posted":

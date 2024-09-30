@@ -18,12 +18,12 @@ class AccountPayment(models.Model):
         related="tax_withholding_id.withholding_accumulated_payments",
     )
     withholdable_invoiced_amount = fields.Float(
-        "Importe imputado sujeto a retencion",
+        "Importe imputado sujeto a retención",
         # compute='get_withholding_data',
         readonly=True,
     )
     withholdable_advanced_amount = fields.Float(
-        "Importe a cuenta sujeto a retencion",
+        "Importe a cuenta sujeto a retención",
         # compute='get_withholding_data',
         readonly=True,
     )

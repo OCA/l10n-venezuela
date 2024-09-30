@@ -80,7 +80,7 @@ class AccountPayment(models.Model):
             )
 
     # TODO check why we get error with depend on company_id and fix it
-    # (recursive dependency?). The error is on paymentrs tree/form view
+    # (recursive dependency?). The error is on payments tree/form view
     # @api.depends('currency_id', 'company_id')
     @api.depends("currency_id")
     def _compute_other_currency(self):
@@ -108,10 +108,10 @@ class AccountPayment(models.Model):
             else:
                 rec.exchange_rate = False
 
-    # this onchange is necesary because odoo, sometimes, re-compute
-    # and overwrites amount_company_currency. That happends due to an issue
+    # this onchange is necessary because Odoo, sometimes, re-compute
+    # and overwrites amount_company_currency. That happens due to an issue
     # with rounding of amount field (amount field is not change but due to
-    # rouding odoo believes amount has changed)
+    # rouding Odoo believes amount has changed)
     @api.onchange("amount_company_currency")
     def _inverse_amount_company_currency(self):
         for rec in self.with_context(skip_account_move_synchronization=True):
@@ -178,7 +178,7 @@ class AccountPayment(models.Model):
 
     @api.constrains("payment_group_id", "payment_type")
     def check_payment_group(self):
-        # odoo tests don't create payments with payment gorups
+        # Odoo tests don't create payments with payment groups
         if self.env.registry.in_test_mode():
             return True
         counterpart_aml_dicts = self._context.get("counterpart_aml_dicts")
@@ -217,7 +217,7 @@ class AccountPayment(models.Model):
         values
          context keys(
             'counterpart_aml_dicts', 'new_aml_dicts', 'payment_aml_rec')
-         :return: account move line recorset
+         :return: account move line recordset
         """
         counterpart_aml_dicts = self._context.get("counterpart_aml_dicts")
         counterpart_aml_data = counterpart_aml_dicts or [{}]
@@ -234,7 +234,7 @@ class AccountPayment(models.Model):
     @api.model
     def infer_partner_info(self, vals):
         """Odoo way to to interpret the partner_id, partner_type is not
-        usefull for us because in some time they leave this ones empty and
+        useful for us because in some time they leave this ones empty and
         we need them in order to create the payment group.
 
         In this method will try to improve infer when it has a debt related
@@ -250,7 +250,7 @@ class AccountPayment(models.Model):
         if not amls:
             return res
 
-        # odoo manda partner type segun si el pago es positivo o no, nosotros
+        # Odoo manda partner type según si el pago es positivo o no, nosotros
         # mejoramos infiriendo a partir de que tipo de deuda se esta pagando
         partner_type = False
         internal_type = amls.mapped("account_id.internal_type")
@@ -262,7 +262,7 @@ class AccountPayment(models.Model):
             if partner_type:
                 res.update({"partner_type": partner_type})
 
-        # por mas que el usuario no haya selecccionado partner, si esta pagando
+        # por mas que el usuario no haya seleccionado partner, si esta pagando
         # deuda usamos el partner de esa deuda
         partner_id = vals.get("partner_id", False)
         if not partner_id and len(amls.mapped("partner_id")) == 1:
@@ -277,7 +277,7 @@ class AccountPayment(models.Model):
         Payment group before creating payment to avoid raising error, only
         apply when the all the counterpart account are receivable/payable"""
         # Si viene counterpart_aml entonces estamos viniendo de una
-        # conciliacion desde el wizard
+        # conciliación desde el wizard
         new_aml_dicts = self._context.get("new_aml_dicts", [])
         counterpart_aml_dicts = self._context.get("counterpart_aml_dicts")
         counterpart_aml_data = counterpart_aml_dicts or [{}]
@@ -326,7 +326,7 @@ class AccountPayment(models.Model):
     @api.depends("invoice_line_ids", "payment_type", "partner_type", "partner_id")
     def _compute_destination_account_id(self):
         """
-        If we are paying a payment gorup with paylines, we use account
+        If we are paying a payment group with paylines, we use account
         of lines that are going to be paid
         """
         for rec in self.with_context(skip_account_move_synchronization=True):
@@ -342,7 +342,7 @@ class AccountPayment(models.Model):
 
     def show_details(self):
         """
-        Metodo para mostrar form editable de payment, principalmente para ser
+        Método para mostrar form editable de payment, principalmente para ser
         usado cuando hacemos ajustes y el payment group esta confirmado pero
         queremos editar una linea
         """
@@ -370,7 +370,7 @@ class AccountPayment(models.Model):
                 )
 
             # Si se esta forzando importe en moneda de cia, usamos este
-            # importe para debito/credito
+            # importe para débito/crédito
             if rec.force_amount_company_currency:
                 for line in move_vals[0]["line_ids"]:
                     if line[2].get("debit"):

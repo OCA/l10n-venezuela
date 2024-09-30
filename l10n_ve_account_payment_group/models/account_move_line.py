@@ -27,8 +27,8 @@ class AccountMoveLine(models.Model):
     @api.depends_context("payment_group_id")
     def _compute_payment_group_matched_amount(self):
         """
-        Reciviendo un payment_group_id por contexto, decimos en ese payment
-        group, cuanto se pago para la lína en cuestión.
+        Recibiendo un payment_group_id por contexto, decimos en ese payment
+        group, cuanto se pago para la línea en cuestión.
         """
         payment_group_id = self._context.get("payment_group_id")
         if not payment_group_id:

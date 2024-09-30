@@ -213,7 +213,7 @@
                                 states="draft,confirmed"
                             />
                         <field
-                                name="selected_finacial_debt"
+                                name="selected_financial_debt"
                                 options="{'currency_field': 'currency_id'}"
                                 states="draft,confirmed"
                                 groups="l10n_ve_account_financial_amount.account_use_financial_amounts"

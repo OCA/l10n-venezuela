@@ -32,7 +32,7 @@ class AccountTax(models.Model):
 
         force_withholding_amount_type = None
         if self.withholding_type == "partner_tax" and payment_group.iva is True:
-            alicuota_retencion = self.get_partner_alicuot(commercial_partner)
+            alicuota_retencion = self.get_partner_aliquot(commercial_partner)
             alicuota = int(alicuota_retencion) / 100.0
             force_withholding_amount_type = self.withholding_amount_type
 
@@ -101,18 +101,18 @@ class AccountTax(models.Model):
             return arba.alicuota_percepcion / 100.0
         return 0.0
 
-    def get_partner_alicuot(self, partner):
+    def get_partner_aliquot(self, partner):
         self.ensure_one()
 
         if partner.vat_retention:
-            alicuot = partner.vat_retention
+            aliquot = partner.vat_retention
         else:
             raise UserError(
                 _(
                     'Si utiliza Cálculo de impuestos igual a "Alícuota en el '
-                    'Partner", debe setear el campo de retención de IVA'
-                    " en la ficha del partner, seccion Compra"
+                    'Partner", debe definir el campo de retención de IVA'
+                    " en la ficha del partner, sección Compra"
                 )
             )
 
-        return alicuot
+        return aliquot

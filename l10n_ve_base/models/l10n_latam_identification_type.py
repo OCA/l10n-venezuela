@@ -13,4 +13,4 @@ class L10nLatamIdentificationType(models.Model):
 
     _inherit = "l10n_latam.identification.type"
 
-    l10n_ve_code = fields.Char("Code Seniat")
+    l10n_ve_code = fields.Char("Code SENIAT")

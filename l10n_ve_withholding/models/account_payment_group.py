@@ -26,10 +26,10 @@ class AccountPaymentGroup(models.Model):
     regimen_islr_id = fields.Many2one("seniat.tabla.islr", "Aplicativo ISLR")
     partner_regimen_islr_ids = fields.Many2many(
         "seniat.tabla.islr",
-        compute="_compute_partner_regimenes_islr",
+        compute="_compute_partner_regimes_islr",
     )
     # This field is to be used by invoice in multicurrency
-    selected_finacial_debt_currency = fields.Monetary(
+    selected_financial_debt_currency = fields.Monetary(
         string="Selected Financial Debt in foreign currency",
         compute="_compute_selected_debt",
     )
@@ -43,9 +43,9 @@ class AccountPaymentGroup(models.Model):
     )
 
     @api.depends("partner_id.seniat_regimen_islr_ids")
-    def _compute_partner_regimenes_islr(self):
+    def _compute_partner_regimes_islr(self):
         """
-        Lo hacemos con campo computado y no related para que solo se setee
+        Lo hacemos con campo computado y no relacionado para que solo se defina
         y se exija si es pago a proveedor
         """
         for rec in self:
@@ -64,28 +64,28 @@ class AccountPaymentGroup(models.Model):
     )
     def _compute_selected_debt(self):
         for rec in self:
-            selected_finacial_debt = 0.0
+            selected_financial_debt = 0.0
             selected_debt = 0.0
             selected_debt_untaxed = 0.0
             selected_debt_taxed = 0.0
-            selected_finacial_debt_currency = 0.0
+            selected_financial_debt_currency = 0.0
             for line in rec.to_pay_move_line_ids._origin:
                 # this is conditional used to vat retention
                 for abg in line.move_id.amount_by_group:
                     if str(abg[0]).find("IVA") > -1:
                         selected_debt_taxed += abg[1]
-                selected_finacial_debt += line.financial_amount_residual
+                selected_financial_debt += line.financial_amount_residual
                 # factor for total_untaxed
                 invoice = line.move_id
                 if line.currency_id != rec.company_id.currency_id:
-                    selected_finacial_debt_currency += line.amount_residual_currency
+                    selected_financial_debt_currency += line.amount_residual_currency
                     rec.debt_multicurrency = True
                     rec.selected_debt_currency_id = line.move_id.currency_id.id
                 elif (
                     line.currency_id != rec.company_id.currency_id
                     and rec.debt_multicurrency
                 ):
-                    selected_finacial_debt_currency += line.amount_residual_currency
+                    selected_financial_debt_currency += line.amount_residual_currency
                     rec.debt_multicurrency = True
                 else:
                     rec.debt_multicurrency = False
@@ -94,8 +94,8 @@ class AccountPaymentGroup(models.Model):
                 factor = invoice and invoice._get_tax_factor() or 1.0
                 selected_debt_untaxed += line.amount_residual * factor
             sign = rec.partner_type == "supplier" and -1.0 or 1.0
-            rec.selected_finacial_debt = selected_finacial_debt * sign
+            rec.selected_financial_debt = selected_financial_debt * sign
             rec.selected_debt = selected_debt * sign
-            rec.selected_finacial_debt_currency = selected_finacial_debt_currency * sign
+            rec.selected_financial_debt_currency = selected_financial_debt_currency * sign
             rec.selected_debt_untaxed = selected_debt_untaxed * sign
             rec.selected_debt_taxed = selected_debt_taxed

@@ -120,7 +120,7 @@ class AccountPaymentGroup(models.Model):
 
     @api.constrains("company_id", "partner_type")
     def _force_receiptbook(self):
-        # we add cosntrins to fix odoo tests and also help in inmpo of data
+        # we add constrains to fix Odoo tests and also help in inmpo of data
         for rec in self:
             if not rec.receiptbook_id:
                 rec.receiptbook_id = rec._get_receiptbook()
