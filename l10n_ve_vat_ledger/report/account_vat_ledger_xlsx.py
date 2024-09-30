@@ -443,7 +443,7 @@ class AccountVatLedgerXlsx(models.AbstractModel):
                                         else reten.amount_company_currency,
                                         line,
                                     )
-                                    ###### IGTF
+                                    # IGTF
                                     sheet.write(row, 26, "", line)
                                     retenciones.remove(reten)
                                     row += 1
@@ -536,7 +536,7 @@ class AccountVatLedgerXlsx(models.AbstractModel):
                     # Total Compras con IVA
                     sheet.write(row, 11, (invoice.amount_total_signed * -1.00), line)
 
-                    ####IMPUESTOS##########
+                    # IMPUESTOS
 
                     base_exento = 0.00
                     base_imponible = 0.00
@@ -989,7 +989,7 @@ class AccountVatLedgerXlsx(models.AbstractModel):
 
                         #############################
 
-                        ####IMPUESTOS##########
+                        # IMPUESTOS
 
                         base_exento = 0.00
                         base_imponible = 0.00
