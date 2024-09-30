@@ -6,7 +6,7 @@
 #
 ###############################################################################
 
-from odoo import api, models
+from odoo import _, api, models
 from odoo.exceptions import ValidationError
 
 
@@ -26,7 +26,9 @@ class ResPartner(models.Model):
                     and record.country_id.code == "VE"
                 ):
                     raise ValidationError(
-                        "El tipo de identificación no corresponde con la compañía tipo persona"
+                        _(
+                            "El tipo de identificación no corresponde con la compañía tipo persona"
+                        )
                     )
             elif record.company_type == "company":
                 if (
@@ -35,5 +37,7 @@ class ResPartner(models.Model):
                     and record.country_id.code == "VE"
                 ):
                     raise ValidationError(
-                        "El tipo de identificación no corresponde con la compañía tipo compañía"
+                        _(
+                            "El tipo de identificación no corresponde con la compañía tipo compañía"
+                        )
                     )
