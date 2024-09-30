@@ -21,7 +21,7 @@ class AccountPayment(models.Model):
         "withholding.distribution", "payment_id", string="distribucion de retencion"
     )
     withholding_number_state = fields.Boolean(
-        string=_("Número de retención editable"),
+        string="Número de retención editable",
         compute="_compute_withholding_number_readonly",
     )
 
