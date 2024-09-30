@@ -267,7 +267,7 @@ class ResumenIVA(models.TransientModel):
             self.write({"content": base64.encodebytes(content)})
             return {
                 "type": "ir.actions.act_url",
-                "url": "web/content/?model={}&field=content&download=true&id={}&filename=Resumen_IVA.xlsx".format(
+                "url": "web/content/?model={}&field=content&download=true&id={}&filename=Resumen_IVA.xlsx".format(  # noqa: F523
                     self._name, self.id, self.date_from, self.date_to
                 ),
             }
