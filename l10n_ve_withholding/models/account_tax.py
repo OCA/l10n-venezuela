@@ -28,7 +28,7 @@ class AccountTax(models.Model):
         ondelete={"tabla_islr": "set default", "partner_tax": "set default"},
     )
 
-    def get_withholding_vals(self, payment_group):
+    def get_withholding_vals(self, payment_group):  # noqa: C901
         commercial_partner = payment_group.commercial_partner_id
 
         force_withholding_amount_type = None
@@ -232,7 +232,7 @@ class AccountTax(models.Model):
         return alicuot
 
     # TODO:Ubicar una mejor forma de hacer el inherit
-    def create_payment_withholdings(self, payment_group):
+    def create_payment_withholdings(self, payment_group):  # noqa: C901
         for tax in self.filtered(lambda x: x.withholding_type != "none"):
             payment_withholding = self.env["account.payment"].search(
                 [

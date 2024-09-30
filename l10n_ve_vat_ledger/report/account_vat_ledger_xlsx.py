@@ -32,7 +32,7 @@ class AccountVatLedgerXlsx(models.AbstractModel):
         json.loads(json_repr, object_hook=_decode_dict)
         return results
 
-    def generate_xlsx_report(self, workbook, data, account_vat):
+    def generate_xlsx_report(self, workbook, data, account_vat):  # noqa: C901
         for obj in account_vat:
             report_name = obj.name
             sheet = workbook.add_worksheet(report_name[:31])
