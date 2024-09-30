@@ -14,7 +14,7 @@
     "author": "SINAPSYS GLOBAL SA, MASTERCORE SAS, Odoo Community Association (OCA)",
     "website": "https://github.com/OCA/l10n-venezuela",
     "category": "Localization",
-    "version": "0.1",
+    "version": "15.0.1.0.1",
     "depends": ["base", "contacts"],
     "data": [
         "data/res.country.csv",
