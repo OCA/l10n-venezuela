@@ -649,7 +649,7 @@ class AccountVatLedgerXlsx(models.AbstractModel):
                                         )
                                     alic_8 = "8%"
 
-                                ## BASE IMPONIBLE 31%
+                                # BASE IMPONIBLE 31%
                                 elif linel.tax_ids[0].amount == 31.00:
                                     _logger.info(
                                         "####### ENTRO ENBASE IMPONIBLE #########"
@@ -723,7 +723,7 @@ class AccountVatLedgerXlsx(models.AbstractModel):
                                 else:
                                     total_iva_8 += iva_8
                                 alic_8 = "8%"
-                            ### IVA 31
+                            # IVA 31
                             elif linel.name == "IVA (31.0%) compras":
                                 iva_31 += linel.debit
                                 if (
@@ -797,7 +797,7 @@ class AccountVatLedgerXlsx(models.AbstractModel):
 
                     # Retenciones
                     sheet.write(row, 25, "", line)
-                    ###### IGTF
+                    # IGTF
                     sheet.write(row, 26, "", line)
 
                 elif obj.type == "sale":
@@ -1292,7 +1292,7 @@ class AccountVatLedgerXlsx(models.AbstractModel):
                         else reten.amount_company_currency,
                         line,
                     )
-                    ###### IGTF
+                    # IGTF
                     sheet.write(row, 26, "", line)
                     _logger.info(reten)
                     _logger.info(retenciones)
