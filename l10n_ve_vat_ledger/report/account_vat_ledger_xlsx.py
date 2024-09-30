@@ -281,9 +281,8 @@ class AccountVatLedgerXlsx(models.AbstractModel):
             total_nota_debito_31 = 0.00
             total_nota_debito_iva_31 = 0.00
             total_igtf = 0.00
-            """
-                Totales columnas ventas
-             """
+
+            # Totales columnas ventas
 
             total_base_exento_contribuyente = 0.00
             total_base_imponible_contribuyente_16 = 0.00
@@ -297,9 +296,7 @@ class AccountVatLedgerXlsx(models.AbstractModel):
             total_base_imponible_no_contribuyente_8 = 0.00
             total_iva_no_contribuyente_8 = 0.00
 
-            """
-                Totales columnas compras
-             """
+            # Totales columnas compras
 
             c_total_base_exento = 0.00
             c_total_base_imponible_16 = 0.00
@@ -311,9 +308,7 @@ class AccountVatLedgerXlsx(models.AbstractModel):
 
             i = 0
 
-            """
-                Retenciones
-             """
+            # Retenciones
             tax_withholding_id = []
             retens = []
             if obj.type == "purchase":
@@ -744,8 +739,7 @@ class AccountVatLedgerXlsx(models.AbstractModel):
                                     total_iva_31 += iva_31
                                 alic_31 = "31%"
 
-                    #########
-                    """ Totales """
+                    # Totales
                     c_total_base_exento += base_exento if base_exento else 0.00
                     c_total_base_imponible_16 += (
                         base_imponible if base_imponible else 0.00
