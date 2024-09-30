@@ -265,9 +265,18 @@ class ResumenIVA(models.TransientModel):
             buffer.close()
 
             self.write({"content": base64.encodebytes(content)})
+            #             url_path = (
+            #                 "/web/content/?model=%s&field=content\
+            # &download=true&id=%s&filename=Resumen_IVA.xlsx"
+            #                 % (self._name, self.id, self.date_from, self.date_to)
+            #             )
+            #             return {
+            #                 "type": "ir.actions.act_url",
+            #                 "url": url_path,
+            #             }
             return {
                 "type": "ir.actions.act_url",
-                "url": "web/content/?model={}&field=content&download=true&id={}&filename=Resumen_IVA.xlsx".format(  # noqa: F523
+                "url": "web/content/?model={}&field=content&download=true&id={}&filename=Resumen_IVA.xlsx".format(  # noqa: F523,B950
                     self._name, self.id, self.date_from, self.date_to
                 ),
             }

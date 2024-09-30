@@ -390,7 +390,7 @@ class AccountVatLedgerXlsx(models.AbstractModel):
                                         10,
                                         "%s-%s"
                                         % (
-                                            reten.move_id.partner_id.l10n_latam_identification_type_id.l10n_ve_code
+                                            reten.move_id.partner_id.l10n_latam_identification_type_id.l10n_ve_code  # noqa: B950
                                             or "FALSE",
                                             reten.move_id.partner_id.vat or "FALSE",
                                         ),
@@ -856,7 +856,7 @@ class AccountVatLedgerXlsx(models.AbstractModel):
                                         8,
                                         "%s-%s"
                                         % (
-                                            reten.move_id.partner_id.l10n_latam_identification_type_id.l10n_ve_code
+                                            reten.move_id.partner_id.l10n_latam_identification_type_id.l10n_ve_code  # noqa: B950
                                             or "FALSE",
                                             reten.move_id.partner_id.vat or "FALSE",
                                         ),
@@ -960,7 +960,7 @@ class AccountVatLedgerXlsx(models.AbstractModel):
                             8,
                             "%s-%s"
                             % (
-                                invoice.partner_id.l10n_latam_identification_type_id.l10n_ve_code
+                                invoice.partner_id.l10n_latam_identification_type_id.l10n_ve_code  # noqa: B950
                                 or "FALSE",
                                 invoice.partner_id.vat or "FALSE",
                             ),
@@ -1240,7 +1240,7 @@ class AccountVatLedgerXlsx(models.AbstractModel):
                         10,
                         "%s-%s"
                         % (
-                            reten.move_id.partner_id.l10n_latam_identification_type_id.l10n_ve_code
+                            reten.move_id.partner_id.l10n_latam_identification_type_id.l10n_ve_code  # noqa: B950
                             or "FALSE",
                             reten.move_id.partner_id.vat or "FALSE",
                         ),
@@ -1331,7 +1331,7 @@ class AccountVatLedgerXlsx(models.AbstractModel):
                         8,
                         "%s-%s"
                         % (
-                            reten.move_id.partner_id.l10n_latam_identification_type_id.l10n_ve_code
+                            reten.move_id.partner_id.l10n_latam_identification_type_id.l10n_ve_code  # noqa: B950
                             or "FALSE",
                             reten.move_id.partner_id.vat or "FALSE",
                         ),
