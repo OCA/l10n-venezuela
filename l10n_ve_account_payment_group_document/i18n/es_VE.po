@@ -116,13 +116,13 @@ msgstr "Recibo del cliente"
 #. module: l10n_ve_account_payment_group_document
 #: model:ir.model.fields,field_description:l10n_ve_account_payment_group_document.field_account_payment_receiptbook__display_name
 msgid "Display Name"
-msgstr "Nombre"
+msgstr "Mostrar nombre"
 
 #. module: l10n_ve_account_payment_group_document
 #: model:ir.model.fields,field_description:l10n_ve_account_payment_group_document.field_account_payment_group__document_number
 #: model:ir.model.fields,field_description:l10n_ve_account_payment_group_document.field_account_payment_group_invoice_wizard__document_number
 msgid "Document Number"
-msgstr "Número del Documento"
+msgstr "Número de Documento"
 
 #. module: l10n_ve_account_payment_group_document
 #: model:ir.model.fields,field_description:l10n_ve_account_payment_group_document.field_account_payment_group__name

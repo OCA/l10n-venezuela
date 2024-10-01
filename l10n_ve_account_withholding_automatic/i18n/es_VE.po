@@ -139,7 +139,7 @@ msgstr "Creado el"
 #. module: l10n_ve_account_withholding_automatic
 #: model:ir.model.fields,field_description:l10n_ve_account_withholding_automatic.field_account_tax_withholding_rule__display_name
 msgid "Display Name"
-msgstr "Nombre"
+msgstr "Mostrar nombre"
 
 #. module: l10n_ve_account_withholding_automatic
 #: model:ir.model.fields,field_description:l10n_ve_account_withholding_automatic.field_account_tax_withholding_rule__domain
@@ -206,7 +206,7 @@ msgstr "Realice retenciones automáticamente en la confirmación de los pagos."
 #. module: l10n_ve_account_withholding_automatic
 #: model:ir.model.fields.selection,name:l10n_ve_account_withholding_automatic.selection__account_tax__withholding_accumulated_payments__month
 msgid "Month"
-msgstr "Mes(es)"
+msgstr "Mes"
 
 #. module: l10n_ve_account_withholding_automatic
 #: code:addons/l10n_ve_account_withholding_automatic/models/account_tax.py:0
@@ -367,7 +367,7 @@ msgstr "Escribir un módulo de cupón de dominio sobre cuenta"
 #. module: l10n_ve_account_withholding_automatic
 #: model:ir.model.fields.selection,name:l10n_ve_account_withholding_automatic.selection__account_tax__withholding_accumulated_payments__year
 msgid "Year"
-msgstr "Año(s)"
+msgstr "Año"
 
 #. module: l10n_ve_account_withholding_automatic
 #: model:ir.model,name:l10n_ve_account_withholding_automatic.model_account_tax_withholding_rule

@@ -481,7 +481,7 @@ msgstr "Fecha"
 #: model:ir.model.fields,field_description:l10n_ve_withholding.field_seniat_tabla_islr__id
 #: model:ir.model.fields,field_description:l10n_ve_withholding.field_seniat_ut__id
 msgid "ID"
-msgstr "Identificador"
+msgstr "ID"
 
 #. module: l10n_ve_withholding
 #: model_terms:ir.ui.view,arch_db:l10n_ve_withholding.report_withholding_certificate_document
@@ -598,12 +598,12 @@ msgstr "Observaciones:"
 #. module: l10n_ve_withholding
 #: model_terms:ir.ui.view,arch_db:l10n_ve_withholding.report_payment_group_document
 msgid "Page: <span class=\"page\"/> / <span class=\"topage\"/>"
-msgstr "Page: <span class=\"page\"/> / <span class=\"topage\"/>"
+msgstr "Página: <span class=\"page\"/> / <span class=\"topage\"/>"
 
 #. module: l10n_ve_withholding
 #: model:ir.model.fields,field_description:l10n_ve_withholding.field_account_payment_group__partner_regimen_islr_ids
 msgid "Partner Regimen Islr"
-msgstr "Régimen de pareja Islr"
+msgstr "Régimen de socio Islr"
 
 #. module: l10n_ve_withholding
 #: model:ir.model,name:l10n_ve_withholding.model_account_payment_group

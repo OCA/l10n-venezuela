@@ -825,12 +825,12 @@ msgstr "Surgir"
 #: model_terms:ir.ui.view,arch_db:l10n_ve_account_payment_group.view_account_payment_group_search
 #: model_terms:ir.ui.view,arch_db:l10n_ve_account_payment_group.view_account_payment_transfer_search
 msgid "Posted"
-msgstr "Al corriente"
+msgstr "Publicado"
 
 #. module: l10n_ve_account_payment_group
 #: model_terms:ir.ui.view,arch_db:l10n_ve_account_payment_group.view_account_payment_group_form
 msgid "Print"
-msgstr "Impresión"
+msgstr "Imprimir"
 
 #. module: l10n_ve_account_payment_group
 #: model:ir.model.fields,field_description:l10n_ve_account_payment_group.field_account_payment_group_invoice_wizard__product_id
@@ -877,7 +877,7 @@ msgstr "Fecha de Devolución"
 #: model_terms:ir.ui.view,arch_db:l10n_ve_account_payment_group.view_account_payment_group_form
 #, python-format
 msgid "Register Payment"
-msgstr "Registro de pago"
+msgstr "Registrar pago"
 
 #. module: l10n_ve_account_payment_group
 #: model_terms:ir.ui.view,arch_db:l10n_ve_account_payment_group.view_account_payment_group_form
@@ -887,7 +887,7 @@ msgstr "Eliminar todo"
 #. module: l10n_ve_account_payment_group
 #: model:ir.model.fields,field_description:l10n_ve_account_payment_group.field_account_payment_group__message_has_sms_error
 msgid "SMS Delivery error"
-msgstr "Error de entrega de SMS"
+msgstr "Error de entrega del SMS"
 
 #. module: l10n_ve_account_payment_group
 #: model:res.groups,name:l10n_ve_account_payment_group.account_see_payment_menu
@@ -933,7 +933,7 @@ msgstr "Enviado"
 #. module: l10n_ve_account_payment_group
 #: model_terms:ir.ui.view,arch_db:l10n_ve_account_payment_group.view_account_payment_group_form
 msgid "Set to Draft"
-msgstr "Establecer en borrador"
+msgstr "Cambiar a borrador"
 
 #. module: l10n_ve_account_payment_group
 #: model:ir.model.fields,field_description:l10n_ve_account_payment_group.field_account_payment__signed_amount
@@ -1014,7 +1014,7 @@ msgstr "Transferir a"
 #: model:ir.ui.menu,name:l10n_ve_account_payment_group.menu_action_account_payments_transfer
 #: model_terms:ir.ui.view,arch_db:l10n_ve_account_payment_group.view_account_payment_transfer_search
 msgid "Transfers"
-msgstr "Traslados"
+msgstr "Transferencias"
 
 #. module: l10n_ve_account_payment_group
 #: model:ir.model.fields,field_description:l10n_ve_account_payment_group.field_account_payment_group__unmatched_amount
@@ -1024,12 +1024,12 @@ msgstr "Monto incomparable"
 #. module: l10n_ve_account_payment_group
 #: model:ir.model.fields,field_description:l10n_ve_account_payment_group.field_account_payment_group__message_unread
 msgid "Unread Messages"
-msgstr "Mensajes no leídos"
+msgstr "Mensajes sin leer"
 
 #. module: l10n_ve_account_payment_group
 #: model:ir.model.fields,field_description:l10n_ve_account_payment_group.field_account_payment_group__message_unread_counter
 msgid "Unread Messages Counter"
-msgstr "Contador de mensajes no leídos"
+msgstr "Contador de mensajes sin leer"
 
 #. module: l10n_ve_account_payment_group
 #: model:ir.model.fields,field_description:l10n_ve_account_payment_group.field_account_payment_group_invoice_wizard__amount_untaxed
@@ -1079,7 +1079,7 @@ msgstr "Mensajes del sitio web"
 #. module: l10n_ve_account_payment_group
 #: model:ir.model.fields,help:l10n_ve_account_payment_group.field_account_payment_group__website_message_ids
 msgid "Website communication history"
-msgstr "Historial de comunicación del sitio web"
+msgstr "Historia de comunicación del sitio web"
 
 #. module: l10n_ve_account_payment_group
 #: code:addons/l10n_ve_account_payment_group/models/account_payment_group.py:0
