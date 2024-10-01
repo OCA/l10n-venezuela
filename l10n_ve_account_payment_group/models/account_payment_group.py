@@ -87,7 +87,7 @@ class AccountPaymentGroup(models.Model):
     matched_amount_untaxed = fields.Monetary(
         compute="_compute_matched_amount_untaxed", currency_field="currency_id",
     )
-    selected_finacial_debt = fields.Monetary(
+    selected_financial_debt = fields.Monetary(
         string="Selected Financial Debt", compute="_compute_selected_debt",
     )
     selected_debt = fields.Monetary(

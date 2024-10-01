@@ -739,7 +739,7 @@ msgid "Selected Debt taxed"
 msgstr "Deuda seleccionada gravada"
 
 #. module: l10n_ve_withholding
-#: model:ir.model.fields,field_description:l10n_ve_withholding.field_account_payment_group__selected_finacial_debt_currency
+#: model:ir.model.fields,field_description:l10n_ve_withholding.field_account_payment_group__selected_financial_debt_currency
 msgid "Selected Financial Debt in foreign currency"
 msgstr "Deuda Seleccionada en Divisas"
 
