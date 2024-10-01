@@ -14,7 +14,7 @@ class AccountTax(models.Model):
     withholding_non_taxable_amount = fields.Float(
         "Non-taxable Amount",
         digits="Account",
-        help="Amount to be substracted before applying alicuot",
+        help="Amount to be subtracted before applying aliquot",
     )
     withholding_non_taxable_minimum = fields.Float(
         "Non-taxable Minimum",
@@ -144,8 +144,8 @@ result = withholdable_base_amount * 0.10
 
             # we set computed_withholding_amount, hacemos round porque
             # si no puede pasarse un valor con mas decimales del que se ve
-            # y terminar dando error en el asiento por debitos y creditos no
-            # son iguales, algo parecido hace odoo en el compute_all de taxes
+            # y terminar dando error en el asiento por débitos y créditos no
+            # son iguales, algo parecido hace Odoo en el compute_all de taxes
             currency = payment_group.currency_id
             period_withholding_amount = currency.round(
                 vals.get("period_withholding_amount", 0.0)
@@ -249,7 +249,7 @@ result = withholdable_base_amount * 0.10
         """
         If you wan to inherit and implement your own type, the most important
         value tu return are period_withholding_amount and
-        previous_withholding_amount, with thos values the withholding amount
+        previous_withholding_amount, with those values the withholding amount
         will be calculated.
         """
         self.ensure_one()

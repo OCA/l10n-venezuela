@@ -218,7 +218,7 @@ class AccountPaymentGroup(models.Model):
             if rec.state != "posted":
                 continue
             # damos vuelta signo porque el payments_amount tmb lo da vuelta,
-            # en realidad porque siempre es positivo y se define en funcion
+            # en realidad porque siempre es positivo y se define en función
             # a si es pago entrante o saliente
             sign = rec.partner_type == "supplier" and -1.0 or 1.0
             rec.matched_amount = sign * sum(
@@ -229,7 +229,7 @@ class AccountPaymentGroup(models.Model):
             rec.unmatched_amount = rec.payments_amount - rec.matched_amount
 
     def _compute_matched_amount_untaxed(self):
-        """ Lo separamos en otro metodo ya que es un poco mas costoso y no se
+        """Lo separamos en otro método ya que es un poco mas costoso y no se
         usa en conjunto con matched_amount
         """
         for rec in self:
@@ -267,12 +267,12 @@ class AccountPaymentGroup(models.Model):
         return [("id", "in", recs.ids)]
 
     def _compute_payment_methods(self):
-        # TODO tal vez sea interesante sumar al string el metodo en si mismo
+        # TODO tal vez sea interesante sumar al string el método en si mismo
         # (manual, cheque, etc)
 
-        # tuvmos que hacerlo asi sudo porque si no tenemos error, si agregamos
+        # tuvimos que hacerlo asi sudo porque si no tenemos error, si agregamos
         # el sudo al self o al rec no se computa el valor, probamos tmb
-        # haciendo compute sudo y no anduvo, la unica otra alternativa que
+        # haciendo compute sudo y no anduvo, la única otra alternativa que
         # funciono es el search de arriba (pero que no muestra todos los
         # names)
         for rec in self:
@@ -350,8 +350,8 @@ class AccountPaymentGroup(models.Model):
         """
         Lar partial reconcile vinculan dos apuntes con credit_move_id y
         debit_move_id.
-        Buscamos primeros todas las que tienen en credit_move_id algun apunte
-        de los que se genero con un pago, etnonces la contrapartida
+        Buscamos primeros todas las que tienen en credit_move_id algún apunte
+        de los que se genero con un pago, entonces la contrapartida
         (debit_move_id), son cosas que se pagaron con este pago. Repetimos
         al revz (debit_move_id vs credit_move_id)
         """
@@ -410,18 +410,18 @@ class AccountPaymentGroup(models.Model):
     )
     def _compute_selected_debt(self):
         for rec in self:
-            selected_finacial_debt = 0.0
+            selected_financial_debt = 0.0
             selected_debt = 0.0
             selected_debt_untaxed = 0.0
             for line in rec.to_pay_move_line_ids:
-                selected_finacial_debt += line.financial_amount_residual
+                selected_financial_debt += line.financial_amount_residual
                 selected_debt += line.amount_residual
                 # factor for total_untaxed
                 invoice = line.move_id
                 factor = invoice and invoice._get_tax_factor() or 1.0
                 selected_debt_untaxed += line.amount_residual * factor
             sign = rec.partner_type == "supplier" and -1.0 or 1.0
-            rec.selected_finacial_debt = selected_finacial_debt * sign
+            rec.selected_financial_debt = selected_financial_debt * sign
             rec.selected_debt = selected_debt * sign
             rec.selected_debt_untaxed = selected_debt_untaxed * sign
 
@@ -524,7 +524,7 @@ class AccountPaymentGroup(models.Model):
 
     def unreconcile(self):
         self.mapped("payment_ids").unreconcile()
-        # TODO en alguos casos setear sent como en payment?
+        # TODO en algunos casos definir sent como en payment?
         self.write({"state": "posted"})
 
     def cancel(self):
@@ -563,7 +563,7 @@ class AccountPaymentGroup(models.Model):
                     _("You can not confirm a payment group without payment " "lines!")
                 )
             # si el pago se esta posteando desde statements y hay doble
-            # validacion no verificamos que haya deuda seleccionada
+            # validación no verificamos que haya deuda seleccionada
             if (
                 rec.payment_subtype == "double_validation"
                 and rec.payment_difference
@@ -576,7 +576,7 @@ class AccountPaymentGroup(models.Model):
             writeoff_acc_id = False
             writeoff_journal_id = False
 
-            # al crear desde website odoo crea primero el pago y lo postea
+            # al crear desde website Odoo crea primero el pago y lo postea
             # y no debemos re-postearlo
             if not create_from_website and not create_from_expense:
                 rec.payment_ids.sorted(key=lambda l: l.signed_amount).filtered(

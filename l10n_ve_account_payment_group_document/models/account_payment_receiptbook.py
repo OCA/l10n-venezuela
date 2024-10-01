@@ -13,7 +13,7 @@ class AccountPaymentReceiptbook(models.Model):
 
     _name = "account.payment.receiptbook"
     _description = "Account payment Receiptbook"
-    # analogo a account.journal.document.type pero para pagos
+    # análogo a account.journal.document.type pero para pagos
     _order = "sequence asc"
 
     report_partner_id = fields.Many2one("res.partner",)

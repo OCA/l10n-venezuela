@@ -45,7 +45,7 @@ class AccountPayment(models.Model):
                 % (without_sequence.ids)
             )
 
-        # a los que tienen secuencia les setamos el numero desde secuencia
+        # a los que tienen secuencia les definimos el numero desde secuencia
         for payment in without_number - without_sequence:
             payment.withholding_number = (
                 payment.tax_withholding_id.withholding_sequence_id.next_by_id()
@@ -84,7 +84,7 @@ class AccountPayment(models.Model):
                 raise UserError(
                     _(
                         "En los impuestos de retención debe haber una línea de repartición "
-                        "de tipo tax para pagos y otra para reembolsos"
+                        "de tipo tax para pagos y otra para re-embolso"
                     )
                 )
             account = rep_lines.account_id

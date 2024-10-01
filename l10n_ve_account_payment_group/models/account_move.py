@@ -33,7 +33,7 @@ class AccountMove(models.Model):
 
     def _compute_payment_groups(self):
         """
-        El campo en invoices "payment_id" no lo seteamos con los payment groups
+        El campo en invoices "payment_id" no lo definimos con los payment groups
         Por eso tenemos que calcular este campo
         """
         for rec in self:
@@ -98,8 +98,8 @@ class AccountMove(models.Model):
                 and rec.invoice_payment_state == "not_paid"
             ):
                 # si bien no hace falta mandar el partner_type al paygroup
-                # porque el defaults lo calcula solo en funcion al tipo de
-                # cuenta, es mas claro mandarlo y podria evitar error si
+                # porque el defaults lo calcula solo en función al tipo de
+                # cuenta, es mas claro mandarlo y podría evitar error si
                 # estamos usando cuentas cruzadas (payable, receivable) con
                 # tipo de factura
                 if rec.type in ["in_invoice", "in_refund"]:

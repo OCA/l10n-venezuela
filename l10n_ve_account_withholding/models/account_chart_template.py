@@ -45,7 +45,7 @@ class AccountChartTemplate(models.Model):
             )
             bank_journals += journal
 
-            # we dont want this journal to have accounts and we can not inherit
+            # we don't want this journal to have accounts and we can not inherit
             # to avoid creation, so we delete it
             to_unlink = journal.default_credit_account_id
             journal.default_credit_account_id = False

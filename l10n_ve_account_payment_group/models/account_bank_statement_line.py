@@ -6,7 +6,7 @@ class AccountBankStatementLine(models.Model):
 
     def button_cancel_reconciliation(self):
         """On statement line cancel, cancel and delete related payment group.
-        We couldnt overwrite payments "unreconcile" because it is call
+        We couldn't overwrite payments "unreconcile" because it is call
         with payment_to_unreconcile and payment_to_cancel and we only want to
         delete payment_to_cancel
         """
