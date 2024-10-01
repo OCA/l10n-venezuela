@@ -20,7 +20,7 @@ class ResConfigSettings(models.TransientModel):
         "Allow pay now on vendor invoices?",
         help="Allow users to choose a payment journal on invoices so that "
         "invoice is automatically paid after invoice validation. A payment "
-        "will be created using choosen journal",
+        "will be created using chosen journal",
         implied_group="l10n_ve_account_payment_group.group_pay_now_vendor_invoices",
     )
     double_validation = fields.Boolean(

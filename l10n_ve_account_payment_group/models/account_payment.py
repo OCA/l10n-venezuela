@@ -88,7 +88,7 @@ class AccountPayment(models.Model):
     def onchange_payment_group_id(self):
         # now we change this according when use save & new the context
         # from the payment was erased and we need to use some data.
-        # this change is due this odoo change
+        # this change is due this Odoo change
         # https://github.com/odoo/odoo/commit/c14b17c4855fd296fd804a45eab02b6d3566bb7a
         if self.payment_group_id:
             self.payment_group_company_id = self.payment_group_id.company_id
@@ -394,7 +394,7 @@ class AccountPayment(models.Model):
                     )
 
                 # Si se esta forzando importe en moneda de cia, usamos este
-                # importe para debito/credito
+                # importe para débito/crédito
                 if rec.force_amount_company_currency:
                     for line in move_vals["line_ids"]:
                         if line[2].get("debit"):

@@ -23,8 +23,8 @@ class AccountTax(models.Model):
 
         force_withholding_amount_type = None
         if self.withholding_type == "partner_tax" and payment_group.iva is True:
-            alicuota_retencion = self.get_partner_aliquot(commercial_partner)
-            alicuota = int(alicuota_retencion) / 100.0
+            aliquot_withholding = self.get_partner_aliquot(commercial_partner)
+            aliquot= int(aliquot_withholding) / 100.0
             force_withholding_amount_type = self.withholding_amount_type
 
             vals = super(AccountTax, self).get_withholding_vals(
@@ -34,8 +34,8 @@ class AccountTax(models.Model):
             base_invoice = [
                 int(x.balance) * -1.0 for x in payment_group.to_pay_move_line_ids
             ][0]
-            amount = base_amount * (alicuota)
-            vals["comment_withholding"] = "%s x %s" % (base_amount, alicuota)
+            amount = base_amount * (aliquot)
+            vals["comment_withholding"] = "%s x %s" % (base_amount, aliquot)
             vals["total_amount"] = base_invoice
             vals["withholdable_invoiced_amount"] = payment_group.selected_debt_untaxed
             vals["withholdable_base_amount"] = base_amount

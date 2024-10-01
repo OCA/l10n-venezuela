@@ -56,7 +56,7 @@ class AccountVatLedgerXlsx(models.AbstractModel):
             total_amount_untaxed = 0
             total_amount = 0
             total_amount_other_tax = 0
-            total_retencion = 0
+            total_withholding = 0
             i = 0
             for invoice in reversed(obj.invoice_ids):
                 if obj.type == "purchase":
@@ -207,12 +207,12 @@ class AccountVatLedgerXlsx(models.AbstractModel):
                         total_amount_taxed += 0
                         total_amount_untaxed += 0
                         total_amount += 0
-                        total_retencion += 0
+                        total_withholding += 0
                     else:
                         total_amount_taxed += invoice.amount_tax_signed
                         total_amount_untaxed += invoice.amount_untaxed_signed
                         total_amount += invoice.amount_total_signed
-                        total_retencion += reten
+                        total_withholding += reten
                     row += 1
 
             # # Write totals lines
@@ -221,4 +221,4 @@ class AccountVatLedgerXlsx(models.AbstractModel):
             sheet.write(row, 12, total_amount_taxed, bold)
             sheet.write(row, 13, total_amount, bold)
             sheet.write(row, 14, total_amount_other_tax, bold)
-            sheet.write(row, 15, total_retencion, bold)
+            sheet.write(row, 15, total_withholding, bold)

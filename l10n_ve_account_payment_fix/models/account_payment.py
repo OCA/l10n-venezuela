@@ -204,7 +204,7 @@ class AccountPayment(models.Model):
     def _compute_destination_account_id(self):
         """
         We send force_company on context so payments can be created from parent
-        companies. We try to send force_company on self but it doesnt works, it
+        companies. We try to send force_company on self but it doesn't works, it
         only works sending it on partner
         """
         res = super(AccountPayment, self)._compute_destination_account_id()

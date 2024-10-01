@@ -55,8 +55,8 @@ msgstr "Importe"
 
 #. module: l10n_ve_account_withholding_automatic
 #: model:ir.model.fields,help:l10n_ve_account_withholding_automatic.field_account_tax__withholding_non_taxable_amount
-msgid "Amount to be substracted before applying alicuot"
-msgstr "Cantidad a restar antes de aplicar alicuota"
+msgid "Amount to be substracted before applying aliquot"
+msgstr "Cantidad a restar antes de aplicar alícuota"
 
 #. module: l10n_ve_account_withholding_automatic
 #: model:ir.model.fields,help:l10n_ve_account_withholding_automatic.field_account_tax__withholding_non_taxable_minimum

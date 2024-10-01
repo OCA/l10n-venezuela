@@ -477,7 +477,7 @@ class AccountPaymentGroup(models.Model):
 
     @api.model
     def default_get(self, defaul_fields):
-        # TODO si usamos los move lines esto no haria falta
+        # TODO si usamos los move lines esto no haría falta
         rec = super().default_get(defaul_fields)
         rec["payment_date"] = fields.Date.context_today(self)
         to_pay_move_line_ids = self._context.get("to_pay_move_line_ids")
@@ -588,7 +588,7 @@ class AccountPaymentGroup(models.Model):
                 and r.account_id.internal_type in ("payable", "receivable")
             )
 
-            # porque la cuenta podria ser no recivible y ni conciliable
+            # porque la cuenta podría ser no recivible y ni conciliable
             # (por ejemplo en sipreco)
             if counterpart_aml and rec.to_pay_move_line_ids:
                 (counterpart_aml + (rec.to_pay_move_line_ids)).reconcile(
