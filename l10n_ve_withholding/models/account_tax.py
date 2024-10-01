@@ -24,7 +24,7 @@ class AccountTax(models.Model):
         force_withholding_amount_type = None
         if self.withholding_type == "partner_tax" and payment_group.iva is True:
             aliquot_withholding = self.get_partner_aliquot(commercial_partner)
-            aliquot= int(aliquot_withholding) / 100.0
+            aliquot = int(aliquot_withholding) / 100.0
             force_withholding_amount_type = self.withholding_amount_type
 
             vals = super(AccountTax, self).get_withholding_vals(
