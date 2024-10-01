@@ -52,7 +52,7 @@ msgstr "Activo"
 #. module: l10n_ve_account_payment_group_document
 #: model:ir.model.fields,field_description:l10n_ve_account_payment_group_document.field_account_payment_receiptbook__next_number
 msgid "Actual Next Number"
-msgstr "Número Siguiente Real"
+msgstr "Número siguiente real"
 
 #. module: l10n_ve_account_payment_group_document
 #: model:ir.model.fields,help:l10n_ve_account_payment_group_document.field_l10n_latam_document_type__internal_type
@@ -96,7 +96,7 @@ msgstr "Creado por"
 #. module: l10n_ve_account_payment_group_document
 #: model:ir.model.fields,field_description:l10n_ve_account_payment_group_document.field_account_payment_receiptbook__create_date
 msgid "Created on"
-msgstr "Creado en"
+msgstr "Creado el"
 
 #. module: l10n_ve_account_payment_group_document
 #: model:ir.actions.act_window,name:l10n_ve_account_payment_group_document.action_account_payment_group_invoice_wizard
@@ -140,7 +140,7 @@ msgstr "Secuencia de documentos"
 #: model:ir.model.fields,field_description:l10n_ve_account_payment_group_document.field_account_payment_receiptbook__document_type_id
 #: model_terms:ir.ui.view,arch_db:l10n_ve_account_payment_group_document.view_account_payment_group_invoice_wizard
 msgid "Document Type"
-msgstr "Tipo de Documento"
+msgstr "Tipo de documento"
 
 #. module: l10n_ve_account_payment_group_document
 #: model:ir.model.constraint,message:l10n_ve_account_payment_group_document.constraint_account_payment_group_name_uniq
@@ -322,7 +322,7 @@ msgstr ""
 #. module: l10n_ve_account_payment_group_document
 #: model:ir.model.fields,field_description:l10n_ve_account_payment_group_document.field_account_payment_group_invoice_wizard__use_documents
 msgid "Use Documents?"
-msgstr "Usa Documentos?"
+msgstr "¿Usar documentos?"
 
 #. module: l10n_ve_account_payment_group_document
 #: model:ir.model.fields,help:l10n_ve_account_payment_group_document.field_account_payment_receiptbook__sequence

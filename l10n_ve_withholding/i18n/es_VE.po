@@ -488,12 +488,12 @@ msgstr "Fact:"
 #. module: l10n_ve_withholding
 #: model:ir.model.fields,field_description:l10n_ve_withholding.field_seniat_tabla_islr__factor_id
 msgid "Factor Calculo"
-msgstr "Factor Calculo"
+msgstr "Factor Cálculo"
 
 #. module: l10n_ve_withholding
 #: model:ir.ui.menu,name:l10n_ve_withholding.menu_action_seniat_factor
 msgid "Factor de calculo ISLR"
-msgstr "Factor de calculo ISLR"
+msgstr "Factor de cálculo ISLR"
 
 #. module: l10n_ve_withholding
 #: model:ir.model.fields,field_description:l10n_ve_withholding.field_seniat_factor__date
@@ -646,12 +646,12 @@ msgstr "Página: <span class=\"page\"/> / <span class=\"topage\"/>"
 #. module: l10n_ve_withholding
 #: model:ir.model.fields,field_description:l10n_ve_withholding.field_account_payment_group__partner_regimen_islr_ids
 msgid "Partner Regimen Islr"
-msgstr "Régimen Islr"
+msgstr "Régimen de socio Islr"
 
 #. module: l10n_ve_withholding
 #: model:ir.model,name:l10n_ve_withholding.model_account_payment_group
 msgid "Payment Group"
-msgstr "Grupo de Pago"
+msgstr "Grupo de pago"
 
 #. module: l10n_ve_withholding
 #: model:ir.model,name:l10n_ve_withholding.model_account_payment
@@ -707,7 +707,7 @@ msgstr "Régimen ISLR Aplicar"
 #: model:ir.actions.act_window,name:l10n_ve_withholding.act_seniat_factor
 #: model_terms:ir.ui.view,arch_db:l10n_ve_withholding.view_seniat_factor_tree
 msgid "SENIAT Factor de calculo ISLR"
-msgstr "SENIAT Factor de calculo ISLR"
+msgstr "SENIAT Factor de cálculo ISLR"
 
 #. module: l10n_ve_withholding
 #: model:ir.actions.act_window,name:l10n_ve_withholding.act_seniat_tabla_islr
@@ -794,7 +794,7 @@ msgstr "El método de cálculo del monto del impuesto."
 #: model:ir.model.fields,field_description:l10n_ve_withholding.field_banda_calculo__type_subtracting_rel
 #: model:ir.model.fields,field_description:l10n_ve_withholding.field_seniat_tabla_islr__type_subtracting
 msgid "Tipo Calculo"
-msgstr "Tipo Cálculo"
+msgstr "Tipo de Cálculo"
 
 #. module: l10n_ve_withholding
 #: model:ir.model.fields,field_description:l10n_ve_withholding.field_banda_calculo__type_amount
@@ -825,7 +825,7 @@ msgstr "Tipo de persona para la retención ISLR"
 #. module: l10n_ve_withholding
 #: model:ir.model.fields,help:l10n_ve_withholding.field_banda_calculo__type_amount
 msgid "Tipo por el cual expresan los montos minimos o maximos"
-msgstr "Tipo por el cual expresan los montos minimos o maximos"
+msgstr "Tipo por el cual expresan los montos mínimos o máximos"
 
 #. module: l10n_ve_withholding
 #: model:ir.model.fields,field_description:l10n_ve_withholding.field_account_tax__withholding_type

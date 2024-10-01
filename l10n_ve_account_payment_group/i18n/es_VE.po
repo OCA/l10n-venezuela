@@ -317,7 +317,7 @@ msgstr "Moneda de la empresa"
 #: code:addons/l10n_ve_account_payment_group/models/account_payment_group.py:0
 #, python-format
 msgid "Compose Email"
-msgstr "Componer correo electrónico"
+msgstr "Escribir correo electrónico"
 
 #. module: l10n_ve_account_payment_group
 #: model:ir.model,name:l10n_ve_account_payment_group.model_res_config_settings
@@ -350,7 +350,7 @@ msgstr "Creado por"
 #: model:ir.model.fields,field_description:l10n_ve_account_payment_group.field_account_payment_group__create_date
 #: model:ir.model.fields,field_description:l10n_ve_account_payment_group.field_account_payment_group_invoice_wizard__create_date
 msgid "Created on"
-msgstr "Creado en"
+msgstr "Creado el"
 
 #. module: l10n_ve_account_payment_group
 #: model:ir.actions.act_window,name:l10n_ve_account_payment_group.action_account_payment_group_invoice_wizard
@@ -573,7 +573,7 @@ msgstr "Líneas que se han emparejado con pagos, solo disponibles después de la
 #. module: l10n_ve_account_payment_group
 #: model:ir.model.fields,field_description:l10n_ve_account_payment_group.field_account_payment_group__message_main_attachment_id
 msgid "Main Attachment"
-msgstr "Adjuntos principales"
+msgstr "Adjunto principal"
 
 #. module: l10n_ve_account_payment_group
 #: model:ir.model.fields,field_description:l10n_ve_account_payment_group.field_account_payment_group__matched_amount
@@ -838,7 +838,7 @@ msgstr "Producto"
 #. module: l10n_ve_account_payment_group
 #: model:ir.model.fields,field_description:l10n_ve_account_payment_group.field_account_payment_group_invoice_wizard__description
 msgid "Reason"
-msgstr "Motivo"
+msgstr "Razón"
 
 #. module: l10n_ve_account_payment_group
 #: model:mail.template,report_name:l10n_ve_account_payment_group.email_template_edi_payment_group
@@ -947,7 +947,7 @@ msgstr "Estado"
 #. module: l10n_ve_account_payment_group
 #: model:ir.model.fields,field_description:l10n_ve_account_payment_group.field_account_payment_group__state
 msgid "Status"
-msgstr "Estado"
+msgstr "Estatus"
 
 #. module: l10n_ve_account_payment_group
 #: model:ir.actions.act_window,name:l10n_ve_account_payment_group.action_account_payments_group_payable
@@ -1077,7 +1077,7 @@ msgstr "Mensajes del sitio web"
 #. module: l10n_ve_account_payment_group
 #: model:ir.model.fields,help:l10n_ve_account_payment_group.field_account_payment_group__website_message_ids
 msgid "Website communication history"
-msgstr "Historial de comunicaciones del sitio web"
+msgstr "Historia de comunicación del sitio web"
 
 #. module: l10n_ve_account_payment_group
 #: code:addons/l10n_ve_account_payment_group/models/account_payment_group.py:0

@@ -134,7 +134,7 @@ msgstr "Creado por"
 #. module: l10n_ve_account_withholding_automatic
 #: model:ir.model.fields,field_description:l10n_ve_account_withholding_automatic.field_account_tax_withholding_rule__create_date
 msgid "Created on"
-msgstr "Creado en"
+msgstr "Creado el"
 
 #. module: l10n_ve_account_withholding_automatic
 #: model:ir.model.fields,field_description:l10n_ve_account_withholding_automatic.field_account_tax_withholding_rule__display_name

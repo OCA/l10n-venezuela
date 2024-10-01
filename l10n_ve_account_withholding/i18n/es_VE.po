@@ -37,7 +37,7 @@ msgstr "Compañías"
 #: model:ir.model.fields.selection,name:l10n_ve_account_withholding.selection__account_tax_template__type_tax_use__customer
 #: model_terms:ir.ui.view,arch_db:l10n_ve_account_withholding.view_account_tax_search
 msgid "Customer Payment"
-msgstr "Pago de cliente"
+msgstr "Pago del Cliente"
 
 #. module: l10n_ve_account_withholding
 #: model:ir.model.fields,help:l10n_ve_account_withholding.field_account_tax_template__type_tax_use
