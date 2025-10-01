@@ -1,0 +1,335 @@
+id,code,country_id/id,name,state_id/id
+res_country_municipality_1,1,base.ve,Libertador,res_country_state_1
+res_country_municipality_2,2,base.ve,Alto Orinoco,res_country_state_2
+res_country_municipality_3,3,base.ve,San Fernando de Atabapo,res_country_state_2
+res_country_municipality_4,4,base.ve,Atures,res_country_state_2
+res_country_municipality_5,5,base.ve,Autana,res_country_state_2
+res_country_municipality_6,6,base.ve,Guainia,res_country_state_2
+res_country_municipality_7,7,base.ve,Manapiare,res_country_state_2
+res_country_municipality_8,8,base.ve,San Carlos de Rio Negro,res_country_state_2
+res_country_municipality_9,9,base.ve,Anaco,res_country_state_3
+res_country_municipality_10,10,base.ve,Aragua,res_country_state_3
+res_country_municipality_11,11,base.ve,San Juan de Capistrano,res_country_state_3
+res_country_municipality_12,12,base.ve,Simon Bolivar,res_country_state_3
+res_country_municipality_13,13,base.ve,Manuel Ezequiel Bruzal,res_country_state_3
+res_country_municipality_14,14,base.ve,Juan Manuel Cajigal,res_country_state_3
+res_country_municipality_15,15,base.ve,Francisco del Carmen Carvajal,res_country_state_3
+res_country_municipality_16,16,base.ve,Pedro Maria Freites,res_country_state_3
+res_country_municipality_17,17,base.ve,General Sir Arthur Mc Gregor,res_country_state_3
+res_country_municipality_18,18,base.ve,San Jose de Guanipa,res_country_state_3
+res_country_municipality_19,19,base.ve,Guanta,res_country_state_3
+res_country_municipality_20,20,base.ve,Independencia,res_country_state_3
+res_country_municipality_21,21,base.ve,Libertad,res_country_state_3
+res_country_municipality_22,22,base.ve,Lic. Diego Bautista Urbaneja,res_country_state_3
+res_country_municipality_23,23,base.ve,Francisco de Miranda,res_country_state_3
+res_country_municipality_24,24,base.ve,Jose Gregorio Monagas,res_country_state_3
+res_country_municipality_25,25,base.ve,Fernando Peñalver,res_country_state_3
+res_country_municipality_26,26,base.ve,Piritu,res_country_state_3
+res_country_municipality_27,27,base.ve,Santa Ana,res_country_state_3
+res_country_municipality_28,28,base.ve,Simon Rodriguez,res_country_state_3
+res_country_municipality_29,29,base.ve,Juan Antonio Sotillo,res_country_state_3
+res_country_municipality_30,30,base.ve,Achaguas,res_country_state_4
+res_country_municipality_31,31,base.ve,Biruaca,res_country_state_4
+res_country_municipality_32,32,base.ve,Muñoz,res_country_state_4
+res_country_municipality_33,33,base.ve,Paez,res_country_state_4
+res_country_municipality_34,34,base.ve,Pedro Camejo,res_country_state_4
+res_country_municipality_35,35,base.ve,Rómulo Gallegos,res_country_state_4
+res_country_municipality_36,36,base.ve,San Fernando,res_country_state_4
+res_country_municipality_37,37,base.ve,Bolivar,res_country_state_5
+res_country_municipality_38,38,base.ve,Camatagua,res_country_state_5
+res_country_municipality_39,39,base.ve,Girardot,res_country_state_5
+res_country_municipality_40,40,base.ve,José Angel Lamas,res_country_state_5
+res_country_municipality_41,41,base.ve,José Félix Ribas,res_country_state_5
+res_country_municipality_42,42,base.ve,José Rafael Revenga,res_country_state_5
+res_country_municipality_43,43,base.ve,Libertador,res_country_state_5
+res_country_municipality_44,44,base.ve,Mario Briceño Iragorry,res_country_state_5
+res_country_municipality_45,45,base.ve,San Casimiro,res_country_state_5
+res_country_municipality_46,46,base.ve,San Sebastián,res_country_state_5
+res_country_municipality_47,47,base.ve,Santiago Mariño,res_country_state_5
+res_country_municipality_48,48,base.ve,Santos Michelena,res_country_state_5
+res_country_municipality_49,49,base.ve,Sucre,res_country_state_5
+res_country_municipality_50,50,base.ve,Tovar,res_country_state_5
+res_country_municipality_51,51,base.ve,Urdaneta,res_country_state_5
+res_country_municipality_52,52,base.ve,Zamora,res_country_state_5
+res_country_municipality_53,53,base.ve,Ocumare de la Costa de Oro,res_country_state_5
+res_country_municipality_54,54,base.ve,Francisco Linares Alcantara,res_country_state_5
+res_country_municipality_55,55,base.ve,Alberto Arvelo Torrealba,res_country_state_6
+res_country_municipality_56,56,base.ve,Antonio Jose de Sucre,res_country_state_6
+res_country_municipality_57,57,base.ve,Arismendi,res_country_state_6
+res_country_municipality_58,58,base.ve,Barinas,res_country_state_6
+res_country_municipality_59,59,base.ve,Bolivar,res_country_state_6
+res_country_municipality_60,60,base.ve,Cruz Paredes,res_country_state_6
+res_country_municipality_61,61,base.ve,Ezequiel Zamora,res_country_state_6
+res_country_municipality_62,62,base.ve,Obispos,res_country_state_6
+res_country_municipality_63,63,base.ve,Pedraza,res_country_state_6
+res_country_municipality_64,64,base.ve,Rojas,res_country_state_6
+res_country_municipality_65,65,base.ve,Sosa,res_country_state_6
+res_country_municipality_66,66,base.ve,Caroní,res_country_state_7
+res_country_municipality_67,67,base.ve,Cedeño,res_country_state_7
+res_country_municipality_68,68,base.ve,El Callao,res_country_state_7
+res_country_municipality_69,69,base.ve,Gran Sabana,res_country_state_7
+res_country_municipality_70,70,base.ve,Heres,res_country_state_7
+res_country_municipality_71,71,base.ve,Piar,res_country_state_7
+res_country_municipality_72,72,base.ve,Raul Leoni,res_country_state_7
+res_country_municipality_73,73,base.ve,Roscio,res_country_state_7
+res_country_municipality_74,74,base.ve,Sifontes,res_country_state_7
+res_country_municipality_75,75,base.ve,Sucre,res_country_state_7
+res_country_municipality_76,76,base.ve,Padre Pedro Chien,res_country_state_7
+res_country_municipality_77,77,base.ve,Bejuma,res_country_state_8
+res_country_municipality_78,78,base.ve,Carlos Arvelo,res_country_state_8
+res_country_municipality_79,79,base.ve,Diego Ibarra,res_country_state_8
+res_country_municipality_80,80,base.ve,Guacara,res_country_state_8
+res_country_municipality_81,81,base.ve,Juan Jose Mora,res_country_state_8
+res_country_municipality_82,82,base.ve,Libertador,res_country_state_8
+res_country_municipality_83,83,base.ve,Los Guayos,res_country_state_8
+res_country_municipality_84,84,base.ve,Miranda,res_country_state_8
+res_country_municipality_85,85,base.ve,Montalban,res_country_state_8
+res_country_municipality_86,86,base.ve,Naguanagua,res_country_state_8
+res_country_municipality_87,87,base.ve,Puerto Cabello,res_country_state_8
+res_country_municipality_88,88,base.ve,San Diego,res_country_state_8
+res_country_municipality_89,89,base.ve,San Joaquin,res_country_state_8
+res_country_municipality_90,90,base.ve,Valencia,res_country_state_8
+res_country_municipality_91,91,base.ve,Anzoategui,res_country_state_9
+res_country_municipality_92,92,base.ve,Falcon,res_country_state_9
+res_country_municipality_93,93,base.ve,Girardot,res_country_state_9
+res_country_municipality_94,94,base.ve,Lima Blanco,res_country_state_9
+res_country_municipality_95,95,base.ve,Pao de San Juan Bautista,res_country_state_9
+res_country_municipality_96,96,base.ve,Ricaurte,res_country_state_9
+res_country_municipality_97,97,base.ve,Rómulo Gallegos,res_country_state_9
+res_country_municipality_98,98,base.ve,San Carlos,res_country_state_9
+res_country_municipality_99,99,base.ve,Tinaco,res_country_state_9
+res_country_municipality_100,100,base.ve,Antonio Díaz,res_country_state_10
+res_country_municipality_101,101,base.ve,Casacoima,res_country_state_10
+res_country_municipality_102,102,base.ve,Pedernales,res_country_state_10
+res_country_municipality_103,103,base.ve,Tucupita,res_country_state_10
+res_country_municipality_104,104,base.ve,Acosta,res_country_state_11
+res_country_municipality_105,105,base.ve,Bolívar,res_country_state_11
+res_country_municipality_106,106,base.ve,Buchivacoa,res_country_state_11
+res_country_municipality_107,107,base.ve,Cacique Manaure,res_country_state_11
+res_country_municipality_108,108,base.ve,Carirubana,res_country_state_11
+res_country_municipality_109,109,base.ve,Colina,res_country_state_11
+res_country_municipality_110,110,base.ve,Dabajuro,res_country_state_11
+res_country_municipality_111,111,base.ve,Democracia,res_country_state_11
+res_country_municipality_112,112,base.ve,Falcón,res_country_state_11
+res_country_municipality_113,113,base.ve,Federación,res_country_state_11
+res_country_municipality_114,114,base.ve,Jacura,res_country_state_11
+res_country_municipality_115,115,base.ve,Los Taques,res_country_state_11
+res_country_municipality_116,116,base.ve,Mauroa,res_country_state_11
+res_country_municipality_117,117,base.ve,Miranda,res_country_state_11
+res_country_municipality_118,118,base.ve,Monseñor Iturriza,res_country_state_11
+res_country_municipality_119,119,base.ve,Palma sola,res_country_state_11
+res_country_municipality_120,120,base.ve,Petit,res_country_state_11
+res_country_municipality_121,121,base.ve,Píritu,res_country_state_11
+res_country_municipality_122,122,base.ve,San Francisco,res_country_state_11
+res_country_municipality_123,123,base.ve,Silva,res_country_state_11
+res_country_municipality_124,124,base.ve,Sucre,res_country_state_11
+res_country_municipality_125,125,base.ve,Tocópero,res_country_state_11
+res_country_municipality_126,126,base.ve,Unión,res_country_state_11
+res_country_municipality_127,127,base.ve,Urumaco,res_country_state_11
+res_country_municipality_128,128,base.ve,Zamora,res_country_state_11
+res_country_municipality_129,129,base.ve,Camaguán,res_country_state_12
+res_country_municipality_130,130,base.ve,Chaguaramas,res_country_state_12
+res_country_municipality_131,131,base.ve,El Socorro,res_country_state_12
+res_country_municipality_132,132,base.ve,San Geronimo de Gayabal,res_country_state_12
+res_country_municipality_133,133,base.ve,Leonardo Infante,res_country_state_12
+res_country_municipality_134,134,base.ve,Las Mercades,res_country_state_12
+res_country_municipality_135,135,base.ve,Mallado,res_country_state_12
+res_country_municipality_136,136,base.ve,Francisco de Miranda,res_country_state_12
+res_country_municipality_137,137,base.ve,Jose Tadeo Monagas,res_country_state_12
+res_country_municipality_138,138,base.ve,Ortiz,res_country_state_12
+res_country_municipality_139,139,base.ve,Jose Felix Ribas,res_country_state_12
+res_country_municipality_140,140,base.ve,Juan German Roscio,res_country_state_12
+res_country_municipality_141,141,base.ve,San Jose de Guaribe,res_country_state_12
+res_country_municipality_142,142,base.ve,Santa Maria de Ipire,res_country_state_12
+res_country_municipality_143,143,base.ve,Pedro Zaraza,res_country_state_12
+res_country_municipality_144,144,base.ve,Andres Eloy Blanco,res_country_state_13
+res_country_municipality_145,145,base.ve,Crespo,res_country_state_13
+res_country_municipality_146,146,base.ve,Iribarren,res_country_state_13
+res_country_municipality_147,147,base.ve,Jimenez,res_country_state_13
+res_country_municipality_148,148,base.ve,Moran,res_country_state_13
+res_country_municipality_149,149,base.ve,Palavecino,res_country_state_13
+res_country_municipality_150,150,base.ve,Simón Planas,res_country_state_13
+res_country_municipality_151,151,base.ve,Torres,res_country_state_13
+res_country_municipality_152,152,base.ve,Urdaneta,res_country_state_13
+res_country_municipality_153,153,base.ve,Alberto Adriani,res_country_state_14
+res_country_municipality_154,154,base.ve,Andres Bello,res_country_state_14
+res_country_municipality_155,155,base.ve,Antonio Pinto Salinas,res_country_state_14
+res_country_municipality_156,156,base.ve,Aricagua,res_country_state_14
+res_country_municipality_157,157,base.ve,Arzobispo Chacón,res_country_state_14
+res_country_municipality_158,158,base.ve,Campo Elías,res_country_state_14
+res_country_municipality_159,159,base.ve,Caracciolo Parra Olmedo,res_country_state_14
+res_country_municipality_160,160,base.ve,Cardenal Quintero,res_country_state_14
+res_country_municipality_161,161,base.ve,Guaraque,res_country_state_14
+res_country_municipality_162,162,base.ve,Julio César Salas,res_country_state_14
+res_country_municipality_163,163,base.ve,Justo Briceño,res_country_state_14
+res_country_municipality_164,164,base.ve,Libertador,res_country_state_14
+res_country_municipality_165,165,base.ve,Miranda,res_country_state_14
+res_country_municipality_166,166,base.ve,Obispo Ramos de Lora,res_country_state_14
+res_country_municipality_167,167,base.ve,Padre Noguera,res_country_state_14
+res_country_municipality_168,168,base.ve,Pueblo Llano,res_country_state_14
+res_country_municipality_169,169,base.ve,Rangel,res_country_state_14
+res_country_municipality_170,170,base.ve,Rivas Dávila,res_country_state_14
+res_country_municipality_171,171,base.ve,Santos Marquina,res_country_state_14
+res_country_municipality_172,172,base.ve,Sucre,res_country_state_14
+res_country_municipality_173,173,base.ve,Tovar,res_country_state_14
+res_country_municipality_174,174,base.ve,Tulio Febres Cordero,res_country_state_14
+res_country_municipality_175,175,base.ve,Zea,res_country_state_14
+res_country_municipality_176,176,base.ve,Acevedo,res_country_state_15
+res_country_municipality_177,177,base.ve,Andrés Bello,res_country_state_15
+res_country_municipality_178,178,base.ve,Baruta,res_country_state_15
+res_country_municipality_179,179,base.ve,Brión,res_country_state_15
+res_country_municipality_180,180,base.ve,Buroz,res_country_state_15
+res_country_municipality_181,181,base.ve,Carrizal,res_country_state_15
+res_country_municipality_182,182,base.ve,Chacao,res_country_state_15
+res_country_municipality_183,183,base.ve,Cristóbal Rojas,res_country_state_15
+res_country_municipality_184,184,base.ve,El Hatillo,res_country_state_15
+res_country_municipality_185,185,base.ve,Guaicaipuro,res_country_state_15
+res_country_municipality_186,186,base.ve,Independencia,res_country_state_15
+res_country_municipality_187,187,base.ve,Lander,res_country_state_15
+res_country_municipality_188,188,base.ve,Los Salias,res_country_state_15
+res_country_municipality_189,189,base.ve,Páez,res_country_state_15
+res_country_municipality_190,190,base.ve,Paz Castillo,res_country_state_15
+res_country_municipality_191,191,base.ve,Pedro Gual,res_country_state_15
+res_country_municipality_192,192,base.ve,Plaza,res_country_state_15
+res_country_municipality_193,193,base.ve,Simón Bolívar,res_country_state_15
+res_country_municipality_194,194,base.ve,Sucre,res_country_state_15
+res_country_municipality_195,195,base.ve,Urdaneta,res_country_state_15
+res_country_municipality_196,196,base.ve,Zamora,res_country_state_15
+res_country_municipality_197,197,base.ve,Acosta,res_country_state_16
+res_country_municipality_198,198,base.ve,Aguasay,res_country_state_16
+res_country_municipality_199,199,base.ve,Bolívar,res_country_state_16
+res_country_municipality_200,200,base.ve,Caripe,res_country_state_16
+res_country_municipality_201,201,base.ve,Cedeño,res_country_state_16
+res_country_municipality_202,202,base.ve,Ezequiel Zamora,res_country_state_16
+res_country_municipality_203,203,base.ve,Libertador,res_country_state_16
+res_country_municipality_204,204,base.ve,Maturín,res_country_state_16
+res_country_municipality_205,205,base.ve,Piar,res_country_state_16
+res_country_municipality_206,206,base.ve,Punceres,res_country_state_16
+res_country_municipality_207,207,base.ve,Santa Bárbara,res_country_state_16
+res_country_municipality_208,208,base.ve,Sotillo,res_country_state_16
+res_country_municipality_209,209,base.ve,Uracoa,res_country_state_16
+res_country_municipality_210,210,base.ve,Antolín del Campo,res_country_state_17
+res_country_municipality_211,211,base.ve,Arismendi,res_country_state_17
+res_country_municipality_212,212,base.ve,Díaz,res_country_state_17
+res_country_municipality_213,213,base.ve,García,res_country_state_17
+res_country_municipality_214,214,base.ve,Gómez,res_country_state_17
+res_country_municipality_215,215,base.ve,Maneiro,res_country_state_17
+res_country_municipality_216,216,base.ve,Marcano,res_country_state_17
+res_country_municipality_217,217,base.ve,Mariño,res_country_state_17
+res_country_municipality_218,218,base.ve,Península de Macanao,res_country_state_17
+res_country_municipality_219,219,base.ve,Tubores,res_country_state_17
+res_country_municipality_220,220,base.ve,Villalba,res_country_state_17
+res_country_municipality_221,221,base.ve,Agua Blanca,res_country_state_18
+res_country_municipality_222,222,base.ve,Araure,res_country_state_18
+res_country_municipality_223,223,base.ve,Esteller,res_country_state_18
+res_country_municipality_224,224,base.ve,Guanare,res_country_state_18
+res_country_municipality_225,225,base.ve,Guanarito,res_country_state_18
+res_country_municipality_226,226,base.ve,Monseñor José Vicente de Unda,res_country_state_18
+res_country_municipality_227,227,base.ve,Ospino,res_country_state_18
+res_country_municipality_228,228,base.ve,Páez,res_country_state_18
+res_country_municipality_229,229,base.ve,Papelón,res_country_state_18
+res_country_municipality_230,230,base.ve,San Genaro de Boconoíto,res_country_state_18
+res_country_municipality_231,231,base.ve,San Rafael de Onoto,res_country_state_18
+res_country_municipality_232,232,base.ve,Santa Rosalía,res_country_state_18
+res_country_municipality_233,233,base.ve,Sucre,res_country_state_18
+res_country_municipality_234,234,base.ve,Turén,res_country_state_18
+res_country_municipality_235,235,base.ve,Andrés Eloy Blanco,res_country_state_19
+res_country_municipality_236,236,base.ve,Andrés Mata,res_country_state_19
+res_country_municipality_237,237,base.ve,Arismendi,res_country_state_19
+res_country_municipality_238,238,base.ve,Benítez,res_country_state_19
+res_country_municipality_239,239,base.ve,Bermúdez,res_country_state_19
+res_country_municipality_240,240,base.ve,Bolívar,res_country_state_19
+res_country_municipality_241,241,base.ve,Cajigal,res_country_state_19
+res_country_municipality_242,242,base.ve,Cruz Salmerón Acosta,res_country_state_19
+res_country_municipality_243,243,base.ve,Libertador,res_country_state_19
+res_country_municipality_244,244,base.ve,Mariño,res_country_state_19
+res_country_municipality_245,245,base.ve,Mejía,res_country_state_19
+res_country_municipality_246,246,base.ve,Montes,res_country_state_19
+res_country_municipality_247,247,base.ve,Ribero,res_country_state_19
+res_country_municipality_248,248,base.ve,Sucre,res_country_state_19
+res_country_municipality_249,249,base.ve,Valdéz,res_country_state_19
+res_country_municipality_250,250,base.ve,Andrés Bello,res_country_state_20
+res_country_municipality_251,251,base.ve,Antonio Rómulo Costa,res_country_state_20
+res_country_municipality_252,252,base.ve,Ayacucho,res_country_state_20
+res_country_municipality_253,253,base.ve,Bolívar,res_country_state_20
+res_country_municipality_254,254,base.ve,Cárdenas,res_country_state_20
+res_country_municipality_255,255,base.ve,Córdoba,res_country_state_20
+res_country_municipality_256,256,base.ve,Fernández Feo,res_country_state_20
+res_country_municipality_257,257,base.ve,Francisco de Miranda,res_country_state_20
+res_country_municipality_258,258,base.ve,García de Hevia,res_country_state_20
+res_country_municipality_259,259,base.ve,Guásimos,res_country_state_20
+res_country_municipality_260,260,base.ve,Independencia,res_country_state_20
+res_country_municipality_261,261,base.ve,Jáuregui,res_country_state_20
+res_country_municipality_262,262,base.ve,José María Vargas,res_country_state_20
+res_country_municipality_263,263,base.ve,Junín,res_country_state_20
+res_country_municipality_264,264,base.ve,Libertad,res_country_state_20
+res_country_municipality_265,265,base.ve,Libertador,res_country_state_20
+res_country_municipality_266,266,base.ve,Lobatera,res_country_state_20
+res_country_municipality_267,267,base.ve,Michelena,res_country_state_20
+res_country_municipality_268,268,base.ve,Panamericano,res_country_state_20
+res_country_municipality_269,269,base.ve,Pedro María Ureña,res_country_state_20
+res_country_municipality_270,270,base.ve,Rafael Urdaneta,res_country_state_20
+res_country_municipality_271,271,base.ve,Samuel Darío Maldonado,res_country_state_20
+res_country_municipality_272,272,base.ve,San Cristóbal,res_country_state_20
+res_country_municipality_273,273,base.ve,Seboruco,res_country_state_20
+res_country_municipality_274,274,base.ve,Simón Rodríguez,res_country_state_20
+res_country_municipality_275,275,base.ve,Sucre,res_country_state_20
+res_country_municipality_276,276,base.ve,Torbes,res_country_state_20
+res_country_municipality_277,277,base.ve,Uribante,res_country_state_20
+res_country_municipality_278,278,base.ve,Bocono,res_country_state_21
+res_country_municipality_279,279,base.ve,Candelaria,res_country_state_21
+res_country_municipality_280,280,base.ve,Carache,res_country_state_21
+res_country_municipality_281,281,base.ve,Escuque,res_country_state_21
+res_country_municipality_282,282,base.ve,Miranda,res_country_state_21
+res_country_municipality_283,283,base.ve,Monte Carmelo,res_country_state_21
+res_country_municipality_284,284,base.ve,Motatán,res_country_state_21
+res_country_municipality_285,285,base.ve,Pam Pam,res_country_state_21
+res_country_municipality_286,286,base.ve,Rafael Rangel,res_country_state_21
+res_country_municipality_287,287,base.ve,San Rafael de Carvajal,res_country_state_21
+res_country_municipality_288,288,base.ve,Sucre,res_country_state_21
+res_country_municipality_289,289,base.ve,Trujillo,res_country_state_21
+res_country_municipality_290,290,base.ve,Urdaneta,res_country_state_21
+res_country_municipality_291,291,base.ve,Valera,res_country_state_21
+res_country_municipality_292,292,base.ve,Andres Bello,res_country_state_21
+res_country_municipality_293,293,base.ve,Bolivar,res_country_state_21
+res_country_municipality_294,294,base.ve,Jose Felipe Marquez Cañizales,res_country_state_21
+res_country_municipality_295,295,base.ve,Juan Vicente Campos Elías,res_country_state_21
+res_country_municipality_296,296,base.ve,La Ceiba,res_country_state_21
+res_country_municipality_297,297,base.ve,Pampanito,res_country_state_21
+res_country_municipality_298,298,base.ve,Aristides Bastidas,res_country_state_23
+res_country_municipality_299,299,base.ve,Bolivar,res_country_state_23
+res_country_municipality_300,300,base.ve,Bruzal,res_country_state_23
+res_country_municipality_301,301,base.ve,Cocorote,res_country_state_23
+res_country_municipality_302,302,base.ve,Independencia,res_country_state_23
+res_country_municipality_303,303,base.ve,Jose Antonio Paez,res_country_state_23
+res_country_municipality_304,304,base.ve,La Trinidad,res_country_state_23
+res_country_municipality_305,305,base.ve,Manuel Monge,res_country_state_23
+res_country_municipality_306,306,base.ve,Nirgua,res_country_state_23
+res_country_municipality_307,307,base.ve,Peña,res_country_state_23
+res_country_municipality_308,308,base.ve,San Felipe,res_country_state_23
+res_country_municipality_309,309,base.ve,Sucre,res_country_state_23
+res_country_municipality_310,310,base.ve,Urachiche,res_country_state_23
+res_country_municipality_311,311,base.ve,Veroes,res_country_state_23
+res_country_municipality_312,312,base.ve,Almirante Padilla,res_country_state_24
+res_country_municipality_313,313,base.ve,Baralt,res_country_state_24
+res_country_municipality_314,314,base.ve,Cabimas,res_country_state_24
+res_country_municipality_315,315,base.ve,Catatumbo,res_country_state_24
+res_country_municipality_316,316,base.ve,Colón,res_country_state_24
+res_country_municipality_317,317,base.ve,Jesus Enrique Lossada,res_country_state_24
+res_country_municipality_318,318,base.ve,La Cañada de Urdaneta,res_country_state_24
+res_country_municipality_319,319,base.ve,Lagunillas,res_country_state_24
+res_country_municipality_320,320,base.ve,Machiques de Perijá,res_country_state_24
+res_country_municipality_321,321,base.ve,Mara,res_country_state_24
+res_country_municipality_322,322,base.ve,Maracaibo,res_country_state_24
+res_country_municipality_323,323,base.ve,Miranda,res_country_state_24
+res_country_municipality_324,324,base.ve,Paez,res_country_state_24
+res_country_municipality_325,325,base.ve,Rosario de Perijá,res_country_state_24
+res_country_municipality_326,326,base.ve,Santa Rita,res_country_state_24
+res_country_municipality_327,327,base.ve,Sucre,res_country_state_24
+res_country_municipality_328,328,base.ve,Valmore Rodríguez,res_country_state_24
+res_country_municipality_329,329,base.ve,Francisco Javier Pulgar,res_country_state_24
+res_country_municipality_330,330,base.ve,Jesus Maria Semprun,res_country_state_24
+res_country_municipality_331,331,base.ve,San Francisco,res_country_state_24
+res_country_municipality_332,332,base.ve,Simon Bolívar,res_country_state_24
+res_country_municipality_333,333,base.ve,Vargas,res_country_state_22
+res_country_municipality_334,334,base.ve,Sotillo,res_country_state_3

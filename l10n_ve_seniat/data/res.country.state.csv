@@ -1,0 +1,26 @@
+id,code,country_id/id,name
+res_country_state_1,DC,base.ve,Distrito Capital
+res_country_state_2,AM,base.ve,Amazonas
+res_country_state_3,AZ,base.ve,Anzoátegui
+res_country_state_4,AP,base.ve,Apure
+res_country_state_5,AR,base.ve,Aragua
+res_country_state_6,BA,base.ve,Barinas
+res_country_state_7,BO,base.ve,Bolívar
+res_country_state_8,CB,base.ve,Carabobo
+res_country_state_9,CJ,base.ve,Cojedes
+res_country_state_10,DA,base.ve,Delta Amacuro
+res_country_state_11,FC,base.ve,Falcón
+res_country_state_12,GR,base.ve,Guárico
+res_country_state_13,LR,base.ve,Lara
+res_country_state_14,MD,base.ve,Mérida
+res_country_state_15,MR,base.ve,Miranda
+res_country_state_16,MN,base.ve,Monagas
+res_country_state_17,NE,base.ve,Nueva Esparta
+res_country_state_18,PT,base.ve,Portuguesa
+res_country_state_19,SC,base.ve,Sucre
+res_country_state_20,TC,base.ve,Táchira
+res_country_state_21,TR,base.ve,Trujillo
+res_country_state_22,VA,base.ve,Vargas
+res_country_state_23,YC,base.ve,Yaracuy
+res_country_state_24,ZU,base.ve,Zulia
+res_country_state_25,DF,base.ve,Distrito Capital Los Llanos

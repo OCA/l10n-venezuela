@@ -1,0 +1,15 @@
+<odoo>
+    <record id="view_move_form" model="ir.ui.view">
+        <field name="name">account.move.ve.form</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_move_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//label[@for='invoice_date']" position="before">
+                <field name="reception_date" invisible="move_type == 'entry'"/>
+            </xpath>
+            <xpath expr="//button[@name='button_draft']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+        </field>
+    </record>
+</odoo>
