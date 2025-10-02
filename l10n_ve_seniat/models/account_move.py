@@ -22,6 +22,7 @@ class AccountMove(models.Model):
         if self.country_code != self.env.ref("base.ve").code:
             return super().button_draft()
 
+        _logger.info("Button draft called on move %s", self.move_type)
         if self.move_type == "entry":
             return super().button_draft()
 
