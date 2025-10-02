@@ -22,7 +22,7 @@ class AccountMove(models.Model):
         if self.country_code != self.env.ref("base.ve").code:
             return super().button_draft()
 
-        if self.move_type != "entry":
+        if self.move_type == "entry":
             return super().button_draft()
 
         raise ValidationError(
