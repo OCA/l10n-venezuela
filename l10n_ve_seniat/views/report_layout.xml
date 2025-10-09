@@ -11,12 +11,21 @@
              t-att-data-oe-id="o and o.id"
              t-att-data-oe-lang="o and o.env.context.get('lang')">
             <t t-set="custom_layout_address" t-value="true"/>
-            <t t-call="web.address_layout"/>
             <h2 t-out="layout_document_title"/>
+            <t t-call="web.address_layout"/>
             <t t-out="0"/>
         </div>
         <!-- Footer -->
     </template>
+
+    <template id="document_tax_totals_company_currency_template" inherit_id="account.document_tax_totals_company_currency_template">
+        <xpath expr="//div[hasclass('totals_taxes_company_currency')]" position="attributes">
+            <attribute name="class">mb-2</attribute>
+        </xpath>
+        <xpath expr="//p[hasclass('tax_computation_company_currency')]" position="replace"/>
+    </template>
+
+
 
     <template id="report_invoice_document_ve">
         <t t-call="web.html_container">
@@ -122,15 +131,20 @@
                                         <th name="th_subtotal" class="text-end">
                                             <span>Amount</span>
                                         </th>
+                                        <th name="th_subtotal" t-if="o.company_currency_id != o.currency_id" class="text-end">
+                                            <span>Amount Currency</span>
+                                        </th>
                                     </tr>
                                 </thead>
                                 <tbody class="invoice_tbody">
                                     <t t-set="current_subtotal" t-value="0"/>
+                                    <t t-set="current_subtotal_currency" t-value="0"/>
                                     <t t-set="current_total" t-value="0"/>
                                     <t t-set="lines" t-value="o.invoice_line_ids.sorted(key=lambda l: (-l.sequence, l.date, l.move_name, -l.id), reverse=True)"/>
 
                                     <t t-foreach="lines" t-as="line">
                                         <t t-set="current_subtotal" t-value="current_subtotal + line.price_subtotal"/>
+                                        <t t-set="current_subtotal_currency" t-value="current_subtotal_currency + line.subtotal_company_currency"/>
                                         <t t-set="current_total" t-value="current_total + line.price_total"/>
 
                                         <tr t-att-class="'fw-bold o_line_section' if line.display_type == 'line_section' else 'fst-italic o_line_note' if line.display_type == 'line_note' else ''">
@@ -155,6 +169,9 @@
                                                 <td name="td_subtotal" class="text-end o_price_total">
                                                     <span class="text-nowrap" t-field="line.price_subtotal">27.00</span>
                                                 </td>
+                                                <td name="td_subtotal_company_currency" t-if="o.company_currency_id != o.currency_id" class="text-end o_price_total">
+                                                    <span class="text-nowrap" t-field="line.subtotal_company_currency">27.00</span>
+                                                </td>
                                             </t>
                                             <t t-elif="line.display_type == 'line_section'">
                                                 <td colspan="99">
@@ -178,6 +195,12 @@
                                                         t-out="current_subtotal"
                                                         t-options='{"widget": "monetary", "display_currency": o.currency_id}'
                                                     >31.05</span>
+                                                    ó
+                                                    <span
+                                                        t-if="o.company_currency_id != o.currency_id"
+                                                        t-out="current_subtotal_currency"
+                                                        t-options='{"widget": "monetary", "display_currency": o.company_currency_id}'
+                                                    >31.05</span>
                                                 </td>
                                             </tr>
                                         </t>
@@ -188,6 +211,10 @@
                                 <div id="right-elements" t-attf-class="#{'col-5 mt-5' if report_type == 'pdf' else 'col-12 col-md-5'} ms-5 d-inline-block float-end">
                                     <div id="total" class="clearfix row">
                                         <div class="ms-auto">
+                                            <t t-if="o.company_currency_id != o.currency_id">
+                                                <t t-set="tax_totals" t-value="o.tax_totals"/>
+                                                <t t-call="account.document_tax_totals_company_currency_template"/>
+                                            </t>
                                             <table class="o_total_table table table-borderless avoid-page-break-inside">
 
                                                 <!-- Tax totals summary (invoice currency) -->
@@ -206,14 +233,6 @@
                                         </p>
                                     </div>
 
-                                    <!-- Tax totals summary (company currency) -->
-                                    <t t-if="o.tax_totals.get('display_in_company_currency')">
-                                        <t t-set="tax_totals" t-value="o.tax_totals"/>
-                                        <t t-call="account.document_tax_totals_company_currency_template"/>
-                                    </t>
-                                    <t t-else="">
-                                        <div class="oe_structure"/>
-                                    </t>
                                 </div>
                                 <div id="payment_term" class="clearfix mt-3">
                                     <div class="justify-text">
