@@ -21,7 +21,6 @@ class ResCompany(models.Model):
     service = fields.Selection(
         selection_add=[("bcv", "BCV scrapping")],
         ondelete={"bcv": "set default"},
-        default="bcv",
     )
 
     def _get_supported_currencies(self):
