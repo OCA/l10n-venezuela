@@ -1,0 +1,14 @@
+<odoo>
+    <!-- template form -->
+
+    <record id="product_pricelist_item_form_view" model="ir.ui.view">
+        <field name="name">product.pricelist.item.form</field>
+        <field name="model">product.pricelist.item</field>
+        <field name="inherit_id" ref="product.product_pricelist_item_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//group[@name='pricelist_rule_base']//field[@name='base_pricelist_id']" position="after">
+                <field name="currency_to_rate_id"  invisible="not base_pricelist_id"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

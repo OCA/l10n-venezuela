@@ -1,12 +1,9 @@
 import logging
 import requests
-import pytz
 from collections import defaultdict
-from datetime import datetime, timezone
+from datetime import datetime
 from decimal import Decimal
-from lxml import etree
 from odoo import fields, models, _
-from odoo.exceptions import MissingError
 
 _logger = logging.getLogger(__name__)
 
@@ -42,7 +39,9 @@ class ResCurrencyRateProvider(models.Model):
 
         bnb_data = {}
         for currency in currencies:
-            bnb_data[currency] = self.get_offers_p2p_avg(currency, self.p2p_transaction_type)
+            value = self.get_offers_p2p_avg(currency, self.p2p_transaction_type)
+            if value:
+                bnb_data[currency] = value
 
         for k, v in bnb_data.items():
             dt = v[1].isoformat()
@@ -52,7 +51,7 @@ class ResCurrencyRateProvider(models.Model):
 
     def get_offers_p2p_avg(self, to_currency=False, transaction_type="BUY", limit=5):
         if not to_currency:
-            raise MissingError(_("You must specify the destination currency to obtain the P2P price."))
+            return False
         try:
             fiat_currency = self.env.company.currency_id.name
 
@@ -84,13 +83,8 @@ class ResCurrencyRateProvider(models.Model):
 
                     return (1.0 / float(avg_price), datetime.now())
                 else:
-                    raise MissingError(_("No active P2P ads were found for the selected configuration."))
+                    return False
             else:
-                raise MissingError(
-                    _(f"API response error: {data.get('code', 'N/A')} - {data.get('message', 'No message')}")
-                )
-
-        except requests.exceptions.RequestException as e:
-            raise MissingError(_(f"Error connecting to Binance P2P API: {e}"))
+                return False
         except Exception as e:
-            raise MissingError(f"Error getting prices to Binance P2P API: {e}")
+            return False
