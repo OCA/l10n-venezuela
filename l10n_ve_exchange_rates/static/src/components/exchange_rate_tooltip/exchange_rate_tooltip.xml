@@ -31,7 +31,7 @@
                                                 <t t-esc="rate.name"/> (<t t-esc="rate.symbol"/>)
                                             </td>
                                             <td class="p-1 text-end">
-                                                1 <t t-esc="rate.company_currency_symbol"/> ≈ <t t-esc="rate.rate"/> <t t-esc="rate.symbol"/>
+                                                1 <t t-esc="rate.symbol"/>  ≈ <t t-esc="rate.rate"/> <t t-esc="rate.company_currency_symbol"/>
                                             </td>
                                         </tr>
                                     </t>
