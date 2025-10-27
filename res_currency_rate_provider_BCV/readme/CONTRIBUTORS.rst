@@ -1,1 +1,0 @@
-* Anderson Armeya anderson.armeya@gmail.com
