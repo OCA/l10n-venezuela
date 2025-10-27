@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates>
+    <t t-name="l10n_ve_exchange_rates.ExchangeRateTooltip" owl="xml">
+        <Dropdown>
+            <button class="btn btn-light">
+                <i class="fa fa-money" role="img" title="Tasas de Cambio Activas"/>
+            </button>
+
+            <t t-set-slot="content">
+                <div class="o_exchange_rate_content p-2" style="min-width: 250px;">
+                    <t t-if="state.loading">
+                        <DropdownItem>
+                            <span>Cargando tasas...</span>
+                        </DropdownItem>
+                    </t>
+
+                    <t t-elif="state.rates.length">
+                        <div class="fw-bold px-3 py-1">
+                            Fecha: <t t-esc="currentDate"/>
+                        </div>
+                        <div class="fw-bold px-3 py-1">
+                            Tasas de Cambio (Ref: <t t-esc="state.company_currency"/>)
+                        </div>
+                        <div class="px-3">
+                            <table class="table table-sm table-borderless m-0">
+                                <tbody>
+                                    <t t-foreach="state.rates" t-as="rate" t-key="rate_index">
+                                        <tr>
+                                            <td class="p-1">
+                                                <t t-esc="rate.name"/> (<t t-esc="rate.symbol"/>)
+                                            </td>
+                                            <td class="p-1 text-end">
+                                                1 <t t-esc="rate.company_currency_symbol"/> ≈ <t t-esc="rate.rate"/> <t t-esc="rate.symbol"/>
+                                            </td>
+                                        </tr>
+                                    </t>
+                                </tbody>
+                            </table>
+                        </div>
+                    </t>
+
+                    <t t-else="">
+                        <DropdownItem>
+                            <span>No hay tasas activas configuradas.</span>
+                        </DropdownItem>
+                    </t>
+                </div>
+            </t>
+        </Dropdown>
+    </t>
+</templates>
