@@ -4,6 +4,7 @@
         <Dropdown>
             <button class="btn btn-light">
                 <i class="fa fa-money" role="img" title="Tasas de Cambio Activas"/>
+                <span class="ms-1">Tasas</span>
             </button>
 
             <t t-set-slot="content">
