@@ -62,5 +62,8 @@ class AccountMoveLine(models.Model):
         for line in self:
             if line.move_id.move_type in ["out_invoice", "in_invoice"]:
                 line.subtotal_company_currency = -line.balance
+                continue
             if line.move_id.move_type in ["out_refund", "in_refund"]:
                 line.subtotal_company_currency = line.balance
+                continue
+            line.subtotal_company_currency = 0.0
