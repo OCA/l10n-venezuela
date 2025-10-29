@@ -15,7 +15,7 @@ MONEDAS = {"EUR": "euro", "CNY": "yuan", "TRY": "lira", "RUB": "rublo", "USD": "
 CARACAS_TZ = pytz.timezone("America/Caracas")
 
 
-class ResCompany(models.Model):
+class ResCurrencyRateProvider(models.Model):
     _inherit = "res.currency.rate.provider"
 
     service = fields.Selection(

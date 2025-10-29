@@ -1,1 +1,1 @@
-from . import models
+from . import res_currency_rate_provider
