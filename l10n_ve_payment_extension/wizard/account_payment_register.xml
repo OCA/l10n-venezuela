@@ -1,0 +1,60 @@
+<odoo>
+    <data>
+        <record id="account_payment_register_form_l10n_ve_payment_extension" model="ir.ui.view">
+            <field name="name">account.payment.register.form</field>
+            <field name="model">account.payment.register</field>
+            <field name="inherit_id" ref="account.view_account_payment_register_form"/>
+            <field name="arch" type="xml">
+                <field name="journal_id" position="attributes">
+                    <attribute name="readonly">not edit_retention_fields</attribute>
+                </field>
+                <field name="journal_id" position="before">
+                    <field name="is_retention" invisible="not is_out_invoice"/>
+                </field>
+                <field name="amount" position="attributes">
+                    <attribute name="readonly">is_retention == True</attribute>
+                </field>
+                <field name="currency_id" position="attributes">
+                    <attribute name="readonly">is_retention == True</attribute>
+                </field>
+                <group name="group2" position="after">
+                    <!-- Invisible fields -->
+                    <field name="edit_retention_fields" invisible="1"/>
+                    <field name="is_out_invoice" invisible="1"/>
+                    <field name="journal_id" invisible="1"/>
+                    <div invisible="not is_retention">
+                        <label for="voucher_date"/>
+                        <field name="voucher_date" required="is_retention == True"/>
+                        <label for="retention_ref"/>
+                        <field name="retention_ref" required="is_retention == True"/>
+                    </div>
+                    <notebook invisible="not is_retention">
+                        <page name="retention_lines" string="Retention lines">
+                            <field name="retention_line_ids" nolabel="1">
+                                <list editable="bottom">
+                                    <!-- Invisible fields -->
+                                    <field name="invoice_type" column_invisible="True"/>
+                                    <field name="company_currency_id" column_invisible="True"/>
+                                    <field name="name"/>
+                                    <field name="move_id"/>
+                                    <field name="aliquot"/>
+                                    <field name="related_percentage_tax_base" optional="hide"/>
+                                    <!-- Amounts -->
+                                    <field name="invoice_total" widget="monetary" />
+                                    <field name="invoice_amount" widget="monetary" />
+                                    <field name="iva_amount" widget="monetary" />
+                                    <field name="retention_amount" widget="monetary"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </group>
+
+                <!-- TODO: not found group3 -->
+                <!-- <group name="group3" position="attributes"> -->
+                <!--     <attribute name="invisible">not edit_retention_fields or payment_difference == 0.0 or not can_edit_wizard or can_group_payments and not group_payment</attribute> -->
+                <!-- </group> -->
+            </field>
+        </record>
+    </data>
+</odoo>

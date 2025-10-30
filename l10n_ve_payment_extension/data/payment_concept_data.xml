@@ -1,0 +1,11 @@
+<odoo>
+    <data noupdate="1">
+        <function model="payment.concept" name="_handle_payment_concept_one"/>
+        <function model="payment.concept" name="_handle_payment_concept_two"/>
+        <function model="payment.concept" name="_handle_payment_concept_three"/>
+        <function model="payment.concept" name="_handle_payment_concept_four"/>
+        <function model="payment.concept" name="_handle_payment_concept_five"/>
+        <function model="payment.concept" name="_handle_payment_concept_six"/>
+        <function model="payment.concept" name="_handle_payment_concept_seven"/>
+    </data>
+</odoo>

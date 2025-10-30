@@ -1,0 +1,34 @@
+<odoo>
+    <data>
+        <record id="view_account_retention_line_tree_l10n_ve_payment_extension" model="ir.ui.view">
+            <field name="name">views.account.retention.line.list.l10n.ve.payment.extension</field>
+            <field name="model">account.retention.line</field>
+            <field name="type">list</field>
+            <field name="arch" type="xml">
+                <list string="Retention Lines">
+                    <field name="name"/>
+                    <field name="payment_id" />
+                </list>
+            </field>
+        </record>
+        <record id="view_account_retention_line_form_l10n_ve_payment_extension" model="ir.ui.view">
+            <field name="name">views.account.retention.line.form.l10n.ve.payment.extension</field>
+            <field name="model">account.retention.line</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Retention Lines">
+                    <group>
+                        <field name="name"/>
+                        <field name="base_ret"/>
+                        <field name="imp_ret"/>
+                        <field name="amount_tax_ret"/>
+                        <field name="invoice_amount" />
+                        <field name="iva_amount" />
+                        <field name="retention_amount" />
+                        <field name="is_retention_client" invisible="1"/>
+                    </group>
+                </form>
+            </field>
+        </record>
+    </data>
+</odoo>
