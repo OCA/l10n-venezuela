@@ -10,15 +10,15 @@
                         name="generate_iva_retention"
                         invisible="move_type not in ('in_invoice', 'in_receipt', 'in_refund')"
                     />
-                    <field name="iva_voucher_number" readonly="1"/>
-                    <field name="islr_voucher_number" readonly="1"/>
-                    <field name="municipal_voucher_number" readonly="1"/>
+                    <field name="iva_voucher_number" readonly="1" invisible="not iva_voucher_number"/>
+                    <field name="islr_voucher_number" readonly="1" invisible="not islr_voucher_number"/>
+                    <field name="municipal_voucher_number" readonly="1" invisible="not municipal_voucher_number"/>
                     <field name="company_currency_id" invisible="1"/>
                 </xpath>
 
                 <xpath expr="//notebook" position="inside">
-                    <page name="iva_retention" string="IVA Retentions">
-                        <field name="retention_iva_line_ids" nolabel="1" readonly="1">
+                    <page name="iva_retention" string="IVA Retentions" invisible="not retention_iva_line_ids">
+                        <field name="retention_iva_line_ids" nolabel="1" readonly="1" >
                             <list editable='bottom'>
                                 <!-- Invisible Fields -->
                                 <field name="invoice_type" column_invisible="True"/>
@@ -52,7 +52,7 @@
                             </list>
                         </field>
                     </page>
-                    <page name="islr_retention" string="ISLR Retentions">
+                    <page name="islr_retention" string="ISLR Retentions" invisible="not retention_islr_line_ids">
                         <field
                             name="retention_islr_line_ids"
                             nolabel="1"
@@ -93,7 +93,7 @@
                             </list>
                         </field>
                     </page>
-                    <page name="municipal_retention" string="Municipal Retentions">
+                    <page name="municipal_retention" string="Municipal Retentions" invisible="1">
                         <field
                             name="retention_municipal_line_ids"
                             nolabel="1"

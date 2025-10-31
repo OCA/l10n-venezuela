@@ -2,7 +2,8 @@ from datetime import datetime
 import json
 import logging
 
-from odoo import api, fields, models, _
+
+from odoo import api, Command, fields, models, _
 from odoo.exceptions import ValidationError, UserError
 from odoo.tools import format_date
 
@@ -18,6 +19,28 @@ class AccountMove(models.Model):
         tracking=True,
     )
     l10n_ve_invoice_date = fields.Datetime("Invoice Datetime", readonly=True)
+
+    def action_post(self):
+        for move_id in self:
+            if move_id.country_code != self.env.ref("base.ve").code:
+                continue
+
+            lines = []
+            for line in self.line_ids:
+                if len(line.tax_ids) > 1:
+                    tax_mapped = ", ".join(line.tax_ids.mapped("name"))
+                    lines.append(f" - {line.name}: {tax_mapped}")
+
+            if lines:
+                raise UserError(
+                    _(
+                        "You cannot assign more than one tax to a single invoice line. "
+                        "Please create separate lines for each tax. \n"
+                        "%s"
+                    )
+                    % ("\n".join(lines))
+                )
+        return super().action_post()
 
     def button_cancel(self):
         self = self.with_context(force_draft=True)
@@ -51,19 +74,40 @@ Please create a credit note instead.
 class AccountMoveLine(models.Model):
     _inherit = "account.move.line"
 
-    subtotal_company_currency = fields.Monetary(
-        compute="_compute_subtotal_company_currency",
-        string="Subtotal Company Currency",
-        currency_field="company_currency_id",
-    )
+    @api.model_create_multi
+    def create(self, vals_list):
+        res = super().create(vals_list)
+        for record in res:
 
-    @api.depends("balance")
-    def _compute_subtotal_company_currency(self):
-        for line in self:
-            if line.move_id.move_type in ["out_invoice", "in_invoice"]:
-                line.subtotal_company_currency = -line.balance
+            if record.move_id.move_type == "entry":
                 continue
-            if line.move_id.move_type in ["out_refund", "in_refund"]:
-                line.subtotal_company_currency = line.balance
+
+            if record.move_id.country_code != self.env.ref("base.ve").code:
                 continue
-            line.subtotal_company_currency = 0.0
+
+            record._put_unique_tax_per_line()
+        return res
+
+    def write(self, vals):
+        res = super().write(vals)
+        for record in self:
+            if record.move_id.move_type == "entry":
+                continue
+            if record.move_id.country_code != self.env.ref("base.ve").code:
+                continue
+
+            record._put_unique_tax_per_line()
+        return res
+
+    def _put_unique_tax_per_line(self):
+        self.ensure_one()
+        if self.display_type not in ("product", "discount"):
+            return
+
+        if len(self.tax_ids) == 0:
+            if self.move_id.move_type in ("out_invoice", "out_refund", "out_receipt"):
+                self.tax_ids = [Command.link(self.env.company.account_sale_tax_id.id)]
+                self.move_id.message_post(body=_("Added default sales tax to line: %s.") % self.name)
+
+            if self.move_id.move_type in ("in_invoice", "in_refund", "in_receipt"):
+                self.tax_ids = [Command.link(self.env.company.account_purchase_tax_id.id)]

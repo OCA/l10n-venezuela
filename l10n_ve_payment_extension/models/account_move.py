@@ -2,6 +2,7 @@ from odoo import models, fields, api, _, Command
 from odoo.exceptions import UserError
 
 import logging
+
 _logger = logging.getLogger(__name__)
 
 
@@ -53,11 +54,20 @@ class AccountMoveRetention(models.Model):
         default=False,
     )
 
+    def _get_protected_vals(self, vals, records):
+        protected = set()
+        for fname in vals:
+            field = records._fields[fname]
+            if field.inverse or (field.compute and not field.readonly):
+                protected.update(self.pool.field_computed.get(field, [field]))
+        return [(protected, rec) for rec in records] if protected else []
+
+    def write(self, vals):
+        return super().write(vals)
+
     def _compute_currency_fields(self):
         for retention in self:
-            retention.base_currency_is_vef = self.env.company.currency_id == self.env.ref(
-                "base.VEF"
-            )
+            retention.base_currency_is_vef = self.env.company.currency_id == self.env.ref("base.VEF")
 
     def action_post(self):
         """
@@ -71,23 +81,20 @@ class AccountMoveRetention(models.Model):
             if move.retention_islr_line_ids and not move.islr_voucher_number:
                 move._validate_islr_retention()
                 retention = move._create_supplier_retention("islr")
-                retention.action_post()
+                retention.with_context(skip_is_manually_modified=True).action_post()
                 move.islr_voucher_number = retention.number
 
             if move.retention_municipal_line_ids:
                 move._validate_municipal_retention()
                 retention = move._create_supplier_retention("municipal")
-                retention.action_post()
+                retention.with_context(skip_is_manually_modified=True).action_post()
 
             # The IVA retention will not be generated if the invoice already has a retention that
             # is not cancelled
-            if (
-                move.generate_iva_retention
-                and not move.retention_iva_line_ids.filtered(lambda l: l.state != "cancel")
-            ):
+            if move.generate_iva_retention and not move.retention_iva_line_ids.filtered(lambda l: l.state != "cancel"):
                 move._validate_iva_retention()
                 retention = move._create_supplier_retention("iva")
-                retention.action_post()
+                retention.with_context(skip_is_manually_modified=True).action_post()
                 move.iva_voucher_number = retention.number
         return res
 
@@ -101,13 +108,9 @@ class AccountMoveRetention(models.Model):
         if not self.env.company.islr_supplier_retention_journal_id:
             raise UserError(_("The company must have a journal for ISLR supplier retention."))
         islr_retention = self.retention_islr_line_ids
-        sum_invoice_amount = sum(
-            islr_retention.filtered(lambda rl: rl.state != "cancel").mapped("invoice_amount")
-        )
-        if sum_invoice_amount > self.tax_totals["amount_untaxed"]:
-            raise UserError(
-                _("The amount of the retention is greater than the total amount of the invoice.")
-            )
+        sum_invoice_amount = sum(islr_retention.filtered(lambda rl: rl.state != "cancel").mapped("invoice_amount"))
+        if sum_invoice_amount > self.tax_totals["base_amount"]:
+            raise UserError(_("The amount of the retention is greater than the total amount of the invoice."))
         if not self.partner_id.type_person_id:
             raise UserError(_("The partner must have a type of person"))
         if sum_invoice_amount <= 0:
@@ -177,6 +180,7 @@ class AccountMoveRetention(models.Model):
             "payment_method_id": self.env.ref("account.account_payment_method_manual_in").id,
             "is_retention": True,
             "currency_id": self.env.user.company_id.currency_id.id,
+            "is_sent": True,
         }
         if type_retention == "islr":
             payment_vals["retention_line_ids"] = self.retention_islr_line_ids.filtered(
@@ -199,9 +203,7 @@ class AccountMoveRetention(models.Model):
 
         if type_retention == "iva":
             retention_lines_data = Retention.compute_retention_lines_data(self, payment)
-            retention_vals["retention_line_ids"] = [
-                Command.create(line) for line in retention_lines_data
-            ]
+            retention_vals["retention_line_ids"] = [Command.create(line) for line in retention_lines_data]
         elif type_retention == "islr":
             retention_vals["retention_line_ids"] = self.retention_islr_line_ids.filtered(
                 lambda rl: rl.state != "cancel"

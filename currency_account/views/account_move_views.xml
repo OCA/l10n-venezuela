@@ -7,10 +7,12 @@
             <xpath expr="//group[@id='header_left_group']" position="inside">
                 <field name="invoice_currency_rate"/>
             </xpath>
-            <xpath expr="//field[@name='tax_totals']" position="after">
+            <xpath expr="//field[@name='tax_totals']/.." position="after">
                 <field name="total_currencies" widget="total_currencies_widget" nolabel="1"/>
             </xpath>
-
+            <xpath expr="//field[@name='invoice_line_ids']//list[1]" position="inside">
+                <field name="subtotal_company_currency" column_invisible="parent.company_currency_id == parent.currency_id"/>
+            </xpath>
         </field>
     </record>
 </odoo>

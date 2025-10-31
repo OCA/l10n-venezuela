@@ -2,16 +2,15 @@ from odoo import models, fields, api, Command, _
 from odoo.exceptions import UserError
 from ..utils.utils_retention import load_retention_lines
 
+import logging
+
+_logger = logging.getLogger(__name__)
+
 
 class AccountPaymentRegister(models.TransientModel):
     _inherit = "account.payment.register"
 
-    company_currency_id = fields.Many2one(
-        "res.currency", default=lambda self: self.env.company.currency_id
-    )
-    foreign_currency_id = fields.Many2one(
-        "res.currency", default=lambda self: self.env.company.currency_foreign_id
-    )
+    company_currency_id = fields.Many2one("res.currency", default=lambda self: self.env.company.currency_id)
 
     is_out_invoice = fields.Boolean()
     is_retention = fields.Boolean(string="IVA Retention payment", default=False)
@@ -24,6 +23,22 @@ class AccountPaymentRegister(models.TransientModel):
     retention_ref = fields.Char(string="Retention reference")
 
     retention_line_ids = fields.Many2many("account.retention.line")
+
+    @api.depends(
+        "early_payment_discount_mode",
+        "can_edit_wizard",
+        "can_group_payments",
+        "group_payment",
+        "payment_method_line_id",
+    )
+    def _compute_show_payment_difference(self):
+        wizards = self.env["account.payment.register"]
+        for wizard in self:
+            if wizard.is_retention:
+                wizard.show_payment_difference = False
+                wizards |= wizard
+
+        super(AccountPaymentRegister, self - wizards)._compute_show_payment_difference()
 
     @api.depends("payment_type", "company_id", "can_edit_wizard")
     def _compute_available_journal_ids(self):
@@ -52,14 +67,12 @@ class AccountPaymentRegister(models.TransientModel):
         fields to True, so the user can edit the payment fields.
         """
         if not self.is_retention:
-            return {
-                "value": {"retention_line_ids": [Command.clear()], "edit_retention_fields": True}
-            }
+            return {"value": {"retention_line_ids": [Command.clear()], "edit_retention_fields": True}}
         if self.can_group_payments:
             self.group_payment = False
         self.journal_id = self.env.company.iva_customer_retention_journal_id.id
         self.edit_retention_fields = False
-        move_ids = self._context.get("active_ids", [])
+        move_ids = self._context.get("active_id", False)
         invoices = self.env["account.move"].browse(move_ids)
 
         lines = self._load_iva_retention_lines(invoices)
@@ -98,9 +111,7 @@ class AccountPaymentRegister(models.TransientModel):
             }
 
         invoices_with_emitted_retention = invoices.filtered(
-            lambda i: any(
-                i.retention_iva_line_ids.filtered(lambda l: l.state in ("draft", "emitted"))
-            )
+            lambda i: any(i.retention_iva_line_ids.filtered(lambda l: l.state in ("draft", "emitted")))
         )
         if any(invoices_with_emitted_retention):
             error = _(
@@ -155,7 +166,7 @@ class AccountPaymentRegister(models.TransientModel):
             ]
             payment.journal_id = self.env.company.iva_customer_retention_journal_id.id
             payment.compute_retention_amount_from_retention_lines()
-        retention = self._create_retention(payments)
+        retention = self.with_context(skip_is_manually_modified=True)._create_retention(payments)
         retention.action_post()
         return payments
 

@@ -17,7 +17,7 @@
 "account_activa_account_1125004","SALESMEN TRAVEL EXPENSES","1125004","asset_current","True","VIATICOS VENDEDORES"
 "account_activa_account_1125006","HOLIDAYS","1125006","asset_current","True","VACACIONES"
 "account_activa_account_1125007","UTILITIES","1125007","asset_current","True","UTILIDADES"
-"account_activa_account_1125008","VEHICLE INSURANCE","1125008","asset_current","True","SEGURO DE VEHICULOS"
+"account_activa_account_1125008","VEHICLE INSURANCE","1125008","assaccount_journal_suspense_account_idet_current","True","SEGURO DE VEHICULOS"
 "account_activa_account_1127001","AMD COMPUTER ACCESSORIES,C.A.","1127001","asset_fixed","True","ACCESORIOS AMD COMPUTADORAS,C.A."
 "account_activa_account_1127002","MARKETING COMPANY M321,C.A.","1127002","asset_fixed","True","COMERCIALIZADORA M321,C.A."
 "account_activa_account_1127003","AMD COMPUTER SHOP, C.A.","1127003","asset_fixed","True","TIENDA DE INFORMÁTICA AMD, C.A."
@@ -265,3 +265,5 @@
 "account_activa_account_9212004","VARIOUS INTERESTS","9212004","asset_current","True","INTERESES VARIOS"
 "account_activa_account_9212005","OTHER INCOME","9212005","income","True",""
 "account_activa_account_9212006","ADJUSTMENTS PRIOR YEARS","9212006","asset_current","True","AJUSTES AÑOS ANTERIORES"
+"account_activa_account_9999909","TRANSITIONAL ACCOUNT","9999909","asset_current","True","CUENTA TRANSITORIA"
+

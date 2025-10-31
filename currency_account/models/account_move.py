@@ -50,3 +50,24 @@ class AccountMove(models.Model):
 
             # El campo JSON debe almacenar una estructura serializable
             move.total_currencies = json.dumps(totals) if totals else False
+
+
+class AccountMoveLine(models.Model):
+    _inherit = "account.move.line"
+
+    subtotal_company_currency = fields.Monetary(
+        compute="_compute_subtotal_company_currency",
+        string="Subtotal Company Currency",
+        currency_field="company_currency_id",
+    )
+
+    @api.depends("balance")
+    def _compute_subtotal_company_currency(self):
+        for line in self:
+            if line.move_id.move_type in ["out_invoice", "in_invoice"]:
+                line.subtotal_company_currency = abs(line.balance)
+                continue
+            if line.move_id.move_type in ["out_refund", "in_refund"]:
+                line.subtotal_company_currency = abs(line.balance)
+                continue
+            line.subtotal_company_currency = 0.0

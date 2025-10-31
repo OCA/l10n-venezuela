@@ -23,9 +23,6 @@
             <xpath expr="//button[@name='button_draft']" position="attributes">
                 <attribute name="invisible">move_type != 'entry'</attribute>
             </xpath>
-            <xpath expr="//field[@name='invoice_line_ids']//list[1]" position="inside">
-                <field name="subtotal_company_currency" column_invisible="parent.company_currency_id == parent.currency_id"/>
-            </xpath>
             <xpath expr="//header" position="inside">
                 <button name="button_cancel" string="Cancel" type="object" groups="account.group_account_invoice" data-hotkey="x"
                     invisible="country_code != 'VE' or (country_code == 'VE' and (move_type == 'entry' or move_type != 'out_invoice' or state != 'posted'))"
