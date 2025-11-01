@@ -1,6 +1,5 @@
 from odoo import models, fields, api, _, Command
 from odoo.exceptions import UserError
-import traceback
 
 import logging
 
@@ -44,11 +43,6 @@ class AccountMoveRetention(models.Model):
             ("retention_id.type_retention", "=", "municipal"),
         ],
     )
-
-    @api.model_create_multi
-    def create(self, vals_list):
-        traceback.print_stack()
-        return super().create(vals_list)
 
     def action_post(self):
         """
