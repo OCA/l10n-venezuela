@@ -4,6 +4,7 @@
     "category": "Sales",
     "sequence": 10,
     "summary": "",
+    "license": "LGPL-3",
     "author": ["andyengit"],
     "images": [],
     "depends": [

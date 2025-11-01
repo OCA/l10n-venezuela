@@ -6,6 +6,7 @@
     "sequence": 10,
     "summary": "",
     "author": ["andyengit", "ADHOC SA"],
+    "license": "LGPL-3",
     "images": [],
     "depends": [
         "product",

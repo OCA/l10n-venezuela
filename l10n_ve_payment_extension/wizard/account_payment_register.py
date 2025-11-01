@@ -10,8 +10,6 @@ _logger = logging.getLogger(__name__)
 class AccountPaymentRegister(models.TransientModel):
     _inherit = "account.payment.register"
 
-    company_currency_id = fields.Many2one("res.currency", default=lambda self: self.env.company.currency_id)
-
     is_out_invoice = fields.Boolean()
     is_retention = fields.Boolean(string="IVA Retention payment", default=False)
     edit_retention_fields = fields.Boolean(default=True)

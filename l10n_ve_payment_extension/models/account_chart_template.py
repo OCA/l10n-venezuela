@@ -63,7 +63,7 @@ class AccountChartTemplate(models.AbstractModel):
             # Retencion de ISLR de Proveedores
             vals["islrp"]["default_account_id"] = "account_activa_account_2172002"
             vals["islrp"]["suspense_account_id"] = "account_activa_account_9999909"
-            ## Adjust sequenc
+            # Retencion de ISLR de Clientes
             vals["islrc"]["default_account_id"] = "account_activa_account_1151002"
             vals["islrc"]["suspense_account_id"] = "account_activa_account_9999909"
 

@@ -1,5 +1,6 @@
 from odoo import models, fields, api, _, Command
 from odoo.exceptions import UserError
+import traceback
 
 import logging
 
@@ -9,16 +10,11 @@ _logger = logging.getLogger(__name__)
 class AccountMoveRetention(models.Model):
     _inherit = "account.move"
 
-    apply_islr_retention = fields.Boolean(
-        string="Apply ISLR Retention?",
-        default=False,
-    )
-
+    apply_islr_retention = fields.Boolean(string="Apply ISLR Retention?", default=False)
     islr_voucher_number = fields.Char(copy=False)
-
     iva_voucher_number = fields.Char(copy=False)
-
     municipal_voucher_number = fields.Char(copy=False)
+    generate_iva_retention = fields.Boolean(string="Generate IVA Retention?", default=False)
 
     retention_islr_line_ids = fields.One2many(
         "account.retention.line",
@@ -49,25 +45,10 @@ class AccountMoveRetention(models.Model):
         ],
     )
 
-    generate_iva_retention = fields.Boolean(
-        string="Generate IVA Retention?",
-        default=False,
-    )
-
-    def _get_protected_vals(self, vals, records):
-        protected = set()
-        for fname in vals:
-            field = records._fields[fname]
-            if field.inverse or (field.compute and not field.readonly):
-                protected.update(self.pool.field_computed.get(field, [field]))
-        return [(protected, rec) for rec in records] if protected else []
-
-    def write(self, vals):
-        return super().write(vals)
-
-    def _compute_currency_fields(self):
-        for retention in self:
-            retention.base_currency_is_vef = self.env.company.currency_id == self.env.ref("base.VEF")
+    @api.model_create_multi
+    def create(self, vals_list):
+        traceback.print_stack()
+        return super().create(vals_list)
 
     def action_post(self):
         """
@@ -96,7 +77,28 @@ class AccountMoveRetention(models.Model):
                 retention = move._create_supplier_retention("iva")
                 retention.with_context(skip_is_manually_modified=True).action_post()
                 move.iva_voucher_number = retention.number
+
+        move_retention = self.filtered(lambda move: move.origin_payment_id.is_retention)
+        for move in move_retention:
+            move._set_retention_name()
         return res
+
+    def _set_retention_name(self):
+        self.ensure_one()
+        payment = self.origin_payment_id
+        if not all((payment.retention_line_ids, payment.retention_id.number)):
+            return
+
+        move_name = (
+            payment.journal_id.code
+            + f"-{payment.retention_id.number}"
+            + f"-{payment.retention_line_ids[0].move_id.name}"
+        )
+
+        if payment.retention_id.type_retention == "islr":
+            move_name += f"-{payment.retention_line_ids[0].payment_concept_id.name[:5]}"
+
+        self.name = move_name
 
     def _validate_islr_retention(self):
         """
