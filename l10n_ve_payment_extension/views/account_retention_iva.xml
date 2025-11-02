@@ -85,7 +85,7 @@
                                         options="{'currency_field': 'company_currency_id'}"
                                     />
                                     <field
-                                        name="total_iva_amount"
+                                        name="amount_tax"
                                         widget="monetary"
                                         options="{'currency_field': 'company_currency_id'}"
                                     />

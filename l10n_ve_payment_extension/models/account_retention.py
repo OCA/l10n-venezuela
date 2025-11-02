@@ -125,7 +125,7 @@ class AccountRetention(models.Model):
         help="Taxable Income Total",
         store=True,
     )
-    total_iva_amount = fields.Float(string="Total IVA", compute="_compute_totals", store=True)
+    amount_tax = fields.Float(string="Tax Total", compute="_compute_totals", store=True)
     total_retention_amount = fields.Float(
         compute="_compute_totals",
         store=True,
@@ -165,7 +165,7 @@ class AccountRetention(models.Model):
     def _compute_totals(self):
         for retention in self:
             retention.total_invoice_amount = 0
-            retention.total_iva_amount = 0
+            retention.amount_tax = 0
             retention.total_retention_amount = 0
 
             for line in retention.retention_line_ids:
@@ -174,7 +174,7 @@ class AccountRetention(models.Model):
                         line.invoice_amount,
                         precision_digits=retention.company_currency_id.decimal_places,
                     )
-                    retention.total_iva_amount -= float_round(
+                    retention.amount_tax -= float_round(
                         line.iva_amount,
                         precision_digits=retention.company_currency_id.decimal_places,
                     )
@@ -187,7 +187,7 @@ class AccountRetention(models.Model):
                         line.invoice_amount,
                         precision_digits=retention.company_currency_id.decimal_places,
                     )
-                    retention.total_iva_amount += float_round(
+                    retention.amount_tax += float_round(
                         line.iva_amount,
                         precision_digits=retention.company_currency_id.decimal_places,
                     )
