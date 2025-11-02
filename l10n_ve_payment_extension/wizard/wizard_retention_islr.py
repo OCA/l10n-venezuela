@@ -16,8 +16,7 @@ _logger = logging.getLogger(__name__)
 class RetentionIslrReport(models.TransientModel):
     _name = "wizard.retention.islr"
     _description = "Wizard Retention ISLR Report"
-
-    check_company = True
+    _check_company_auto = True
 
     report = fields.Selection(
         [
@@ -133,7 +132,7 @@ class RetentionIslrReport(models.TransientModel):
 
     @api.model
     def _get_retention_islr_excel_model_row(self):
-        
+
         new_model_row = OrderedDict(
             [
                 ("ID Sec", 0),
@@ -146,10 +145,10 @@ class RetentionIslrReport(models.TransientModel):
                 ("Porcentaje de retención", 0.00),
             ]
         )
-        
+
         return new_model_row
 
-    @api.model    
+    @api.model
     def _get_retention_islr_excel_row(self, row_idx, ret_line_id, is_vef_currency):
 
         new_row = self._get_retention_islr_excel_model_row()
@@ -208,7 +207,7 @@ class RetentionIslrReport(models.TransientModel):
         is_vef_currency = self.env.ref("base.VEF").id == self.env.company.currency_foreign_id.id
 
         retention_ids = self._get_retention_ids(current_company)
-        
+
         if not retention_ids:
             raise ValidationError(_("No withholdings have been found in the selected period"))
 

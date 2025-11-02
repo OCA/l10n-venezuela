@@ -58,7 +58,7 @@
                                         <field name="company_id" optional="hide"
                                             groups="base.group_multi_company" />
                                         <field name="payment_concept_id" force_save="1" />
-                                        <field name="is_retention_client" column_invisible="True" />
+                                        <field name="is_client_retention" column_invisible="True" />
                                         <field
                                             name="invoice_total"
                                             force_save="1"

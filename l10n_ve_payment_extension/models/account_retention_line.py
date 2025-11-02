@@ -8,8 +8,7 @@ _logger = logging.getLogger(__name__)
 class AccountRetentionLine(models.Model):
     _name = "account.retention.line"
     _description = "Retention Line"
-
-    check_company = True
+    _check_company_auto = True
 
     name = fields.Char(string="Description", required=True, compute="_compute_name", store=True, readonly=False)
     company_id = fields.Many2one(
@@ -33,12 +32,12 @@ class AccountRetentionLine(models.Model):
     )
     date_accounting = fields.Date(related="retention_id.date_accounting", store=True)
     aliquot = fields.Float(digits=(16, 2))
-    amount_tax_ret = fields.Float(string="Retained tax", digits=(16, 2))
     base_ret = fields.Float("Retained base", digits=(16, 2))
-    imp_ret = fields.Float(string="tax incurred", digits=(16, 2))
+    amount_tax_ret = fields.Float(string="Retained tax", digits=(16, 2))
+    amount_tax_incurred = fields.Float(string="tax incurred", digits=(16, 2))
     retention_rate = fields.Float(store=True, digits="Tasa")
     move_id = fields.Many2one("account.move", "move", ondelete="cascade", store=True)
-    is_retention_client = fields.Boolean(default=True)
+    is_client_retention = fields.Boolean(default=True)
     display_invoice_number = fields.Char(string="Invoice Number", compute="_compute_display_invoice_number", store=True)
     invoice_amount = fields.Float(
         string="Taxable income",

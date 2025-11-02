@@ -20,12 +20,12 @@
                     <group>
                         <field name="name"/>
                         <field name="base_ret"/>
-                        <field name="imp_ret"/>
+                        <field name="amount_tax_incurred"/>
                         <field name="amount_tax_ret"/>
                         <field name="invoice_amount" />
                         <field name="iva_amount" />
                         <field name="retention_amount" />
-                        <field name="is_retention_client" invisible="1"/>
+                        <field name="is_client_retention" invisible="1"/>
                     </group>
                 </form>
             </field>
