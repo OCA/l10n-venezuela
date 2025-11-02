@@ -42,21 +42,11 @@ class RetentionLineReport(models.Model):
         """
 
     def _select(self):
-        base_vef_id = self.env["ir.model.data"]._xmlid_to_res_id(
-            "base.VEF", raise_if_not_found=False
-        )
-        use_foreign_currency = self.env.company.currency_id.id != base_vef_id
         amounts_query = """
             rl.iva_amount AS iva_amount,
             rl.invoice_amount AS invoice_amount,
             rl.retention_amount AS retention_amount,
         """
-        if use_foreign_currency:
-            amounts_query = """
-                rl.foreign_iva_amount AS iva_amount,
-                rl.foreign_invoice_amount AS invoice_amount,
-                rl.foreign_retention_amount AS retention_amount,
-            """
 
         return (
             """

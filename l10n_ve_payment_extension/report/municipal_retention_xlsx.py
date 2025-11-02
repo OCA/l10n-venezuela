@@ -167,19 +167,13 @@ class MunicipalRetentionXlsx(models.AbstractModel):
                 ("IMPUESTO RETENIDO", 0.00),
             ]
         )
-        base_currency = self.env.company.currency_id
-        usd = self.env.ref("base.USD")
 
         for index, retention_line in enumerate(retention.retention_line_ids):
             invoice_amount = 0
             retention_amount = 0
 
-            if base_currency == usd:
-                invoice_amount = retention_line.foreign_invoice_amount
-                retention_amount = retention_line.foreign_retention_amount
-            else:
-                invoice_amount = retention_line.invoice_amount
-                retention_amount = retention_line.retention_amount
+            invoice_amount = retention_line.invoice_amount
+            retention_amount = retention_line.retention_amount
 
             rows = OrderedDict()
             rows.update(cols)

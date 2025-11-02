@@ -16,7 +16,6 @@ class PaymentExtensionRetentionIvaVoucher(models.AbstractModel):
         return {
             "docids": docids,
             "doc_model": "account.retention",
-            "foreign_currency_is_vef": self.get_foreign_currency_is_vef(),
             "get_digits": self.get_digits(),
             "docs": docs_retentions,
         }
@@ -24,6 +23,3 @@ class PaymentExtensionRetentionIvaVoucher(models.AbstractModel):
     def get_digits(self):
         decimal_places = self.env.ref("base.VEF").decimal_places
         return decimal_places
-
-    def get_foreign_currency_is_vef(self):
-        return self.env.company.currency_foreign_id == self.env.ref("base.VEF")

@@ -48,9 +48,9 @@ class MunicipalRetentionPatentReport(models.TransientModel):
         columns2 = [{"header": r} for r in columnas]
         currency_symbol = self.env.ref("base.VEF").symbol
         money_format = workbook.add_format({"num_format": '#,##0.00 "' + currency_symbol + '"'})
-        
-        
-        
+
+
+
         for i, col in enumerate(columnas):
             if col in [
                 "VENTAS BRUTAS (Factura + ND)",
@@ -72,23 +72,15 @@ class MunicipalRetentionPatentReport(models.TransientModel):
         invoice_lines = self.env["account.move.line"].search(domain)
 
         invoice_lines = invoice_lines.filtered(lambda l: l.price_unit > 0)
-        usd_currency = self.env.ref("base.USD")
-        company_currency = self.env.company.currency_id
 
         nc_financial = 0
         nd_financial = 0
 
         for line in invoice_lines:
             if line.move_id.move_type == "out_refund":
-                if company_currency == usd_currency:
-                    nc_financial += line.foreign_subtotal
-                else:
-                    nc_financial += line.price_subtotal
+                nc_financial += line.price_subtotal
             if line.move_id.move_type == "out_invoice":
-                if company_currency == usd_currency:
-                    nd_financial += line.foreign_subtotal
-                else:
-                    nd_financial += line.price_subtotal
+                nd_financial += line.price_subtotal
 
         data = table.values.tolist()
         col3 = len(columns2) - 1
@@ -106,8 +98,8 @@ class MunicipalRetentionPatentReport(models.TransientModel):
         worksheet2.write_array_formula("D" + str(col2 + 1), f"=SUM(D2:D{col2})", money_format)
         worksheet2.write_array_formula("E" + str(col2 + 1), f"=SUM(E2:E{col2})", money_format)
         worksheet2.write_array_formula("H" + str(col2 + 1), f"=SUM(H2:H{col2})", money_format)
-        
-        
+
+
         if not self.env.company.hide_patent_columns_extra:
             worksheet2.write_array_formula("I" + str(col2 + 1), f"=SUM(I2:I{col2})", money_format)
             worksheet2.write_array_formula("J" + str(col2 + 1), f"=SUM(J2:J{col2})", money_format)
@@ -132,7 +124,7 @@ class MunicipalRetentionPatentReport(models.TransientModel):
                 worksheet2.write_formula(f"P{line}", f"=N{line}", money_format)
             else:
                 worksheet2.write_array_formula(f"J{line}", f"=H{line}*I{line}/100", money_format)
-                worksheet2.write_array_formula("J" + str(col2 + 1), f"=SUM(J2:J{col2})", money_format)   
+                worksheet2.write_array_formula("J" + str(col2 + 1), f"=SUM(J2:J{col2})", money_format)
 
         workbook.close()
         return result.getvalue()
@@ -153,16 +145,11 @@ class MunicipalRetentionPatentReport(models.TransientModel):
         invoice_lines = invoice_lines.filtered(lambda l: any(l.ciu_id))
 
         groups = {}
-        usd_currency = self.env.ref("base.USD")
-        company_currency = self.env.company.currency_id
 
         for line in invoice_lines:
             price_subtotal = 0
 
-            if company_currency == usd_currency:
-                price_subtotal = line.foreign_subtotal
-            else:
-                price_subtotal = line.price_subtotal
+            price_subtotal = line.price_subtotal
             ciu = line.ciu_id
             if not ((ciu.name, line.product_id.categ_id.name) in groups.keys()):
                 groups[ciu.name, line.product_id.categ_id.name] = {
@@ -203,7 +190,7 @@ class MunicipalRetentionPatentReport(models.TransientModel):
                 ("ANTICIPO 90%", 0.00),
             ]
         )
-        
+
         if self.env.company.hide_patent_columns_extra:
             for col_name in [
                 "INGRESOS 90%",

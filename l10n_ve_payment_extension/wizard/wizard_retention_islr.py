@@ -149,7 +149,7 @@ class RetentionIslrReport(models.TransientModel):
         return new_model_row
 
     @api.model
-    def _get_retention_islr_excel_row(self, row_idx, ret_line_id, is_vef_currency):
+    def _get_retention_islr_excel_row(self, row_idx, ret_line_id):
 
         new_row = self._get_retention_islr_excel_model_row()
 
@@ -183,7 +183,7 @@ class RetentionIslrReport(models.TransientModel):
         new_row["Código Concepto"] = concept
 
         new_row["Monto Operación"] = (
-            round(ret_line_id.foreign_invoice_amount, 2) if is_vef_currency else ret_line_id.invoice_amount
+            ret_line_id.invoice_amount
         )
 
         new_row["Porcentaje de retención"] = alicuota
@@ -204,8 +204,6 @@ class RetentionIslrReport(models.TransientModel):
         return retention_ids
 
     def _get_retention_islr_excel_rows(self, table_rows, row_idx, current_company=False):
-        is_vef_currency = self.env.ref("base.VEF").id == self.env.company.currency_foreign_id.id
-
         retention_ids = self._get_retention_ids(current_company)
 
         if not retention_ids:
@@ -216,10 +214,9 @@ class RetentionIslrReport(models.TransientModel):
         for retention_line_id in retention_line_ids:
             row_idx += 1
 
-            new_row = self._get_retention_islr_excel_row(row_idx, retention_line_id, is_vef_currency)
+            new_row = self._get_retention_islr_excel_row(row_idx, retention_line_id)
 
             table_rows.append(new_row)
-
 
         return table_rows, row_idx
 

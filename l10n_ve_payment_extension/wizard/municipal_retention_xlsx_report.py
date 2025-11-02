@@ -162,21 +162,15 @@ class MunicipalRetentionXlsxReport(models.TransientModel):
                 ("Monto Retenido", 0.00),
             ]
         )
-        base_currency = self.env.company.currency_id
-        usd = self.env.ref("base.USD")
-        numero = 1
+        number = 1
         for retention in retentions:
             retention_lines = self._get_filtered_retention_lines(retention.retention_line_ids)
             for retention_line in retention_lines:
                 invoice_amount = 0
                 retention_amount = 0
 
-                if base_currency == usd:
-                    invoice_amount = retention_line.foreign_invoice_amount
-                    retention_amount = retention_line.foreign_retention_amount
-                else:
-                    invoice_amount = retention_line.invoice_amount
-                    retention_amount = retention_line.retention_amount
+                invoice_amount = retention_line.invoice_amount
+                retention_amount = retention_line.retention_amount
 
                 invoice_type = ""
 
@@ -187,7 +181,7 @@ class MunicipalRetentionXlsxReport(models.TransientModel):
 
                 rows = OrderedDict()
                 rows.update(cols)
-                rows["Nº"] = numero
+                rows["Nº"] = number
                 rows["Tipo de Instrumento"] = invoice_type
                 rows["Monto Bruto"] = invoice_amount
                 rows["Nº de Instrumento"] = retention.name
@@ -204,7 +198,7 @@ class MunicipalRetentionXlsxReport(models.TransientModel):
                 rows["Monto Retenido"] = retention_amount
 
                 lista.append(rows)
-                numero += 1
+                number += 1
         table = pandas.DataFrame(lista)
         return table.fillna(0)
 
