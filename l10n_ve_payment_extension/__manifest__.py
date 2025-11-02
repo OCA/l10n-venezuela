@@ -4,7 +4,9 @@
         Módulo de Retenciones Venezuela
     """,
     "license": "LGPL-3",
-    "author": "Mauricio Istúriz",
+    "icon": "/account/static/description/l10n.png",
+    "countries": ["ve"],
+    "author": "Mauricio Istúriz, Anderson Armeya, Odoo Community Association (OCA)",
     "category": "Accountant/Accountant",
     "version": "18.0.1.0.0",
     "depends": [
@@ -54,6 +56,5 @@
         "wizard/wizard_retention_iva.xml",
         "views/menu.xml",
     ],
-    "images": ["static/description/icon.png"],
     "application": True,
 }
