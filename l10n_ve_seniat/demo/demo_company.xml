@@ -26,12 +26,13 @@
         <value
             eval="[ref('base.user_root'), ref('base.user_admin'), ref('base.user_demo')]"
         />
-        <value eval="{'company_ids': [(4, ref('l10n_ve.demo_company_ve'))]}" />
+        <value eval="{'company_ids': [(4, ref('demo_company_ve'))]}" />
     </function>
 
     <function model="account.chart.template" name="try_loading">
         <value eval="[]" />
         <value>ve_seniat</value>
-        <value model="res.company" eval="obj().env.ref('l10n_ve.demo_company_ve')" />
+        <value model="res.company" eval="obj().env.ref('l10n_ve_seniat.demo_company_ve')" />
+        <value name="install_demo" eval="True" />
     </function>
 </odoo>
