@@ -1,0 +1,41 @@
+# Part of Odoo. See LICENSE file for full copyright and licensing details.
+{
+    "name": "Venezuela SENIAT - Accounting",
+    "website": "https://github.com/OCA/l10n-venezuela",
+    "icon": "/account/static/description/l10n.png",
+    "countries": ["ve"],
+    "author": "Anderson Armeya, Odoo Community Association (OCA)",
+    "category": "Accounting/Localizations/Account Charts",
+    "depends": ["base", "web", "account", "account_debit_note"],
+    "excludes": ["web_studio"],
+    "demo": [
+        "demo/demo_company.xml",
+    ],
+    "data": [
+        "security/ir.model.access.csv",
+        "security/res_groups.xml",
+        "data/res_country.xml",
+        "data/res.country.state.csv",
+        "data/res.country.municipality.csv",
+        "data/res.country.parish.csv",
+        "data/ir_sequence_data.xml",
+        "data/report_paperformat_data.xml",
+        "views/account_journal_views.xml",
+        "views/account_move_views.xml",
+        "views/account_move_audit_log_views.xml",
+        "views/ir_sequence_views.xml",
+        "views/res_country_municipality_views.xml",
+        "views/res_country_parish_views.xml",
+        "views/res_partner_views.xml",
+        "views/report_layout.xml",
+        "views/report_invoice_original_inherit.xml",
+        "views/res_config_settings.xml",
+        "views/menuitems.xml",
+    ],
+    "assets": {
+        "web.report_assets_common": [
+            "l10n_ve_seniat/static/src/css/report_invoice_ve.css",
+        ],
+    },
+    "license": "AGPL-3",
+}

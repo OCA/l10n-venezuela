@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <menuitem
+        id="l10n_ve_menu_no_one"
+        parent="base.menu_custom"
+        name="Venezuelan Localization"
+    >
+        <menuitem
+            name="Municipalities"
+            id="menu_res_municipality"
+            action="action_res_country_municipality"
+            sequence="2"
+        />
+
+        <menuitem
+            name="Parish"
+            id="menu_res_country_parish"
+            action="action_res_country_parish"
+            sequence="3"
+        />
+
+        <menuitem
+            name="N° de Control"
+            id="menu_l10n_ve_control_number_sequence"
+            action="action_l10n_ve_control_number_sequence"
+            sequence="10"
+        />
+    </menuitem>
+    <menuitem
+        id="menu_account_move_audit_log"
+        name="Audit Log - Moves"
+        action="action_account_move_audit_log"
+        parent="account.menu_finance_reports"
+        sequence="99"
+        groups="account.group_account_user"
+    />
+</odoo>

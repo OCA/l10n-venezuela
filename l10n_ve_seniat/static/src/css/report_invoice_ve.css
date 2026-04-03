@@ -1,0 +1,161 @@
+.l10n_ve_totals_grid {
+    width: 100%;
+    border: 0;
+    border-collapse: separate;
+    border-spacing: 10px 0;
+}
+
+.l10n_ve_totals_grid td {
+    width: 50%;
+    vertical-align: top;
+    padding: 0;
+    border: 0;
+}
+
+.l10n_ve_totals_table {
+    width: 100%;
+    border: 0 !important;
+    outline: 0;
+    box-shadow: none;
+}
+
+.l10n_ve_totals_table tr td {
+    background: #fff !important;
+    color: #000 !important;
+    border-left: 0 !important;
+    border-right: 0 !important;
+}
+
+.o_table_striped .l10n_ve_totals_table tr:nth-child(odd) td {
+    background: #fff !important;
+}
+
+.l10n_ve_totals_table tr.o_total td {
+    border-top: 1px solid #000 !important;
+    padding-top: 3px;
+}
+
+.l10n_ve_totals_table tr.o_total td strong {
+    color: #000 !important;
+}
+
+.o_report_layout_wave {
+    font-size: 11px !important;
+    line-height: 1.2 !important;
+}
+
+.o_report_layout_wave h2 {
+    font-size: 16px !important;
+    margin-bottom: 8px !important;
+    line-height: 1.2 !important;
+}
+
+.o_report_layout_wave .o_main_table {
+    font-size: 10px !important;
+    margin-bottom: 8px !important;
+}
+
+.o_report_layout_wave .o_main_table th {
+    font-size: 10px !important;
+    padding: 2px 4px !important;
+    line-height: 1.2 !important;
+}
+
+.o_report_layout_wave .o_main_table td {
+    font-size: 10px !important;
+    padding: 2px 4px !important;
+    line-height: 1.2 !important;
+}
+
+.o_report_layout_wave .o_total_table {
+    font-size: 10px !important;
+}
+
+.o_report_layout_wave .o_total_table td {
+    font-size: 10px !important;
+    padding: 1px 4px !important;
+    line-height: 1.2 !important;
+}
+
+.o_report_layout_wave .o_total_table strong {
+    font-size: 11px !important;
+}
+
+.o_report_layout_wave address {
+    font-size: 10px !important;
+    line-height: 1.2 !important;
+    margin-bottom: 4px !important;
+}
+
+.o_report_layout_wave #informations {
+    font-size: 10px !important;
+    margin-bottom: 6px !important;
+    line-height: 1.2 !important;
+}
+
+.o_report_layout_wave #informations strong {
+    font-size: 10px !important;
+}
+
+.o_report_layout_wave #informations div {
+    font-size: 10px !important;
+    margin-bottom: 2px !important;
+    line-height: 1.2 !important;
+}
+
+.o_report_layout_wave #payment_term {
+    font-size: 10px !important;
+    margin-top: 8px !important;
+    line-height: 1.2 !important;
+}
+
+.o_report_layout_wave #payment_term p {
+    font-size: 10px !important;
+    margin-bottom: 4px !important;
+    line-height: 1.2 !important;
+}
+
+.o_report_layout_wave #payment_term small {
+    font-size: 9px !important;
+    line-height: 1.2 !important;
+}
+
+.o_report_layout_wave .mb-1 {
+    margin-bottom: 4px !important;
+}
+
+.o_report_layout_wave .mb-2 {
+    margin-bottom: 6px !important;
+}
+
+.o_report_layout_wave .mb-3 {
+    margin-bottom: 8px !important;
+}
+
+.o_report_layout_wave .mt-3 {
+    margin-top: 8px !important;
+}
+
+.o_report_layout_wave .mt-5 {
+    margin-top: 10px !important;
+}
+
+.o_report_layout_wave .row {
+    margin-bottom: 4px !important;
+}
+
+.o_report_layout_wave .page {
+    padding: 4px 0 !important;
+}
+
+.o_report_layout_wave .invoice_main {
+    padding: 0 !important;
+}
+
+.o_report_layout_wave #right-elements {
+    margin-top: 6px !important;
+}
+
+.o_report_layout_wave #total {
+    margin-bottom: 4px !important;
+}

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <data noupdate="1">
+        <!-- Secuencia para N° de Control Venezolano -->
+        <record id="sequence_l10n_ve_control_number" model="ir.sequence">
+            <field name="name">N° de Control (Venezuela)</field>
+            <field name="code">l10n_ve_control_number</field>
+            <field name="prefix" />
+            <field name="suffix" />
+            <field name="padding">8</field>
+            <field name="number_increment">1</field>
+            <field name="number_next">1</field>
+            <field name="company_id" eval="False" />
+            <field name="use_date_range">False</field>
+        </record>
+    </data>
+</odoo>

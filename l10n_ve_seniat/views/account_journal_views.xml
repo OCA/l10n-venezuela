@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="view_account_journal_form_inherit" model="ir.ui.view">
+        <field name="name">account.journal.ve.form</field>
+        <field name="model">account.journal</field>
+        <field name="inherit_id" ref="account.view_account_journal_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page string="SENIAT Sequences" invisible="type != 'sale'">
+                    <group>
+                        <button
+                            name="action_create_seniat_sequences"
+                            string="Create SENIAT Sequences"
+                            type="object"
+                            class="btn-primary"
+                            invisible="l10n_ve_invoice_sequence_id and l10n_ve_credit_note_sequence_id"
+                        />
+
+                        <field
+                            name="l10n_ve_invoice_sequence_id"
+                            options="{'no_create': False, 'no_open': True}"
+                        />
+                        <field
+                            name="l10n_ve_credit_note_sequence_id"
+                            options="{'no_create': False, 'no_open': True}"
+                        />
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

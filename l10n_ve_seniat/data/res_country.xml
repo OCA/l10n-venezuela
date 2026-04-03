@@ -1,0 +1,8 @@
+<odoo>
+    <function model="res.country" name="write">
+        <value eval="[ref('base.ve')]" />
+        <value
+            eval="{'vat_label': 'RIF/CI', 'currency_id': ref('base.VES'), 'zip_required': False}"
+        />
+    </function>
+</odoo>

@@ -1,0 +1,71 @@
+<odoo>
+    <record id="res_config_settings_l10n_ve_seniat" model="ir.ui.view">
+        <field name="name">res.config.settings.l10n.ve.seniat</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="account.res_config_settings_view_form" />
+        <field name="arch" type="xml">
+            <xpath
+                expr="//block[@name='fiscal_localization_setting_container']"
+                position="after"
+            >
+                <block
+                    title="Venezuela - Tax Configuration"
+                    name="l10n_ve_seniat_block"
+                >
+                    <div
+                        class="col-12 col-lg-6 o_setting_box"
+                        id="l10n_ve_seniat_div_tax_rates_sales"
+                    >
+                        <div class="o_setting_right_pane">
+                            <separator string="Sales Tax Rates" />
+                            <group>
+                                <field
+                                    name="exent_aliquot_sale"
+                                    string="Exempt Aliquot"
+                                />
+                                <field
+                                    name="general_aliquot_sale"
+                                    string="General Aliquot"
+                                />
+                                <field
+                                    name="reduced_aliquot_sale"
+                                    string="Reduced Aliquot"
+                                />
+                                <field
+                                    name="extend_aliquot_sale"
+                                    string="Extended Aliquot"
+                                />
+                            </group>
+                        </div>
+                    </div>
+                    <div
+                        class="col-12 col-lg-6 o_setting_box"
+                        id="l10n_ve_seniat_div_tax_rates_purchases"
+                    >
+                        <div class="o_setting_right_pane">
+                            <separator string="Purchase Tax Rates" />
+                            <group>
+                                <field
+                                    name="exent_aliquot_purchase"
+                                    string="Exempt Aliquot"
+                                />
+                                <field
+                                    name="general_aliquot_purchase"
+                                    string="General Aliquot"
+                                />
+                                <field
+                                    name="reduced_aliquot_purchase"
+                                    string="Reduced Aliquot"
+                                />
+                                <field
+                                    name="extend_aliquot_purchase"
+                                    string="Extended Aliquot"
+                                />
+                            </group>
+                        </div>
+                    </div>
+                </block>
+            </xpath>
+        </field>
+    </record>
+</odoo>

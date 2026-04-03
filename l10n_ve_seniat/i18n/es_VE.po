@@ -1,0 +1,519 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* l10n_ve_seniat
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0-20251008\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-10-26 23:35+0000\n"
+"PO-Revision-Date: 2025-10-26 20:11-0400\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: es_VE\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 3.6\n"
+
+#. module: l10n_ve_seniat
+#: model:ir.actions.report,print_report_name:l10n_ve_seniat.account_invoices_ve
+msgid "(object._get_report_base_filename())"
+msgstr "(object._get_report_base_filename())"
+
+#. module: l10n_ve_seniat
+#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.report_invoice_document_ve
+msgid "- Installment of"
+msgstr "- Cuota de"
+
+#. module: l10n_ve_seniat
+#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.report_invoice_document_ve
+msgid "2023-09-12"
+msgstr "2023-09-12"
+
+#. module: l10n_ve_seniat
+#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.report_invoice_document_ve
+msgid "2023-09-25"
+msgstr "2023-09-25"
+
+#. module: l10n_ve_seniat
+#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.report_invoice_document_ve
+msgid "2023-10-31"
+msgstr "2023-10-31"
+
+#. module: l10n_ve_seniat
+#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.report_invoice_document_ve
+msgid "2024-01-01"
+msgstr "2024-01-01"
+
+#. module: l10n_ve_seniat
+#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.report_invoice_document_ve
+msgid "27.00"
+msgstr "27.00"
+
+#. module: l10n_ve_seniat
+#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.report_invoice_document_ve
+msgid "3.00"
+msgstr "3.00"
+
+#. module: l10n_ve_seniat
+#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.report_invoice_document_ve
+msgid "30.00"
+msgstr "30.00"
+
+#. module: l10n_ve_seniat
+#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.report_invoice_document_ve
+msgid "31.05"
+msgstr "31.05"
+
+#. module: l10n_ve_seniat
+#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.report_invoice_document_ve
+msgid "9.00"
+msgstr "9.00"
+
+#. module: l10n_ve_seniat
+#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.report_invoice_document_ve
+msgid "<br/> on this account:"
+msgstr "<br/> en esta cuenta:"
+
+#. module: l10n_ve_seniat
+#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.report_invoice_document_ve
+msgid "<span> due on </span>"
+msgstr "<span> vence el </span>"
+
+#. module: l10n_ve_seniat
+#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.report_invoice_document_ve
+msgid "<span>Amount Currency</span>"
+msgstr "<span>Monto moneda</span>"
+
+#. module: l10n_ve_seniat
+#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.report_invoice_document_ve
+msgid "<span>Amount</span>"
+msgstr "<span>Monto</span>"
+
+#. module: l10n_ve_seniat
+#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.report_invoice_document_ve
+msgid "<span>Description</span>"
+msgstr "<span>Descripción</span>"
+
+#. module: l10n_ve_seniat
+#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.report_invoice_document_ve
+msgid "<span>Disc.%</span>"
+msgstr "<span>Desc.%</span>"
+
+#. module: l10n_ve_seniat
+#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.report_invoice_document_ve
+msgid "<span>Quantity</span>"
+msgstr "<span>Cantidad</span>"
+
+#. module: l10n_ve_seniat
+#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.report_invoice_document_ve
+msgid "<span>Taxes</span>"
+msgstr "<span>Impuestos</span>"
+
+#. module: l10n_ve_seniat
+#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.report_invoice_document_ve
+msgid "<span>Unit Price</span>"
+msgstr "<span>Precio unitario</span>"
+
+#. module: l10n_ve_seniat
+#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.report_invoice_document_ve
+msgid "<strong class=\"mr16\">Subtotal</strong>"
+msgstr "<strong class=\"mr16\">Subtotal</strong>"
+
+#. module: l10n_ve_seniat
+#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.report_invoice_document_ve
+msgid "<strong>Credit Note Date</strong>"
+msgstr "<strong>Fecha de la nota de crédito</strong>"
+
+#. module: l10n_ve_seniat
+#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.report_invoice_document_ve
+msgid "<strong>Customer Code</strong>"
+msgstr "<strong>Código de cliente</strong>"
+
+#. module: l10n_ve_seniat
+#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.report_invoice_document_ve
+msgid "<strong>Date</strong>"
+msgstr "<strong>Fecha</strong>"
+
+#. module: l10n_ve_seniat
+#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.report_invoice_document_ve
+msgid "<strong>Delivery Date</strong>"
+msgstr "<strong>Fecha de entrega</strong>"
+
+#. module: l10n_ve_seniat
+#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.report_invoice_document_ve
+msgid "<strong>Due Date</strong>"
+msgstr "<strong>Fecha de vencimiento</strong>"
+
+#. module: l10n_ve_seniat
+#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.report_invoice_document_ve
+msgid "<strong>Incoterm</strong>"
+msgstr "<strong>Incoterm</strong>"
+
+#. module: l10n_ve_seniat
+#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.report_invoice_document_ve
+msgid "<strong>Invoice Date</strong>"
+msgstr "<strong>Fecha de la factura</strong>"
+
+#. module: l10n_ve_seniat
+#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.report_invoice_document_ve
+msgid "<strong>Receipt Date</strong>"
+msgstr "<strong>Fecha de recepción</strong>"
+
+#. module: l10n_ve_seniat
+#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.report_invoice_document_ve
+msgid "<strong>Reference</strong>"
+msgstr "<strong>Referencia</strong>"
+
+#. module: l10n_ve_seniat
+#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.report_invoice_document_ve
+msgid "<strong>Source</strong>"
+msgstr "<strong>Origen</strong>"
+
+#. module: l10n_ve_seniat
+#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.report_invoice_document_ve
+msgid "A note, whose content usually applies to the section or product above."
+msgstr "Una nota, cuyo contenido normalmente aplica a la sección o producto superior."
+
+#. module: l10n_ve_seniat
+#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.report_invoice_document_ve
+msgid "A section title"
+msgstr "Un título de sección"
+
+#. module: l10n_ve_seniat
+#: model:ir.model,name:l10n_ve_seniat.model_account_chart_template
+msgid "Account Chart Template"
+msgstr "Plantilla de plan de cuentas"
+
+#. module: l10n_ve_seniat
+#: model:ir.model.fields,field_description:l10n_ve_seniat.field_res_country_municipality__active
+msgid "Active"
+msgstr "Activo"
+
+#. module: l10n_ve_seniat
+#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.report_invoice_document_ve
+msgid "Bacon Burger"
+msgstr "Hamburguesa con tocineta"
+
+#. module: l10n_ve_seniat
+#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.view_move_form
+msgid "Cancel"
+msgstr "Cancelar"
+
+#. module: l10n_ve_seniat
+#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.report_invoice_document_ve
+msgid "Cancelled Credit Note"
+msgstr "Nota de crédito cancelada"
+
+#. module: l10n_ve_seniat
+#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.report_invoice_document_ve
+msgid "Cancelled Invoice"
+msgstr "Factura cancelada"
+
+#. module: l10n_ve_seniat
+#: model:ir.model.fields,field_description:l10n_ve_seniat.field_res_country_municipality__code
+#: model:ir.model.fields,field_description:l10n_ve_seniat.field_res_country_parish__code
+msgid "Code"
+msgstr "Código"
+
+#. module: l10n_ve_seniat
+#: model:ir.model,name:l10n_ve_seniat.model_res_partner
+msgid "Contact"
+msgstr "Contacto"
+
+#. module: l10n_ve_seniat
+#: model:ir.model.fields,field_description:l10n_ve_seniat.field_res_country_municipality__country_id
+#: model:ir.model.fields,field_description:l10n_ve_seniat.field_res_partner__country_id
+#: model:ir.model.fields,field_description:l10n_ve_seniat.field_res_users__country_id
+msgid "Country"
+msgstr "País"
+
+#. module: l10n_ve_seniat
+#: model:ir.model.fields,field_description:l10n_ve_seniat.field_res_country_municipality__create_uid
+#: model:ir.model.fields,field_description:l10n_ve_seniat.field_res_country_parish__create_uid
+msgid "Created by"
+msgstr "Creado por"
+
+#. module: l10n_ve_seniat
+#: model:ir.model.fields,field_description:l10n_ve_seniat.field_res_country_municipality__create_date
+#: model:ir.model.fields,field_description:l10n_ve_seniat.field_res_country_parish__create_date
+msgid "Created on"
+msgstr "Creado el"
+
+#. module: l10n_ve_seniat
+#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.report_invoice_document_ve
+msgid "Credit Note"
+msgstr "Nota de crédito"
+
+#. module: l10n_ve_seniat
+#: model:ir.model.fields,field_description:l10n_ve_seniat.field_res_country_municipality__display_name
+#: model:ir.model.fields,field_description:l10n_ve_seniat.field_res_country_parish__display_name
+msgid "Display Name"
+msgstr "Nombre para mostrar"
+
+#. module: l10n_ve_seniat
+#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.report_invoice_document_ve
+msgid "Draft Credit Note"
+msgstr "Borrador de nota de crédito"
+
+#. module: l10n_ve_seniat
+#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.report_invoice_document_ve
+msgid "Draft Invoice"
+msgstr "Borrador de factura"
+
+#. module: l10n_ve_seniat
+#: model:ir.model.fields.selection,name:l10n_ve_seniat.selection__res_partner__taxpayer_type__formal
+msgid "Formal"
+msgstr "Formal"
+
+#. module: l10n_ve_seniat
+#: model:ir.model.fields,field_description:l10n_ve_seniat.field_res_country_municipality__id
+#: model:ir.model.fields,field_description:l10n_ve_seniat.field_res_country_parish__id
+msgid "ID"
+msgstr "ID"
+
+#. module: l10n_ve_seniat
+#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.report_invoice_document_ve
+msgid "INV/2023/00001"
+msgstr "INV/2023/00001"
+
+#. module: l10n_ve_seniat
+#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.report_invoice_document_ve
+msgid "INV/2023/0001"
+msgstr "INV/2023/0001"
+
+#. module: l10n_ve_seniat
+#: model:ir.model.fields,help:l10n_ve_seniat.field_account_bank_statement_line__reception_date
+#: model:ir.model.fields,help:l10n_ve_seniat.field_account_move__reception_date
+msgid "Indicates when the invoice was received by the client/company"
+msgstr "Indica cuándo el cliente/empresa recibió la factura"
+
+#. module: l10n_ve_seniat
+#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.report_invoice_document_ve
+msgid "Invoice"
+msgstr "Factura"
+
+#. module: l10n_ve_seniat
+#: model:ir.model.fields,field_description:l10n_ve_seniat.field_account_bank_statement_line__l10n_ve_invoice_date
+#: model:ir.model.fields,field_description:l10n_ve_seniat.field_account_move__l10n_ve_invoice_date
+msgid "Invoice Datetime"
+msgstr "Fecha y hora de la factura"
+
+#. module: l10n_ve_seniat
+#: model:ir.actions.report,name:l10n_ve_seniat.account_invoices_ve
+msgid "Invoice VE"
+msgstr "Factura VE"
+
+#. module: l10n_ve_seniat
+#: model:ir.model,name:l10n_ve_seniat.model_account_move
+msgid "Journal Entry"
+msgstr "Asiento contable"
+
+#. module: l10n_ve_seniat
+#: model:ir.model,name:l10n_ve_seniat.model_account_move_line
+msgid "Journal Item"
+msgstr "Apunte contable"
+
+#. module: l10n_ve_seniat
+#: model:ir.model.fields,field_description:l10n_ve_seniat.field_res_country_municipality__write_uid
+#: model:ir.model.fields,field_description:l10n_ve_seniat.field_res_country_parish__write_uid
+msgid "Last Updated by"
+msgstr "Última actualización por"
+
+#. module: l10n_ve_seniat
+#: model:ir.model.fields,field_description:l10n_ve_seniat.field_res_country_municipality__write_date
+#: model:ir.model.fields,field_description:l10n_ve_seniat.field_res_country_parish__write_date
+msgid "Last Updated on"
+msgstr "Última actualización el"
+
+#. module: l10n_ve_seniat
+#: model:ir.actions.act_window,name:l10n_ve_seniat.action_res_country_municipality
+#: model:ir.ui.menu,name:l10n_ve_seniat.menu_res_municipality
+#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.view_res_country_municipality_tree
+msgid "Municipalities"
+msgstr "Municipios"
+
+#. module: l10n_ve_seniat
+#: model:ir.model,name:l10n_ve_seniat.model_res_country_municipality
+#: model:ir.model.fields,field_description:l10n_ve_seniat.field_res_country_municipality__name
+#: model:ir.model.fields,field_description:l10n_ve_seniat.field_res_country_parish__municipality_id
+#: model:ir.model.fields,field_description:l10n_ve_seniat.field_res_partner__municipality_id
+#: model:ir.model.fields,field_description:l10n_ve_seniat.field_res_users__municipality_id
+#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.view_partner_form
+#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.view_res_country_municipality_form
+msgid "Municipality"
+msgstr "Municipio"
+
+#. module: l10n_ve_seniat
+#: model:ir.model.fields,field_description:l10n_ve_seniat.field_res_country_parish__name
+msgid "Name"
+msgstr "Nombre"
+
+#. module: l10n_ve_seniat
+#: model:ir.model.fields.selection,name:l10n_ve_seniat.selection__res_partner__taxpayer_type__ordinary
+msgid "Ordinary"
+msgstr "Ordinario"
+
+#. module: l10n_ve_seniat
+#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.report_invoice_document_ve
+msgid "PROFORMA"
+msgstr "PROFORMA"
+
+#. module: l10n_ve_seniat
+#: model:ir.actions.act_window,name:l10n_ve_seniat.action_res_country_parish
+#: model:ir.model,name:l10n_ve_seniat.model_res_country_parish
+#: model:ir.model.fields,field_description:l10n_ve_seniat.field_res_partner__parish_id
+#: model:ir.model.fields,field_description:l10n_ve_seniat.field_res_users__parish_id
+#: model:ir.ui.menu,name:l10n_ve_seniat.menu_res_country_parish
+#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.view_partner_form
+#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.view_res_country_parish_form
+msgid "Parish"
+msgstr "Parroquia"
+
+#. module: l10n_ve_seniat
+#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.view_res_country_parish_tree
+msgid "Parishes"
+msgstr "Parroquias"
+
+#. module: l10n_ve_seniat
+#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.report_invoice_document_ve
+msgid "Payment Communication:"
+msgstr "Comunicación de pago:"
+
+#. module: l10n_ve_seniat
+#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.report_invoice_document_ve
+msgid "Payment within 30 calendar day"
+msgstr "Pago dentro de 30 días calendario"
+
+#. module: l10n_ve_seniat
+#: model:ir.model.fields,field_description:l10n_ve_seniat.field_res_partner__prefix_vat
+#: model:ir.model.fields,field_description:l10n_ve_seniat.field_res_users__prefix_vat
+msgid "Prefix vat"
+msgstr "Prefijo Identificación"
+
+#. module: l10n_ve_seniat
+#: model:ir.model.fields,field_description:l10n_ve_seniat.field_account_bank_statement_line__reception_date
+#: model:ir.model.fields,field_description:l10n_ve_seniat.field_account_move__reception_date
+msgid "Reception Date"
+msgstr "Fecha de recepción"
+
+#. module: l10n_ve_seniat
+#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.report_invoice_document_ve
+msgid "SO123"
+msgstr "SO123"
+
+#. module: l10n_ve_seniat
+#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.report_invoice_document_ve
+msgid "Scan this QR Code with<br/>your banking application"
+msgstr "Escanee este código QR con<br/>su aplicación bancaria"
+
+#. module: l10n_ve_seniat
+#. odoo-python
+#: code:addons/l10n_ve_seniat/models/template_ve.py:0
+msgid "Seniat"
+msgstr "Seniat"
+
+#. module: l10n_ve_seniat
+#: model:ir.model.fields.selection,name:l10n_ve_seniat.selection__res_partner__taxpayer_type__special
+msgid "Special"
+msgstr "Especial"
+
+#. module: l10n_ve_seniat
+#: model:ir.model.fields,field_description:l10n_ve_seniat.field_res_country_municipality__state_id
+msgid "State"
+msgstr "Estado"
+
+#. module: l10n_ve_seniat
+#: model:ir.model.fields,field_description:l10n_ve_seniat.field_account_move_line__subtotal_company_currency
+msgid "Subtotal Company Currency"
+msgstr "Subtotal moneda de la empresa"
+
+#. module: l10n_ve_seniat
+#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.report_invoice_document_ve
+msgid "Tax 15%"
+msgstr "Tax 15%"
+
+#. module: l10n_ve_seniat
+#: model:ir.model.fields,field_description:l10n_ve_seniat.field_res_partner__vat
+#: model:ir.model.fields,field_description:l10n_ve_seniat.field_res_users__vat
+#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.report_invoice_document_ve
+msgid "Tax ID"
+msgstr "Número de identificación fiscal"
+
+#. module: l10n_ve_seniat
+#: model:ir.model.fields,field_description:l10n_ve_seniat.field_res_partner__taxpayer_type
+#: model:ir.model.fields,field_description:l10n_ve_seniat.field_res_users__taxpayer_type
+msgid "Taxpayer Type"
+msgstr "Tipo de contribuyente"
+
+#. module: l10n_ve_seniat
+#: model:ir.model.fields,help:l10n_ve_seniat.field_res_partner__vat
+#: model:ir.model.fields,help:l10n_ve_seniat.field_res_users__vat
+msgid ""
+"The Tax Identification Number. Values here will be validated based on the "
+"country format. You can use '/' to indicate that the partner is not subject "
+"to tax."
+msgstr ""
+"El número de identificación fiscal. Los valores establecidos aquí se "
+"validarán según el formato del país. Puede utilizar \"/\" para indicar que "
+"el contacto no está sujeto a impuestos."
+
+#. module: l10n_ve_seniat
+#. odoo-python
+#: code:addons/l10n_ve_seniat/models/res_country_municipality.py:0
+msgid "The municipality is already registered"
+msgstr "El municipio ya está registrado"
+
+#. module: l10n_ve_seniat
+#. odoo-python
+#: code:addons/l10n_ve_seniat/models/res_partner.py:0
+msgid ""
+"The taxpayer type can only be set for Venezuelan partners (country code "
+"'VE')."
+msgstr ""
+"El tipo de contribuyente solo puede establecerse para contactos venezolanos "
+"(código de país 'VE')."
+
+#. module: l10n_ve_seniat
+#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.report_invoice_document_ve
+msgid "Thirty one dollar and Five cents"
+msgstr "Treinta y un dólares con cinco centavos"
+
+#. module: l10n_ve_seniat
+#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.view_move_form
+msgid ""
+"This action will cancel the document. Are you sure you want to proceed?"
+msgstr "Esta acción cancelará el documento. ¿Está seguro de que desea continuar?"
+
+#. module: l10n_ve_seniat
+#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.report_invoice_document_ve
+msgid "Total amount in words: <br/>"
+msgstr "Monto total en letras: <br/>"
+
+#. module: l10n_ve_seniat
+#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.report_invoice_document_ve
+msgid "Vendor Bill"
+msgstr "Factura de proveedor"
+
+#. module: l10n_ve_seniat
+#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.report_invoice_document_ve
+msgid "Vendor Credit Note"
+msgstr "Nota de crédito de proveedor"
+
+#. module: l10n_ve_seniat
+#: model:ir.ui.menu,name:l10n_ve_seniat.l10n_ve_menu_no_one
+msgid "Venezuelan Localization"
+msgstr "Localización Venezolana"
+
+#. module: l10n_ve_seniat
+#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.report_invoice_document_ve
+msgid "due if paid before"
+msgstr "debido si se paga antes"
+
+#. module: l10n_ve_seniat
+#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.report_invoice_document_ve
+msgid "units"
+msgstr "Unidades"
+

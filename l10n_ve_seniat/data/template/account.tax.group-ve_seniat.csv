@@ -1,0 +1,5 @@
+"id","name","country_id"
+"tax_group_iva_0","IVA 0%","base.ve"
+"tax_group_iva_8","IVA 8%","base.ve"
+"tax_group_iva_16","IVA 16%","base.ve"
+"tax_group_iva_31","IVA 31%","base.ve"

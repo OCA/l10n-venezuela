@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="view_account_move_audit_log_tree" model="ir.ui.view">
+        <field name="name">account.move.audit.log.list</field>
+        <field name="model">account.move.audit.log</field>
+        <field name="arch" type="xml">
+            <list
+                string="Audit Log"
+                default_order="create_date desc"
+                create="0"
+                edit="0"
+                delete="0"
+            >
+                <field name="move_name" string="Move" />
+                <field name="user_id" string="User" />
+                <field name="action" string="Action" />
+                <field name="ip_address" string="IP Address" />
+                <field name="create_date" string="Date" />
+                <field name="changes" string="Changes" />
+            </list>
+        </field>
+    </record>
+
+    <record id="view_account_move_audit_log_search" model="ir.ui.view">
+        <field name="name">account.move.audit.log.search</field>
+        <field name="model">account.move.audit.log</field>
+        <field name="arch" type="xml">
+            <search string="Audit Log">
+                <field name="move_name" />
+                <field name="user_id" />
+                <field name="action" />
+                <field name="ip_address" />
+                <filter
+                    string="Created"
+                    name="filter_create"
+                    domain="[('action', '=', 'create')]"
+                />
+                <filter
+                    string="Modified"
+                    name="filter_write"
+                    domain="[('action', '=', 'write')]"
+                />
+                <filter
+                    string="Deleted"
+                    name="filter_unlink"
+                    domain="[('action', '=', 'unlink')]"
+                />
+                <separator />
+                <filter
+                    string="Group By: User"
+                    name="group_user"
+                    context="{'group_by': 'user_id'}"
+                />
+                <filter
+                    string="Group By: Action"
+                    name="group_action"
+                    context="{'group_by': 'action'}"
+                />
+                <filter
+                    string="Group By: IP Address"
+                    name="group_ip"
+                    context="{'group_by': 'ip_address'}"
+                />
+            </search>
+        </field>
+    </record>
+
+    <record id="view_account_move_audit_log_form" model="ir.ui.view">
+        <field name="name">account.move.audit.log.form</field>
+        <field name="model">account.move.audit.log</field>
+        <field name="arch" type="xml">
+            <form string="Audit Log" create="0" edit="0" delete="0">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="move_id" readonly="1" />
+                            <field name="move_name" readonly="1" />
+                            <field name="user_id" readonly="1" />
+                            <field name="action" readonly="1" />
+                        </group>
+                        <group>
+                            <field name="ip_address" readonly="1" />
+                            <field name="create_date" readonly="1" />
+                        </group>
+                    </group>
+                    <group>
+                        <field name="changes" widget="text" readonly="1" />
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_account_move_audit_log" model="ir.actions.act_window">
+        <field name="name">Audit Log - Account Moves</field>
+        <field name="res_model">account.move.audit.log</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[]</field>
+        <field
+            name="context"
+        >{'search_default_group_user': 0, 'search_default_group_action': 0, 'search_default_group_ip': 0}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No audit logs found
+            </p>
+            <p>
+                Audit logs will appear here when moves are created, modified, or deleted.
+            </p>
+        </field>
+    </record>
+
+    <record id="view_account_move_form_inherit_audit_log" model="ir.ui.view">
+        <field name="name">account.move.form.inherit.audit.log</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_move_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page string="Audit Log" name="audit_log" groups="base.group_no_one">
+                    <field name="audit_log_ids" nolabel="1">
+                        <list create="0" edit="0" delete="0">
+                            <field name="user_id" />
+                            <field name="action" />
+                            <field name="ip_address" />
+                            <field name="create_date" />
+                            <field name="changes" widget="text" />
+                        </list>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>
