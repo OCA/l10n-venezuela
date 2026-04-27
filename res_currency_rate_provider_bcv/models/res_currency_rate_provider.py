@@ -38,9 +38,7 @@ class ResCurrencyRateProvider(models.Model):
     def _obtain_rates(self, base_currency, currencies, date_from, date_to):
         self.ensure_one()
         if self.service != "bcv":
-            return super()._obtain_rates(
-                base_currency, currencies, date_from, date_to
-            )
+            return super()._obtain_rates(base_currency, currencies, date_from, date_to)
 
         content = defaultdict(dict)
 
@@ -56,7 +54,7 @@ class ResCurrencyRateProvider(models.Model):
         # If Odoo Base is USD, this will be ~484.74
         # If Odoo Base is VES, this will be 1.0
         base_currency_name = (
-            base_currency.name if hasattr(base_currency, 'name') else base_currency
+            base_currency.name if hasattr(base_currency, "name") else base_currency
         )
         base_price_in_ves = bcv_data.get(base_currency_name)
 
@@ -65,7 +63,8 @@ class ResCurrencyRateProvider(models.Model):
         if not base_price_in_ves:
             _logger.error(
                 "Base currency %s not found in BCV data. Rates available: %s",
-                base_currency_name, list(bcv_data.keys())
+                base_currency_name,
+                list(bcv_data.keys()),
             )
             return content
 
