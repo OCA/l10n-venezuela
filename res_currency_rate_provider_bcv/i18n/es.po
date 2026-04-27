@@ -1,0 +1,34 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* res_currency_rate_provider_bcv
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 19.0\n"
+"Report-Msgid-Bugs-To: \n"
+"Language-Team: Spanish <es@li.org>\n"
+"Language: es\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#. module: res_currency_rate_provider_bcv
+#: model:ir.model.fields.selection,name:res_currency_rate_provider_bcv.selection__res_currency_rate_provider__service__bcv
+msgid "Central Bank of Venezuela (BCV)"
+msgstr "Banco Central de Venezuela (BCV)"
+
+#. module: res_currency_rate_provider_bcv
+#: model:ir.model,name:res_currency_rate_provider_bcv.model_res_currency_rate_provider
+msgid "Currency Rates Provider"
+msgstr "Proveedor de Tasas de Cambio"
+
+#. module: res_currency_rate_provider_bcv
+#: model:ir.model.fields,field_description:res_currency_rate_provider_bcv.field_res_currency_rate_provider__service
+msgid "Provider"
+msgstr "Proveedor"
+
+#. module: res_currency_rate_provider_bcv
+#: model_terms:ir.ui.view,arch_db:res_currency_rate_provider_bcv.res_currency_rate_update_wizard_form
+msgid "The exchange rate will be updated to today's date"
+msgstr "Se actualizará la tasa de conversión actual"

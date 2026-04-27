@@ -1,6 +1,8 @@
 {
-    "name": "res_currency_rate_provider_BCV",
-    "summary": """Automate currency exchange rates from Central Bank of Venezuela (BCV).""",
+    "name": "res_currency_rate_provider_bcv",
+    "summary": """
+        Automate currency exchange rates from Central Bank of Venezuela (BCV).
+    """,
     "version": "19.0.1.0.0",
     "development_status": "Beta",
     "category": "Financial Management/Configuration",

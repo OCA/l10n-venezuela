@@ -4,7 +4,7 @@ from collections import defaultdict
 import requests
 from lxml import etree
 
-from odoo import fields, models, _
+from odoo import fields, models
 
 _logger = logging.getLogger(__name__)
 
@@ -19,6 +19,7 @@ MONEDAS_MAP = {
     "USD": "dolar",
     "VES": "bolivar",
 }
+
 
 class ResCurrencyRateProvider(models.Model):
     _inherit = "res.currency.rate.provider"
@@ -37,35 +38,41 @@ class ResCurrencyRateProvider(models.Model):
     def _obtain_rates(self, base_currency, currencies, date_from, date_to):
         self.ensure_one()
         if self.service != "bcv":
-            return super()._obtain_rates(base_currency, currencies, date_from, date_to)
+            return super()._obtain_rates(
+                base_currency, currencies, date_from, date_to
+            )
 
         content = defaultdict(dict)
 
         # Use company/user context date (UTC conversion handled by Odoo)
         # BCV Only return current value of currency rates
         today_str = fields.Date.to_string(fields.Date.context_today(self))
-        
+
         # 1. Fetch prices from BCV (Price of 1 Unit in VES)
         # Result example: {'USD': 484.74, 'EUR': 567.40, 'VES': 1.0}
         bcv_data = self._scrap_bcv()
-        
+
         # 2. Determine the price of our Odoo Base Currency in VES
         # If Odoo Base is USD, this will be ~484.74
         # If Odoo Base is VES, this will be 1.0
-        base_currency_name = base_currency.name if hasattr(base_currency, 'name') else base_currency
+        base_currency_name = (
+            base_currency.name if hasattr(base_currency, 'name') else base_currency
+        )
         base_price_in_ves = bcv_data.get(base_currency_name)
-        
+
         # Critical Check: If the base currency is not in BCV data
         # we can't calculate cross-rates.
         if not base_price_in_ves:
-            _logger.error("Base currency %s not found in BCV data. Rates available: %s", 
-                         base_currency_name, list(bcv_data.keys()))
+            _logger.error(
+                "Base currency %s not found in BCV data. Rates available: %s",
+                base_currency_name, list(bcv_data.keys())
+            )
             return content
 
         for iso_code in currencies:
             if iso_code == base_currency_name:
                 continue
-                
+
             target_price_in_ves = bcv_data.get(iso_code)
             if not target_price_in_ves or target_price_in_ves <= 0:
                 _logger.warning("Currency %s not found in BCV scraping", iso_code)
@@ -91,9 +98,12 @@ class ResCurrencyRateProvider(models.Model):
 
         except requests.exceptions.SSLError:
             # BCV nodes often have misconfigured SSL chains or expired certificates.
-            # Since this is the only legally binding source for exchange rates in Venezuela,
+            # Since this is the only legally binding source for exchange
+            # rates in Venezuela,
             # we fallback to unverified requests to ensure service availability.
-            _logger.warning("SSL Verification failed for BCV. Retrying without verification...")
+            _logger.warning(
+                "SSL Verification failed for BCV. Retrying without verification..."
+            )
             response = requests.get(BCV_URL, verify=False, timeout=TIMEOUT)
 
         except Exception as e:
@@ -111,11 +121,11 @@ class ResCurrencyRateProvider(models.Model):
             if code == "VES":
                 rslt[code] = 1.0
                 continue
-                
+
             moneda_id = MONEDAS_MAP.get(code)
             if not moneda_id:
                 continue
-                
+
             try:
                 ################################################################
                 # If BCV website DOM changed, this is the line you need update #
