@@ -1,0 +1,7 @@
+[tool.whool]
+modname = "res_currency_rate_provider_bcv"
+version = "19.0.1.0.0"
+
+[build-system]
+requires = ["whool"]
+build-backend = "whool.buildapi"
