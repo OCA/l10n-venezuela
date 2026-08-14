@@ -7,20 +7,30 @@
         <field name="priority" eval="15" />
         <field name="arch" type="xml">
             <xpath
-                expr="//block[@id='l10n_ve_extended_localization_settings']"
+                expr="//div[@id='l10n_ve_company_fiscal_extra']"
                 position="inside"
             >
-                <setting name="condition_withholding_settings" string="Condición de Retención" help="Condición utilizada para registrar las retenciones">
-                    <label string="Condición de Retención" for="condition_withholding_id" class="col-lg-6 o_light_label" />
-                    <field name="condition_withholding_id" />
-                </setting>
-                <setting name="type_person_settings" string="Tipo de Persona" help="Tipo de persona de la compañía">
-                    <label string="Tipo de Persona" for="type_person_id" class="col-lg-6 o_light_label" />
-                    <field name="type_person_id" />
-                </setting>
-                <setting name="code_visible_settings" string="Mostrar Código en Reportes" help="Mostrar el código en los reportes de ISLR">
-                    <field name="code_visible" />
-                </setting>
+                <div class="row mt16">
+                    <label
+                        string="Tipo de Persona"
+                        for="type_person_id"
+                        class="col-lg-6 o_light_label"
+                    />
+                    <field name="type_person_id" class="col-lg-6" />
+                </div>
+                <div class="row mt16">
+                    <label
+                        string="Condición de Retención"
+                        for="condition_withholding_id"
+                        class="col-lg-6 o_light_label"
+                    />
+                    <field name="condition_withholding_id" class="col-lg-6" />
+                </div>
+            </xpath>
+            <xpath
+                expr="//setting[@name='l10n_ve_company_fiscal_settings']"
+                position="after"
+            >
                 <setting name="retention_iva_journals_settings" string="Retenciones de IVA" help="Configuraciones necesarias para registrar las retenciones de IVA">
                     <div class="content-group">
                         <div class="row mt16">

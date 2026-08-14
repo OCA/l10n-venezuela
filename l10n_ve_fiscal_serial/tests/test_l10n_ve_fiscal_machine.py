@@ -1,5 +1,6 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
+from odoo.exceptions import ValidationError
 from odoo.tests import tagged
 
 from odoo.addons.l10n_ve_seniat.tests.common import L10nVeSeniatCommon
@@ -46,6 +47,93 @@ class TestL10nVeFiscalMachine(L10nVeSeniatCommon):
 
         machine_id_again = machine_model.create_from_detect_payload(payload)
         self.assertEqual(machine_id_again, machine.id)
+
+    def test_apply_s1_counters(self):
+        machine = self.env["l10n.ve.fiscal.machine"].create(
+            {
+                "name": "HKA counters",
+                "company_id": self.env.company.id,
+                "registered_serial": "SER1234567",
+                "daily_closure_counter": "0138",
+                "last_invoice_number": "00000010",
+            }
+        )
+        result = machine.apply_s1_counters(
+            {
+                "daily_closure_counter": "0139",
+                "last_invoice_number": "00000010",
+            }
+        )
+        self.assertEqual(machine.daily_closure_counter, "0139")
+        self.assertEqual(result["daily_closure_counter"], "0139")
+
+    def test_apply_port_update_from_detect(self):
+        machine = self.env["l10n.ve.fiscal.machine"].create(
+            {
+                "name": "HKA PC1",
+                "company_id": self.env.company.id,
+                "registered_serial": "SER1234567",
+                "serial_port": "USB:1111-2222",
+                "webserial_usb_vendor_id": 0x1111,
+                "webserial_usb_product_id": 0x2222,
+            }
+        )
+        result = machine.apply_port_update_from_detect(
+            {
+                "registered_serial": "SER1234567",
+                "serial_port": "USB:2341-0043",
+                "webserial_usb_vendor_id": 0x2341,
+                "webserial_usb_product_id": 0x0043,
+                "webserial_usb_serial_number": "ABCD",
+                "baudrate": "9600",
+                "parity": "even",
+                "enq_status": 0,
+                "enq_error": 64,
+                "enq_status_label": "En espera",
+                "enq_error_label": "Sin error",
+            }
+        )
+        self.assertEqual(machine.serial_port, "USB:2341-0043")
+        self.assertEqual(machine.webserial_usb_vendor_id, 0x2341)
+        self.assertEqual(machine.webserial_usb_product_id, 0x0043)
+        self.assertEqual(machine.webserial_usb_serial_number, "ABCD")
+        self.assertEqual(result["serial_port"], "USB:2341-0043")
+        with self.assertRaises(ValidationError):
+            machine.apply_port_update_from_detect(
+                {
+                    "registered_serial": "OTRA999999",
+                    "serial_port": "USB:9999-9999",
+                }
+            )
+
+    def test_systray_data_hidden_without_fiscal_machine_medium(self):
+        machine_model = self.env["l10n.ve.fiscal.machine"]
+        self.env.company.write({"l10n_ve_emission_medium_ids": [(5, 0, 0)]})
+        data = machine_model.l10n_ve_fiscal_serial_get_systray_data()
+        self.assertFalse(data["visible"])
+
+    def test_systray_data_with_fiscal_machine(self):
+        machine_model = self.env["l10n.ve.fiscal.machine"]
+        medium = self.env.ref("l10n_ve_seniat.emission_medium_fiscal_machine")
+        self.env.company.write({"l10n_ve_emission_medium_ids": [(6, 0, [medium.id])]})
+        machine = machine_model.create(
+            {
+                "name": "HKA Systray Test",
+                "company_id": self.env.company.id,
+                "registered_serial": "SYSTRAY123",
+                "serial_port": "USB:1234-5678",
+            }
+        )
+        journal = self.company_data["default_journal_sale"]
+        self._l10n_ve_configure_journal_fiscal_machine(
+            journal,
+            l10n_ve_fiscal_machine_id=machine.id,
+        )
+        data = machine_model.l10n_ve_fiscal_serial_get_systray_data()
+        self.assertTrue(data["visible"])
+        self.assertEqual(data["primary_machine_id"], machine.id)
+        self.assertEqual(len(data["machines"]), 1)
+        self.assertEqual(data["machines"][0]["registered_serial"], "SYSTRAY123")
 
     def test_apply_detect_result(self):
         wizard = self.env["l10n.ve.fiscal.machine.setup.wizard"].create(

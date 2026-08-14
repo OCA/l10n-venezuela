@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo noupdate="1">
+    <record id="emission_medium_free_form" model="l10n.ve.emission.medium">
+        <field name="name">Forma libre</field>
+        <field name="code">free_form</field>
+        <field name="sequence">10</field>
+        <field name="description">
+            Emisión sobre formas libres elaboradas por imprentas autorizadas.
+        </field>
+    </record>
+    <record id="emission_medium_fiscal_machine" model="l10n.ve.emission.medium">
+        <field name="name">Máquina Fiscal</field>
+        <field name="code">fiscal_machine</field>
+        <field name="sequence">20</field>
+        <field name="description">
+            Emisión mediante máquinas fiscales autorizadas por el SENIAT.
+        </field>
+    </record>
+    <record id="emission_medium_digital_billing" model="l10n.ve.emission.medium">
+        <field name="name">Facturación Digital</field>
+        <field name="code">digital_billing</field>
+        <field name="sequence">30</field>
+        <field name="description">
+            Emisión mediante facturación digital.
+        </field>
+    </record>
+</odoo>

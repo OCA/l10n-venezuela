@@ -39,13 +39,20 @@ class ProductTemplate(models.Model):
                 or tmpl._l10n_ve_override_locked_product_fields()
             ):
                 continue
-            if len(tmpl.taxes_id) != 1:
-                raise ValidationError(
-                    _(
-                        "With Venezuelan fiscal localization, each product must have "
-                        "exactly one sales tax."
+            for company in tmpl._l10n_ve_companies_for_tax_count():
+                sale_taxes = tmpl._l10n_ve_taxes_for_company(tmpl.taxes_id, company)
+                if len(sale_taxes) != 1:
+                    raise ValidationError(
+                        _(
+                            "With Venezuelan fiscal localization, each product must "
+                            "have exactly one sales tax per company "
+                            "(“%(company)s” has %(n)d)."
+                        )
+                        % {
+                            "company": company.display_name,
+                            "n": len(sale_taxes),
+                        }
                     )
-                )
 
     def write(self, vals):
         if (

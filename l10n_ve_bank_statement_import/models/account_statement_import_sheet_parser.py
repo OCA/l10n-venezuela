@@ -1,5 +1,6 @@
 import logging
 import math
+import re
 from datetime import datetime
 from html.parser import HTMLParser
 
@@ -12,6 +13,23 @@ except ImportError:
     column_index_from_string = None
 
 _logger = logging.getLogger(__name__)
+
+_BDV_LINE_RE = re.compile(
+    r"^(?P<date>\d{2}/\d{2}/\d{4})\s+"
+    r"(?P<body>.+?)\s+"
+    r"(?P<operation>Nota de D[eé]bito|Nota de Cr[eé]dito|Saldo Inicial|Saldo Final)\s+"
+    r"(?P<amount>-?[\d.]+,\d{2})\s+"
+    r"(?P<balance>-?[\d.]+,\d{2})\s*$"
+)
+_BDV_REF_RE = re.compile(r"^(?P<concept>.*?)\s+(?P<ref>\d{10,})\s*$")
+_BALANCE_MARKER_CODES = {"SI", "SF"}
+_BALANCE_MARKER_TEXTS = {
+    "saldo inicial",
+    "saldo final",
+    "si",
+    "sf",
+}
+_US_AMOUNT_RE = re.compile(r"^-?\d{1,3}(?:,\d{3})*\.\d{2}$|^-?\d+\.\d{2}$")
 
 
 class _HtmlTableParser(HTMLParser):
@@ -52,6 +70,14 @@ class AccountStatementImportSheetParser(models.TransientModel):
         sample = data_file.lstrip()[:2048].lower()
         return sample.startswith(b"<table") or b"<table" in sample
 
+    def _is_bdv_comprobante(self, data_file):
+        try:
+            sample = data_file.decode("utf-8-sig")[:4096]
+        except UnicodeDecodeError:
+            sample = data_file.decode("latin-1")[:4096]
+        sample_norm = sample.casefold()
+        return "bdvenlínea" in sample_norm or "bdvenlinea" in sample_norm
+
     def _read_html_table_rows(self, data_file, mapping):
         try:
             text = data_file.decode(mapping.file_encoding or "utf-8")
@@ -61,8 +87,71 @@ class AccountStatementImportSheetParser(models.TransientModel):
         parser.feed(text)
         return parser.rows
 
-    def _parse_lines_html(self, mapping, data_file, currency_code):
-        rows = self._read_html_table_rows(data_file, mapping)
+    def _is_balance_marker_value(self, value):
+        if value is None:
+            return False
+        text = str(value).strip()
+        if not text:
+            return False
+        if text.upper() in _BALANCE_MARKER_CODES:
+            return True
+        normalized = " ".join(text.casefold().split())
+        return normalized in _BALANCE_MARKER_TEXTS
+
+    def _is_opening_or_closing_balance_row(self, values, columns=None):
+        if any(self._is_balance_marker_value(value) for value in values):
+            return True
+        if not columns:
+            return False
+        for column_name in (
+            "debit_credit_column",
+            "description_column",
+            "notes_column",
+        ):
+            if not columns.get(column_name):
+                continue
+            value = self._get_values_from_column(values, columns, column_name)
+            if self._is_balance_marker_value(value):
+                return True
+        return False
+
+    def _read_bdv_comprobante_rows(self, data_file, mapping):
+        encoding = mapping.file_encoding or "utf-8-sig"
+        try:
+            text = data_file.decode(encoding)
+        except UnicodeDecodeError:
+            text = data_file.decode("latin-1")
+        rows = []
+        for raw_line in text.splitlines():
+            line = raw_line.strip()
+            if not line or set(line) <= {"-"}:
+                continue
+            match = _BDV_LINE_RE.match(line)
+            if not match:
+                continue
+            operation = match.group("operation").strip()
+            body = match.group("body").strip()
+            ref_match = _BDV_REF_RE.match(body)
+            if ref_match:
+                concept = ref_match.group("concept").strip()
+                reference = ref_match.group("ref")
+            else:
+                concept = body
+                reference = ""
+            row = [
+                match.group("date"),
+                concept,
+                reference,
+                operation,
+                match.group("amount"),
+                match.group("balance"),
+            ]
+            if self._is_opening_or_closing_balance_row(row):
+                continue
+            rows.append(row)
+        return rows
+
+    def _parse_lines_from_rows(self, mapping, rows, currency_code):
         if not rows:
             return []
         if mapping.no_header:
@@ -91,6 +180,14 @@ class AccountStatementImportSheetParser(models.TransientModel):
             if line:
                 lines.append(line)
         return lines
+
+    def _parse_lines_html(self, mapping, data_file, currency_code):
+        rows = self._read_html_table_rows(data_file, mapping)
+        return self._parse_lines_from_rows(mapping, rows, currency_code)
+
+    def _parse_lines_bdv_comprobante(self, mapping, data_file, currency_code):
+        rows = self._read_bdv_comprobante_rows(data_file, mapping)
+        return self._parse_lines_from_rows(mapping, rows, currency_code)
 
     @api.model
     def parse_header(self, csv_or_xlsx, mapping):
@@ -126,6 +223,15 @@ class AccountStatementImportSheetParser(models.TransientModel):
                 return self._parse_lines_html(mapping, data_file, currency_code)
             except Exception as error:
                 _logger.warning("No se pudo leer el archivo HTML: %s", error)
+        if self._is_bdv_comprobante(data_file):
+            try:
+                return self._parse_lines_bdv_comprobante(
+                    mapping, data_file, currency_code
+                )
+            except Exception as error:
+                _logger.warning(
+                    "No se pudo leer el comprobante BDVenlínea: %s", error
+                )
         if data_file[:2] == b"PK":
             try:
                 from io import BytesIO
@@ -168,6 +274,26 @@ class AccountStatementImportSheetParser(models.TransientModel):
             _logger.warning("No se pudo convertir columna '%s' a índice", column_str)
             return None
 
+    def _normalize_us_amount_for_ve_mapping(self, value, mapping):
+        if not isinstance(value, str):
+            return value
+        if (
+            mapping.float_thousands_sep != "dot"
+            or mapping.float_decimal_sep != "comma"
+        ):
+            return value
+        raw = value.strip().strip('"')
+        if "," in raw and raw.rfind(",") > raw.rfind("."):
+            return value
+        if _US_AMOUNT_RE.fullmatch(raw):
+            return raw.replace(",", "").replace(".", ",")
+        return value
+
+    @api.model
+    def _parse_decimal(self, value, mapping):
+        value = self._normalize_us_amount_for_ve_mapping(value, mapping)
+        return super()._parse_decimal(value, mapping)
+
     def _get_balance_from_cell(self, csv_or_xlsx, row, column, mapping):
         if not row or not column:
             return None
@@ -192,6 +318,8 @@ class AccountStatementImportSheetParser(models.TransientModel):
         return None
 
     def _process_row_values(self, values, mapping, currency_code, columns):
+        if self._is_opening_or_closing_balance_row(values, columns=columns):
+            return None
         timestamp = self._get_values_from_column(values, columns, "timestamp_column")
         currency = (
             self._get_values_from_column(values, columns, "currency_column")
@@ -337,11 +465,15 @@ class AccountStatementImportSheetParser(models.TransientModel):
         if transaction_id is not None:
             line["transaction_id"] = transaction_id
         if description is not None:
-            line["description"] = description
+            line["description"] = (
+                description.strip() if isinstance(description, str) else description
+            )
         if notes is not None:
             line["notes"] = notes
         if reference is not None:
-            line["reference"] = reference
+            line["reference"] = (
+                reference.strip() if isinstance(reference, str) else reference
+            )
         if partner_name is not None:
             line["partner_name"] = partner_name
         if bank_name is not None:

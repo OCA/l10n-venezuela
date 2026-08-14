@@ -1,4 +1,8 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_l10n_ve_fiscal_machine_user,l10n.ve.fiscal.machine user,model_l10n_ve_fiscal_machine,l10n_ve_seniat.group_seniat,1,1,1,1
+access_l10n_ve_fiscal_machine_user,l10n.ve.fiscal.machine user,model_l10n_ve_fiscal_machine,base.group_user,1,1,0,0
+access_l10n_ve_fiscal_machine_seniat,l10n.ve.fiscal.machine seniat,model_l10n_ve_fiscal_machine,l10n_ve_seniat.group_seniat,1,1,1,1
 access_l10n_ve_fiscal_machine_setup_wizard_user,l10n.ve.fiscal.machine.setup.wizard user,model_l10n_ve_fiscal_machine_setup_wizard,l10n_ve_seniat.group_seniat,1,1,1,1
-access_l10n_ve_fiscal_serial_audit_user,l10n.ve.fiscal.serial.audit user,model_l10n_ve_fiscal_serial_audit,l10n_ve_seniat.group_seniat,1,0,1,0
+access_l10n_ve_fiscal_serial_audit_user,l10n.ve.fiscal.serial.audit user,model_l10n_ve_fiscal_serial_audit,base.group_user,1,0,1,0
+access_l10n_ve_fiscal_serial_audit_seniat,l10n.ve.fiscal.serial.audit seniat,model_l10n_ve_fiscal_serial_audit,l10n_ve_seniat.group_seniat,1,0,1,0
+access_l10n_ve_fiscal_payment_method_user,l10n.ve.fiscal.payment.method user,model_l10n_ve_fiscal_payment_method,base.group_user,1,0,0,0
+access_l10n_ve_fiscal_payment_method_seniat,l10n.ve.fiscal.payment.method seniat,model_l10n_ve_fiscal_payment_method,l10n_ve_seniat.group_seniat,1,1,1,0

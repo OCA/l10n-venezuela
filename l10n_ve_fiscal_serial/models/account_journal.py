@@ -13,6 +13,26 @@ class AccountJournal(models.Model):
         domain="[('company_id', '=', company_id), ('active', '=', True)]",
         help="Máquina fiscal TFHKA asociada a este diario de ventas.",
     )
+    l10n_ve_show_fiscal_payment_method = fields.Boolean(
+        compute="_compute_l10n_ve_show_fiscal_payment_method",
+    )
+
+    @api.depends("company_id", "company_id.account_fiscal_country_id.code")
+    def _compute_l10n_ve_show_fiscal_payment_method(self):
+        FiscalMachine = self.env["l10n.ve.fiscal.machine"].sudo()
+        companies = self.mapped("company_id")
+        companies_with_machine = set(
+            FiscalMachine.search(
+                [("company_id", "in", companies.ids), ("active", "=", True)]
+            ).mapped("company_id")
+            .ids
+        )
+        for journal in self:
+            journal.l10n_ve_show_fiscal_payment_method = bool(
+                journal.company_id
+                and journal.company_id.account_fiscal_country_id.code == "VE"
+                and journal.company_id.id in companies_with_machine
+            )
 
     @api.onchange("l10n_ve_emission_medium")
     def _onchange_l10n_ve_emission_medium_fiscal_machine(self):

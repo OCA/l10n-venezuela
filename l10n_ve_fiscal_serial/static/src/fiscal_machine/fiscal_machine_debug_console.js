@@ -222,29 +222,18 @@ export class FiscalMachineDebugConsole extends Component {
     }
 
     async _loadMachineConfig() {
-        if (this.props.record?.data?.flag_21) {
-            this.state.flag21 = this.props.record.data.flag_21;
-            this._log(`FLAG_21 de la máquina: ${this.state.flag21}`);
-            return { flag_21: this.state.flag21 };
-        }
-        try {
-            const cfg = await this.orm.call(
-                "res.company",
-                "l10n_ve_fiscal_serial_get_machine_config",
-                []
-            );
-            if (cfg?.flag_21) {
-                this.state.flag21 = cfg.flag_21;
-            } else {
-                this.state.flag21 = "30";
-            }
-            this._log(`Configuración activa FLAG_21=${this.state.flag21}`);
-            return cfg;
-        } catch {
+        const record = this.props.record;
+        if (record?.data?.flag_21) {
+            this.state.flag21 = record.data.flag_21;
+        } else {
             this.state.flag21 = "30";
-            this._log("No se pudo leer configuración de FLAG_21; se usa 30.");
-            return { flag_21: "30" };
         }
+        this._log(`FLAG_21 de la máquina: ${this.state.flag21}`);
+        return {
+            flag_21: this.state.flag21,
+            use_emulator: Boolean(record?.data?.use_emulator),
+            send_default_code_in_name: Boolean(record?.data?.send_default_code_in_name),
+        };
     }
 
     async onOpenConnection() {
@@ -510,6 +499,114 @@ export class FiscalMachineDebugConsole extends Component {
         }
     }
 
+    async _readStatusCommand(cmd) {
+        const result = await this.driver.uploadStatusCmdToString(cmd);
+        const content = (result?.content || "").trim();
+        if (!result?.ok || !content) {
+            this._log(`${cmd}: sin respuesta`);
+            return { cmd, ok: false, content: "" };
+        }
+        const preview =
+            content.length > 500 ? `${content.slice(0, 500)}…` : content;
+        this._log(`${cmd} OK (${content.length} chars):\n${preview}`);
+        return { cmd, ok: true, content };
+    }
+
+    async onReadAllStatuses() {
+        if (!this.canSendCommands) {
+            if (this.state.phase !== PHASE.CONNECTED) {
+                this.notification.add(
+                    "Conecte primero con «Abrir conexión» y espere el estado «Puerto abierto».",
+                    { type: "warning" }
+                );
+            }
+            return;
+        }
+        this.state.busy = true;
+        this.state.lastCmdResult = "";
+        this._setBlockingProgress(0, "Leyendo status…");
+        this._log("Obtener todos los status: ENQ + S1/S2/S3/S4/S5/S25 + SV");
+        const statusCmds = ["S1", "S2", "S3", "S4", "S5", "S25"];
+        try {
+            const enqOk = await this.driver.readFpStatus();
+            this._syncFpStatusFromDriver();
+            if (enqOk) {
+                this._log(
+                    `ENQ OK — ${this.driver.descripStatus || ""} / ${this.driver.descripError || ""}`
+                );
+            } else {
+                this._log(`ENQ: ${this.driver.estado || "sin respuesta válida"}`);
+            }
+            this._setBlockingProgress(15, "Leyendo status…");
+
+            const results = [];
+            for (let i = 0; i < statusCmds.length; i++) {
+                const cmd = statusCmds[i];
+                results.push(await this._readStatusCommand(cmd));
+                this._setBlockingProgress(
+                    15 + Math.round(((i + 1) / (statusCmds.length + 1)) * 70),
+                    "Leyendo status…"
+                );
+                await new Promise((resolve) => setTimeout(resolve, TFHKA_COMMAND_DELAY_MS));
+            }
+
+            const sv = await this.driver.getSVPrinterData();
+            const svRaw = (sv?.raw || "").trim();
+            if (svRaw) {
+                this._log(`SV OK:\n${svRaw}`);
+                results.push({ cmd: "SV", ok: true, content: svRaw });
+            } else {
+                this._log("SV: sin respuesta");
+                results.push({ cmd: "SV", ok: false, content: "" });
+            }
+            this._setBlockingProgress(95, "Leyendo status…");
+
+            const s1 = results.find((item) => item.cmd === "S1" && item.ok);
+            if (s1?.content && this.machineId) {
+                const parsed = this.fiscalSerial.parseTfhkaS1StatusResponse(s1.content);
+                await this.orm.call(
+                    "l10n.ve.fiscal.machine",
+                    "apply_port_update_from_detect",
+                    [
+                        [this.machineId],
+                        {
+                            registered_serial: parsed?.RegisteredMachineNumber || null,
+                            last_invoice_number: parsed?.LastInvoiceNumber || null,
+                            last_credit_note_number: parsed?.LastCreditNoteNumber || null,
+                            last_debit_note_number: parsed?.LastDebitNoteNumber || null,
+                            daily_closure_counter: parsed?.DailyClosureCounter || null,
+                            enq_status: parseInt(this.driver.status || "0", 10),
+                            enq_error: parseInt(this.driver.error || "0", 10),
+                            enq_status_label: this.driver.descripStatus || "",
+                            enq_error_label: this.driver.descripError || "",
+                            s1_raw: s1.content,
+                            sv_raw: svRaw || null,
+                        },
+                    ]
+                );
+                if (this.props.record?.model?.root?.load) {
+                    await this.props.record.model.root.load();
+                }
+            }
+
+            const okCount = results.filter((item) => item.ok).length + (enqOk ? 1 : 0);
+            const total = results.length + 1;
+            this.state.lastCmdResult = `Status leídos: ${okCount}/${total} (ENQ + ${statusCmds.join(", ")}, SV).`;
+            this.state.estado = this.state.lastCmdResult;
+            this.notification.add(this.state.lastCmdResult, {
+                type: okCount ? "success" : "warning",
+            });
+            this._setBlockingProgress(100, "Leyendo status…");
+        } catch (e) {
+            this.state.lastCmdResult = e.message || String(e);
+            this._log(`EXCEPCIÓN status: ${this.state.lastCmdResult}`);
+            this.notification.add(this.state.lastCmdResult, { type: "danger" });
+        } finally {
+            this.state.busy = false;
+            this._clearBlockingProgress();
+        }
+    }
+
     async onSendProbeSeven() {
         if (!this.canSendCommands) {
             if (this.state.phase !== PHASE.CONNECTED) {
@@ -634,10 +731,12 @@ export class FiscalMachineDebugConsole extends Component {
         this._setBlockingProgress(0, "Imprimiendo...");
         const cfg = await this._loadMachineConfig();
         const flag21 = cfg?.flag_21 || this.state.flag21 || "30";
-        this._log(`Configurar máquina fiscal con FLAG_21=${flag21}`);
+        const flag50 = cfg?.flag_50 || "01";
+        this._log(`Configurar máquina fiscal con FLAG_21=${flag21}, FLAG_50=${flag50}`);
         try {
             const machine = this.fiscalSerial.createTfhkaFiscalMachine(this.driver);
             const response = await machine.configureMachineFlag21(flag21, {
+                flag_50: flag50,
                 onProgress: ({ percent }) => {
                     this._setBlockingProgress(percent, "Imprimiendo...");
                 },
@@ -648,7 +747,8 @@ export class FiscalMachineDebugConsole extends Component {
                 );
             }
             this.state.lastCmdResult =
-                response.message || `Configuración enviada con FLAG_21=${flag21}.`;
+                response.message ||
+                `Configuración enviada con FLAG_21=${flag21}, FLAG_50=${flag50}.`;
             this._log(this.state.lastCmdResult);
             this.notification.add(this.state.lastCmdResult, { type: "success" });
         } catch (e) {

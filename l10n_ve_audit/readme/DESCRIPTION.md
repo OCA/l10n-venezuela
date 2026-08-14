@@ -1,10 +1,5 @@
-This module extends the Venezuela SENIAT audit stack with:
+Compatibility bridge module.
 
-* ORM audit rules for accounting and withholding models (via OCA auditlog).
-* Login attempts, HTTP sessions, validation errors and report access logs.
-* PostgreSQL triggers that record INSERT, UPDATE and DELETE operations executed
-  outside Odoo (psql, pgAdmin, scripts, etc.) on critical tables.
-* Fiscal document event logs on ``auditlog.log`` with human-readable descriptions
-  for invoice creation, posting, fiscal printing, digital dispatch, retentions
-  and cancellations.
-* PDF report of fiscal document events.
+All audit features previously provided by ``l10n_ve_audit`` now live in
+``l10n_ve_auditlog``. This module only depends on ``l10n_ve_auditlog`` so
+existing databases and dependencies keep working after the move.

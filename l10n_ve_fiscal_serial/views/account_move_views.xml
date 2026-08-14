@@ -47,6 +47,54 @@
                     )
                 </attribute>
             </xpath>
+            <xpath expr="//field[@name='l10n_ve_serial_number']" position="attributes">
+                <attribute name="readonly">1</attribute>
+                <attribute name="placeholder"></attribute>
+                <attribute name="invisible">
+                    not l10n_ve_serial_number and l10n_ve_fiscal_serial_number_placeholder
+                </attribute>
+            </xpath>
+            <xpath expr="//field[@name='l10n_ve_serial_number']" position="after">
+                <field
+                    name="l10n_ve_fiscal_serial_number_placeholder"
+                    class="text-muted fst-italic opacity-75"
+                    nolabel="1"
+                    readonly="1"
+                    invisible="l10n_ve_serial_number or not l10n_ve_fiscal_serial_number_placeholder"
+                />
+            </xpath>
+            <xpath expr="//field[@name='l10n_ve_invoice_number']" position="attributes">
+                <attribute name="readonly">1</attribute>
+                <attribute name="placeholder"></attribute>
+                <attribute name="invisible">
+                    not l10n_ve_invoice_number and l10n_ve_fiscal_invoice_number_placeholder
+                </attribute>
+            </xpath>
+            <xpath expr="//field[@name='l10n_ve_invoice_number']" position="after">
+                <field
+                    name="l10n_ve_fiscal_invoice_number_placeholder"
+                    class="text-muted fst-italic opacity-75"
+                    nolabel="1"
+                    readonly="1"
+                    invisible="l10n_ve_invoice_number or not l10n_ve_fiscal_invoice_number_placeholder"
+                />
+            </xpath>
+            <xpath expr="//field[@name='l10n_ve_report_z']" position="attributes">
+                <attribute name="readonly">1</attribute>
+                <attribute name="placeholder"></attribute>
+                <attribute name="invisible">
+                    not l10n_ve_report_z and l10n_ve_fiscal_report_z_placeholder
+                </attribute>
+            </xpath>
+            <xpath expr="//field[@name='l10n_ve_report_z']" position="after">
+                <field
+                    name="l10n_ve_fiscal_report_z_placeholder"
+                    class="text-muted fst-italic opacity-75"
+                    nolabel="1"
+                    readonly="1"
+                    invisible="l10n_ve_report_z or not l10n_ve_fiscal_report_z_placeholder"
+                />
+            </xpath>
         </field>
     </record>
 </odoo>

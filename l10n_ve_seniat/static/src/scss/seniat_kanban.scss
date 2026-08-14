@@ -1,11 +1,95 @@
-/* Preserve aspect ratio for company logo in SENIAT kanban */
-.o_kanban_view .o_kanban_record .o_seniat_company_logo img {
-    object-fit: contain;
-    width: 128px;
-    height: 128px;
+.o_seniat_company_kanban {
+    .o_kanban_record {
+        min-height: 220px;
+
+        aside.o_seniat_company_logo {
+            align-self: flex-start;
+            background: var(--o-view-background-color, #fff);
+            border: 1px solid var(--border-color, #dee2e6);
+            border-radius: 0.75rem;
+            padding: 0.5rem;
+            width: 96px;
+        }
+
+        .o_seniat_company_logo_img img {
+            height: 80px;
+            object-fit: contain;
+            width: 80px;
+        }
+
+        main.o_seniat_company_card_main {
+            min-width: 0;
+        }
+
+        .o_seniat_company_name {
+            line-height: 1.25;
+            margin-bottom: 0.15rem;
+        }
+
+        .o_seniat_company_vat {
+            font-size: 0.875rem;
+        }
+
+        .o_seniat_company_badges {
+            .badge {
+                font-size: 0.75rem;
+                font-weight: 600;
+            }
+        }
+
+        .o_seniat_taxpayer_ordinary {
+            background-color: #6c757d;
+            color: #fff;
+        }
+
+        .o_seniat_taxpayer_formal {
+            background-color: #0d6efd;
+            color: #fff;
+        }
+
+        .o_seniat_taxpayer_special {
+            background-color: #fd7e14;
+            color: #fff;
+        }
+
+        .o_seniat_company_section_label {
+            color: var(--o-gray-600, #6c757d);
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 0.04em;
+            margin-bottom: 0.35rem;
+            text-transform: uppercase;
+        }
+
+        .o_seniat_company_meta_row {
+            align-items: flex-start;
+            color: var(--o-gray-700, #495057);
+            display: flex;
+            font-size: 0.8125rem;
+            gap: 0.5rem;
+        }
+
+        .o_seniat_company_meta_icon {
+            color: var(--o-gray-500, #adb5bd);
+            flex-shrink: 0;
+            margin-top: 0.15rem;
+            width: 1rem;
+        }
+
+        .o_seniat_company_meta_content {
+            min-width: 0;
+        }
+
+        .o_seniat_fiscal_badge {
+            background-color: var(--o-view-background-color, #fff);
+            border: 1px solid var(--border-color, #dee2e6);
+            color: var(--o-gray-800, #343a40);
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+    }
 }
 
-/* Preserve aspect ratio for SENIAT menu icon */
 .o_main_navbar .o_menu_brand_icon img,
 .o_home_menu .o_app .o_app_icon {
     object-fit: contain;

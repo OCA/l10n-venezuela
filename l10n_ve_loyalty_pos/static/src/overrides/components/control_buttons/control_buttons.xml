@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<templates id="template" xml:space="preserve">
+    <t
+        t-name="l10n_ve_loyalty_pos.ControlButtons"
+        t-inherit="point_of_sale.ControlButtons"
+        t-inherit-mode="extension"
+    >
+        <xpath
+            expr="//t[@t-if='props.showRemainingButtons']/div/button[hasclass('o_pricelist_button')]"
+            position="before"
+        >
+            <button
+                t-if="pos.company?.country_id?.code == 'VE' or pos.company?.account_fiscal_country_id?.code == 'VE'"
+                t-att-class="buttonClass"
+                t-on-click="() => this.onClickL10nVeGlobalDiscount()"
+            >
+                <i class="fa fa-percent me-1" />
+                Descuento global
+            </button>
+        </xpath>
+    </t>
+</templates>

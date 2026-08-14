@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<templates xml:space="preserve">
+    <t t-name="l10n_ve_fiscal_serial.FiscalMachineSystray">
+        <Dropdown onOpened.bind="onDropdownOpened">
+            <button
+                class="o_l10n_ve_fiscal_systray_btn btn btn-light d-flex align-items-center gap-1"
+                title="Estado de la máquina fiscal"
+            >
+                <i class="fa fa-print" role="img" aria-label="Máquina fiscal" />
+                <span t-att-class="statusClass" />
+                <span class="d-none d-md-inline small" t-esc="statusLabel" />
+            </button>
+            <t t-set-slot="content">
+                <div class="o_l10n_ve_fiscal_systray_panel p-3">
+                    <div class="d-flex align-items-center justify-content-between mb-2">
+                        <span class="fw-bold">Máquina fiscal</span>
+                        <span
+                            class="badge rounded-pill"
+                            t-att-class="{
+                                'text-bg-success': state.status === 'connected',
+                                'text-bg-danger': (state.status === 'error' and !state.portOpen) or state.status === 'unsupported',
+                                'text-bg-warning': state.status === 'connecting' or (state.status === 'error' and state.portOpen) or (state.status === 'idle' and state.portAuthorized),
+                                'text-bg-secondary': state.status === 'idle' and !state.portAuthorized,
+                            }"
+                            t-esc="statusLabel"
+                        />
+                    </div>
+                    <t t-if="state.authorizedMachines.length > 1">
+                        <div class="mb-2">
+                            <label class="form-label small text-muted mb-1">
+                                Equipo autorizado en este navegador
+                                <span class="ms-1">(<t t-esc="state.authorizedMachines.length"/>)</span>
+                            </label>
+                            <select
+                                class="form-select form-select-sm"
+                                t-att-disabled="state.busy"
+                                t-on-change="onSelectMachine"
+                            >
+                                <t t-foreach="state.authorizedMachines" t-as="machine" t-key="machine.id">
+                                    <option
+                                        t-att-value="machine.id"
+                                        t-att-selected="state.machine and state.machine.id === machine.id"
+                                        t-esc="machineLabel(machine)"
+                                    />
+                                </t>
+                            </select>
+                        </div>
+                    </t>
+                    <t t-elif="!state.authorizedMachines.length and state.machines.length">
+                        <div class="small text-muted mb-2">
+                            No hay máquinas autorizadas en este navegador. Use «Conectar» para autorizar un puerto USB.
+                        </div>
+                    </t>
+                    <t t-if="state.machine">
+                        <div class="small mb-2">
+                            <div t-if="state.authorizedMachines.length &lt;= 1">
+                                <span class="text-muted">Equipo:</span>
+                                <span class="ms-1" t-esc="state.machine.name" />
+                            </div>
+                            <div t-if="state.machine.registered_serial">
+                                <span class="text-muted">Serial:</span>
+                                <span class="ms-1" t-esc="state.machine.registered_serial" />
+                            </div>
+                            <div>
+                                <span class="text-muted">Estado del puerto:</span>
+                                <span
+                                    class="ms-1 fw-semibold"
+                                    t-att-class="{
+                                        'text-success': state.portOpen,
+                                        'text-warning': !state.portOpen and state.portAuthorized,
+                                        'text-danger': !state.portOpen and !state.portAuthorized,
+                                    }"
+                                    t-esc="portStatusLabel"
+                                />
+                            </div>
+                            <div t-if="state.portLabel or state.machine.serial_port">
+                                <span class="text-muted">Puerto:</span>
+                                <span
+                                    class="ms-1"
+                                    t-esc="state.portLabel or state.machine.serial_port"
+                                />
+                            </div>
+                            <div t-if="state.enqStatusLabel">
+                                <span class="text-muted">Estado ENQ:</span>
+                                <span class="ms-1" t-esc="state.enqStatusLabel" />
+                            </div>
+                            <div t-if="state.enqErrorLabel">
+                                <span class="text-muted">Error ENQ:</span>
+                                <span class="ms-1" t-esc="state.enqErrorLabel" />
+                            </div>
+                            <div t-if="state.machine.last_connection">
+                                <span class="text-muted">Última conexión registrada:</span>
+                                <span class="ms-1" t-esc="state.machine.last_connection" />
+                            </div>
+                            <div class="text-muted mt-1">
+                                Última comprobación:
+                                <span t-esc="lastCheckLabel" />
+                            </div>
+                            <div t-if="state.portOpen" class="text-muted mt-1">
+                                Vigilancia ENQ:
+                                <span t-esc="state.heartbeatCount" />
+                                ciclos
+                            </div>
+                        </div>
+                    </t>
+                    <t t-else="">
+                        <div class="small text-muted mb-2">
+                            No hay máquina fiscal configurada para esta compañía.
+                        </div>
+                    </t>
+                    <div
+                        t-if="state.machine and state.message"
+                        class="alert py-2 px-2 small mb-2"
+                        t-att-class="{
+                            'alert-success': state.status === 'connected',
+                            'alert-danger': state.status === 'error' or state.status === 'unsupported',
+                            'alert-warning': state.status === 'connecting',
+                            'alert-secondary': state.status === 'idle',
+                        }"
+                        t-esc="state.message"
+                    />
+                    <div class="d-flex flex-wrap gap-2">
+                        <button
+                            t-if="state.machine"
+                            type="button"
+                            class="btn btn-sm btn-primary"
+                            t-att-disabled="state.busy"
+                            t-on-click="onCheckConnection"
+                        >
+                            Verificar conexión
+                        </button>
+                        <button
+                            t-if="state.machine"
+                            type="button"
+                            class="btn btn-sm btn-secondary"
+                            t-att-disabled="state.busy"
+                            t-on-click="onConnect"
+                        >
+                            Conectar
+                        </button>
+                        <button
+                            type="button"
+                            class="btn btn-sm btn-link"
+                            t-on-click="onOpenMachines"
+                        >
+                            Máquinas fiscales
+                        </button>
+                    </div>
+                </div>
+            </t>
+        </Dropdown>
+    </t>
+</templates>

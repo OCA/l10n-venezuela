@@ -10,10 +10,10 @@ from . import test_account_move
 from . import test_credit_debit_button_scenarios
 from . import test_vendor_credit_debit
 from . import test_account_move_line
-from . import test_account_move_tax_totals_discount
-from . import test_account_move_post_discount
 from . import test_account_journal
 from . import test_account_payment
+from . import test_ir_ui_menu
+from . import test_emission_medium_context
 from . import test_ir_actions_report
 from . import test_res_country_municipality
 from . import test_res_currency_rate

@@ -50,10 +50,10 @@ class TestCreditDebitButtonScenarios(L10nVeSeniatCommon):
                     "inverse_company_rate": cls.usd_rate,
                 }
             )
-        if "l10n_ve_igtf_enabled" in cls.env.company._fields:
+        if "l10n_ve_igtf_percent" in cls.env.company._fields:
+            cls.env.company.partner_id.write({"taxpayer_type": "special"})
             cls.env.company.write(
                 {
-                    "l10n_ve_igtf_enabled": True,
                     "l10n_ve_igtf_percent": 3.0,
                     "l10n_ve_igtf_currency_ids": [Command.set([cls.usd.id])],
                 }

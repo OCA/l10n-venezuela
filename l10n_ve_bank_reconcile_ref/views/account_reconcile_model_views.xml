@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="view_account_reconcile_model_form_ref_suffix" model="ir.ui.view">
+        <field name="name">account.reconcile.model.form.ref.suffix</field>
+        <field name="model">account.reconcile.model</field>
+        <field name="inherit_id" ref="account.view_account_reconcile_model_form" />
+        <field name="arch" type="xml">
+            <xpath
+                expr="//div[field[@name='match_text_location_reference']]"
+                position="after"
+            >
+                <field
+                    name="match_ref_suffix_enabled"
+                    invisible="rule_type != 'invoice_matching'"
+                />
+                <field
+                    name="match_ref_suffix_lengths"
+                    invisible="rule_type != 'invoice_matching' or not match_ref_suffix_enabled"
+                />
+                <field
+                    name="match_payment_before_invoice"
+                    invisible="rule_type != 'invoice_matching' or not match_ref_suffix_enabled"
+                />
+            </xpath>
+        </field>
+    </record>
+</odoo>

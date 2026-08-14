@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<odoo>
-    <!-- Override the Audit menu from OCA/auditlog to be under SENIAT menu -->
-    <menuitem id="auditlog.menu_audit" name="Auditoría" parent="l10n_ve_seniat.menu_seniat_root" sequence="90" groups="base.group_system" />
-</odoo>

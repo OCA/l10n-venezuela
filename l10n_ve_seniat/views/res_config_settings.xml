@@ -11,64 +11,125 @@
             >
                 <block
                     name="l10n_ve_seniat_block"
-                    title="Venezuela - Tax Configuration"
+                    title="Venezuela"
                 >
                     <div
-                        id="l10n_ve_seniat_div_company_fiscal"
-                        class="col-12 col-lg-6 o_setting_box"
+                        id="l10n_ve_seniat_div_emission_medium"
+                        class="col-12 o_setting_box"
                     >
                         <div class="o_setting_right_pane">
-                            <separator string="Company Fiscal Info" />
-                            <group>
-                                <field name="taxpayer_type" string="Taxpayer Type" />
-                                <!-- Art. 10 Ley del IVA; Art. 11 PA SNAT/2011/0071: facturación por terceros. -->
+                            <separator string="Medios de emisión" />
+                            <div class="text-muted">
+                                Medios de emisión de facturas y otros documentos
+                                utilizados por la compañía: forma libre, máquina
+                                fiscal y/o facturación digital. Forma libre no
+                                puede combinarse con máquina fiscal ni con
+                                facturación digital.
+                            </div>
+                            <div class="mt-3">
                                 <field
-                                    name="l10n_ve_on_behalf_of_third_party_enabled"
+                                    name="l10n_ve_emission_medium_ids"
+                                    widget="many2many_tags"
+                                    nolabel="1"
+                                    options="{'no_create_edit': True}"
+                                    class="w-100"
+                                    placeholder="Seleccione los medios de emisión..."
                                 />
-                                <!-- Art. 13 num. 5-7 PA SNAT/2011/0071: validación de RIF. -->
-                                <field name="l10n_ve_validate_partner_vat_format" />
-                                <field name="l10n_ve_lock_partner_fiscal_data" />
-                                <field name="l10n_ve_enforce_sale_price_ge_cost" />
-                            </group>
+                            </div>
                         </div>
                     </div>
-                    <div
-                        id="l10n_ve_seniat_div_global_discount_accounts"
-                        class="col-12 col-lg-6 o_setting_box"
+                    <setting
+                        name="l10n_ve_company_fiscal_settings"
+                        string="Información fiscal de la empresa"
+                        help="Clasificación fiscal y datos de retención de la compañía ante el SENIAT."
                     >
-                        <div class="o_setting_right_pane">
-                            <separator string="Descuentos globales (contabilidad)" />
-                            <div class="text-muted">
-                                Cuenta contable donde se registra el monto del descuento
-                                global en apuntes separados. También aplica a descuentos
-                                por línea de factura.
+                        <div class="content-group">
+                            <div class="row mt16">
+                                <label
+                                    string="Tipo de Contribuyente"
+                                    for="taxpayer_type"
+                                    class="col-lg-6 o_light_label"
+                                />
+                                <field name="taxpayer_type" class="col-lg-6" />
                             </div>
-                            <group class="mt-2">
+                            <div id="l10n_ve_company_fiscal_extra" />
+                        </div>
+                    </setting>
+                    <setting
+                        name="l10n_ve_global_discount_accounts_settings"
+                        string="Descuentos"
+                        help="Cuenta contable donde se registra el monto del descuento global en apuntes separados. También aplica a descuentos por línea de factura."
+                    >
+                        <div class="content-group">
+                            <div class="row mt16">
+                                <label
+                                    string="Facturas de venta"
+                                    for="account_discount_expense_allocation_id"
+                                    class="col-lg-6 o_light_label"
+                                />
                                 <field
                                     name="account_discount_expense_allocation_id"
-                                    string="Facturas de venta"
+                                    class="col-lg-6"
                                     placeholder="Misma cuenta que el producto"
+                                />
+                            </div>
+                            <div class="row mt16">
+                                <label
+                                    string="Facturas de compra"
+                                    for="account_discount_income_allocation_id"
+                                    class="col-lg-6 o_light_label"
                                 />
                                 <field
                                     name="account_discount_income_allocation_id"
-                                    string="Facturas de compra"
+                                    class="col-lg-6"
                                     placeholder="Misma cuenta que el producto"
                                 />
-                            </group>
-                        </div>
-                    </div>
-                    <div
-                        id="l10n_ve_seniat_div_tax_groups"
-                        class="col-12 col-lg-6 o_setting_box"
-                    >
-                        <div class="o_setting_right_pane">
-                            <span class="o_form_label">Grupos de impuestos SENIAT</span>
-                            <div class="text-muted">
-                                Configure el tipo de alícuota y el orden de aparición
-                                en los libros de ventas y compras desde los grupos de
-                                impuestos.
                             </div>
-                            <div class="mt-2">
+                        </div>
+                    </setting>
+                    <setting
+                        name="l10n_ve_implementer_settings"
+                        string="Implementador del sistema"
+                        help="Datos del implementador autorizado del sistema ante el SENIAT."
+                    >
+                        <div class="content-group">
+                            <div class="row mt16">
+                                <label
+                                    string="Razón social del implementador"
+                                    for="l10n_ve_implementer_name"
+                                    class="col-lg-6 o_light_label"
+                                />
+                                <field name="l10n_ve_implementer_name" class="col-lg-6" />
+                            </div>
+                            <div class="row mt16">
+                                <label
+                                    string="RIF del implementador"
+                                    for="l10n_ve_implementer_vat"
+                                    class="col-lg-6 o_light_label"
+                                />
+                                <field name="l10n_ve_implementer_vat" class="col-lg-6" />
+                            </div>
+                            <div class="row mt16">
+                                <label
+                                    string="Correo del implementador"
+                                    for="l10n_ve_implementer_email"
+                                    class="col-lg-6 o_light_label"
+                                />
+                                <field
+                                    name="l10n_ve_implementer_email"
+                                    class="col-lg-6"
+                                    placeholder="implementador@empresa.com"
+                                />
+                            </div>
+                        </div>
+                    </setting>
+                    <setting
+                        name="l10n_ve_tax_groups_settings"
+                        string="Grupos de impuestos SENIAT"
+                        help="Configure el tipo de alícuota y el orden de aparición en los libros de ventas y compras desde los grupos de impuestos."
+                    >
+                        <div class="content-group">
+                            <div class="mt16">
                                 <button
                                     name="action_open_l10n_ve_tax_groups"
                                     type="object"
@@ -78,31 +139,15 @@
                                 />
                             </div>
                         </div>
-                    </div>
-                    <div
-                        id="l10n_ve_seniat_div_implementer"
-                        class="col-12 col-lg-6 o_setting_box"
-                    >
-                        <div class="o_setting_right_pane">
-                            <separator string="Implementador del sistema" />
-                            <!-- Art. 18-19 PA SNAT/2024/000102: datos del implementador autorizado. -->
-                            <group>
-                                <field name="l10n_ve_implementer_name" />
-                                <field name="l10n_ve_implementer_vat" />
-                                <field
-                                    name="l10n_ve_implementer_email"
-                                    placeholder="implementador@empresa.com"
-                                />
-                            </group>
-                        </div>
-                    </div>
+                    </setting>
+                    <field name="l10n_ve_has_dispatch_guide_emission" invisible="1" />
                     <div
                         id="l10n_ve_seniat_div_dispatch_email"
                         class="col-12 col-lg-6 o_setting_box"
+                        groups="base.group_no_one"
                     >
                         <div class="o_setting_right_pane">
-                            <separator string="Guías de despacho no facturadas" />
-                            <!-- Art. 21 PA SNAT/2011/0071; Art. 10 PA SNAT/2024/000102: reporte guías sin facturar. -->
+                            <!-- Art. 21 PA SNAT/2011/0071; Art. 10 PA SNAT/2024/000102. -->
                             <group>
                                 <field
                                     name="l10n_ve_unfactured_dispatch_email_recipient"
@@ -136,12 +181,67 @@
                             </group>
                         </div>
                     </div>
+                    <div
+                        id="l10n_ve_seniat_div_on_behalf_third_party"
+                        class="col-12 col-lg-6 o_setting_box"
+                    >
+                        <div class="o_setting_left_pane">
+                            <field name="l10n_ve_on_behalf_of_third_party_enabled" />
+                        </div>
+                        <div class="o_setting_right_pane">
+                            <label for="l10n_ve_on_behalf_of_third_party_enabled" />
+                            <div class="text-muted">
+                                Permite emitir facturas por cuenta de terceros
+                                indicando el beneficiario fiscal en el documento.
+                            </div>
+                        </div>
+                    </div>
+                    <div
+                        id="l10n_ve_seniat_div_validate_vat"
+                        class="col-12 col-lg-6 o_setting_box"
+                    >
+                        <div class="o_setting_left_pane">
+                            <field name="l10n_ve_validate_partner_vat_format" />
+                        </div>
+                        <div class="o_setting_right_pane">
+                            <label for="l10n_ve_validate_partner_vat_format" />
+                            <div class="text-muted">
+                                Valida que el RIF o la cédula de identidad de los
+                                contactos cumplan el formato exigido por el SENIAT.
+                            </div>
+                        </div>
+                    </div>
+                    <div
+                        id="l10n_ve_seniat_div_lock_fiscal_data"
+                        class="col-12 col-lg-6 o_setting_box"
+                    >
+                        <div class="o_setting_left_pane">
+                            <field name="l10n_ve_lock_partner_fiscal_data" />
+                        </div>
+                        <div class="o_setting_right_pane">
+                            <label for="l10n_ve_lock_partner_fiscal_data" />
+                            <div class="text-muted">
+                                Impide modificar datos fiscales del contacto
+                                cuando ya tiene movimientos contables asociados.
+                            </div>
+                        </div>
+                    </div>
+                    <div
+                        id="l10n_ve_seniat_div_enforce_sale_price"
+                        class="col-12 col-lg-6 o_setting_box"
+                    >
+                        <div class="o_setting_left_pane">
+                            <field name="l10n_ve_enforce_sale_price_ge_cost" />
+                        </div>
+                        <div class="o_setting_right_pane">
+                            <label for="l10n_ve_enforce_sale_price_ge_cost" />
+                            <div class="text-muted">
+                                Exige que el precio de venta del producto sea
+                                mayor o igual a su coste al facturar.
+                            </div>
+                        </div>
+                    </div>
                 </block>
-                <block
-                    id="l10n_ve_extended_localization_settings"
-                    name="l10n_ve_extended_localization_settings"
-                    title="Venezuela - Retenciones e IGTF"
-                />
             </xpath>
         </field>
     </record>

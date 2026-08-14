@@ -12,7 +12,7 @@ class TestSaleOrderConfirm(L10nVeSeniatCommon):
     def setUpClass(cls):
         super().setUpClass()
         cls.journal = cls.company_data["default_journal_sale"]
-        cls.journal.write({"l10n_ve_emission_medium": "digital"})
+        cls._l10n_ve_configure_journal_digital(cls.journal)
 
     def _create_ve_product(self, name="Producto confirmación", price=100.0):
         tmpl = self.env["product.template"].create(

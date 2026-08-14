@@ -7,6 +7,16 @@ que el puerto seleccionado corresponda a esa máquina (por serial fiscal); en **
 se omite esa verificación. El diario no aplica límite de
 líneas por factura ni por guía de despacho; la impresión usa baudios, paridad y FLAG_21 de esa máquina.
 
+Métodos de pago fiscales en cobros y pagos
+------------------------------------------
+
+En diarios de banco, caja o crédito (país VE), en las pestañas **Incoming Payments** /
+**Outgoing Payments**, asigne el **Método pago fiscal** (01-24) a cada línea de cobro o
+pago pendiente. Ese código se envía a la máquina fiscal al imprimir el pago correspondiente.
+
+En la ficha de la máquina fiscal, pestaña **Configuración**, defina el **Método de pago por
+defecto** usado cuando la factura no tiene pagos conciliados.
+
 Consola de depuración
 ---------------------
 

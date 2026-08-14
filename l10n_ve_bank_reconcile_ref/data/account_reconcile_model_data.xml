@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo noupdate="1">
+    <record id="reconcile_model_ve_ref_suffix" model="account.reconcile.model">
+        <field name="name">VE: Match por referencia (pago ? factura)</field>
+        <field name="rule_type">invoice_matching</field>
+        <field name="auto_reconcile" eval="True" />
+        <field name="unique_matching" eval="True" />
+        <field name="match_nature">both</field>
+        <field name="match_same_currency" eval="True" />
+        <field name="allow_payment_tolerance" eval="True" />
+        <field name="payment_tolerance_type">percentage</field>
+        <field name="payment_tolerance_param" eval="0.0" />
+        <field name="match_text_location_label" eval="True" />
+        <field name="match_text_location_note" eval="False" />
+        <field name="match_text_location_reference" eval="True" />
+        <field name="match_ref_suffix_enabled" eval="True" />
+        <field name="match_ref_suffix_lengths">6,4</field>
+        <field name="match_payment_before_invoice" eval="True" />
+        <field name="matching_order">old_first</field>
+        <field name="sequence" eval="5" />
+    </record>
+</odoo>

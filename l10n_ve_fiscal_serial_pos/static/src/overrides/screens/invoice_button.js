@@ -17,7 +17,10 @@ patch(InvoiceButton.prototype, {
             return _t("Invoice");
         }
         if (this.isAlreadyInvoiced && this._l10nVeFiscalSerialPosIsFiscalMachine()) {
-            if (this.props.order.raw?.l10n_ve_pos_fiscal_invoice_number) {
+            if (
+                this.props.order.l10n_ve_pos_fiscal_invoice_number ||
+                this.props.order.raw?.l10n_ve_pos_fiscal_invoice_number
+            ) {
                 return _t("Reprint document");
             }
             return _t("Print document");

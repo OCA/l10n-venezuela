@@ -38,6 +38,8 @@ class ResCompany(models.Model):
     condition_withholding_id = fields.Many2one(
         "account.withholding.type",
         string="The condition of this taxpayer requires the withholding of",
+        related="partner_id.withholding_type_id",
+        readonly=False,
     )
 
     type_person_id = fields.Many2one(
@@ -45,8 +47,6 @@ class ResCompany(models.Model):
         related="partner_id.type_person_id",
         readonly=False,
     )
-
-    code_visible = fields.Boolean(string="See payment concept code")
 
     hide_patent_columns_extra = fields.Boolean(
         string="Hide extra columns in Patent Municipal Report related to advances",

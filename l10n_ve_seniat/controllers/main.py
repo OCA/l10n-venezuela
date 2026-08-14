@@ -10,22 +10,7 @@ class HomeVersion(Home):
     def web_login(self, *args, **kw):
         response = super().web_login(*args, **kw)
         if hasattr(response, "qcontext"):
-            module = (
-                http.request.env["ir.module.module"]
-                .sudo()
-                .search([("name", "=", "l10n_ve_seniat")], limit=1)
-            )
-            version = module.installed_version if module else ""
-            enterprise = (
-                http.request.env["ir.module.module"]
-                .sudo()
-                .search(
-                    [("name", "=", "web_enterprise"), ("state", "=", "installed")],
-                    limit=1,
-                )
-            )
-            edition = "Enterprise" if enterprise else "Community"
-            response.qcontext["l10n_ve_version"] = (
-                f"Odoo {edition} v{version}" if version else ""
-            )
+            response.qcontext["l10n_ve_version"] = http.request.env[
+                "ir.http"
+            ]._get_l10n_ve_version()
         return response

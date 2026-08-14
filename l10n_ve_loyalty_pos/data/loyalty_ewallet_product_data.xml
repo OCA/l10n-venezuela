@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="loyalty.ewallet_product_50" model="product.product">
+        <field name="l10n_ve_pos_allow_price_change" eval="True" />
+        <field name="available_in_pos" eval="True" />
+    </record>
+</odoo>

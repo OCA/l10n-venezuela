@@ -106,3 +106,28 @@ class TestAccountMoveFiscalDiscount(L10nVeSeniatCommon):
             tax_totals["l10n_ve_global_discount_amount"],
             places=2,
         )
+
+    def test_fiscal_payload_global_discount_on_total_sends_untaxed(self):
+        """TFHKA aplica q- sobre el subtotal: enviar la base imponible equivalente."""
+        move = self._create_invoice(discount=0.0)
+        tax = self.company_data["default_tax_sale"]
+        self.assertAlmostEqual(tax.amount, 16.0, places=2)
+        wizard = self.env["l10n.ve.account.move.discount.wizard"].create(
+            {
+                "move_id": move.id,
+                "discount_mode": "amount",
+                "amount_base": "total",
+                "amount": 10.0,
+                "reason_id": self._get_discount_reason().id,
+            }
+        )
+        wizard.action_apply_discount()
+        expected_untaxed = move.currency_id.round(10.0 / 1.16)
+        self.assertAlmostEqual(
+            move.l10n_ve_global_discount_ids.amount, expected_untaxed, places=2
+        )
+        payload = move._l10n_ve_fiscal_serial_base_payload()
+        self.assertAlmostEqual(
+            payload["global_discount_amount"], expected_untaxed, places=2
+        )
+        self.assertNotAlmostEqual(payload["global_discount_amount"], 10.0, places=2)

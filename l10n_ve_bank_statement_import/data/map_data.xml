@@ -98,4 +98,97 @@
         <field name="balance_column">Balance</field>
         <field name="skip_empty_lines">True</field>
     </record>
+    <record
+        id="banco_mercantil_juridico_txt_statement_map"
+        model="account.statement.import.sheet.mapping"
+    >
+        <field name="name">Banco Mercantil Jurídico - TXT</field>
+        <field name="footer_lines_skip_count">0</field>
+        <field name="header_lines_skip_count">0</field>
+        <field name="float_thousands_sep">dot</field>
+        <field name="float_decimal_sep">comma</field>
+        <field name="file_encoding">utf-8</field>
+        <field name="delimiter">comma</field>
+        <field name="quotechar">"</field>
+        <field name="timestamp_format">%d%m%Y</field>
+        <field name="no_header">True</field>
+        <field name="amount_type">absolute_value</field>
+        <field name="timestamp_column">3</field>
+        <field name="reference_column">4</field>
+        <field name="debit_credit_column">5</field>
+        <field name="description_column">6</field>
+        <field name="amount_column">7</field>
+        <field name="balance_column">8</field>
+        <field name="debit_value">ND</field>
+        <field name="credit_value">NC</field>
+        <field name="skip_empty_lines">True</field>
+    </record>
+    <record
+        id="banco_venezuela_comprobante_txt_statement_map"
+        model="account.statement.import.sheet.mapping"
+    >
+        <field name="name">Banco de Venezuela - Comprobante TXT</field>
+        <field name="footer_lines_skip_count">0</field>
+        <field name="header_lines_skip_count">0</field>
+        <field name="float_thousands_sep">dot</field>
+        <field name="float_decimal_sep">comma</field>
+        <field name="file_encoding">utf-8-sig</field>
+        <field name="delimiter">space</field>
+        <field name="quotechar">"</field>
+        <field name="timestamp_format">%d/%m/%Y</field>
+        <field name="no_header">True</field>
+        <field name="amount_type">simple_value</field>
+        <field name="timestamp_column">0</field>
+        <field name="description_column">1</field>
+        <field name="reference_column">2</field>
+        <field name="amount_column">4</field>
+        <field name="balance_column">5</field>
+        <field name="skip_empty_lines">True</field>
+    </record>
+    <record
+        id="banco_provincial_csv_statement_map"
+        model="account.statement.import.sheet.mapping"
+    >
+        <field name="name">Banco Provincial - Reporte CSV</field>
+        <field name="footer_lines_skip_count">0</field>
+        <field name="header_lines_skip_count">1</field>
+        <field name="float_thousands_sep">dot</field>
+        <field name="float_decimal_sep">comma</field>
+        <field name="file_encoding">iso-8859-1</field>
+        <field name="delimiter">semicolon</field>
+        <field name="quotechar">"</field>
+        <field name="timestamp_format">%d-%m-%Y</field>
+        <field name="amount_type">simple_value</field>
+        <field name="timestamp_column">Fecha</field>
+        <field name="reference_column">Referencia</field>
+        <field name="description_column">Descripción</field>
+        <field name="amount_column">Importe</field>
+        <field name="balance_column">Saldo</field>
+        <field name="skip_empty_lines">True</field>
+    </record>
+    <record
+        id="banco_bnc_txt_statement_map"
+        model="account.statement.import.sheet.mapping"
+    >
+        <field name="name">Banco BNC - Movimientos TXT</field>
+        <field name="footer_lines_skip_count">0</field>
+        <field name="header_lines_skip_count">3</field>
+        <field name="lines_skip_after_header">1</field>
+        <field name="float_thousands_sep">none</field>
+        <field name="float_decimal_sep">comma</field>
+        <field name="file_encoding">utf-8</field>
+        <field name="delimiter">tab</field>
+        <field name="quotechar">"</field>
+        <field name="timestamp_format">%d/%m/%Y</field>
+        <field name="amount_type">distinct_credit_debit</field>
+        <field name="timestamp_column">Fecha</field>
+        <field name="reference_column">Referencia</field>
+        <field name="description_column">Descripción</field>
+        <field name="notes_column">Tip. Operación</field>
+        <field name="amount_debit_column">Debe</field>
+        <field name="amount_credit_column">Haber</field>
+        <field name="amount_inverse_sign" eval="True" />
+        <field name="balance_column">Saldo</field>
+        <field name="skip_empty_lines">True</field>
+    </record>
 </odoo>

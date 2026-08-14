@@ -14,7 +14,7 @@ const ACTION_LABELS = {
 export class FiscalReportButton extends Component {
     static props = ["*"];
     static template = xml`
-        <button class="btn btn-secondary" type="button" t-on-click="onClick">
+        <button t-att-class="buttonClass" type="button" t-on-click="onClick">
             <span t-esc="label"/>
         </button>
     `;
@@ -25,6 +25,10 @@ export class FiscalReportButton extends Component {
 
     get label() {
         return ACTION_LABELS[this.props.action] || _t("Reporte fiscal");
+    }
+
+    get buttonClass() {
+        return `btn ${this.props.button_class || "btn-secondary"}`;
     }
 
     async onClick() {
@@ -44,5 +48,6 @@ registry.category("view_widgets").add("l10n_ve_fiscal_serial_report_button", {
     component: FiscalReportButton,
     extractProps: ({ attrs }) => ({
         action: attrs.action,
+        button_class: attrs.button_class,
     }),
 });

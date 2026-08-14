@@ -7,17 +7,11 @@ _L10N_VE_IGTF_ACCOUNT_TYPES = ("liability_current", "liability_non_current")
 class ResCompany(models.Model):
     _inherit = "res.company"
 
-    l10n_ve_igtf_enabled = fields.Boolean(
-        string="Apply IGTF",
-        default=False,
-        help="If disabled, IGTF is not calculated or shown for this company, even if the "
-        "module is installed. Requires fiscal country Venezuela and taxpayer type Special.",
-    )
     l10n_ve_igtf_feature_active = fields.Boolean(
         string="IGTF regime active",
         compute="_compute_l10n_ve_igtf_feature_active",
         store=True,
-        help="Technical: IGTF applies (Venezuela, special taxpayer, option enabled).",
+        help="Technical: IGTF applies for Venezuela companies with taxpayer type Special.",
     )
 
     l10n_ve_igtf_currency_ids = fields.Many2many(
@@ -53,8 +47,6 @@ class ResCompany(models.Model):
 
     def _l10n_ve_igtf_is_active(self):
         self.ensure_one()
-        if not self.l10n_ve_igtf_enabled:
-            return False
         if not self.account_fiscal_country_id or self.account_fiscal_country_id.code != "VE":
             return False
         if self.taxpayer_type != "special":
@@ -68,7 +60,6 @@ class ResCompany(models.Model):
         return self._l10n_ve_igtf_is_active()
 
     @api.depends(
-        "l10n_ve_igtf_enabled",
         "account_fiscal_country_id",
         "partner_id.taxpayer_type",
     )
@@ -115,6 +106,25 @@ class ResCompany(models.Model):
                     _(
                         "La cuenta de IGTF debe ser de tipo pasivo "
                         "(corriente o no corriente)."
+                    )
+                )
+
+    @api.constrains(
+        "l10n_ve_igtf_account_id",
+        "account_fiscal_country_id",
+        "partner_id.taxpayer_type",
+    )
+    def _check_l10n_ve_igtf_account_required_for_special(self):
+        if self.env.context.get("l10n_ve_skip_igtf_account_check"):
+            return
+        for company in self:
+            if not company._l10n_ve_igtf_is_active():
+                continue
+            if not company.l10n_ve_igtf_account_id:
+                raise ValidationError(
+                    _(
+                        "La cuenta de IGTF es obligatoria para compañías "
+                        "con tipo de contribuyente Especial."
                     )
                 )
 

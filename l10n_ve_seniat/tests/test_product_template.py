@@ -65,6 +65,38 @@ class TestProductTemplateL10nVe(L10nVeSeniatCommon):
                 )
             )
 
+    def test_ve_shared_product_allows_one_sale_tax_per_company(self):
+        other_data = self.setup_other_company(
+            name="VE Other Co Tax Test",
+            account_fiscal_country_id=self.env.ref("base.ve").id,
+        )
+        other_sale = other_data["default_tax_sale"]
+        other_purchase = other_data["default_tax_purchase"]
+        self.assertTrue(other_sale)
+        self.assertTrue(other_purchase)
+        product = self.env["product.template"].create(
+            {
+                "name": "Shared VE product multi-company taxes",
+                "company_id": False,
+                "list_price": 100.0,
+                "standard_price": 50.0,
+                "taxes_id": [(6, 0, [self.sale_tax.id, other_sale.id])],
+                "supplier_taxes_id": [
+                    (6, 0, [self.purchase_tax.id, other_purchase.id])
+                ],
+            }
+        )
+        self.assertEqual(
+            product.taxes_id.filtered(lambda t: t.company_id == self.env.company),
+            self.sale_tax,
+        )
+        self.assertEqual(
+            product.taxes_id.filtered(
+                lambda t: t.company_id == other_data["company"]
+            ),
+            other_sale,
+        )
+
     def test_ve_product_rejects_multiple_purchase_taxes(self):
         with self.assertRaises(ValidationError):
             self.env["product.template"].create(

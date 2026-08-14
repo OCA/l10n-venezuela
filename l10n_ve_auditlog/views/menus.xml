@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem
+        id="menu_audit"
+        name="Auditoría"
+        parent="l10n_ve_seniat.menu_seniat_root"
+        sequence="90"
+        groups="base.group_system"
+    />
+</odoo>

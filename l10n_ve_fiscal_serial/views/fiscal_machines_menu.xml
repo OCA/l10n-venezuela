@@ -23,7 +23,7 @@
         name="Auditoría fiscal serial"
         parent="menu_seniat_fiscal_machines"
         action="l10n_ve_fiscal_serial.action_l10n_ve_fiscal_serial_audit"
-        sequence="30"
+        sequence="20"
         groups="l10n_ve_seniat.group_seniat"
     />
 </odoo>

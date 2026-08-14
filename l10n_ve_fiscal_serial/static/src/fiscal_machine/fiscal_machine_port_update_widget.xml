@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<templates xml:space="preserve">
+    <t t-name="l10n_ve_fiscal_serial.FiscalMachinePortUpdateWidget">
+        <div class="o_l10n_ve_fiscal_machine_port_update mb-2">
+            <button
+                type="button"
+                class="btn btn-secondary"
+                t-on-click="onUpdatePort"
+                t-att-disabled="state.busy or !props.record.resId"
+            >
+                <i class="fa fa-usb me-1" />
+                Actualizar puerto (este PC)
+            </button>
+            <div class="text-muted small mt-1">
+                Úselo al cambiar de computador: seleccione el adaptador USB de esta
+                máquina en el navegador y se guardará el puerto autorizado aquí.
+            </div>
+        </div>
+    </t>
+</templates>

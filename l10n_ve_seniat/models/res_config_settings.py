@@ -11,6 +11,23 @@ class ResConfigSettings(models.TransientModel):
         related="company_id.taxpayer_type",
         readonly=False,
     )
+
+    l10n_ve_emission_medium_ids = fields.Many2many(
+        related="company_id.l10n_ve_emission_medium_ids",
+        readonly=False,
+    )
+    l10n_ve_has_dispatch_guide_emission = fields.Boolean(
+        compute="_compute_l10n_ve_has_dispatch_guide_emission",
+    )
+
+    @api.depends("l10n_ve_emission_medium_ids", "l10n_ve_emission_medium_ids.code")
+    def _compute_l10n_ve_has_dispatch_guide_emission(self):
+        for settings in self:
+            codes = set(settings.l10n_ve_emission_medium_ids.mapped("code"))
+            settings.l10n_ve_has_dispatch_guide_emission = bool(
+                codes & {"free_form", "digital_billing", "fiscal_machine"}
+            )
+
     l10n_ve_on_behalf_of_third_party_enabled = fields.Boolean(
         related="company_id.l10n_ve_on_behalf_of_third_party_enabled",
         readonly=False,

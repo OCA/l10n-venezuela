@@ -19,6 +19,16 @@ patch(TicketScreen.prototype, {
     get ticketScreenSyncedPrintLabel() {
         return this.isVenezuelaPos ? _t("Print document") : _t("Print Receipt");
     },
+    async addAdditionalRefundInfo(order, destinationOrder) {
+        await super.addAdditionalRefundInfo(...arguments);
+        if (!isVenezuelaCompany(this.pos)) {
+            return;
+        }
+        const originJournal = order.invoice_journal_id;
+        if (originJournal && typeof destinationOrder.setInvoiceJournal === "function") {
+            destinationOrder.setInvoiceJournal(originJournal);
+        }
+    },
     _getOrderStates() {
         const states = super._getOrderStates(...arguments);
         if (isVenezuelaCompany(this.pos)) {

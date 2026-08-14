@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="view_move_form_l10n_ve_loyalty_discount" model="ir.ui.view">
+        <field name="name">account.move.form.l10n.ve.loyalty.discount</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_move_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <button
+                    name="action_l10n_ve_open_post_discount_wizard"
+                    string="Descuento"
+                    type="object"
+                    class="btn-secondary"
+                    groups="account.group_account_invoice"
+                    invisible="country_code != 'VE' or move_type != 'out_invoice' or state != 'posted' or not l10n_ve_show_post_discount_action"
+                />
+            </xpath>
+            <xpath expr="//field[@name='country_code']" position="after">
+                <field name="l10n_ve_show_post_discount_action" invisible="1" />
+            </xpath>
+            <xpath expr="//field[@name='tax_totals']" position="before">
+                <field name="l10n_ve_global_discount_ids" invisible="1" />
+                <div
+                    class="d-flex justify-content-end mb-1"
+                    invisible="country_code != 'VE' or state != 'draft' or move_type not in ('out_invoice', 'out_refund', 'in_invoice', 'in_refund', 'out_receipt', 'in_receipt')"
+                >
+                    <button
+                        name="action_l10n_ve_open_global_discount_wizard"
+                        type="object"
+                        string="Descuento"
+                        class="btn btn-secondary"
+                    />
+                </div>
+            </xpath>
+        </field>
+    </record>
+</odoo>

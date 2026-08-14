@@ -24,6 +24,34 @@ function isRifLike(value) {
 }
 
 patch(PosStore.prototype, {
+    _l10nVePosHasZeroQtyLines(order) {
+        return (order?.lines || []).some(
+            (line) =>
+                !line.combo_parent_id && this.isProductQtyZero(line.get_quantity())
+        );
+    },
+    async pay() {
+        const currentOrder = this.get_order();
+        if (isVenezuelaCompany(this) && this._l10nVePosHasZeroQtyLines(currentOrder)) {
+            this.notification.add(
+                _t("Cannot go to payment while there are order lines with quantity 0."),
+                { type: "danger" }
+            );
+            return;
+        }
+        return await super.pay(...arguments);
+    },
+    selectOrderLine(order, line) {
+        super.selectOrderLine(...arguments);
+        if (!isVenezuelaCompany(this)) {
+            return;
+        }
+        if (line?.product_id?.l10n_ve_pos_allow_price_change) {
+            this.numpadMode = "price";
+        } else {
+            this.numpadMode = "quantity";
+        }
+    },
     createNewOrder(data = {}) {
         const order = super.createNewOrder(data);
         if (!isVenezuelaCompany(this)) {
@@ -54,6 +82,13 @@ patch(PosStore.prototype, {
         if (!order || !isVenezuelaCompany(this)) {
             return;
         }
+        if (typeof order.canChangeInvoiceJournal === "function" && !order.canChangeInvoiceJournal()) {
+            this.notification.add(
+                _t("The invoice journal of a refund cannot be changed; it must match the original order."),
+                { type: "warning" }
+            );
+            return;
+        }
         const journals = this.getAvailableInvoiceJournals();
         if (!journals.length) {
             return;
@@ -72,6 +107,12 @@ patch(PosStore.prototype, {
             return;
         }
         order.setInvoiceJournal(selectedJournal);
+        if (typeof this.syncAllOrders === "function" && order) {
+            this.addPendingOrder?.([order.id]);
+            try {
+                await this.syncAllOrders({ orders: [order] });
+            } catch (_error) {}
+        }
         return selectedJournal;
     },
     async allowProductCreation() {

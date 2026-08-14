@@ -4,7 +4,9 @@ import { PaymentScreen } from "@point_of_sale/app/screens/payment_screen/payment
 import { patch } from "@web/core/utils/patch";
 import {
     l10nVeFiscalSerialPosExecutePrint,
+    l10nVeFiscalSerialPosGetNextPlaceholders,
     l10nVeFiscalSerialPosIsFiscalMachine,
+    l10nVeFiscalSerialPosIsOffline,
 } from "../../fiscal_serial_pos_print";
 
 function isVenezuelaCompany(pos) {
@@ -15,6 +17,38 @@ function isVenezuelaCompany(pos) {
 }
 
 patch(PaymentScreen.prototype, {
+    _l10nVeApplyLocalFiscalPlaceholders() {
+        if (!l10nVeFiscalSerialPosIsFiscalMachine(this.pos)) {
+            return;
+        }
+        const placeholders = l10nVeFiscalSerialPosGetNextPlaceholders(this.pos);
+        if (placeholders.invoice_number) {
+            this.l10nVeEmission.next_fiscal_invoice_number = placeholders.invoice_number;
+        }
+        if (placeholders.serial) {
+            this.l10nVeEmission.next_fiscal_serial = placeholders.serial;
+        }
+        if (placeholders.report_z) {
+            this.l10nVeEmission.next_fiscal_report_z = placeholders.report_z;
+        }
+    },
+
+    async l10nVeRefreshEmissionPreview() {
+        if (l10nVeFiscalSerialPosIsOffline(this.pos)) {
+            const fallback =
+                typeof this._l10nVeLocalEmissionPreviewFallback === "function"
+                    ? this._l10nVeLocalEmissionPreviewFallback()
+                    : false;
+            if (fallback && typeof this._l10nVeApplyEmissionPreview === "function") {
+                this._l10nVeApplyEmissionPreview(fallback);
+            }
+            this._l10nVeApplyLocalFiscalPlaceholders();
+            return;
+        }
+        await super.l10nVeRefreshEmissionPreview(...arguments);
+        this._l10nVeApplyLocalFiscalPlaceholders();
+    },
+
     _l10nVeFiscalSerialNeedsPrint() {
         if (!isVenezuelaCompany(this.pos)) {
             return false;
@@ -26,7 +60,13 @@ patch(PaymentScreen.prototype, {
         if (!order?.is_to_invoice()) {
             return false;
         }
-        return Boolean(order.raw?.account_move);
+        if (
+            order.l10n_ve_pos_fiscal_invoice_number ||
+            order.raw?.l10n_ve_pos_fiscal_invoice_number
+        ) {
+            return false;
+        }
+        return true;
     },
 
     _l10nVeFiscalSerialPrintSucceededForCurrentOrder() {
@@ -56,22 +96,7 @@ patch(PaymentScreen.prototype, {
         );
     },
 
-    async validateOrder(isForceValidate) {
-        if (
-            this.currentOrder.is_paid() &&
-            this._l10nVeFiscalSerialAwaitingFiscalPrint()
-        ) {
-            const ok = await this._l10nVeFiscalSerialPrintAfterSync();
-            if (ok) {
-                this._l10nVeFiscalSerialMarkPrintSucceeded();
-                return super.afterOrderValidation(true);
-            }
-            return;
-        }
-        return super.validateOrder(isForceValidate);
-    },
-
-    async _l10nVeFiscalSerialPrintAfterSync() {
+    async _l10nVeFiscalSerialPrintCurrentOrder() {
         if (!this._l10nVeFiscalSerialNeedsPrint()) {
             return true;
         }
@@ -83,9 +108,23 @@ patch(PaymentScreen.prototype, {
         });
     },
 
+    async validateOrder(isForceValidate) {
+        if (
+            this.currentOrder.is_paid() &&
+            this._l10nVeFiscalSerialAwaitingFiscalPrint()
+        ) {
+            const ok = await this._l10nVeFiscalSerialPrintCurrentOrder();
+            if (!ok) {
+                return;
+            }
+            this._l10nVeFiscalSerialMarkPrintSucceeded();
+        }
+        return super.validateOrder(isForceValidate);
+    },
+
     async afterOrderValidation(...args) {
-        if (this._l10nVeFiscalSerialNeedsPrint()) {
-            const ok = await this._l10nVeFiscalSerialPrintAfterSync();
+        if (this._l10nVeFiscalSerialAwaitingFiscalPrint()) {
+            const ok = await this._l10nVeFiscalSerialPrintCurrentOrder();
             if (!ok) {
                 return;
             }

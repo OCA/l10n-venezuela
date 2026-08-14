@@ -2,46 +2,13 @@ import logging
 
 from odoo import Command, _, api, fields, models
 from odoo.exceptions import ValidationError
-from odoo.tools import float_compare, frozendict
+from odoo.tools import float_compare
 
 _logger = logging.getLogger(__name__)
 
 
 class AccountMoveLine(models.Model):
     _inherit = "account.move.line"
-
-    display_type = fields.Selection(
-        selection_add=[("global_discount", "Global Discount")],
-        ondelete={"global_discount": "cascade"},
-    )
-
-    l10n_ve_global_discount_line = fields.Boolean(
-        string="Venezuela global discount line",
-        readonly=True,
-        copy=False,
-    )
-    l10n_ve_line_discount_line = fields.Boolean(
-        string="Venezuela line discount line",
-        readonly=True,
-        copy=False,
-    )
-    l10n_ve_global_discount_tax_ids = fields.Many2many(
-        comodel_name="account.tax",
-        relation="account_move_line_l10n_ve_global_discount_tax_rel",
-        column1="line_id",
-        column2="tax_id",
-        string="Global discount tax group",
-        readonly=True,
-        copy=False,
-    )
-    l10n_ve_global_discount_allocation_key = fields.Binary(
-        compute="_compute_l10n_ve_global_discount_allocation_key",
-        exportable=False,
-    )
-    l10n_ve_line_discount_allocation_key = fields.Binary(
-        compute="_compute_l10n_ve_line_discount_allocation_key",
-        exportable=False,
-    )
 
     subtotal_company_currency = fields.Monetary(
         compute="_compute_subtotal_company_currency",
@@ -51,86 +18,6 @@ class AccountMoveLine(models.Model):
         compute="_compute_price_unit_company_currency",
         currency_field="company_currency_id",
     )
-
-    @api.depends(
-        "l10n_ve_global_discount_line",
-        "l10n_ve_global_discount_tax_ids",
-        "account_id",
-        "move_id",
-        "currency_rate",
-        "display_type",
-    )
-    def _compute_l10n_ve_global_discount_allocation_key(self):
-        for line in self:
-            if (
-                line.l10n_ve_global_discount_line
-                and line.display_type == "global_discount"
-                and line.move_id
-            ):
-                line.l10n_ve_global_discount_allocation_key = frozendict(
-                    {
-                        "move_id": line.move_id.id,
-                        "account_id": line.account_id.id,
-                        "currency_rate": line.currency_rate,
-                        "tax_ids": tuple(sorted(line.l10n_ve_global_discount_tax_ids.ids)),
-                    }
-                )
-            else:
-                line.l10n_ve_global_discount_allocation_key = False
-
-    @api.depends(
-        "l10n_ve_line_discount_line",
-        "l10n_ve_global_discount_tax_ids",
-        "account_id",
-        "move_id",
-        "currency_rate",
-        "display_type",
-    )
-    def _compute_l10n_ve_line_discount_allocation_key(self):
-        for line in self:
-            if (
-                line.l10n_ve_line_discount_line
-                and line.display_type == "discount"
-                and line.move_id
-            ):
-                line.l10n_ve_line_discount_allocation_key = frozendict(
-                    {
-                        "move_id": line.move_id.id,
-                        "account_id": line.account_id.id,
-                        "currency_rate": line.currency_rate,
-                        "tax_ids": tuple(
-                            sorted(line.l10n_ve_global_discount_tax_ids.ids)
-                        ),
-                    }
-                )
-            else:
-                line.l10n_ve_line_discount_allocation_key = False
-
-    @api.depends("account_id", "company_id")
-    def _compute_discount_allocation_key(self):
-        super()._compute_discount_allocation_key()
-        for line in self.filtered(
-            lambda aml: aml.l10n_ve_global_discount_line or aml.l10n_ve_line_discount_line
-        ):
-            line.discount_allocation_key = False
-
-    @api.depends(
-        "account_id",
-        "company_id",
-        "discount",
-        "price_unit",
-        "quantity",
-        "currency_rate",
-        "analytic_distribution",
-    )
-    def _compute_discount_allocation_needed(self):
-        ve_journal_lines = self.filtered(
-            lambda line: line.move_id._l10n_ve_uses_global_discount_journal_lines()
-        )
-        super(AccountMoveLine, self - ve_journal_lines)._compute_discount_allocation_needed()
-        for line in ve_journal_lines:
-            line.discount_allocation_needed = False
-            line.discount_allocation_dirty = True
 
     @api.depends("balance")
     def _compute_subtotal_company_currency(self):
@@ -172,7 +59,6 @@ class AccountMoveLine(models.Model):
             record._validate_line_unit_price_ve()
             record._l10n_ve_apply_exempt_tax_no_product_line()
             record._put_unique_tax_per_line()
-        res._l10n_ve_refresh_move_global_discounts()
         return res
 
     def write(self, vals):
@@ -191,32 +77,7 @@ class AccountMoveLine(models.Model):
                 record._validate_line_unit_price_ve()
             record._l10n_ve_apply_exempt_tax_no_product_line()
             record._put_unique_tax_per_line()
-        if set(vals) & {
-            "price_unit",
-            "quantity",
-            "discount",
-            "tax_ids",
-            "product_id",
-            "display_type",
-        }:
-            self._l10n_ve_refresh_move_global_discounts()
         return res
-
-    def unlink(self):
-        moves = self.move_id
-        res = super().unlink()
-        moves._l10n_ve_refresh_global_discounts_from_lines()
-        return res
-
-    def _l10n_ve_refresh_move_global_discounts(self):
-        if self.env.context.get("l10n_ve_skip_discount_refresh"):
-            return
-        product_lines = self.filtered(
-            lambda line: line.display_type not in ("line_section", "line_note")
-            and not line.tax_line_id
-        )
-        if product_lines:
-            product_lines.move_id._l10n_ve_refresh_global_discounts_from_lines()
 
     def _validate_line_unit_price_ve(self):
         """Valida precio unitario distinto de cero en líneas fiscales venezolanas.
@@ -237,7 +98,13 @@ class AccountMoveLine(models.Model):
         price = self.price_unit or 0.0
         if float_compare(price, 0.0, precision_digits=prec) <= 0:
             tmpl = self.product_id.product_tmpl_id if self.product_id else False
-            if tmpl and tmpl._l10n_ve_is_sale_discount_template():
+            if tmpl and (
+                tmpl._l10n_ve_is_sale_discount_template()
+                or (
+                    hasattr(tmpl, "_l10n_ve_is_loyalty_reward_discount_template")
+                    and tmpl._l10n_ve_is_loyalty_reward_discount_template()
+                )
+            ):
                 return
             raise ValidationError(
                 _(
@@ -249,28 +116,6 @@ class AccountMoveLine(models.Model):
                 % {"line": self.name or _("Sin nombre"), "price": price}
             )
 
-    @api.constrains("discount", "move_id")
-    def _l10n_ve_check_line_discount(self):
-        prec = self.env["decimal.precision"].precision_get("Discount")
-        for line in self:
-            if line.display_type != "product":
-                continue
-            if line.move_id.move_type == "entry":
-                continue
-            if line.move_id.country_code != "VE":
-                continue
-            disc = line.discount or 0.0
-            if float_compare(disc, 100.0, precision_digits=prec) >= 0:
-                raise ValidationError(
-                    _(
-                        "No se permite un descuento del 100%% en la línea de factura. "
-                        'La línea "%(line)s" tiene %(discount)s%%.'
-                    )
-                    % {
-                        "line": line.name or _("Sin nombre"),
-                        "discount": disc,
-                    }
-                )
 
     def l10n_ve_report_line_description(self):
         """Descripción de línea para reporte, marcando exentos con sufijo (E).

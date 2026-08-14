@@ -147,7 +147,8 @@ class AccountJournal(models.Model):
         return {
             "available": True,
             "can_send": bool(
-                (company.l10n_ve_unfactured_dispatch_email_recipient or "").strip()
+                getattr(company, "l10n_ve_dispatch_guide_enabled", True)
+                and (company.l10n_ve_unfactured_dispatch_email_recipient or "").strip()
             ),
             "last_sent_label": company.l10n_ve_unfactured_dispatch_email_last_sent_label()
             or False,

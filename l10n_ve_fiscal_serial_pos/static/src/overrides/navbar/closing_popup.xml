@@ -9,14 +9,38 @@
             expr="//button[contains(@class, 'button')][@t-on-click='downloadSalesReport']"
             position="after"
         >
-            <button
-                t-if="l10nVeShowFiscalReportX"
-                class="button btn btn-secondary"
-                t-att-class="this.ui.isSmall ? 'w-100' : 'btn-lg'"
-                t-on-click="l10nVePrintXReport"
-            >
-                Reporte X
-            </button>
+            <t t-if="l10nVeShowFiscalReports">
+                <select
+                    class="form-select"
+                    t-att-class="this.ui.isSmall ? 'w-100' : ''"
+                    style="max-width: 16rem;"
+                    t-att-value="l10nVeFiscalClose.machineId || ''"
+                    t-on-change="l10nVeOnFiscalMachineChange"
+                    title="Máquinas autorizadas en este navegador para reportes X/Z"
+                >
+                    <option value="" disabled="disabled" t-esc="'Máquina autorizada'"/>
+                    <t t-foreach="l10nVeFiscalClose.machines" t-as="machine" t-key="machine.id">
+                        <option
+                            t-att-value="machine.id"
+                            t-esc="(machine.name or '') + (machine.registered_serial ? ' (' + machine.registered_serial + ')' : '')"
+                        />
+                    </t>
+                </select>
+                <button
+                    class="button btn btn-secondary"
+                    t-att-class="this.ui.isSmall ? 'w-100' : 'btn-lg'"
+                    t-on-click="l10nVePrintXReport"
+                >
+                    Reporte X
+                </button>
+                <button
+                    class="button btn btn-secondary"
+                    t-att-class="this.ui.isSmall ? 'w-100' : 'btn-lg'"
+                    t-on-click="l10nVePrintZReport"
+                >
+                    Reporte Z
+                </button>
+            </t>
         </xpath>
     </t>
 </templates>

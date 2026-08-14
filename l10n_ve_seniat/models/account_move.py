@@ -534,6 +534,13 @@ class AccountMove(models.Model):
             return True
         return self._l10n_ve_invoice_emitted_for_credit_debit()
 
+    @api.depends(
+        "l10n_ve_show_credit_note_action",
+        "reversal_move_ids.l10n_ve_debit_note_reversed_ids",
+    )
+    def _compute_l10n_ve_show_post_discount_action(self):
+        return super()._compute_l10n_ve_show_post_discount_action()
+
     def _l10n_ve_check_credit_note_creation_allowed(self):
         """Impide crear NC cuando el documento ya fue reversado totalmente.
 
@@ -1197,6 +1204,28 @@ class AccountMove(models.Model):
         medium = journal.l10n_ve_emission_medium
         if not medium:
             return
+        company_medium_code = journal._l10n_ve_company_emission_medium_code()
+        if company_medium_code and not self.company_id._l10n_ve_has_emission_medium(
+            company_medium_code
+        ):
+            medium_label = dict(
+                journal._fields["l10n_ve_emission_medium"]._description_selection(
+                    self.env
+                )
+            ).get(medium, medium)
+            raise ValidationError(
+                _(
+                    "No se puede confirmar el documento “%(doc)s”. "
+                    "El diario “%(journal)s” usa el medio de emisión "
+                    "“%(medium)s”, pero ese medio no está configurado en los "
+                    "medios de emisión de la compañía."
+                )
+                % {
+                    "doc": self.name or _("Borrador"),
+                    "journal": journal.display_name,
+                    "medium": medium_label,
+                }
+            )
         if medium == "contingency":
             if not self.l10n_ve_invoice_date:
                 raise ValidationError(
@@ -2161,48 +2190,13 @@ Please create a credit note instead.
         "invoice_payment_term_id",
         "partner_id",
         "currency_id",
-        "l10n_ve_global_discount_ids",
-        "l10n_ve_global_discount_ids.amount",
         "invoice_line_ids.product_id",
     )
     def _compute_tax_totals(self):
         res = super()._compute_tax_totals()
-        AccountTax = self.env["account.tax"]
         for move in self:
             if move.country_code != "VE" or not move.tax_totals:
                 continue
-            if move.is_invoice(include_receipts=True):
-                discount_totals = AccountTax._l10n_ve_get_global_discount_totals(
-                    move,
-                    move.tax_totals,
-                )
-                move.tax_totals["l10n_ve_show_global_discount"] = discount_totals[
-                    "show_global_discount"
-                ]
-                move.tax_totals["l10n_ve_subtotal_gross_currency"] = discount_totals[
-                    "subtotal_gross_currency"
-                ]
-                move.tax_totals["l10n_ve_subtotal_gross"] = discount_totals[
-                    "subtotal_gross"
-                ]
-                move.tax_totals["l10n_ve_global_discount_amount_currency"] = (
-                    discount_totals["global_discount_amount_currency"]
-                )
-                move.tax_totals["l10n_ve_global_discount_amount"] = discount_totals[
-                    "global_discount_amount"
-                ]
-                move.tax_totals["l10n_ve_global_discount_amount_foreign"] = (
-                    discount_totals["global_discount_amount_foreign"]
-                )
-                move.tax_totals["l10n_ve_subtotal_gross_foreign"] = discount_totals[
-                    "subtotal_gross_foreign"
-                ]
-                move.tax_totals["l10n_ve_global_discount_lines"] = discount_totals[
-                    "global_discount_lines"
-                ]
-                move.tax_totals["l10n_ve_global_discount_percentage"] = (
-                    discount_totals["global_discount_percentage"]
-                )
             move.tax_totals["same_tax_base"] = False
             for subtotal in move.tax_totals.get("subtotals", []):
                 for tax_group in subtotal.get("tax_groups", []):
@@ -2622,20 +2616,3 @@ Please create a credit note instead.
         )
         symbol = (self.company_currency_id.symbol or "Bs").strip()
         return f"{amount} {symbol}"
-
-    def l10n_ve_report_invoice_lines(self):
-        self.ensure_one()
-        lines = self.invoice_line_ids.sorted(key=lambda line: (line.sequence, line.id))
-        if self.company_id.account_fiscal_country_id.code != "VE":
-            return lines
-        disc = self.company_id.sale_discount_product_id
-        if not disc:
-            return lines
-
-        def _is_discount_product_line(line):
-            return line.display_type == "product" and line.product_id == disc
-
-        discount_lines = lines.filtered(_is_discount_product_line)
-        if not discount_lines:
-            return lines
-        return lines.filtered(lambda line: not _is_discount_product_line(line)) + discount_lines

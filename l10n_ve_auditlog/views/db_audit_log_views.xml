@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_l10n_ve_db_audit_log_form" model="ir.ui.view">
+        <field name="name">l10n.ve.db.audit.log.form</field>
+        <field name="model">l10n.ve.db.audit.log</field>
+        <field name="arch" type="xml">
+            <form string="External DB Change" create="false" edit="false" delete="false">
+                <sheet>
+                    <group>
+                        <group string="Change">
+                            <field name="logged_at" />
+                            <field name="table_name" />
+                            <field name="record_id" />
+                            <field name="operation" />
+                        </group>
+                        <group string="Connection">
+                            <field name="db_user" />
+                            <field name="client_addr" />
+                            <field name="application_name" />
+                        </group>
+                    </group>
+                    <group string="Changed Fields">
+                        <field name="changed_fields_text" nolabel="1" colspan="2" />
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="view_l10n_ve_db_audit_log_list" model="ir.ui.view">
+        <field name="name">l10n.ve.db.audit.log.list</field>
+        <field name="model">l10n.ve.db.audit.log</field>
+        <field name="arch" type="xml">
+            <list create="false" edit="false" delete="false"
+                decoration-danger="operation == 'delete'"
+                decoration-warning="operation == 'update'"
+                decoration-info="operation == 'insert'">
+                <field name="logged_at" />
+                <field name="table_name" />
+                <field name="record_id" />
+                <field name="operation" />
+                <field name="changed_fields_text" optional="show" />
+                <field name="db_user" />
+                <field name="client_addr" />
+                <field name="application_name" optional="hide" />
+            </list>
+        </field>
+    </record>
+    <record id="view_l10n_ve_db_audit_log_search" model="ir.ui.view">
+        <field name="name">l10n.ve.db.audit.log.search</field>
+        <field name="model">l10n.ve.db.audit.log</field>
+        <field name="arch" type="xml">
+            <search string="External DB Changes">
+                <field name="table_name" />
+                <field name="record_id" />
+                <field name="db_user" />
+                <field name="client_addr" />
+                <field name="application_name" />
+                <field name="changed_fields_text" />
+                <separator />
+                <filter name="filter_update" string="Updates" domain="[('operation', '=', 'update')]" />
+                <filter name="filter_delete" string="Deletions" domain="[('operation', '=', 'delete')]" />
+                <filter name="filter_insert" string="Insertions" domain="[('operation', '=', 'insert')]" />
+                <separator />
+                <filter name="filter_today" string="Today"
+                    domain="[('logged_at', '>=', (context_today()).strftime('%Y-%m-%d'))]" />
+                <group expand="0" string="Group By">
+                    <filter name="group_by_table" string="Table" context="{'group_by': 'table_name'}" />
+                    <filter name="group_by_operation" string="Operation" context="{'group_by': 'operation'}" />
+                    <filter name="group_by_db_user" string="Database User" context="{'group_by': 'db_user'}" />
+                    <filter name="group_by_logged_at" string="Date" context="{'group_by': 'logged_at:day'}" />
+                </group>
+            </search>
+        </field>
+    </record>
+    <record id="action_l10n_ve_db_audit_log" model="ir.actions.act_window">
+        <field name="name">External DB Changes</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">l10n.ve.db.audit.log</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_l10n_ve_db_audit_log_search" />
+        <field name="context">{'search_default_filter_today': 1}</field>
+    </record>
+    <record id="view_l10n_ve_db_audit_table_form" model="ir.ui.view">
+        <field name="name">l10n.ve.db.audit.table.form</field>
+        <field name="model">l10n.ve.db.audit.table</field>
+        <field name="arch" type="xml">
+            <form string="Audited Table">
+                <header>
+                    <button name="action_install_triggers" type="object"
+                        string="Install Triggers" class="btn-primary"
+                        groups="group_auditlog_manager" />
+                    <button name="action_uninstall_triggers" type="object"
+                        string="Uninstall Triggers"
+                        groups="group_auditlog_manager"
+                        confirm="This will remove all PostgreSQL audit triggers. Continue?" />
+                </header>
+                <sheet>
+                    <group>
+                        <field name="name" />
+                        <field name="table_name" />
+                        <field name="model_id" />
+                        <field name="active" />
+                        <field name="trigger_installed" />
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="view_l10n_ve_db_audit_table_list" model="ir.ui.view">
+        <field name="name">l10n.ve.db.audit.table.list</field>
+        <field name="model">l10n.ve.db.audit.table</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="table_name" />
+                <field name="model_id" />
+                <field name="trigger_installed" />
+                <field name="active" />
+            </list>
+        </field>
+    </record>
+    <record id="action_l10n_ve_db_audit_table" model="ir.actions.act_window">
+        <field name="name">Audited Tables</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">l10n.ve.db.audit.table</field>
+        <field name="view_mode">list,form</field>
+    </record>
+    <menuitem id="menu_l10n_ve_db_audit_log"
+        parent="menu_audit"
+        action="action_l10n_ve_db_audit_log"
+        sequence="5"
+        groups="group_auditlog_user" />
+    <menuitem id="menu_l10n_ve_db_audit_table"
+        parent="menu_audit"
+        action="action_l10n_ve_db_audit_table"
+        sequence="6"
+        groups="group_auditlog_manager" />
+</odoo>

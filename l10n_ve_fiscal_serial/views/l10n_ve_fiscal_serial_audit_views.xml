@@ -14,7 +14,9 @@
                 <field name="serial_port" optional="show"/>
                 <field name="close_reason" optional="hide"/>
                 <field name="command_step" optional="show"/>
-                <field name="response_summary" optional="show"/>
+                <field name="command_payload" string="Comando enviado"/>
+                <field name="response_payload" string="Respuesta recibida"/>
+                <field name="response_summary" optional="hide"/>
                 <field name="success" widget="boolean_toggle"/>
                 <field name="session_id" optional="hide"/>
                 <field name="company_id" groups="base.group_multi_company" optional="hide"/>

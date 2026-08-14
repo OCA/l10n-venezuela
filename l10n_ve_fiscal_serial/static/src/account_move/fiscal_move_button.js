@@ -4,6 +4,7 @@ import { Component, xml } from "@odoo/owl";
 import { registry } from "@web/core/registry";
 import { useService } from "@web/core/utils/hooks";
 import { createFiscalSerialAuditLogger } from "../fiscal_serial/fiscal_serial_audit";
+import { TfhkaWebSerialTransport } from "../fiscal_serial/tfhka_transport_webserial";
 
 const ACTION_TO_CHECK_METHOD = {
     print_out_invoice: "check_print_out_invoice",
@@ -46,6 +47,7 @@ export class FiscalMoveButton extends Component {
         this.action = useService("action");
         this.notification = useService("notification");
         this.fiscalSerial = useService("l10n_ve_fiscal_serial");
+        this.connection = useService("l10n_ve_fiscal_connection");
         this.ui = useService("ui");
         this._uiBlocked = false;
     }
@@ -146,31 +148,37 @@ export class FiscalMoveButton extends Component {
             return;
         }
         let driver;
+        let borrowed = false;
         let auditLogger;
         let hadError = false;
-        let errorDetail = "";
         try {
             this._setBlockingProgress(0, "Imprimiendo...");
-            this.notification.add(
-                "Seleccione la máquina fiscal en el cuadro de puertos del navegador.",
-                { type: "warning" }
-            );
             const payload = await this._getPayload(actionName, moveId);
             const machineConfig = payload.fiscal_machine || {};
-            const baudRate = machineConfig.baudrate || 9600;
-            const parity = machineConfig.parity === "none" ? "none" : "even";
             this._setBlockingProgress(15, "Imprimiendo...");
-            auditLogger = createFiscalSerialAuditLogger(this.orm, {
+            auditLogger = createFiscalSerialAuditLogger(this.env.services.orm, {
                 source: ACTION_AUDIT_SOURCE[actionName] || "other",
                 moveId,
                 machineId: machineConfig.machine_id || false,
             });
-            driver = this.fiscalSerial.createTfhkaFiscal();
-            auditLogger.attachDriver(driver);
-            const opened = await driver.openFpCtrl({ baudRate, parity });
-            if (!opened) {
-                throw new Error(driver.estado || "No fue posible abrir el puerto serial.");
+            const authorized = await TfhkaWebSerialTransport.resolvePort(
+                machineConfig,
+                { requestPort: false }
+            );
+            const needPortPicker =
+                !authorized.port && !this.connection.state.portOpen;
+            if (needPortPicker) {
+                this.notification.add(
+                    "Seleccione la máquina fiscal en el cuadro de puertos del navegador.",
+                    { type: "warning" }
+                );
             }
+            driver = await this.connection.borrowDriver({
+                machine: machineConfig,
+                requestPort: needPortPicker,
+            });
+            borrowed = true;
+            auditLogger.attachDriver(driver);
             this._setBlockingProgress(20, "Imprimiendo...");
             const verification = await this.fiscalSerial.verifyConnectedFiscalMachine(
                 driver,
@@ -179,7 +187,7 @@ export class FiscalMoveButton extends Component {
                     parseTfhkaS1StatusResponse: this.fiscalSerial.parseTfhkaS1StatusResponse,
                 }
             );
-            if (verification.training_mode) {
+            if (verification.training_mode || verification.emulator_mode) {
                 this.notification.add(verification.message, { type: "warning" });
             }
             this._setBlockingProgress(25, "Imprimiendo...");
@@ -191,11 +199,6 @@ export class FiscalMoveButton extends Component {
                     this._setBlockingProgress(percent, message || "Imprimiendo...");
                 },
             });
-            try {
-                await driver.closeFpCtrl({ reason: "success" });
-            } catch {
-            }
-            driver = null;
             if (!response?.valid) {
                 console.error(
                     "[l10n_ve_fiscal_serial] Impresión fiscal rechazada",
@@ -215,22 +218,20 @@ export class FiscalMoveButton extends Component {
         } catch (error) {
             hadError = true;
             const message = this._formatErrorMessage(error);
-            errorDetail = message;
             console.error("[l10n_ve_fiscal_serial] Error impresión fiscal:", error);
             this.notification.add(message, {
                 type: "danger",
             });
         } finally {
-            if (driver) {
+            if (auditLogger) {
                 try {
-                    await driver.closeFpCtrl({
-                        reason: hadError ? "error" : "finally_cleanup",
-                        detail: errorDetail,
-                    });
-                } catch {
+                    await auditLogger.flush();
+                } finally {
+                    auditLogger.detachDriver(driver);
                 }
-            } else if (auditLogger) {
-                await auditLogger.flush();
+            }
+            if (borrowed) {
+                await this.connection.releaseDriver({ close: false });
             }
             this._clearBlockingProgress();
         }

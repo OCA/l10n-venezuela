@@ -67,7 +67,6 @@ class AccountRetentionLine(models.Model):
         "payment.concept", "Payment concept", ondelete="cascade", index=True
     )
     code = fields.Char(related="payment_concept_id.line_payment_concept_ids.code")
-    code_visible = fields.Boolean(related="company_id.code_visible")
     economic_activity_id = fields.Many2one(
         "economic.activity",
         ondelete="cascade",

@@ -80,6 +80,9 @@
                                 <button type="button" class="btn btn-outline-info" t-on-click="onReadFpStatusEnq" t-att-disabled="isSendDisabled" title="Comando nativo TFHKA: byte ENQ (0x05); la impresora responde 5 bytes con estado y error fiscal.">
                                     Estado impresora (ENQ)
                                 </button>
+                                <button type="button" class="btn btn-outline-info" t-on-click="onReadAllStatuses" t-att-disabled="isSendDisabled" title="Lee ENQ, S1, S2, S3, S4, S5, S25 y SV y muestra el resultado en el registro.">
+                                    Obtener todos los status
+                                </button>
                                 <button type="button" class="btn btn-outline-dark" t-on-click="onPrintXReport" t-att-disabled="isSendDisabled">
                                     Reporte X
                                 </button>

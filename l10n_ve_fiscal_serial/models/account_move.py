@@ -1,13 +1,93 @@
 import json
 import re
 
-from odoo import _, fields, models
+from odoo import _, api, fields, models
 from odoo.exceptions import ValidationError
 from odoo.tools import float_is_zero
 
 
 class AccountMove(models.Model):
     _inherit = "account.move"
+
+    l10n_ve_fiscal_serial_number_placeholder = fields.Char(
+        string="Próximo serial fiscal",
+        compute="_compute_l10n_ve_fiscal_placeholders",
+    )
+    l10n_ve_fiscal_invoice_number_placeholder = fields.Char(
+        string="Próximo N° fiscal",
+        compute="_compute_l10n_ve_fiscal_placeholders",
+    )
+    l10n_ve_fiscal_report_z_placeholder = fields.Char(
+        string="Próximo reporte Z",
+        compute="_compute_l10n_ve_fiscal_placeholders",
+    )
+
+    @api.model
+    def _l10n_ve_fiscal_serial_increment_counter(self, value, min_width=8):
+        digits = re.sub(r"\D", "", str(value or ""))
+        if not digits:
+            return False
+        width = max(len(digits), min_width)
+        return str(int(digits) + 1).zfill(width)
+
+    def _l10n_ve_fiscal_serial_machine_for_placeholders(self):
+        self.ensure_one()
+        if self.country_code != "VE":
+            return self.env["l10n.ve.fiscal.machine"]
+        if self.move_type not in ("out_invoice", "out_refund"):
+            return self.env["l10n.ve.fiscal.machine"]
+        if self.l10n_ve_journal_emission_medium != "fiscal_machine":
+            return self.env["l10n.ve.fiscal.machine"]
+        if self.l10n_ve_on_behalf_of_third_party:
+            return self.env["l10n.ve.fiscal.machine"]
+        return self.journal_id.l10n_ve_fiscal_machine_id
+
+    def _l10n_ve_fiscal_serial_last_number_for_placeholders(self, machine):
+        self.ensure_one()
+        if self.move_type == "out_refund":
+            return machine.last_credit_note_number
+        if self.move_type == "out_invoice" and self.debit_origin_id:
+            return machine.last_debit_note_number
+        return machine.last_invoice_number
+
+    @api.depends(
+        "l10n_ve_serial_number",
+        "l10n_ve_invoice_number",
+        "l10n_ve_report_z",
+        "move_type",
+        "debit_origin_id",
+        "country_code",
+        "l10n_ve_journal_emission_medium",
+        "l10n_ve_on_behalf_of_third_party",
+        "journal_id.l10n_ve_fiscal_machine_id",
+        "journal_id.l10n_ve_fiscal_machine_id.registered_serial",
+        "journal_id.l10n_ve_fiscal_machine_id.last_invoice_number",
+        "journal_id.l10n_ve_fiscal_machine_id.last_credit_note_number",
+        "journal_id.l10n_ve_fiscal_machine_id.last_debit_note_number",
+        "journal_id.l10n_ve_fiscal_machine_id.daily_closure_counter",
+    )
+    def _compute_l10n_ve_fiscal_placeholders(self):
+        for move in self:
+            serial_placeholder = False
+            invoice_placeholder = False
+            report_z_placeholder = False
+            machine = move._l10n_ve_fiscal_serial_machine_for_placeholders()
+            if machine:
+                if not (move.l10n_ve_serial_number or "").strip():
+                    serial_placeholder = (machine.registered_serial or "").strip() or False
+                if not (move.l10n_ve_invoice_number or "").strip():
+                    invoice_placeholder = move._l10n_ve_fiscal_serial_increment_counter(
+                        move._l10n_ve_fiscal_serial_last_number_for_placeholders(machine),
+                        min_width=8,
+                    )
+                if not (move.l10n_ve_report_z or "").strip():
+                    report_z_placeholder = move._l10n_ve_fiscal_serial_increment_counter(
+                        machine.daily_closure_counter,
+                        min_width=4,
+                    )
+            move.l10n_ve_fiscal_serial_number_placeholder = serial_placeholder
+            move.l10n_ve_fiscal_invoice_number_placeholder = invoice_placeholder
+            move.l10n_ve_fiscal_report_z_placeholder = report_z_placeholder
 
     def _l10n_ve_fiscal_serial_reprint_document_type(self):
         self.ensure_one()
@@ -32,10 +112,8 @@ class AccountMove(models.Model):
             base_name = line.name or ""
             default_code = ""
 
-        if (
-            self.company_id.l10n_ve_fiscal_serial_send_default_code_in_name
-            and default_code
-        ):
+        machine = self.journal_id.l10n_ve_fiscal_machine_id
+        if machine and machine.send_default_code_in_name and default_code:
             return f"[{default_code}] {base_name}".strip(), ""
         return base_name, default_code
 
@@ -68,6 +146,7 @@ class AccountMove(models.Model):
                 _("Configure la máquina fiscal en el diario de ventas.")
             )
         baud = machine.baudrate or "9600"
+        shared = machine.company_id.l10n_ve_fiscal_get_shared_config()
         return {
             "machine_id": machine.id,
             "name": machine.name or "",
@@ -76,9 +155,13 @@ class AccountMove(models.Model):
             "parity": machine.parity
             if machine.parity in ("none", "even", "odd")
             else "even",
-            "flag_21": machine.flag_21
-            or self.company_id.l10n_ve_fiscal_serial_flag_21
-            or "30",
+            "flag_21": shared.get("flag_21") or "30",
+            "flag_50": shared.get("flag_50") or "01",
+            "use_barcode": bool(shared.get("use_barcode")),
+            "footer_lines": shared.get("footer_lines") or [],
+            "payment_methods": shared.get("payment_methods") or [],
+            "use_emulator": bool(machine.use_emulator),
+            "send_default_code_in_name": bool(machine.send_default_code_in_name),
             "serial_port": machine.serial_port or "",
             "webserial_usb_vendor_id": machine.webserial_usb_vendor_id or 0,
             "webserial_usb_product_id": machine.webserial_usb_product_id or 0,
@@ -146,9 +229,26 @@ class AccountMove(models.Model):
             )
         return lines
 
+    def _l10n_ve_fiscal_serial_default_payment_code(self):
+        self.ensure_one()
+        method = self.company_id.l10n_ve_fiscal_default_payment_method_id
+        if method and method.code:
+            return str(method.code).strip().zfill(2)
+        if self.l10n_ve_igtf_document_has_igtf():
+            return "21"
+        return "01"
+
+    def _l10n_ve_fiscal_serial_payment_method_line_code(self, payment_method_line):
+        if not payment_method_line:
+            return False
+        method = payment_method_line.l10n_ve_fiscal_payment_method_id
+        if method and method.code:
+            return str(method.code).strip().zfill(2)
+        return False
+
     def _l10n_ve_fiscal_serial_journal_fiscal_payment_code(self, journal):
         if not journal:
-            return "01"
+            return self._l10n_ve_fiscal_serial_default_payment_code()
         journal_code = getattr(journal, "l10n_ve_fiscal_payment_code", False)
         if journal_code:
             code = str(journal_code).strip()
@@ -159,7 +259,26 @@ class AccountMove(models.Model):
         )
         if fallback:
             return str(fallback).strip().zfill(2)
-        return "01"
+        for line in journal.inbound_payment_method_line_ids:
+            code = self._l10n_ve_fiscal_serial_payment_method_line_code(line)
+            if code:
+                return code
+        for line in journal.outbound_payment_method_line_ids:
+            code = self._l10n_ve_fiscal_serial_payment_method_line_code(line)
+            if code:
+                return code
+        return self._l10n_ve_fiscal_serial_default_payment_code()
+
+    def _l10n_ve_fiscal_serial_resolve_payment_code(self, payment=None, journal=None):
+        self.ensure_one()
+        if payment:
+            code = self._l10n_ve_fiscal_serial_payment_method_line_code(
+                payment.payment_method_line_id
+            )
+            if code:
+                return code
+            journal = journal or payment.journal_id
+        return self._l10n_ve_fiscal_serial_journal_fiscal_payment_code(journal)
 
     def _l10n_ve_fiscal_serial_payment_lines_from_pos_orders(self):
         self.ensure_one()
@@ -194,8 +313,8 @@ class AccountMove(models.Model):
                 lines.append(
                     {
                         "amount": amount_company,
-                        "payment_method": self._l10n_ve_fiscal_serial_journal_fiscal_payment_code(
-                            journal
+                        "payment_method": self._l10n_ve_fiscal_serial_resolve_payment_code(
+                            journal=journal
                         ),
                     }
                 )
@@ -247,6 +366,7 @@ class AccountMove(models.Model):
             ):
                 continue
             journal = False
+            payment = False
             payment_id = item.get("account_payment_id")
             if payment_id:
                 payment = self.env["account.payment"].browse(payment_id)
@@ -254,7 +374,10 @@ class AccountMove(models.Model):
             else:
                 counterpart_move = self.env["account.move"].browse(item.get("move_id"))
                 journal = counterpart_move.journal_id
-            payment_method = self._l10n_ve_fiscal_serial_journal_fiscal_payment_code(journal)
+            payment_method = self._l10n_ve_fiscal_serial_resolve_payment_code(
+                payment=payment,
+                journal=journal,
+            )
             lines.append(
                 {
                     "amount": amount_company,
@@ -265,10 +388,10 @@ class AccountMove(models.Model):
 
     def _l10n_ve_fiscal_serial_fallback_payment_line(self):
         self.ensure_one()
-        payment_method = "01"
-        if self.l10n_ve_igtf_document_has_igtf():
-            payment_method = "21"
-        return {"amount": 0, "payment_method": payment_method}
+        return {
+            "amount": 0,
+            "payment_method": self._l10n_ve_fiscal_serial_default_payment_code(),
+        }
 
     def _l10n_ve_fiscal_serial_payment_lines_payload(self):
         self.ensure_one()
@@ -294,20 +417,27 @@ class AccountMove(models.Model):
     def _l10n_ve_fiscal_serial_base_payload(self):
         self.ensure_one()
         machine_cfg = self._l10n_ve_fiscal_serial_journal_machine_payload()
-        flag_21 = machine_cfg.get("flag_21") or (
-            self.company_id.l10n_ve_fiscal_serial_flag_21 or "30"
-        )
+        machine = self.journal_id.l10n_ve_fiscal_machine_id
+        use_barcode = bool(machine_cfg.get("use_barcode"))
+        barcode = False
+        if use_barcode:
+            digits = re.sub(r"\D", "", self.name or "")
+            if digits:
+                barcode = [digits]
         return {
             "company_id": self.company_id.id,
             "partner_id": self._l10n_ve_fiscal_serial_partner_payload(),
             "invoice_lines": self._l10n_ve_fiscal_serial_invoice_lines_payload(),
             "payment_lines": self._l10n_ve_fiscal_serial_payment_lines_payload(),
             "global_discount_amount": self._l10n_ve_fiscal_serial_global_discount_amount(),
-            "flag_21": flag_21,
+            "flag_21": machine_cfg.get("flag_21") or "30",
+            "flag_50": machine_cfg.get("flag_50") or "01",
+            "use_barcode": use_barcode,
+            "barcode": barcode,
             "fiscal_machine": machine_cfg or False,
             "aditional_lines": [],
             "has_cashbox": False,
-            "use_emulator": bool(self.company_id.l10n_ve_fiscal_serial_use_emulator),
+            "use_emulator": bool(machine.use_emulator) if machine else False,
         }
 
     def check_print_out_invoice(self):
@@ -398,6 +528,45 @@ class AccountMove(models.Model):
             "fiscal_machine": self._l10n_ve_fiscal_serial_journal_machine_payload(),
         }
 
+    def _l10n_ve_fiscal_serial_machine_counter_vals(self, data):
+        self.ensure_one()
+        machine_vals = {}
+        parsed = data.get("parsed_post") if isinstance(data, dict) else None
+        if isinstance(parsed, dict):
+            if parsed.get("LastInvoiceNumber"):
+                machine_vals["last_invoice_number"] = str(parsed["LastInvoiceNumber"])
+            if parsed.get("LastCreditNoteNumber"):
+                machine_vals["last_credit_note_number"] = str(
+                    parsed["LastCreditNoteNumber"]
+                )
+            if parsed.get("LastDebitNoteNumber"):
+                machine_vals["last_debit_note_number"] = str(
+                    parsed["LastDebitNoteNumber"]
+                )
+            if parsed.get("DailyClosureCounter") not in (None, False, ""):
+                machine_vals["daily_closure_counter"] = str(
+                    parsed["DailyClosureCounter"]
+                )
+        sequence = data.get("sequence") if isinstance(data, dict) else None
+        if sequence:
+            sequence = str(sequence)
+            if self.move_type == "out_refund":
+                machine_vals.setdefault("last_credit_note_number", sequence)
+            elif self.move_type == "out_invoice" and self.debit_origin_id:
+                machine_vals.setdefault("last_debit_note_number", sequence)
+            elif self.move_type == "out_invoice":
+                machine_vals.setdefault("last_invoice_number", sequence)
+        return machine_vals
+
+    def _l10n_ve_fiscal_serial_update_machine_counters(self, data):
+        self.ensure_one()
+        machine = self.journal_id.l10n_ve_fiscal_machine_id
+        if not machine:
+            return
+        machine_vals = self._l10n_ve_fiscal_serial_machine_counter_vals(data)
+        if machine_vals:
+            machine.write(machine_vals)
+
     def _l10n_ve_fiscal_serial_write_print_result(self, values):
         self.ensure_one()
         data = values.get("data") if isinstance(values, dict) and values.get("data") else values
@@ -417,6 +586,7 @@ class AccountMove(models.Model):
         if not self.l10n_ve_invoice_original_printed:
             vals["l10n_ve_invoice_original_printed"] = True
         self.write(vals)
+        self._l10n_ve_fiscal_serial_update_machine_counters(data)
         return True
 
     def print_out_invoice(self, values):

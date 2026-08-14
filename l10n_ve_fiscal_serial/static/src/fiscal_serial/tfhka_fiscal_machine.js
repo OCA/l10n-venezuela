@@ -215,6 +215,23 @@ export class TfhkaFiscalMachine {
         return true;
     }
 
+    async _sendReportCommand(command, waitSeconds) {
+        if (typeof this.driver.sendReportCmd === "function") {
+            const sent = await this.driver.sendReportCmd(
+                String(command),
+                waitSeconds
+            );
+            if (!sent) {
+                throw new Error(
+                    this.driver.estado || `Fallo al enviar reporte ${command}`
+                );
+            }
+            await sleep(this.commandDelayMs);
+            return true;
+        }
+        return this._sendCommand(command);
+    }
+
     splitAmount(amount, dec = 2) {
         const factor = 10 ** dec;
         const normalized = (Math.round(asNumber(amount, 0) * factor) / factor).toFixed(dec);
@@ -389,15 +406,23 @@ export class TfhkaFiscalMachine {
     }
 
     _formatLineDiscountCommand(item, config) {
-        const discountAmount = asNumber(item.discount_amount, 0);
+        let discountAmount = asNumber(item.discount_amount, 0);
+        if (discountAmount <= 0) {
+            const discountPercent = asNumber(item.discount, 0);
+            const priceUnit = asNumber(item.price_unit, 0);
+            const quantity = asNumber(item.quantity, 0);
+            if (discountPercent > 0 && priceUnit > 0 && quantity > 0) {
+                discountAmount = (Math.abs(priceUnit) * Math.abs(quantity) * discountPercent) / 100;
+            }
+        }
         if (discountAmount <= 0) {
             return null;
         }
         const [amountI, amountD] = this.splitAmount(
-            this._limitDecimals(discountAmount, config.discDecimal),
+            this._limitDecimals(Math.abs(discountAmount), config.discDecimal),
             config.discDecimal
         );
-        return `p-${amountI.padStart(config.discInt, "0")}${amountD.padStart(
+        return `q-${amountI.padStart(config.discInt, "0")}${amountD.padStart(
             config.discDecimal,
             "0"
         )}`;
@@ -456,9 +481,33 @@ export class TfhkaFiscalMachine {
                 0
             ),
             invoice_affected: options.invoice_affected || move.invoice_affected || null,
+            use_barcode: Boolean(
+                options.use_barcode ?? move.use_barcode ?? options.fiscal_machine?.use_barcode
+            ),
             barcode: options.barcode || move.barcode || null,
         };
         return { data };
+    }
+
+    _resolveBarcodeValue(invoice) {
+        if (!invoice?.use_barcode) {
+            return null;
+        }
+        const raw = invoice.barcode;
+        if (Array.isArray(raw)) {
+            return raw.length ? String(raw[0] || "").trim() : null;
+        }
+        if (raw === null || raw === undefined || raw === false) {
+            return null;
+        }
+        return String(raw).trim() || null;
+    }
+
+    _appendBarcodeCommand(cmd, invoice) {
+        const barcode = this._resolveBarcodeValue(invoice);
+        if (barcode) {
+            cmd.push(`y${barcode}`);
+        }
     }
 
     normalizeInvoicePayload(input, options = {}) {
@@ -657,6 +706,7 @@ export class TfhkaFiscalMachine {
                 invoice.payment_lines,
                 config
             );
+            this._appendBarcodeCommand(cmd, invoice);
             if (invoice.has_cashbox) {
                 cmd.push("w");
             }
@@ -735,6 +785,7 @@ export class TfhkaFiscalMachine {
                 invoice.payment_lines,
                 config
             );
+            this._appendBarcodeCommand(cmd, invoice);
             if (invoice.has_cashbox) {
                 cmd.push("w");
             }
@@ -818,6 +869,7 @@ export class TfhkaFiscalMachine {
                 invoice.payment_lines,
                 config
             );
+            this._appendBarcodeCommand(cmd, invoice);
 
             if (invoice.has_cashbox) {
                 cmd.push("w");
@@ -991,13 +1043,14 @@ export class TfhkaFiscalMachine {
     }
 
     async finalizeDebitNote() {
-        const s1 = await this.getS1PrinterData();
+        const s1 = await this.getS1PrinterData("print_debit_note_post");
         return {
             valid: true,
             data: {
                 sequence: s1?.LastDebitNoteNumber || null,
                 serial_machine: s1?.RegisteredMachineNumber || null,
                 mf_reportz: mfReportzFromDailyClosureString(s1?.DailyClosureCounter),
+                parsed_post: s1,
             },
             message: "Nota de débito impresa correctamente",
             raw_status: s1?.raw || null,
@@ -1038,63 +1091,59 @@ export class TfhkaFiscalMachine {
             null;
 
         if (isEmulator) {
-            if (postSequence === null) {
-                postSequence = this._nextEmulatorInvoiceSequence(preSequence);
-            } else {
-                this._nextEmulatorInvoiceSequence(postSequence);
-            }
+            postSequence = this._nextEmulatorInvoiceSequence(
+                preSequence ?? postSequence
+            );
             if (!serialMachine) {
                 serialMachine = EMULATOR_MACHINE_SERIAL;
             }
-            if (reportZ === null) {
-                const closureCounter =
-                    postS1?.DailyClosureCounter ?? preS1?.DailyClosureCounter ?? null;
-                reportZ = String(this._nextEmulatorReportZ(closureCounter)).padStart(4, "0");
-            } else {
-                this._nextEmulatorReportZ(
-                    this._toIntOrNull(postS1?.DailyClosureCounter ?? preS1?.DailyClosureCounter)
-                );
+            const closureCounter =
+                postS1?.DailyClosureCounter ?? preS1?.DailyClosureCounter ?? null;
+            reportZ = String(this._nextEmulatorReportZ(closureCounter)).padStart(4, "0");
+        } else {
+            if (
+                preSequence !== null &&
+                postSequence !== null &&
+                postSequence <= preSequence
+            ) {
+                const detailMsg = `No se imprimió el documento fiscal: correlativo factura S1 antes=${preSequence} después=${postSequence}. Revise [l10n_ve_fiscal_serial][s1] en consola (pre/post).`;
+                console.warn("[l10n_ve_fiscal_serial][s1] validación correlativo fallida", {
+                    preSequence,
+                    postSequence,
+                    preParsed: preS1,
+                    postParsed: postS1,
+                });
+                return {
+                    valid: false,
+                    message: detailMsg,
+                    data: {
+                        sequence_before: preSequence,
+                        sequence_after: postSequence,
+                        parsed_pre: preS1,
+                        parsed_post: postS1,
+                        raw_pre: preS1?.raw || null,
+                        raw_post: postS1?.raw || null,
+                    },
+                };
             }
-        }
 
-        if (preSequence !== null && postSequence !== null && postSequence <= preSequence) {
-            const detailMsg = `No se imprimió el documento fiscal: correlativo factura S1 antes=${preSequence} después=${postSequence}. Revise [l10n_ve_fiscal_serial][s1] en consola (pre/post).`;
-            console.warn("[l10n_ve_fiscal_serial][s1] validación correlativo fallida", {
-                preSequence,
-                postSequence,
-                preParsed: preS1,
-                postParsed: postS1,
-            });
-            return {
-                valid: false,
-                message: detailMsg,
-                data: {
-                    sequence_before: preSequence,
-                    sequence_after: postSequence,
-                    parsed_pre: preS1,
-                    parsed_post: postS1,
-                    raw_pre: preS1?.raw || null,
-                    raw_post: postS1?.raw || null,
-                },
-            };
-        }
-
-        if (!isEmulator && preSequence === null && postSequence === null) {
-            console.warn("[l10n_ve_fiscal_serial][s1] sin correlativo parseado", {
-                preParsed: preS1,
-                postParsed: postS1,
-            });
-            return {
-                valid: false,
-                message:
-                    "No se pudo validar la impresión fiscal: S1 no devolvió correlativo de factura antes ni después. Revise consola [s1] y el preview del comando S1.",
-                data: {
-                    parsed_pre: preS1,
-                    parsed_post: postS1,
-                    raw_pre: preS1?.raw || null,
-                    raw_post: postS1?.raw || null,
-                },
-            };
+            if (preSequence === null && postSequence === null) {
+                console.warn("[l10n_ve_fiscal_serial][s1] sin correlativo parseado", {
+                    preParsed: preS1,
+                    postParsed: postS1,
+                });
+                return {
+                    valid: false,
+                    message:
+                        "No se pudo validar la impresión fiscal: S1 no devolvió correlativo de factura antes ni después. Revise consola [s1] y el preview del comando S1.",
+                    data: {
+                        parsed_pre: preS1,
+                        parsed_post: postS1,
+                        raw_pre: preS1?.raw || null,
+                        raw_post: postS1?.raw || null,
+                    },
+                };
+            }
         }
 
         this._notifyProgress(options, 100, "Imprimiendo... 100%");
@@ -1104,16 +1153,20 @@ export class TfhkaFiscalMachine {
             postSequence,
             serialMachine,
             reportZ,
+            emulator: isEmulator,
         });
+
+        const sequenceDisplay = isEmulator
+            ? String(postSequence).padStart(8, "0")
+            : postS1?.LastInvoiceNumber ||
+              (postSequence != null ? String(postSequence).padStart(8, "0") : null) ||
+              preS1?.LastInvoiceNumber ||
+              null;
 
         return {
             valid: true,
             data: {
-                sequence:
-                    postS1?.LastInvoiceNumber ||
-                    (postSequence != null ? String(postSequence).padStart(8, "0") : null) ||
-                    preS1?.LastInvoiceNumber ||
-                    null,
+                sequence: sequenceDisplay,
                 serial_machine: serialMachine,
                 mf_reportz: reportZ,
                 parsed_pre: preS1,
@@ -1163,71 +1216,62 @@ export class TfhkaFiscalMachine {
             null;
 
         if (isEmulator) {
-            if (postNc === null) {
-                postNc = this._nextEmulatorCreditNoteSequence(preNc);
-            } else {
-                this._nextEmulatorCreditNoteSequence(postNc);
-            }
+            postNc = this._nextEmulatorCreditNoteSequence(preNc ?? postNc);
             if (!serialMachine) {
                 serialMachine = EMULATOR_MACHINE_SERIAL;
             }
-            if (reportZ === null) {
-                const closureCounter =
-                    postS1?.DailyClosureCounter ?? preS1?.DailyClosureCounter ?? null;
-                reportZ = String(this._nextEmulatorReportZ(closureCounter)).padStart(4, "0");
-            } else {
-                this._nextEmulatorReportZ(
-                    this._toIntOrNull(postS1?.DailyClosureCounter ?? preS1?.DailyClosureCounter)
-                );
+            const closureCounter =
+                postS1?.DailyClosureCounter ?? preS1?.DailyClosureCounter ?? null;
+            reportZ = String(this._nextEmulatorReportZ(closureCounter)).padStart(4, "0");
+        } else {
+            if (preNc !== null && postNc !== null && postNc <= preNc) {
+                const detailMsg = `No se imprimió la nota de crédito fiscal: correlativo NC en S1 antes=${preNc} después=${postNc}. Revise [l10n_ve_fiscal_serial][s1] en consola (pre/post).`;
+                console.warn("[l10n_ve_fiscal_serial][s1] validación correlativo NC fallida", {
+                    preNc,
+                    postNc,
+                    preParsed: preS1,
+                    postParsed: postS1,
+                });
+                return {
+                    valid: false,
+                    message: detailMsg,
+                    data: {
+                        sequence_before: preNc,
+                        sequence_after: postNc,
+                        parsed_pre: preS1,
+                        parsed_post: postS1,
+                        raw_pre: preS1?.raw || null,
+                        raw_post: postS1?.raw || null,
+                    },
+                };
             }
-        }
 
-        if (preNc !== null && postNc !== null && postNc <= preNc) {
-            const detailMsg = `No se imprimió la nota de crédito fiscal: correlativo NC en S1 antes=${preNc} después=${postNc}. Revise [l10n_ve_fiscal_serial][s1] en consola (pre/post).`;
-            console.warn("[l10n_ve_fiscal_serial][s1] validación correlativo NC fallida", {
-                preNc,
-                postNc,
-                preParsed: preS1,
-                postParsed: postS1,
-            });
-            return {
-                valid: false,
-                message: detailMsg,
-                data: {
-                    sequence_before: preNc,
-                    sequence_after: postNc,
-                    parsed_pre: preS1,
-                    parsed_post: postS1,
-                    raw_pre: preS1?.raw || null,
-                    raw_post: postS1?.raw || null,
-                },
-            };
-        }
-
-        if (!isEmulator && preNc === null && postNc === null) {
-            console.warn("[l10n_ve_fiscal_serial][s1] sin correlativo NC parseado", {
-                preParsed: preS1,
-                postParsed: postS1,
-            });
-            return {
-                valid: false,
-                message:
-                    "No se pudo validar la impresión fiscal: S1 no devolvió correlativo de nota de crédito antes ni después.",
-                data: {
-                    parsed_pre: preS1,
-                    parsed_post: postS1,
-                    raw_pre: preS1?.raw || null,
-                    raw_post: postS1?.raw || null,
-                },
-            };
+            if (preNc === null && postNc === null) {
+                console.warn("[l10n_ve_fiscal_serial][s1] sin correlativo NC parseado", {
+                    preParsed: preS1,
+                    postParsed: postS1,
+                });
+                return {
+                    valid: false,
+                    message:
+                        "No se pudo validar la impresión fiscal: S1 no devolvió correlativo de nota de crédito antes ni después.",
+                    data: {
+                        parsed_pre: preS1,
+                        parsed_post: postS1,
+                        raw_pre: preS1?.raw || null,
+                        raw_post: postS1?.raw || null,
+                    },
+                };
+            }
         }
 
         this._notifyProgress(options, 100, "Imprimiendo... 100%");
 
-        const ncDisplay =
-            postS1?.LastCreditNoteNumber ||
-            (postNc != null ? String(postNc).padStart(8, "0") : null) ||
-            preS1?.LastCreditNoteNumber;
+        const ncDisplay = isEmulator
+            ? String(postNc).padStart(8, "0")
+            : postS1?.LastCreditNoteNumber ||
+              (postNc != null ? String(postNc).padStart(8, "0") : null) ||
+              preS1?.LastCreditNoteNumber;
 
         this._s1Trace("print_out_refund_ok", postS1, {
             preNc,
@@ -1292,52 +1336,150 @@ export class TfhkaFiscalMachine {
         return { valid: true };
     }
 
-    async configureDevice(data) {
-        await this._ensureStatusReady();
-        const payload = maybeDataWrapper(data);
-        if (payload.flag_21) {
-            await this._sendCommand(`PJ21${payload.flag_21}`);
+    _normalizeFlag50Value(value) {
+        const key = String(value ?? "01").padStart(2, "0");
+        return key === "00" ? "00" : "01";
+    }
+
+    _paymentMethodCommands(payload = {}) {
+        const methods = toArray(payload.payment_methods || payload.paymentMethods);
+        if (methods.length) {
+            return methods
+                .map((method) => {
+                    const code = String(method.code || method.payment_method || "")
+                        .trim()
+                        .padStart(2, "0")
+                        .slice(-2);
+                    const name = cleanText(method.name || "", 14);
+                    if (!code || Number(code) < 1 || Number(code) > 24 || !name) {
+                        return null;
+                    }
+                    return `PE${code}${name}`;
+                })
+                .filter(Boolean);
         }
-        if (payload.flag_24) {
-            await this._sendCommand(`PJ24${payload.flag_24}`);
-        }
-        if (payload.show_version) {
-            await this._sendCommand(`PJ77${payload.show_version}`);
-        }
-        await this._sendCommand("PJ6300");
-        const paymentMethods = [
+        return [
             "PE01EFECTIVO 01",
             "PE02EFECTIVO 02",
             "PE03PAGO MOVIL 01",
             "PE04PAGO MOVIL 02",
             "PE05PAGO MOVIL 03",
             "PE06PAGO MOVIL 04",
-            "PE07TRANSFERENCIA 01 ",
+            "PE07TRANSFERENCIA 01",
             "PE08TRANSFERENCIA 02",
             "PE09TRANSFERENCIA 03",
             "PE10TRANSFERENCIA 04",
-            "PE11PDV 01 ",
+            "PE11PDV 01",
             "PE12PDV 02",
             "PE13PDV 03",
             "PE14PDV 04",
             "PE15CREDITO 01",
             "PE16CREDITO 02",
+            "PE17CREDITO 03",
+            "PE18CREDITO 04",
             "PE19DIVISA 02",
             "PE20DIVISA 01",
             "PE21ZELLE",
+            "PE22DIVISA 03",
+            "PE23DIVISA 04",
+            "PE24OTRO",
         ];
-        for (const line of paymentMethods) {
-            await this._sendCommand(line);
+    }
+
+    _footerCommands(payload = {}) {
+        const lines = toArray(payload.footer_lines || payload.footerLines);
+        return lines
+            .slice(0, 8)
+            .map((line, index) => {
+                const text = cleanText(line, 40);
+                if (!text) {
+                    return null;
+                }
+                return `PH${String(91 + index).padStart(2, "0")}${text}`;
+            })
+            .filter(Boolean);
+    }
+
+    async configureDevice(data, options = {}) {
+        const payload = maybeDataWrapper(data);
+        const flag21 = payload.flag_21
+            ? this._normalizeFlag21Value(payload.flag_21)
+            : null;
+        const flag50 = payload.flag_50
+            ? this._normalizeFlag50Value(payload.flag_50)
+            : null;
+        const paymentCommands = this._paymentMethodCommands(payload);
+        const footerCommands = this._footerCommands(payload);
+        const totalSteps =
+            (flag21 ? 1 : 0) +
+            (flag50 ? 1 : 0) +
+            (payload.flag_24 ? 1 : 0) +
+            (payload.show_version ? 1 : 0) +
+            1 +
+            paymentCommands.length +
+            footerCommands.length;
+        let step = 0;
+        const advance = (message) => {
+            step += 1;
+            const percent = totalSteps
+                ? Math.round((step / totalSteps) * 100)
+                : 100;
+            this._notifyProgress(options, percent, message);
+        };
+
+        this._notifyProgress(options, 0, "Configurando máquina fiscal...");
+        await this._ensureStatusReady();
+        if (flag21) {
+            await this._sendCommand(`PJ21${flag21}`);
+            advance("Enviando FLAG 21...");
         }
-        return { valid: true };
+        if (flag50) {
+            await this._sendCommand(`PJ50${flag50}`);
+            advance("Enviando FLAG 50...");
+        }
+        if (payload.flag_24) {
+            await this._sendCommand(`PJ24${payload.flag_24}`);
+            advance("Enviando FLAG 24...");
+        }
+        if (payload.show_version) {
+            await this._sendCommand(`PJ77${payload.show_version}`);
+            advance("Enviando versión...");
+        }
+        await this._sendCommand("PJ6300");
+        advance("Aplicando parámetros...");
+        for (const line of paymentCommands) {
+            await this._sendCommand(line);
+            advance("Programando métodos de pago...");
+        }
+        for (const line of footerCommands) {
+            await this._sendCommand(line);
+            advance("Programando pie de página...");
+        }
+        this._notifyProgress(options, 100, "Configuración enviada");
+        return {
+            valid: true,
+            message:
+                `Configuración enviada: FLAG_21=${flag21 || "-"}, ` +
+                `FLAG_50=${flag50 || "-"}, ` +
+                `${paymentCommands.length} métodos de pago` +
+                (footerCommands.length
+                    ? `, ${footerCommands.length} líneas de pie`
+                    : "") +
+                ".",
+            flag_21: flag21,
+            flag_50: flag50,
+            payment_methods: paymentCommands.length,
+            footer_lines: footerCommands.length,
+        };
     }
 
     async configureMachineFlag21(flag21, options = {}) {
         const normalizedFlag = this._normalizeFlag21Value(flag21);
+        const flag50 = this._normalizeFlag50Value(options.flag_50 || options.flag50);
         this._notifyProgress(options, 0, "Imprimiendo...");
         await this._sendCommand(`PJ21${normalizedFlag}`);
         this._notifyProgress(options, 30, "Imprimiendo... 30%");
-        await this._sendCommand("PJ5001");
+        await this._sendCommand(`PJ50${flag50}`);
         this._notifyProgress(options, 60, "Imprimiendo... 60%");
         await this._sendCommand("PJ1701");
         this._notifyProgress(options, 85, "Imprimiendo... 85%");
@@ -1345,8 +1487,9 @@ export class TfhkaFiscalMachine {
         this._notifyProgress(options, 100, "Imprimiendo... 100%");
         return {
             valid: true,
-            message: `Configuración fiscal enviada con FLAG_21=${normalizedFlag}.`,
+            message: `Configuración fiscal enviada con FLAG_21=${normalizedFlag}, FLAG_50=${flag50}.`,
             flag_21: normalizedFlag,
+            flag_50: flag50,
         };
     }
 
@@ -1409,16 +1552,66 @@ export class TfhkaFiscalMachine {
         return { valid: true, message: "Reimpresión enviada correctamente." };
     }
 
+    async _waitUntilReadyAfterReport({ attempts = 60, delayMs = 500 } = {}) {
+        let lastError = null;
+        for (let index = 0; index < attempts; index++) {
+            try {
+                await this._ensureStatusReady();
+                return true;
+            } catch (error) {
+                lastError = error;
+                await sleep(delayMs);
+            }
+        }
+        if (lastError) {
+            throw lastError;
+        }
+        return false;
+    }
+
+    _nextDailyClosureCounter(value) {
+        const digits = String(value || "").replace(/\D/g, "");
+        if (!digits) {
+            return null;
+        }
+        const width = Math.max(digits.length, 4);
+        return String(Number.parseInt(digits, 10) + 1).padStart(width, "0");
+    }
+
     async printXReport() {
         await this._ensureStatusReady();
-        await this._sendCommand("I0X");
+        await this._sendReportCommand("I0X", 4);
+        await this._waitUntilReadyAfterReport({ attempts: 40, delayMs: 500 });
         return { valid: true, message: "Reporte X impreso correctamente." };
     }
 
     async printZReport() {
+        const preS1 = await this.getS1PrinterData("report_z_pre");
         await this._ensureStatusReady();
-        await this._sendCommand("I0Z");
-        return { valid: true, message: "Reporte Z impreso correctamente." };
+        await this._sendReportCommand("I0Z", 9);
+        await this._waitUntilReadyAfterReport({ attempts: 90, delayMs: 500 });
+        const postS1 = await this.getS1PrinterData("report_z_post");
+        let dailyClosure = postS1?.DailyClosureCounter || null;
+        if (!dailyClosure && preS1?.DailyClosureCounter) {
+            dailyClosure = this._nextDailyClosureCounter(preS1.DailyClosureCounter);
+        }
+        return {
+            valid: true,
+            message: "Reporte Z impreso correctamente.",
+            data: {
+                daily_closure_counter: dailyClosure,
+                report_z: dailyClosure,
+                mf_reportz: mfReportzFromDailyClosureString(dailyClosure),
+                serial_machine:
+                    postS1?.RegisteredMachineNumber ||
+                    preS1?.RegisteredMachineNumber ||
+                    null,
+                last_invoice_number: postS1?.LastInvoiceNumber || null,
+                last_credit_note_number: postS1?.LastCreditNoteNumber || null,
+                last_debit_note_number: postS1?.LastDebitNoteNumber || null,
+                parsed_post: postS1,
+            },
+        };
     }
 
     async programacion() {

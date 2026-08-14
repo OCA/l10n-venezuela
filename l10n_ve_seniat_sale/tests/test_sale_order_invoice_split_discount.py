@@ -15,11 +15,8 @@ class TestSaleOrderInvoiceSplitDiscount(L10nVeSeniatCommon):
         )
         cls.book.l10n_ve_max_invoice_lines = 1
         cls.journal = cls.company_data["default_journal_sale"]
-        cls.journal.write(
-            {
-                "l10n_ve_emission_medium": "digital",
-                "l10n_ve_max_invoice_lines": 1,
-            }
+        cls._l10n_ve_configure_journal_digital(
+            cls.journal, l10n_ve_max_invoice_lines=1
         )
         discount_group = cls.env.ref(
             "pba_discount_management.group_pba_global_sale_invoice_discount",

@@ -119,6 +119,7 @@ export async function autoDetectFiscalMachine(driver, helpers = {}) {
         fiscal_rif: fiscalRif,
         last_invoice_number: s1Parsed?.LastInvoiceNumber || null,
         last_credit_note_number: s1Parsed?.LastCreditNoteNumber || null,
+        last_debit_note_number: s1Parsed?.LastDebitNoteNumber || null,
         daily_closure_counter: s1Parsed?.DailyClosureCounter || null,
         enq_status: Number.isFinite(sts1) ? sts1 : null,
         enq_error: Number.isFinite(sts2) ? sts2 : null,

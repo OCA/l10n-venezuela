@@ -1,6 +1,12 @@
 from odoo import _, api, fields, models
 from odoo.exceptions import ValidationError
 
+VE_JOURNAL_EMISSION_TO_COMPANY_CODE = {
+    "free": "free_form",
+    "fiscal_machine": "fiscal_machine",
+    "digital": "digital_billing",
+}
+
 
 class AccountJournal(models.Model):
     _inherit = "account.journal"
@@ -23,6 +29,11 @@ class AccountJournal(models.Model):
             "debe consignarse manualmente antes de confirmar."
         ),
     )
+
+    def _l10n_ve_company_emission_medium_code(self):
+        """Map journal emission medium to company settings code, if applicable."""
+        self.ensure_one()
+        return VE_JOURNAL_EMISSION_TO_COMPANY_CODE.get(self.l10n_ve_emission_medium)
 
     l10n_ve_free_form_print_medium = fields.Selection(
         selection=[

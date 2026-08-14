@@ -98,6 +98,7 @@ export class TfhkaFiscal {
         this.portInfo = null;
         this._lastOpenBaudRate = 9600;
         this._lastOpenParity = "even";
+        this._lastPortRequested = false;
         this.auditLogger = null;
     }
 
@@ -310,11 +311,22 @@ export class TfhkaFiscal {
             }
             if (o.port != null && o.port.readable !== undefined) {
                 port = o.port;
+            } else if (o.machine || o.useAuthorizedPorts) {
+                const resolved = await TfhkaWebSerialTransport.resolvePort(
+                    o.machine || {},
+                    {
+                        requestPort: o.requestPort !== false,
+                        filters: o.filters || [],
+                    }
+                );
+                port = resolved.port;
+                this._lastPortRequested = resolved.requested;
             }
         }
         try {
             if (!port) {
                 port = await this.transport.requestPort([]);
+                this._lastPortRequested = true;
             }
             await this.transport.open(port, {
                 baudRate,
@@ -472,6 +484,7 @@ export class TfhkaFiscal {
                 ack: true,
                 code: "ACK",
             });
+            this.estado = "OK";
             this.reiniciarVariables();
             return true;
         }
@@ -481,6 +494,7 @@ export class TfhkaFiscal {
                 ack: false,
                 code: "TIMEOUT",
             });
+            this.estado = `Comando ${cmd} sin respuesta ACK (timeout).`;
             return false;
         }
         let num1 = 0;
@@ -502,13 +516,97 @@ export class TfhkaFiscal {
             ));
         }
         const ok = num2 === 1 && bResp.length > 0 && bResp[0] === ACK;
+        const code = ok
+            ? "ACK"
+            : bResp[0] === NAK || num2 === -2
+              ? "NAK"
+              : "UNKNOWN";
         this._consoleLogCommand("SEND_CMD_RESPONSE", {
             command: cmd,
             ack: ok,
-            code: ok ? "ACK" : (bResp[0] === NAK || num2 === -2 ? "NAK" : "UNKNOWN"),
+            code,
         });
+        this.estado = ok
+            ? "OK"
+            : `Comando ${cmd} falló (${code}).`;
         this.reiniciarVariables();
         return ok;
+    }
+
+    async sendReportCmd(sCMD, waitSeconds = 4) {
+        if (sCMD == null) {
+            return false;
+        }
+        const cmd = String(sCMD);
+        const waitMs = Math.max(0, Number(waitSeconds) || 0) * 1000;
+        this._consoleLogCommand("SEND_REPORT_CMD_REQUEST", {
+            command: cmd,
+            waitSeconds,
+        });
+        const frame = buildSendCmdFrame(cmd);
+        try {
+            await this.transport.setSignals({
+                dataTerminalReady: true,
+                requestToSend: true,
+            });
+            await this._sleep(50);
+            if (typeof this.transport.drainInput === "function") {
+                await this.transport.drainInput();
+            }
+            await this.transport.writeBytes(frame, { postWriteDelayMs: 180 });
+            const early = await this.transport.readSome({
+                byteTimeout: 80,
+                totalTimeout: 2000,
+                maxLen: 256,
+            });
+            let sawNak = false;
+            let sawAck = false;
+            for (let i = 0; i < early.length; i++) {
+                if (early[i] === ACK) {
+                    sawAck = true;
+                }
+                if (early[i] === NAK) {
+                    sawNak = true;
+                }
+            }
+            if (sawNak) {
+                this.estado = `Comando de reporte ${cmd} rechazado (NAK).`;
+                this._consoleLogCommand("SEND_REPORT_CMD_RESPONSE", {
+                    command: cmd,
+                    ack: false,
+                    code: "NAK",
+                });
+                this.reiniciarVariables();
+                return false;
+            }
+            if (waitMs > 0) {
+                await this._sleep(waitMs);
+            }
+            const leftover = await this.transport.readSome({
+                byteTimeout: 40,
+                totalTimeout: 2500,
+                maxLen: 4096,
+            });
+            this.estado = "OK";
+            this._consoleLogCommand("SEND_REPORT_CMD_RESPONSE", {
+                command: cmd,
+                ack: sawAck,
+                code: sawAck ? "ACK" : "FIRE_AND_WAIT",
+                leftover: leftover.length,
+            });
+            this.reiniciarVariables();
+            return true;
+        } catch (error) {
+            this.estado = `Error reporte ${cmd}: ${error?.message || error}`;
+            this._consoleLogCommand("SEND_REPORT_CMD_RESPONSE", {
+                command: cmd,
+                ack: false,
+                code: "ERROR",
+                detail: error?.message || String(error),
+            });
+            this.reiniciarVariables();
+            return false;
+        }
     }
 
     async sendFileCmdFromLines(lines) {
@@ -677,6 +775,8 @@ export class TfhkaFiscal {
                 return false;
             }
             this._darStatusError(0, 137);
+            this.estado =
+                "No se pudo leer ENQ: respuesta con longitud incorrecta.";
             this._consoleLogCommand("STATUS_ENQ_RESPONSE", {
                 status: this.status,
                 error: this.error,
@@ -686,7 +786,6 @@ export class TfhkaFiscal {
             this.reiniciarVariables();
             return false;
         } catch (e) {
-            this.estado = `Error... ${e.message || e}`;
             const nm = e?.name || "";
             const ioOrNull =
                 nm === "NetworkError" ||
@@ -697,6 +796,7 @@ export class TfhkaFiscal {
                         .toLowerCase()
                         .includes("null"));
             this._darStatusError(0, ioOrNull ? 128 : 145);
+            this.estado = `Error al leer ENQ: ${e.message || e}`;
             this._consoleLogCommand("STATUS_ENQ_RESPONSE", {
                 status: this.status,
                 error: this.error,

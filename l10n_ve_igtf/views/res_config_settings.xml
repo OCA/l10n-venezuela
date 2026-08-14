@@ -6,71 +6,73 @@
         <field name="priority" eval="25" />
         <field name="arch" type="xml">
             <xpath
-                expr="//block[@id='l10n_ve_extended_localization_settings']"
-                position="inside"
+                expr="//div[@id='l10n_ve_seniat_div_enforce_sale_price']"
+                position="after"
             >
                 <field name="l10n_ve_igtf_settings_eligible" invisible="1" />
                 <setting
-                    string="Venezuela - IGTF"
-                    help="Solo para compañías con país fiscal Venezuela y tipo de contribuyente Especial. Active la casilla para aplicar IGTF en facturas, pagos y totales."
+                    name="l10n_ve_igtf_settings"
+                    string="IGTF"
+                    help="Configuración de IGTF para compañías con país fiscal Venezuela y tipo de contribuyente Especial."
                     invisible="not l10n_ve_igtf_settings_eligible"
                 >
                     <div class="content-group">
-                        <field
-                            name="l10n_ve_igtf_enabled"
-                            widget="boolean_toggle"
-                            string="Aplicar IGTF"
-                        />
-                        <div
-                            class="mt16"
-                            invisible="not l10n_ve_igtf_enabled"
-                        >
-                            <div class="row mt8">
-                                <label
-                                    for="l10n_ve_igtf_account_id"
-                                    class="col-lg-5 o_light_label"
-                                    string="Cuenta IGTF"
-                                />
-                                <field
-                                    name="l10n_ve_igtf_account_id"
-                                    domain="[('account_type', 'in', ('liability_current', 'liability_non_current'))]"
-                                    options="{'no_create': True}"
-                                />
+                        <div class="row mt16">
+                            <label
+                                string="Cuenta IGTF"
+                                for="l10n_ve_igtf_account_id"
+                                class="col-lg-6 o_light_label"
+                            />
+                            <field
+                                name="l10n_ve_igtf_account_id"
+                                class="col-lg-6"
+                                required="l10n_ve_igtf_settings_eligible"
+                                domain="[('account_type', 'in', ('liability_current', 'liability_non_current'))]"
+                                options="{'no_create': True}"
+                            />
+                        </div>
+                        <div class="row mt16">
+                            <label
+                                string="Monedas IGTF"
+                                for="l10n_ve_igtf_currency_ids"
+                                class="col-lg-6 o_light_label"
+                            />
+                            <field
+                                name="l10n_ve_igtf_currency_ids"
+                                widget="many2many_tags"
+                                class="col-lg-6"
+                            />
+                        </div>
+                        <div class="row mt16">
+                            <label
+                                string="IGTF en facturas"
+                                for="l10n_ve_igtf_allow_invoice_accrual"
+                                class="col-lg-6 o_light_label"
+                            />
+                            <field
+                                name="l10n_ve_igtf_allow_invoice_accrual"
+                                class="col-lg-6"
+                            />
+                        </div>
+                        <div class="row mt16">
+                            <div class="col-lg-6" />
+                            <div class="col-lg-6 text-muted">
+                                Si está desactivado, el IGTF solo se aplica al registrar
+                                cobros o pagos; no se generan líneas de IGTF al confirmar
+                                la factura en divisa.
                             </div>
-                            <div class="row mt8">
-                                <label
-                                    for="l10n_ve_igtf_currency_ids"
-                                    class="col-lg-5 o_light_label"
-                                    string="IGTF Currencies"
-                                />
-                                <field
-                                    name="l10n_ve_igtf_currency_ids"
-                                    widget="many2many_tags"
-                                />
-                            </div>
-                            <div class="row mt8">
-                                <label
-                                    for="l10n_ve_igtf_allow_invoice_accrual"
-                                    class="col-lg-5 o_light_label"
-                                    string="IGTF en facturas"
-                                />
-                                <field
-                                    name="l10n_ve_igtf_allow_invoice_accrual"
-                                    widget="boolean_toggle"
-                                />
-                                <div class="text-muted col-lg-12 mt8">
-                                    Si está desactivado, el IGTF solo se aplica al registrar cobros o pagos;
-                                    no se generan líneas de IGTF al confirmar la factura en divisa.
-                                </div>
-                            </div>
-                            <div class="row mt8">
-                                <label
-                                    for="l10n_ve_igtf_percent"
-                                    class="col-lg-5 o_light_label"
-                                    string="IGTF (%)"
-                                />
-                                <field name="l10n_ve_igtf_percent" />
-                            </div>
+                        </div>
+                        <div class="row mt16">
+                            <label
+                                string="IGTF (%)"
+                                for="l10n_ve_igtf_percent"
+                                class="col-lg-6 o_light_label"
+                            />
+                            <field
+                                name="l10n_ve_igtf_percent"
+                                class="col-lg-6"
+                                string="IGTF (%)"
+                            />
                         </div>
                     </div>
                 </setting>

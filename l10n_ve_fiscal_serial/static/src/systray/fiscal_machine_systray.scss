@@ -1,0 +1,29 @@
+.o_l10n_ve_fiscal_systray_btn {
+    .o_l10n_ve_fiscal_systray_dot {
+        width: 0.55rem;
+        height: 0.55rem;
+        border-radius: 50%;
+        display: inline-block;
+    }
+
+    .o_l10n_ve_fiscal_systray_dot-success {
+        background-color: var(--o-success, #28a745);
+    }
+
+    .o_l10n_ve_fiscal_systray_dot-danger {
+        background-color: var(--o-danger, #dc3545);
+    }
+
+    .o_l10n_ve_fiscal_systray_dot-warning {
+        background-color: var(--o-warning, #ffc107);
+    }
+
+    .o_l10n_ve_fiscal_systray_dot-muted {
+        background-color: var(--o-gray-500, #6c757d);
+    }
+}
+
+.o_l10n_ve_fiscal_systray_panel {
+    min-width: 320px;
+    max-width: 420px;
+}

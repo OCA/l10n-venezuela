@@ -46,6 +46,11 @@ class ResCompany(models.Model):
     )
     def _check_l10n_ve_unfactured_dispatch_email_recipient(self):
         for company in self:
+            if (
+                "l10n_ve_dispatch_guide_enabled" in company._fields
+                and not company.l10n_ve_dispatch_guide_enabled
+            ):
+                continue
             recipient = (company.l10n_ve_unfactured_dispatch_email_recipient or "").strip()
             if not recipient:
                 if company.l10n_ve_unfactured_dispatch_email_schedule_enabled:
@@ -75,6 +80,7 @@ class ResCompany(models.Model):
     def write(self, vals):
         res = super().write(vals)
         dispatch_fields = {
+            "l10n_ve_dispatch_guide_enabled",
             "l10n_ve_unfactured_dispatch_email_recipient",
             "l10n_ve_unfactured_dispatch_email_schedule_enabled",
             "l10n_ve_unfactured_dispatch_email_interval_number",
@@ -92,19 +98,17 @@ class ResCompany(models.Model):
         )
         if not cron:
             return
-        enabled = bool(
-            self.search_count(
-                [
-                    (
-                        "l10n_ve_unfactured_dispatch_email_schedule_enabled",
-                        "=",
-                        True,
-                    ),
-                    ("l10n_ve_unfactured_dispatch_email_recipient", "!=", False),
-                ]
-            )
-        )
-        cron.active = enabled
+        domain = [
+            (
+                "l10n_ve_unfactured_dispatch_email_schedule_enabled",
+                "=",
+                True,
+            ),
+            ("l10n_ve_unfactured_dispatch_email_recipient", "!=", False),
+        ]
+        if "l10n_ve_dispatch_guide_enabled" in self._fields:
+            domain.append(("l10n_ve_dispatch_guide_enabled", "=", True))
+        cron.active = bool(self.search_count(domain))
 
     def _l10n_ve_dispatch_email_interval_elapsed(self, now=None):
         self.ensure_one()
@@ -175,7 +179,7 @@ class ResCompany(models.Model):
             raise UserError(
                 _(
                     "Configure el correo destinatario en Ajustes → Contabilidad "
-                    "→ Venezuela - Tax Configuration."
+                    "→ Venezuela."
                 )
             )
         pickings, available = self.env[
@@ -212,13 +216,14 @@ class ResCompany(models.Model):
 
     @api.model
     def _cron_l10n_ve_send_unfactured_dispatch_guides_email(self):
-        companies = self.search(
-            [
-                ("account_fiscal_country_id.code", "=", "VE"),
-                ("l10n_ve_unfactured_dispatch_email_schedule_enabled", "=", True),
-                ("l10n_ve_unfactured_dispatch_email_recipient", "!=", False),
-            ]
-        )
+        domain = [
+            ("account_fiscal_country_id.code", "=", "VE"),
+            ("l10n_ve_unfactured_dispatch_email_schedule_enabled", "=", True),
+            ("l10n_ve_unfactured_dispatch_email_recipient", "!=", False),
+        ]
+        if "l10n_ve_dispatch_guide_enabled" in self._fields:
+            domain.append(("l10n_ve_dispatch_guide_enabled", "=", True))
+        companies = self.search(domain)
         now = fields.Datetime.now()
         for company in companies:
             if not company._l10n_ve_dispatch_email_interval_elapsed(now):

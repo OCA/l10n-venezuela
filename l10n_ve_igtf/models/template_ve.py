@@ -17,7 +17,6 @@ class AccountChartTemplate(models.AbstractModel):
     def _get_ve_seniat_res_company_igtf(self):
         return {
             self.env.company.id: {
-                "l10n_ve_igtf_enabled": False,
                 "l10n_ve_igtf_account_id": "l10n_ve_seniat.account_account_2102003",
                 "l10n_ve_igtf_percent": 3.0,
             },
@@ -33,7 +32,6 @@ class AccountChartTemplate(models.AbstractModel):
     def _get_ve_seniat_basic_res_company_igtf(self):
         return {
             self.env.company.id: {
-                "l10n_ve_igtf_enabled": False,
                 "l10n_ve_igtf_account_id": "l10n_ve_igtf.l10n_ve_igtf_account_igtf_payable",
                 "l10n_ve_igtf_percent": 3.0,
             },
@@ -49,7 +47,6 @@ class AccountChartTemplate(models.AbstractModel):
     def _get_ve_seniat_empty_res_company_igtf(self):
         return {
             self.env.company.id: {
-                "l10n_ve_igtf_enabled": False,
                 "l10n_ve_igtf_account_id": "l10n_ve_igtf.l10n_ve_igtf_account_igtf_payable",
                 "l10n_ve_igtf_percent": 3.0,
             },

@@ -11,7 +11,8 @@
             </button>
             <button t-if="isVenezuelaPos"
                 class="button js_invoice_journal btn btn-light btn-lg d-flex align-items-center text-start w-100 w-md-50 lh-lg"
-                t-att-class="{ 'highlight active': true }"
+                t-att-class="{ 'highlight active': true, disabled: !canChangeInvoiceJournal }"
+                t-att-disabled="!canChangeInvoiceJournal"
                 t-on-click="clickInvoiceJournal">
                 <i class="fa fa-book me-2" />
                 <span class="text-truncate">
@@ -34,17 +35,26 @@
                 <div>
                     <span class="text-muted" t-esc="l10nVeLabelFiscalInvoiceNo"/>
                     <t t-esc="' '" />
-                    <t t-esc="l10nVeDash"/>
+                    <span
+                        class="text-danger fw-semibold fst-italic"
+                        t-esc="l10nVeFiscalNextInvoiceNumberDisplay"
+                    />
                 </div>
                 <div>
                     <span class="text-muted" t-esc="l10nVeLabelFiscalSerial"/>
                     <t t-esc="' '" />
-                    <t t-esc="l10nVeDash"/>
+                    <span
+                        class="text-danger fw-semibold fst-italic"
+                        t-esc="l10nVeFiscalNextSerialDisplay"
+                    />
                 </div>
                 <div>
                     <span class="text-muted" t-esc="l10nVeLabelFiscalZ"/>
                     <t t-esc="' '" />
-                    <t t-esc="l10nVeDash"/>
+                    <span
+                        class="text-danger fw-semibold fst-italic"
+                        t-esc="l10nVeFiscalNextReportZDisplay"
+                    />
                 </div>
             </div>
             <div t-elif="l10nVeJournalEmissionMedium === 'digital'">

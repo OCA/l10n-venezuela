@@ -24,3 +24,15 @@ class PosSession(models.Model):
                 == "fiscal_machine"
                 and session.state in ("closing_control", "closed")
             )
+
+    def _load_pos_data_models(self, config_id):
+        models_list = super()._load_pos_data_models(config_id)
+        machine_model = "l10n.ve.fiscal.machine"
+        if machine_model not in models_list:
+            if "account.journal" in models_list:
+                models_list.insert(
+                    models_list.index("account.journal"), machine_model
+                )
+            else:
+                models_list.append(machine_model)
+        return models_list

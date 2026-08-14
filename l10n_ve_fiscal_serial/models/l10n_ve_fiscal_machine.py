@@ -78,20 +78,67 @@ class L10nVeFiscalMachine(models.Model):
     registered_serial = fields.Char(string="Serial fiscal")
     fiscal_rif = fields.Char(string="RIF fiscal")
     flag_21 = fields.Selection(
-        selection=[
-            ("00", "00"),
-            ("01", "01"),
-            ("02", "02"),
-            ("11", "11"),
-            ("12", "12"),
-            ("30", "30"),
-        ],
-        default="00",
-        required=True,
+        related="company_id.l10n_ve_fiscal_flag_21",
+        readonly=False,
+        string="FLAG 21",
     )
-    last_invoice_number = fields.Char(readonly=True)
-    last_credit_note_number = fields.Char(readonly=True)
-    daily_closure_counter = fields.Char(readonly=True)
+    flag_50 = fields.Selection(
+        related="company_id.l10n_ve_fiscal_flag_50",
+        readonly=False,
+        string="FLAG 50",
+    )
+    use_barcode = fields.Boolean(
+        related="company_id.l10n_ve_fiscal_use_barcode",
+        readonly=False,
+        string="Código de barras al final de la factura",
+    )
+    fiscal_footer = fields.Text(
+        related="company_id.l10n_ve_fiscal_footer",
+        readonly=False,
+        string="Pie de página",
+    )
+    fiscal_payment_method_ids = fields.One2many(
+        related="company_id.l10n_ve_fiscal_payment_method_ids",
+        readonly=False,
+        string="Métodos de pago",
+    )
+    l10n_ve_fiscal_default_payment_method_id = fields.Many2one(
+        related="company_id.l10n_ve_fiscal_default_payment_method_id",
+        readonly=False,
+        string="Método de pago por defecto",
+        domain="[('company_id', '=', company_id)]",
+    )
+    use_emulator = fields.Boolean(
+        string="Usando emulador fiscal",
+        help=(
+            "Si está activo, el flujo de impresión fiscal por WebSerial "
+            "omite la consulta previa de estado de la impresora."
+        ),
+    )
+    send_default_code_in_name = fields.Boolean(
+        string="Enviar codigo en nombre de producto",
+        help=(
+            "Si está activo y la línea tiene codigo interno, el nombre enviado "
+            "a la máquina fiscal será: [CODIGO] Producto."
+        ),
+    )
+    last_invoice_number = fields.Char(
+        string="Última factura",
+        readonly=True,
+    )
+    last_credit_note_number = fields.Char(
+        string="Última nota de crédito",
+        readonly=True,
+    )
+    last_debit_note_number = fields.Char(
+        string="Última nota de débito",
+        readonly=True,
+    )
+    daily_closure_counter = fields.Char(
+        string="Último Z",
+        readonly=True,
+        help="Contador de cierre diario (reporte Z) reportado por la máquina.",
+    )
     enq_status = fields.Integer(string="ENQ STS1", readonly=True)
     enq_error = fields.Integer(string="ENQ STS2", readonly=True)
     enq_status_label = fields.Char(readonly=True)
@@ -126,6 +173,11 @@ class L10nVeFiscalMachine(models.Model):
                     counts[machine_id.id] = count
         for machine in self:
             machine.audit_count = counts.get(machine.id, 0)
+
+    def read(self, fields=None, load="_classic_read"):
+        if self:
+            self.mapped("company_id")._l10n_ve_fiscal_ensure_payment_methods()
+        return super().read(fields=fields, load=load)
 
     @api.model
     def create_from_detect_payload(self, payload):
@@ -179,9 +231,11 @@ class L10nVeFiscalMachine(models.Model):
             "country_code": payload.get("country_code"),
             "registered_serial": registered_serial,
             "fiscal_rif": payload.get("fiscal_rif"),
-            "flag_21": payload.get("flag_21") or "00",
+            "use_emulator": payload.get("use_emulator"),
+            "send_default_code_in_name": payload.get("send_default_code_in_name"),
             "last_invoice_number": payload.get("last_invoice_number"),
             "last_credit_note_number": payload.get("last_credit_note_number"),
+            "last_debit_note_number": payload.get("last_debit_note_number"),
             "daily_closure_counter": payload.get("daily_closure_counter"),
             "enq_status": payload.get("enq_status"),
             "enq_error": payload.get("enq_error"),
@@ -211,4 +265,214 @@ class L10nVeFiscalMachine(models.Model):
             "view_mode": "list,form",
             "domain": [("machine_id", "=", self.id)],
             "context": {"default_machine_id": self.id},
+        }
+
+    def apply_s1_counters(self, payload):
+        """Persist printer counters after a fiscal report or status refresh."""
+        self.ensure_one()
+        if not isinstance(payload, dict):
+            raise ValidationError(_("Payload de contadores fiscales inválido."))
+        vals = {}
+        for field_name in (
+            "daily_closure_counter",
+            "last_invoice_number",
+            "last_credit_note_number",
+            "last_debit_note_number",
+            "registered_serial",
+        ):
+            value = payload.get(field_name)
+            if value not in (None, False, ""):
+                vals[field_name] = str(value).strip()
+        if not vals:
+            return False
+        vals["last_connection"] = fields.Datetime.now()
+        self.write(vals)
+        return {
+            "id": self.id,
+            "daily_closure_counter": self.daily_closure_counter or "",
+            "last_invoice_number": self.last_invoice_number or "",
+            "last_credit_note_number": self.last_credit_note_number or "",
+            "last_debit_note_number": self.last_debit_note_number or "",
+            "registered_serial": self.registered_serial or "",
+        }
+
+    def apply_port_update_from_detect(self, payload):
+        """Update connection fields after selecting a port on another PC.
+
+        Notes
+        -----
+        Keeps the fiscal identity (registered serial) unless the record had none.
+        Rejects updates when the detected serial belongs to a different machine.
+        """
+        self.ensure_one()
+        if not isinstance(payload, dict):
+            raise ValidationError(_("Payload de detección inválido."))
+        detected_serial = (payload.get("registered_serial") or "").strip()
+        current_serial = (self.registered_serial or "").strip()
+        if current_serial and detected_serial and current_serial != detected_serial:
+            raise ValidationError(
+                _(
+                    "El puerto seleccionado corresponde a otra máquina fiscal "
+                    "(serial %(detected)s). Esta ficha es %(current)s."
+                )
+                % {"detected": detected_serial, "current": current_serial}
+            )
+        vals = {
+            "last_connection": fields.Datetime.now(),
+        }
+        if "serial_port" in payload and payload.get("serial_port"):
+            vals["serial_port"] = payload.get("serial_port")
+        if payload.get("baudrate"):
+            vals["baudrate"] = payload.get("baudrate")
+        if payload.get("parity"):
+            vals["parity"] = payload.get("parity")
+        if payload.get("data_bits"):
+            vals["data_bits"] = payload.get("data_bits")
+        if payload.get("stop_bits"):
+            vals["stop_bits"] = payload.get("stop_bits")
+        if "webserial_usb_vendor_id" in payload:
+            vals["webserial_usb_vendor_id"] = (
+                payload.get("webserial_usb_vendor_id") or 0
+            )
+        if "webserial_usb_product_id" in payload:
+            vals["webserial_usb_product_id"] = (
+                payload.get("webserial_usb_product_id") or 0
+            )
+        if "webserial_usb_serial_number" in payload:
+            vals["webserial_usb_serial_number"] = (
+                payload.get("webserial_usb_serial_number") or False
+            )
+        if "enq_status" in payload:
+            vals["enq_status"] = payload.get("enq_status")
+        if "enq_error" in payload:
+            vals["enq_error"] = payload.get("enq_error")
+        if "enq_status_label" in payload:
+            vals["enq_status_label"] = payload.get("enq_status_label")
+        if "enq_error_label" in payload:
+            vals["enq_error_label"] = payload.get("enq_error_label")
+        if "s1_raw" in payload:
+            vals["s1_raw"] = payload.get("s1_raw")
+        if "sv_raw" in payload:
+            vals["sv_raw"] = payload.get("sv_raw")
+        if detected_serial and not current_serial:
+            vals["registered_serial"] = detected_serial
+        if payload.get("fiscal_rif") and not self.fiscal_rif:
+            vals["fiscal_rif"] = payload.get("fiscal_rif")
+        if payload.get("printer_model_name"):
+            vals["printer_model_name"] = payload.get("printer_model_name")
+        if payload.get("printer_model_code"):
+            vals["printer_model_code"] = payload.get("printer_model_code")
+        if payload.get("printer_type"):
+            vals["printer_type"] = payload.get("printer_type")
+        if payload.get("country_code"):
+            vals["country_code"] = payload.get("country_code")
+        if payload.get("last_invoice_number"):
+            vals["last_invoice_number"] = payload.get("last_invoice_number")
+        if payload.get("last_credit_note_number"):
+            vals["last_credit_note_number"] = payload.get("last_credit_note_number")
+        if payload.get("last_debit_note_number"):
+            vals["last_debit_note_number"] = payload.get("last_debit_note_number")
+        if payload.get("daily_closure_counter"):
+            vals["daily_closure_counter"] = payload.get("daily_closure_counter")
+        self.write(vals)
+        return {
+            "serial_port": self.serial_port,
+            "registered_serial": self.registered_serial,
+            "webserial_usb_vendor_id": self.webserial_usb_vendor_id,
+            "webserial_usb_product_id": self.webserial_usb_product_id,
+            "webserial_usb_serial_number": self.webserial_usb_serial_number or "",
+            "enq_status_label": self.enq_status_label or "",
+            "enq_error_label": self.enq_error_label or "",
+            "last_connection": fields.Datetime.to_string(self.last_connection)
+            if self.last_connection
+            else False,
+            "training_mode": bool(
+                payload.get("enq_status") == 64
+                and not detected_serial
+            ),
+            "message": _(
+                "Puerto actualizado para este navegador/PC. "
+                "Use el systray «Verificar conexión» si hace falta."
+            ),
+        }
+
+    @api.model
+    def default_get(self, fields_list):
+        res = super().default_get(fields_list)
+        company = self.env["res.company"].browse(
+            res.get("company_id") or self.env.company.id
+        )
+        company._l10n_ve_fiscal_ensure_payment_methods()
+        return res
+
+    def l10n_ve_fiscal_serial_get_config(self):
+        self.ensure_one()
+        shared = self.company_id.l10n_ve_fiscal_get_shared_config()
+        baud = self.baudrate or "9600"
+        return {
+            **shared,
+            "machine_id": self.id,
+            "name": self.name or "",
+            "registered_serial": self.registered_serial or "",
+            "baudrate": int(baud) if str(baud).isdigit() else 9600,
+            "parity": self.parity
+            if self.parity in ("none", "even", "odd")
+            else "even",
+            "serial_port": self.serial_port or "",
+            "webserial_usb_vendor_id": self.webserial_usb_vendor_id or 0,
+            "webserial_usb_product_id": self.webserial_usb_product_id or 0,
+            "webserial_usb_serial_number": self.webserial_usb_serial_number or "",
+            "use_emulator": bool(self.use_emulator),
+            "send_default_code_in_name": bool(self.send_default_code_in_name),
+        }
+
+    @api.model
+    def l10n_ve_fiscal_serial_get_systray_data(self):
+        company = self.env.company
+        visible = company._l10n_ve_has_emission_medium("fiscal_machine")
+        if not visible:
+            return {"visible": False}
+        machines = self.search(
+            [("company_id", "=", company.id), ("active", "=", True)],
+            order="name, id",
+        )
+        journal = self.env["account.journal"].search(
+            [
+                ("company_id", "=", company.id),
+                ("type", "=", "sale"),
+                ("l10n_ve_emission_medium", "=", "fiscal_machine"),
+                ("l10n_ve_fiscal_machine_id", "!=", False),
+            ],
+            limit=1,
+        )
+        primary = journal.l10n_ve_fiscal_machine_id or machines[:1]
+        return {
+            "visible": True,
+            "company_name": company.display_name,
+            "primary_machine_id": primary.id if primary else False,
+            "machines": [
+                {
+                    "id": machine.id,
+                    "name": machine.name,
+                    "serial_port": machine.serial_port or "",
+                    "registered_serial": machine.registered_serial or "",
+                    "fiscal_rif": machine.fiscal_rif or "",
+                    "printer_model_name": machine.printer_model_name or "",
+                    "baudrate": machine.baudrate or "9600",
+                    "parity": machine.parity or "even",
+                    "webserial_usb_vendor_id": machine.webserial_usb_vendor_id or 0,
+                    "webserial_usb_product_id": machine.webserial_usb_product_id or 0,
+                    "webserial_usb_serial_number": (
+                        machine.webserial_usb_serial_number or ""
+                    ),
+                    "last_connection": fields.Datetime.to_string(
+                        machine.last_connection
+                    )
+                    if machine.last_connection
+                    else False,
+                    "enq_status_label": machine.enq_status_label or "",
+                    "enq_error_label": machine.enq_error_label or "",
+                }
+                for machine in machines
+            ],
         }

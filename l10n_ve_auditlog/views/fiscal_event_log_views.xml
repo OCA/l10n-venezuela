@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_auditlog_log_form_fiscal" model="ir.ui.view">
+        <field name="name">auditlog.log.form.fiscal</field>
+        <field name="model">auditlog.log</field>
+        <field name="inherit_id" ref="view_auditlog_log_form" />
+        <field name="arch" type="xml">
+            <field name="method" position="after">
+                <field name="is_fiscal_event" invisible="1" />
+                <field name="fiscal_event_type" invisible="not is_fiscal_event" readonly="1" />
+            </field>
+            <xpath expr="//field[@name='http_session_id']/.." position="before">
+                <group invisible="not is_fiscal_event">
+                    <field name="fiscal_event_description" nolabel="1" colspan="2" readonly="1" />
+                </group>
+            </xpath>
+        </field>
+    </record>
+    <record id="view_auditlog_log_tree_fiscal" model="ir.ui.view">
+        <field name="name">auditlog.log.list.fiscal</field>
+        <field name="model">auditlog.log</field>
+        <field name="inherit_id" ref="view_auditlog_log_tree" />
+        <field name="arch" type="xml">
+            <field name="method" position="after">
+                <field name="fiscal_event_type" optional="show" />
+                <field name="fiscal_event_description" optional="show" />
+            </field>
+        </field>
+    </record>
+    <record id="view_auditlog_log_search_fiscal" model="ir.ui.view">
+        <field name="name">auditlog.log.search.fiscal</field>
+        <field name="model">auditlog.log</field>
+        <field name="inherit_id" ref="view_auditlog_log_search" />
+        <field name="arch" type="xml">
+            <field name="user_id" position="after">
+                <field name="fiscal_event_description" />
+            </field>
+            <group expand="0" position="inside">
+                <separator />
+                <filter name="filter_fiscal_events" string="Fiscal Events"
+                    domain="[('is_fiscal_event', '=', True)]" />
+                <filter name="filter_invoice_posted" string="Invoice Posted"
+                    domain="[('fiscal_event_type', '=', 'invoice_posted')]" />
+                <filter name="filter_credit_note_posted" string="Credit Note Posted"
+                    domain="[('fiscal_event_type', '=', 'credit_note_posted')]" />
+                <filter name="filter_fiscal_print" string="Fiscal Print"
+                    domain="[('fiscal_event_type', '=', 'fiscal_print')]" />
+                <filter name="filter_edi_dispatch" string="Digital Dispatch"
+                    domain="[('fiscal_event_type', '=', 'edi_dispatch')]" />
+                <filter name="group_by_fiscal_event_type" string="Event Type"
+                    context="{'group_by': 'fiscal_event_type'}" />
+            </group>
+        </field>
+    </record>
+    <record id="action_fiscal_document_event_log" model="ir.actions.act_window">
+        <field name="name">Fiscal Document Events</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">auditlog.log</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_auditlog_log_search_fiscal" />
+        <field name="domain">[('is_fiscal_event', '=', True)]</field>
+        <field name="context">{'search_default_filter_fiscal_events': 1}</field>
+    </record>
+    <menuitem id="menu_fiscal_document_event_log"
+        parent="menu_audit"
+        action="action_fiscal_document_event_log"
+        sequence="4"
+        groups="group_auditlog_user" />
+</odoo>

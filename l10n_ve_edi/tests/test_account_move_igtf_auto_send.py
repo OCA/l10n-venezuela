@@ -10,6 +10,10 @@ class TestL10nVeEdiIgtfAutoSend(TestL10nVeIgtfCommon):
         super().setUpClass()
         cls.company.l10n_ve_igtf_allow_invoice_accrual = True
         cls.company.partner_id.write({"vat": "J123456789"})
+        digital_medium = cls.env.ref("l10n_ve_seniat.emission_medium_digital_billing")
+        cls.company.write(
+            {"l10n_ve_emission_medium_ids": [(6, 0, [digital_medium.id])]}
+        )
         cls.digital_journal = cls.env["account.journal"].with_company(cls.company).create(
             {
                 "name": "Ventas digital IGTF",

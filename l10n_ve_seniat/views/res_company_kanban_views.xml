@@ -1,39 +1,118 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <odoo>
-    <!-- Kanban View for res.company -->
     <record id="res_company_kanban_view" model="ir.ui.view">
         <field name="name">res.company.kanban.seniat</field>
         <field name="model">res.company</field>
         <field name="arch" type="xml">
-            <kanban>
+            <kanban class="o_seniat_company_kanban" sample="1">
+                <field name="name" />
+                <field name="logo" />
+                <field name="vat" />
+                <field name="taxpayer_type" />
+                <field name="l10n_ve_emission_medium_ids" />
+                <field name="street" />
+                <field name="street2" />
+                <field name="city" />
+                <field name="state_id" />
+                <field name="country_id" />
+                <field name="currency_id" />
+                <field name="zip" />
                 <templates>
                     <t t-name="card">
                         <aside class="o_seniat_company_logo">
                             <field
                                 name="logo"
                                 widget="image"
-                                class="rounded"
-                                options="{'size': [128, 128]}"
+                                class="o_seniat_company_logo_img"
+                                options="{'img_class': 'object-fit-contain'}"
                             />
                         </aside>
-                        <main>
-                            <field name="name" class="fw-bold fs-5" />
-                            <field name="vat" class="text-muted" />
-                            <field name="taxpayer_type" />
-                            <field name="street" />
-                            <field name="street2" />
-                            <field name="city" />
-                            <field name="state_id" />
-                            <field name="country_id" />
-                            <field name="currency_id" />
-                            <field name="zip" class="text-muted" />
+                        <main class="o_seniat_company_card_main">
+                            <div class="o_seniat_company_card_header">
+                                <field
+                                    name="name"
+                                    class="o_seniat_company_name fw-bold fs-5"
+                                />
+                                <div
+                                    t-if="record.vat.raw_value"
+                                    class="o_seniat_company_vat text-muted"
+                                >
+                                    <i class="fa fa-id-card-o me-1" title="RIF" />
+                                    <field name="vat" />
+                                </div>
+                            </div>
+                            <div
+                                class="o_seniat_company_badges d-flex flex-wrap gap-1 mt-2"
+                            >
+                                <span
+                                    t-if="record.taxpayer_type.raw_value"
+                                    class="badge rounded-pill o_seniat_taxpayer_badge"
+                                    t-attf-class="o_seniat_taxpayer_#{record.taxpayer_type.raw_value}"
+                                >
+                                    <field name="taxpayer_type" />
+                                </span>
+                                <div id="l10n_ve_company_kanban_fiscal_extra" />
+                            </div>
+                            <div
+                                t-if="record.l10n_ve_emission_medium_ids.raw_value.length"
+                                class="o_seniat_company_section mt-3"
+                            >
+                                <div class="o_seniat_company_section_label">
+                                    Medios de emisión
+                                </div>
+                                <field
+                                    name="l10n_ve_emission_medium_ids"
+                                    widget="many2many_tags"
+                                />
+                            </div>
+                            <div
+                                t-if="record.street.raw_value or record.city.raw_value or record.state_id.raw_value"
+                                class="o_seniat_company_section mt-3"
+                            >
+                                <div class="o_seniat_company_meta_row">
+                                    <i
+                                        class="fa fa-map-marker o_seniat_company_meta_icon"
+                                        title="Domicilio fiscal"
+                                    />
+                                    <div class="o_seniat_company_meta_content">
+                                        <div t-if="record.street.raw_value">
+                                            <field name="street" />
+                                        </div>
+                                        <div t-if="record.street2.raw_value">
+                                            <field name="street2" />
+                                        </div>
+                                        <div>
+                                            <field name="city" />
+                                            <t t-if="record.state_id.raw_value">, </t>
+                                            <field name="state_id" />
+                                            <t t-if="record.zip.raw_value"> · </t>
+                                            <t t-if="record.zip.raw_value">
+                                                <field name="zip" />
+                                            </t>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div
+                                t-if="record.currency_id.raw_value"
+                                class="o_seniat_company_section mt-2"
+                            >
+                                <div class="o_seniat_company_meta_row">
+                                    <i
+                                        class="fa fa-money o_seniat_company_meta_icon"
+                                        title="Moneda"
+                                    />
+                                    <div class="o_seniat_company_meta_content">
+                                        <field name="currency_id" />
+                                    </div>
+                                </div>
+                            </div>
                         </main>
                     </t>
                 </templates>
             </kanban>
         </field>
     </record>
-    <!-- Company Form View - Inherited -->
     <record id="res_company_form_view_seniat" model="ir.ui.view">
         <field name="name">res.company.form.seniat</field>
         <field name="model">res.company</field>
@@ -41,10 +120,14 @@
         <field name="arch" type="xml">
             <field position="after" name="vat">
                 <field name="taxpayer_type" string="Taxpayer Type" />
+                <field
+                    name="l10n_ve_emission_medium_ids"
+                    widget="many2many_tags"
+                    options="{'no_create_edit': True}"
+                />
             </field>
         </field>
     </record>
-    <!-- Window Action -->
     <record id="action_seniat_companies" model="ir.actions.act_window">
         <field name="name">Empresas</field>
         <field name="res_model">res.company</field>
@@ -58,7 +141,6 @@
         web_icon="l10n_ve_seniat,static/src/img/LogoSENIAT.png"
         groups="l10n_ve_seniat.group_seniat"
     />
-    <!-- Sub-menu: Empresas -->
     <menuitem
         id="menu_seniat_companies"
         name="Empresas"

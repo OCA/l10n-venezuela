@@ -21,6 +21,49 @@
                     options="{'no_create': True}"
                 />
             </xpath>
+            <xpath expr="//field[@name='l10n_ve_fiscal_payment_code']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_account_journal_form_fiscal_payment_method_line" model="ir.ui.view">
+        <field name="name">account.journal.ve.fiscal.payment.method.line.form</field>
+        <field name="model">account.journal</field>
+        <field name="inherit_id" ref="account.view_account_journal_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='page_incoming_payments']" position="inside">
+                <field name="l10n_ve_show_fiscal_payment_method" invisible="1"/>
+            </xpath>
+            <xpath expr="//page[@name='page_outgoing_payments']" position="inside">
+                <field name="l10n_ve_show_fiscal_payment_method" invisible="1"/>
+            </xpath>
+            <xpath
+                expr="//page[@name='page_incoming_payments']//field[@name='inbound_payment_method_line_ids']/list/field[@name='payment_account_id']"
+                position="after"
+            >
+                <field
+                    name="l10n_ve_fiscal_payment_method_id"
+                    string="Método pago fiscal"
+                    optional="show"
+                    column_invisible="not parent.l10n_ve_show_fiscal_payment_method"
+                    options="{'no_create': True, 'no_open': True}"
+                    domain="[('company_id', '=', company_id)]"
+                />
+            </xpath>
+            <xpath
+                expr="//page[@name='page_outgoing_payments']//field[@name='outbound_payment_method_line_ids']/list/field[@name='payment_account_id']"
+                position="after"
+            >
+                <field
+                    name="l10n_ve_fiscal_payment_method_id"
+                    string="Método pago fiscal"
+                    optional="show"
+                    column_invisible="not parent.l10n_ve_show_fiscal_payment_method"
+                    options="{'no_create': True, 'no_open': True}"
+                    domain="[('company_id', '=', company_id)]"
+                />
+            </xpath>
         </field>
     </record>
 </odoo>

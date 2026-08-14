@@ -1729,7 +1729,6 @@ class AccountMove(models.Model):
         "company_id",
         "company_id.taxpayer_type",
         "company_id.l10n_ve_igtf_feature_active",
-        "company_id.l10n_ve_igtf_enabled",
         "l10n_ve_inverse_rate",
         "move_type",
         "country_code",

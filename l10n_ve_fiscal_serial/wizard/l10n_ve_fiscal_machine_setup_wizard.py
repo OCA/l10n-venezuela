@@ -81,9 +81,16 @@ class L10nVeFiscalMachineSetupWizard(models.TransientModel):
         default="00",
         required=True,
     )
-    last_invoice_number = fields.Char()
-    last_credit_note_number = fields.Char()
-    daily_closure_counter = fields.Char()
+    use_emulator = fields.Boolean(
+        string="Usando emulador fiscal",
+    )
+    send_default_code_in_name = fields.Boolean(
+        string="Enviar codigo en nombre de producto",
+    )
+    last_invoice_number = fields.Char(string="Última factura")
+    last_credit_note_number = fields.Char(string="Última nota de crédito")
+    last_debit_note_number = fields.Char(string="Última nota de débito")
+    daily_closure_counter = fields.Char(string="Último Z")
     enq_status = fields.Integer()
     enq_error = fields.Integer()
     enq_status_label = fields.Char()
@@ -122,9 +129,11 @@ class L10nVeFiscalMachineSetupWizard(models.TransientModel):
         "country_code",
         "registered_serial",
         "fiscal_rif",
-        "flag_21",
+        "use_emulator",
+        "send_default_code_in_name",
         "last_invoice_number",
         "last_credit_note_number",
+        "last_debit_note_number",
         "daily_closure_counter",
         "enq_status",
         "enq_error",
@@ -195,9 +204,11 @@ class L10nVeFiscalMachineSetupWizard(models.TransientModel):
             "country_code": self.country_code,
             "registered_serial": self.registered_serial,
             "fiscal_rif": self.fiscal_rif,
-            "flag_21": self.flag_21,
+            "use_emulator": self.use_emulator,
+            "send_default_code_in_name": self.send_default_code_in_name,
             "last_invoice_number": self.last_invoice_number,
             "last_credit_note_number": self.last_credit_note_number,
+            "last_debit_note_number": self.last_debit_note_number,
             "daily_closure_counter": self.daily_closure_counter,
             "enq_status": self.enq_status,
             "enq_error": self.enq_error,

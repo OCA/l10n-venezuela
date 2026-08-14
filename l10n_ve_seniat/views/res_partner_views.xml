@@ -9,7 +9,6 @@
             <xpath expr="//field[@name='vat']" position="after">
                 <field
                     name="taxpayer_type"
-                    required="1"
                     invisible="country_code != 'VE'"
                 />
             </xpath>

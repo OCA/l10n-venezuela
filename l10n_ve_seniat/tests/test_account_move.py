@@ -1491,14 +1491,7 @@ class TestAccountMove(L10nVeSeniatCommon):
 
     def test_digital_posts_without_control_before_post(self):
         journal = self.company_data["default_journal_sale"]
-        journal.write(
-            {
-                "l10n_ve_emission_medium": "digital",
-                "l10n_ve_invoice_section_id": False,
-                "l10n_ve_credit_note_section_id": False,
-                "l10n_ve_debit_note_section_id": False,
-            }
-        )
+        self._l10n_ve_configure_journal_digital(journal)
         move = self.env["account.move"].create(
             self._create_invoice_vals(self.partner_ve)
         )
@@ -1571,6 +1564,10 @@ class TestAccountMove(L10nVeSeniatCommon):
         list_arch = self.env.ref("l10n_ve_seniat.view_invoice_tree").get_combined_arch()
         self.assertIn('name="l10n_ve_invoice_date"', list_arch)
         self.assertNotIn('string="Invoice Date"', list_arch)
+        self.assertIn('name="l10n_ve_control_number"', list_arch)
+        self.assertIn('name="l10n_ve_invoice_number"', list_arch)
+        self.assertIn('name="l10n_ve_report_z"', list_arch)
+        self.assertIn('name="l10n_ve_serial_number"', list_arch)
 
     def test_free_posted_sets_l10n_ve_invoice_date(self):
         journal = self.company_data["default_journal_sale"]
@@ -1584,9 +1581,30 @@ class TestAccountMove(L10nVeSeniatCommon):
 
     def test_digital_posted_sets_l10n_ve_invoice_date(self):
         journal = self.company_data["default_journal_sale"]
+        self._l10n_ve_configure_journal_digital(journal)
+        move = self.env["account.move"].create(
+            self._create_invoice_vals(self.partner_ve)
+        )
+        move.action_post()
+        self.assertTrue(move.l10n_ve_invoice_date)
+
+    def test_post_raises_when_journal_emission_not_on_company(self):
+        journal = self.company_data["default_journal_sale"]
+        self._l10n_ve_set_company_emission_medium_codes("fiscal_machine")
+        journal.write({"l10n_ve_emission_medium": "free"})
+        move = self.env["account.move"].create(
+            self._create_invoice_vals(self.partner_ve)
+        )
+        with self.assertRaises(ValidationError) as cm:
+            move.action_post()
+        self.assertIn("no está configurado", str(cm.exception))
+
+    def test_post_allows_empty_emission_medium_without_company_medium(self):
+        journal = self.company_data["default_journal_sale"]
+        self._l10n_ve_set_company_emission_medium_codes("fiscal_machine")
         journal.write(
             {
-                "l10n_ve_emission_medium": "digital",
+                "l10n_ve_emission_medium": False,
                 "l10n_ve_invoice_section_id": False,
                 "l10n_ve_credit_note_section_id": False,
                 "l10n_ve_debit_note_section_id": False,
@@ -1595,8 +1613,32 @@ class TestAccountMove(L10nVeSeniatCommon):
         move = self.env["account.move"].create(
             self._create_invoice_vals(self.partner_ve)
         )
+        move.write({"l10n_ve_control_number": "00-00000001"})
         move.action_post()
-        self.assertTrue(move.l10n_ve_invoice_date)
+        self.assertEqual(move.state, "posted")
+
+    def test_post_allows_contingency_without_company_medium(self):
+        journal = self.company_data["default_journal_sale"]
+        self._l10n_ve_set_company_emission_medium_codes("fiscal_machine")
+        journal.write(
+            {
+                "l10n_ve_emission_medium": "contingency",
+                "l10n_ve_invoice_section_id": False,
+                "l10n_ve_credit_note_section_id": False,
+                "l10n_ve_debit_note_section_id": False,
+            }
+        )
+        move = self.env["account.move"].create(
+            self._create_invoice_vals(self.partner_ve)
+        )
+        move.write(
+            {
+                "l10n_ve_control_number": "99-00000077",
+                "l10n_ve_invoice_date": fields.Datetime.now(),
+            }
+        )
+        move.action_post()
+        self.assertEqual(move.state, "posted")
 
     def test_draft_invoice_date_editable_without_emission_medium(self):
         journal = self.company_data["default_journal_sale"]

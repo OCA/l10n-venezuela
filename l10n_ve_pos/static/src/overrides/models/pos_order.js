@@ -16,7 +16,24 @@ patch(PosOrder.prototype, {
             this.to_invoice = true;
         }
     },
+    _l10nVePosOriginInvoiceJournal() {
+        const originOrder = this.lines.find((line) => line.refunded_orderline_id)
+            ?.refunded_orderline_id?.order_id;
+        return originOrder?.invoice_journal_id || false;
+    },
+    canChangeInvoiceJournal() {
+        return !(isVenezuelaCompany(this) && this._isRefundOrder());
+    },
     setInvoiceJournal(journal) {
+        if (isVenezuelaCompany(this) && this._isRefundOrder()) {
+            const originJournal = this._l10nVePosOriginInvoiceJournal();
+            if (originJournal) {
+                if (journal && journal.id !== originJournal.id) {
+                    return;
+                }
+                journal = originJournal;
+            }
+        }
         this.update({
             invoice_journal_id: journal || false,
         });

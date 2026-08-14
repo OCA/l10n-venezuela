@@ -13,10 +13,24 @@ function isVenezuelaCompany(pos) {
 patch(PaymentScreen.prototype, {
     setup() {
         super.setup(...arguments);
+        const orderJournal = this.currentOrder?.invoice_journal_id;
+        const configJournal = this.pos.config?.invoice_journal_id;
         this.l10nVeEmission = useState({
-            emission_medium: this.pos.config.l10n_ve_invoice_journal_emission_medium || "",
-            journal_display_name: this.pos.config.l10n_ve_invoice_journal_display_name || "",
-            next_free_control_number: this.pos.config.l10n_ve_pos_next_free_control_number || "",
+            emission_medium:
+                orderJournal?.l10n_ve_emission_medium ||
+                configJournal?.l10n_ve_emission_medium ||
+                "",
+            journal_display_name:
+                orderJournal?.display_name ||
+                orderJournal?.name ||
+                configJournal?.display_name ||
+                configJournal?.name ||
+                "",
+            next_free_control_number:
+                this.pos.config.l10n_ve_pos_next_free_control_number || "",
+            next_fiscal_invoice_number: "",
+            next_fiscal_serial: "",
+            next_fiscal_report_z: "",
         });
         onMounted(() => this.l10nVeRefreshEmissionPreview());
     },
@@ -26,34 +40,70 @@ patch(PaymentScreen.prototype, {
         }
         return this.pos.getAvailableInvoiceJournals();
     },
+    get canChangeInvoiceJournal() {
+        return (
+            !this.currentOrder ||
+            typeof this.currentOrder.canChangeInvoiceJournal !== "function" ||
+            this.currentOrder.canChangeInvoiceJournal()
+        );
+    },
     async clickInvoiceJournal() {
+        if (!this.canChangeInvoiceJournal) {
+            return;
+        }
         const journal = await this.pos.selectInvoiceJournal(this.currentOrder);
         if (journal) {
             await this.l10nVeRefreshEmissionPreview();
         }
     },
-    async l10nVeRefreshEmissionPreview() {
-        if (!isVenezuelaCompany(this.pos)) {
-            return;
-        }
-        const journalId = this.currentOrder?.invoice_journal_id?.id || false;
-        const data = await this.pos.data.call(
-            "pos.config",
-            "l10n_ve_get_invoice_emission_preview",
-            [[this.pos.config.id], journalId]
-        );
+    _l10nVeApplyEmissionPreview(data) {
         if (!data) {
             return;
         }
         this.l10nVeEmission.emission_medium = data.emission_medium || "";
         this.l10nVeEmission.journal_display_name = data.journal_display_name || "";
         this.l10nVeEmission.next_free_control_number = data.next_free_control_number || "";
-        this.pos.config.l10n_ve_invoice_journal_emission_medium = data.emission_medium || false;
-        this.pos.config.l10n_ve_invoice_journal_display_name = data.journal_display_name || false;
-        this.pos.config.l10n_ve_pos_next_free_control_number =
-            data.next_free_control_number || false;
-        this.pos.config.l10n_ve_pos_free_book_section_name =
-            data.free_book_section_name || false;
+        this.l10nVeEmission.next_fiscal_invoice_number =
+            data.next_fiscal_invoice_number || "";
+        this.l10nVeEmission.next_fiscal_serial = data.next_fiscal_serial || "";
+        this.l10nVeEmission.next_fiscal_report_z = data.next_fiscal_report_z || "";
+    },
+
+    _l10nVeLocalEmissionPreviewFallback() {
+        const journal =
+            this.currentOrder?.invoice_journal_id || this.pos.config?.invoice_journal_id;
+        return {
+            emission_medium: journal?.l10n_ve_emission_medium || "",
+            journal_display_name: journal?.display_name || journal?.name || "",
+            next_free_control_number:
+                this.pos.config?.l10n_ve_pos_next_free_control_number || "",
+            next_fiscal_invoice_number: this.l10nVeEmission.next_fiscal_invoice_number || "",
+            next_fiscal_serial: this.l10nVeEmission.next_fiscal_serial || "",
+            next_fiscal_report_z: this.l10nVeEmission.next_fiscal_report_z || "",
+            free_book_section_name:
+                this.pos.config?.l10n_ve_pos_free_book_section_name || false,
+        };
+    },
+
+    async l10nVeRefreshEmissionPreview() {
+        if (!isVenezuelaCompany(this.pos)) {
+            return;
+        }
+        const journalId = this.currentOrder?.invoice_journal_id?.id || false;
+        try {
+            const data = await this.pos.data.call(
+                "pos.config",
+                "l10n_ve_get_invoice_emission_preview",
+                [[this.pos.config.id], journalId]
+            );
+            this._l10nVeApplyEmissionPreview(data);
+        } catch (error) {
+            console.warn(
+                "[l10n_ve_pos] Preview de emisión no disponible (offline); usando datos locales.",
+                error
+            );
+            this._l10nVeApplyEmissionPreview(this._l10nVeLocalEmissionPreviewFallback());
+        }
     },
     get isVenezuelaPos() {
         return isVenezuelaCompany(this.pos);
@@ -125,6 +175,15 @@ patch(PaymentScreen.prototype, {
     },
     get l10nVeNextFreeControlNumberDisplay() {
         return this.l10nVeNextFreeControlNumber || this.l10nVeDash;
+    },
+    get l10nVeFiscalNextInvoiceNumberDisplay() {
+        return this.l10nVeEmission.next_fiscal_invoice_number || this.l10nVeDash;
+    },
+    get l10nVeFiscalNextSerialDisplay() {
+        return this.l10nVeEmission.next_fiscal_serial || this.l10nVeDash;
+    },
+    get l10nVeFiscalNextReportZDisplay() {
+        return this.l10nVeEmission.next_fiscal_report_z || this.l10nVeDash;
     },
     get l10nVeLabelAmountWithoutTaxes() {
         return _t("Amount without taxes");

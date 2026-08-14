@@ -135,6 +135,18 @@ class ProductTemplate(models.Model):
             self._l10n_ve_inject_default_exent_taxes_in_vals(vals)
         return super().create(vals_list)
 
+    def _force_default_sale_tax(self, companies):
+        return super(
+            ProductTemplate,
+            self.with_context(l10n_ve_skip_product_tax_constraint=True),
+        )._force_default_sale_tax(companies)
+
+    def _force_default_purchase_tax(self, companies):
+        return super(
+            ProductTemplate,
+            self.with_context(l10n_ve_skip_product_tax_constraint=True),
+        )._force_default_purchase_tax(companies)
+
     @api.model
     def _l10n_ve_vals_get_company(self, vals):
         if "company_id" not in vals or vals["company_id"] is False:
@@ -249,21 +261,6 @@ class ProductTemplate(models.Model):
             if purchase_tax:
                 vals["supplier_taxes_id"] = [(6, 0, [purchase_tax.id])]
 
-    def _l10n_ve_is_sale_discount_template(self):
-        self.ensure_one()
-        Company = self.env["res.company"]
-        if "sale_discount_product_id" not in Company._fields:
-            return False
-        ve = self.env.ref("base.ve", raise_if_not_found=False)
-        if not ve:
-            return False
-        discount_products = Company.search(
-            [("account_fiscal_country_id", "=", ve.id)]
-        ).mapped("sale_discount_product_id")
-        if not discount_products:
-            return False
-        return bool(self.product_variant_ids & discount_products)
-
     def _l10n_ve_check_sale_price_vs_cost(self):
         ve_country = self.env.ref("base.ve", raise_if_not_found=False)
         if not ve_country:
@@ -346,46 +343,80 @@ class ProductTemplate(models.Model):
                 prec,
             )
 
+    def _l10n_ve_companies_for_tax_count(self):
+        """Companies whose tax counts must be validated for this product."""
+        self.ensure_one()
+        ve_country = self.env.ref("base.ve", raise_if_not_found=False)
+        if not ve_country:
+            return self.env["res.company"]
+        if self.company_id:
+            if self.company_id.account_fiscal_country_id == ve_country:
+                return self.company_id
+            return self.env["res.company"]
+        companies = (self.taxes_id | self.supplier_taxes_id).company_id
+        if self.env.company.account_fiscal_country_id == ve_country:
+            companies |= self.env.company
+        return companies.filtered(
+            lambda company: company.account_fiscal_country_id == ve_country
+        )
+
+    def _l10n_ve_taxes_for_company(self, taxes, company):
+        return taxes.filtered(lambda tax: tax.company_id == company)
+
     @api.constrains("taxes_id", "supplier_taxes_id")
     def _l10n_ve_check_exactly_one_tax_per_use(self):
-        """Exige exactamente un impuesto de venta y uno de compra por producto.
+        """Exige exactamente un impuesto de venta y uno de compra por compañía VE.
 
         Notes
         -----
         Art. 13 num. 9-11 PA SNAT/2011/0071: alícuota aplicable por operación.
+        En multi-compañía un producto compartido puede tener un impuesto por
+        compañía; el conteo se hace por compañía, no sobre el total.
         """
 
         if self.env.context.get(
             "install_mode"
         ) or self.env.context.get("l10n_ve_skip_product_tax_constraint"):
             return
-        ve_country = self.env.ref("base.ve", raise_if_not_found=False)
-        if not ve_country:
-            return
         for tmpl in self:
             if tmpl._l10n_ve_is_sale_discount_template():
                 continue
-            company = tmpl.company_id or self.env.company
-            if company.account_fiscal_country_id != ve_country:
+            if (
+                hasattr(tmpl, "_l10n_ve_is_loyalty_reward_discount_template")
+                and tmpl._l10n_ve_is_loyalty_reward_discount_template()
+            ):
                 continue
-            n_sale = len(tmpl.taxes_id)
-            if n_sale != 1:
-                raise ValidationError(
-                    _(
-                        'El producto "%(name)s" debe tener exactamente un impuesto de '
-                        "ventas en compañías venezolanas (tiene %(n)d)."
+            for company in tmpl._l10n_ve_companies_for_tax_count():
+                n_sale = len(tmpl._l10n_ve_taxes_for_company(tmpl.taxes_id, company))
+                if n_sale != 1:
+                    raise ValidationError(
+                        _(
+                            'El producto "%(name)s" debe tener exactamente un '
+                            "impuesto de ventas en la compañía “%(company)s” "
+                            "(tiene %(n)d)."
+                        )
+                        % {
+                            "name": tmpl.display_name,
+                            "company": company.display_name,
+                            "n": n_sale,
+                        }
                     )
-                    % {"name": tmpl.display_name, "n": n_sale}
+                n_purchase = len(
+                    tmpl._l10n_ve_taxes_for_company(tmpl.supplier_taxes_id, company)
                 )
-            n_purchase = len(tmpl.supplier_taxes_id)
-            if n_purchase != 1:
-                raise ValidationError(
-                    _(
-                        'El producto "%(name)s" debe tener exactamente un impuesto de '
-                        "compras en compañías venezolanas (tiene %(n)d)."
+                if n_purchase != 1:
+                    raise ValidationError(
+                        _(
+                            'El producto "%(name)s" debe tener exactamente un '
+                            "impuesto de compras en la compañía “%(company)s” "
+                            "(tiene %(n)d)."
+                        )
+                        % {
+                            "name": tmpl.display_name,
+                            "company": company.display_name,
+                            "n": n_purchase,
+                        }
                     )
-                    % {"name": tmpl.display_name, "n": n_purchase}
-                )
 
     @api.onchange("l10n_ve_sale_tax_id")
     def _onchange_l10n_ve_sale_tax_id(self):

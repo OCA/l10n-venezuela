@@ -27,6 +27,13 @@
                         required="l10n_ve_discount_mode == 'percentage'"
                     />
                     <field
+                        name="l10n_ve_amount_base"
+                        widget="radio"
+                        options="{'horizontal': true}"
+                        invisible="l10n_ve_discount_mode != 'amount'"
+                        required="l10n_ve_discount_mode == 'amount'"
+                    />
+                    <field
                         name="discount_amount"
                         invisible="l10n_ve_discount_mode != 'amount'"
                         required="l10n_ve_discount_mode == 'amount'"

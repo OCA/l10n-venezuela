@@ -5,6 +5,7 @@
             <button
                 t-if="!props.showRemainingButtons and availableInvoiceJournals.length"
                 t-att-class="buttonClass"
+                t-att-disabled="!canChangeInvoiceJournal"
                 t-on-click="() => this.clickInvoiceJournal()"
             >
                 <i class="fa fa-book me-1" role="img" aria-label="Invoice journal" title="Invoice journal"/>
@@ -16,6 +17,7 @@
             <button
                 t-if="availableInvoiceJournals.length"
                 t-att-class="buttonClass"
+                t-att-disabled="!canChangeInvoiceJournal"
                 t-on-click="() => this.clickInvoiceJournal()"
             >
                 <i class="fa fa-book me-1" role="img" aria-label="Invoice journal" title="Invoice journal"/>

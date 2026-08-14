@@ -40,7 +40,6 @@ class TestL10nVeIgtfCommon(AccountTestInvoicingCommon):
         cls.company.partner_id.write({"taxpayer_type": "special"})
         cls.company.write(
             {
-                "l10n_ve_igtf_enabled": True,
                 "l10n_ve_igtf_account_id": cls.igtf_account.id,
                 "l10n_ve_igtf_percent": 3.0,
                 "l10n_ve_igtf_currency_ids": [Command.set([cls.usd.id])],

@@ -54,12 +54,13 @@ class TestL10nVeDispatchGuideEmail(L10nVeSeniatCommon):
     def test_settings_enable_syncs_cron(self):
         cron = self.env.ref("l10n_ve_seniat.ir_cron_unfactured_dispatch_guides_email")
         cron.active = False
-        self.company.write(
-            {
-                "l10n_ve_unfactured_dispatch_email_schedule_enabled": True,
-                "l10n_ve_unfactured_dispatch_email_recipient": "cron@example.com",
-            }
-        )
+        vals = {
+            "l10n_ve_unfactured_dispatch_email_schedule_enabled": True,
+            "l10n_ve_unfactured_dispatch_email_recipient": "cron@example.com",
+        }
+        if "l10n_ve_dispatch_guide_enabled" in self.company._fields:
+            vals["l10n_ve_dispatch_guide_enabled"] = True
+        self.company.write(vals)
         self.assertTrue(cron.active)
 
     def test_dashboard_includes_dispatch_email_data(self):

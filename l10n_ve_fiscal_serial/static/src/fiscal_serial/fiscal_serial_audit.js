@@ -65,6 +65,19 @@ function buildPortSnapshot(driver) {
     };
 }
 
+function isOrmLifecycleError(error) {
+    const msg = String(error?.message || error || "");
+    const name = String(error?.name || "");
+    return (
+        /Component is destroyed/i.test(msg) ||
+        /RpcAborted|ConnectionLostError|\bAborted\b|Failed to fetch|NetworkError|offline/i.test(
+            msg
+        ) ||
+        /ConnectionLostError|TypeError/i.test(name) ||
+        error?.name === "AbortError"
+    );
+}
+
 export class FiscalSerialAuditLogger {
     constructor(orm, options = {}) {
         this.orm = orm;
@@ -76,10 +89,21 @@ export class FiscalSerialAuditLogger {
         this.buffer = [];
         this._portOpenedAt = null;
         this._flushPromise = null;
+        this._closed = false;
     }
 
     attachDriver(driver) {
+        if (!driver) {
+            return;
+        }
         driver.auditLogger = this;
+    }
+
+    detachDriver(driver) {
+        if (driver && driver.auditLogger === this) {
+            driver.auditLogger = null;
+        }
+        this._closed = true;
     }
 
     _baseEvent(driver) {
@@ -94,6 +118,9 @@ export class FiscalSerialAuditLogger {
     }
 
     queueEvent(event) {
+        if (this._closed) {
+            return;
+        }
         this.buffer.push(event);
         if (this.buffer.length >= FLUSH_BATCH_SIZE) {
             void this.flush();
@@ -164,10 +191,22 @@ export class FiscalSerialAuditLogger {
         if (this._flushPromise) {
             return this._flushPromise;
         }
+        if (this._closed && !this.orm) {
+            this.buffer.length = 0;
+            return [];
+        }
         const events = this.buffer.splice(0, this.buffer.length);
         this._flushPromise = this.orm
             .call(AUDIT_MODEL, "log_fiscal_serial_events", [events])
             .catch((error) => {
+                if (isOrmLifecycleError(error)) {
+                    console.warn(
+                        "[l10n_ve_fiscal_serial][audit] flush omitido (offline/ciclo de vida)",
+                        error
+                    );
+                    this.buffer.length = 0;
+                    return [];
+                }
                 console.warn("[l10n_ve_fiscal_serial][audit] flush error", error);
                 this.buffer.unshift(...events);
                 return [];
@@ -187,9 +226,14 @@ export async function closeDriverWithAudit(driver, reason, detail = "") {
     if (!driver) {
         return;
     }
-    if (driver.auditLogger) {
-        driver.auditLogger.logPortClose(driver, reason, detail);
-        await driver.auditLogger.flush();
+    const auditLogger = driver.auditLogger;
+    if (auditLogger) {
+        auditLogger.logPortClose(driver, reason, detail);
+        try {
+            await auditLogger.flush();
+        } finally {
+            auditLogger.detachDriver(driver);
+        }
     }
     await driver.closeFpCtrl({ skipAudit: true });
 }

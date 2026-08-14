@@ -142,12 +142,6 @@ export class FiscalMachinePortDetectWidget extends Component {
             this.ui.block({ message: "Detectando máquina fiscal…" });
             blocked = true;
             let flag21 = recordModel.root.data.flag_21 || "00";
-            const companyConfig = await this.orm.call(
-                "res.company",
-                "l10n_ve_fiscal_serial_get_machine_config",
-                []
-            );
-            flag21 = companyConfig?.flag_21 || flag21;
             const payload = await autoDetectFiscalMachine(driver, {
                 parseTfhkaS1StatusResponse: this.fiscalSerial.parseTfhkaS1StatusResponse,
                 describeTfhkaEnqSts1,

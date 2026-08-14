@@ -33,8 +33,6 @@ class ResConfigSettings(models.TransientModel):
         related="company_id.type_person_id",
         readonly=False,
     )
-    code_visible = fields.Boolean(related="company_id.code_visible", readonly=False)
-
     hide_patent_columns_extra = fields.Boolean(
         related="company_id.hide_patent_columns_extra", readonly=False
     )

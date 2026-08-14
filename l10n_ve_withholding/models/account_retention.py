@@ -116,8 +116,6 @@ class AccountRetention(models.Model):
         help="Retentions",
     )
 
-    code_visible = fields.Boolean(related="company_id.code_visible")
-
     payment_ids = fields.One2many(
         "account.payment",
         "retention_id",

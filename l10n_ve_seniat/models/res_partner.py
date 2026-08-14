@@ -72,6 +72,21 @@ class ResPartner(models.Model):
             return self.env["res.country"].browse(cid)
         return self.country_id
 
+    def _l10n_ve_taxpayer_country(self):
+        self.ensure_one()
+        if self.country_id:
+            return self.country_id
+        if not self.is_company:
+            return self.env["res.country"]
+        company = (
+            self.env["res.company"]
+            .sudo()
+            .search([("partner_id", "=", self.id)], limit=1)
+        )
+        if not company:
+            return self.env["res.country"]
+        return company.country_id or company.account_fiscal_country_id
+
     @api.model
     def _l10n_ve_normalize_vat_leading_prefix(self, vat):
         if vat in (False, None):
@@ -136,6 +151,14 @@ class ResPartner(models.Model):
 
     def write(self, vals):
         vals = dict(vals)
+        if "country_id" in vals:
+            country = (
+                self.env["res.country"].browse(vals["country_id"])
+                if vals.get("country_id")
+                else self.env["res.country"]
+            )
+            if not country or country.code != VE_CODE:
+                vals["taxpayer_type"] = False
         batches = self._l10n_ve_write_vat_prefix_batches(vals)
         if batches is not None:
             res = True
@@ -157,7 +180,7 @@ class ResPartner(models.Model):
                 continue
             country = self.env["res.country"].browse(cid)
             if country.code != VE_CODE:
-                continue
+                vals["taxpayer_type"] = False
             if vals.get("vat") in (False, None):
                 continue
             vals["vat"] = self._l10n_ve_normalize_vat_leading_prefix(vals["vat"])
@@ -215,9 +238,6 @@ class ResPartner(models.Model):
             ("formal", "Formal"),
             ("special", "Special"),
         ],
-        store=True,
-        readonly=False,
-        compute="_compute_taxpayer_type",
     )
 
     # TODO: prefix_vat isn't used anywhere
@@ -237,14 +257,10 @@ class ResPartner(models.Model):
                     continue
             record.prefix_vat = False
 
-    @api.depends("country_id", "country_id.code")
-    def _compute_taxpayer_type(self):
-        for record in self:
-            if record.country_id and record.country_id.code == VE_CODE:
-                if not record.taxpayer_type:
-                    record.taxpayer_type = "ordinary"
-            else:
-                record.taxpayer_type = False
+    @api.onchange("country_id")
+    def _onchange_country_id_clear_taxpayer_type(self):
+        if self.country_id and self.country_id.code != VE_CODE:
+            self.taxpayer_type = False
 
     @api.onchange("municipality_id")
     def _onchange_municipality_id(self):
@@ -468,9 +484,10 @@ class ResPartner(models.Model):
     @api.constrains("country_id", "taxpayer_type")
     def _check_taxpayer_type_country(self):
         for rec in self:
-            if rec.taxpayer_type and (
-                not rec.country_id or rec.country_id.code != VE_CODE
-            ):
+            if not rec.taxpayer_type:
+                continue
+            country = rec._l10n_ve_taxpayer_country()
+            if not country or country.code != VE_CODE:
                 raise ValidationError(
                     _(
                         "The taxpayer type can only be set for Venezuelan partners "

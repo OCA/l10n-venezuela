@@ -15,7 +15,17 @@ patch(ControlButtons.prototype, {
         }
         return this.pos.getAvailableInvoiceJournals();
     },
+    get canChangeInvoiceJournal() {
+        return (
+            !this.currentOrder ||
+            typeof this.currentOrder.canChangeInvoiceJournal !== "function" ||
+            this.currentOrder.canChangeInvoiceJournal()
+        );
+    },
     async clickInvoiceJournal() {
+        if (!this.canChangeInvoiceJournal) {
+            return;
+        }
         await this.pos.selectInvoiceJournal(this.currentOrder);
     },
 });

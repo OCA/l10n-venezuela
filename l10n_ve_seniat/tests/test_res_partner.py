@@ -87,13 +87,25 @@ class TestResPartner(L10nVeSeniatCommon):
         )
         self.assertEqual(partner.prefix_vat, "J")
 
-    def test_compute_taxpayer_type_ve(self):
+    def test_taxpayer_type_ve_not_auto_set(self):
         partner = self.env["res.partner"].create(
             {"name": "Test Partner", "country_id": self.env.ref("base.ve").id}
         )
-        self.assertEqual(partner.taxpayer_type, "ordinary")
+        self.assertFalse(partner.taxpayer_type)
 
-    def test_compute_taxpayer_type_non_ve(self):
+    def test_taxpayer_type_ve_can_be_set_and_cleared(self):
+        partner = self.env["res.partner"].create(
+            {
+                "name": "Test Partner",
+                "country_id": self.env.ref("base.ve").id,
+                "taxpayer_type": "formal",
+            }
+        )
+        self.assertEqual(partner.taxpayer_type, "formal")
+        partner.write({"taxpayer_type": False})
+        self.assertFalse(partner.taxpayer_type)
+
+    def test_taxpayer_type_non_ve(self):
         partner = self.env["res.partner"].create(
             {"name": "Test Partner", "country_id": self.env.ref("base.us").id}
         )
@@ -166,6 +178,15 @@ class TestResPartner(L10nVeSeniatCommon):
         with self.assertRaises(ValidationError) as cm:
             partner.taxpayer_type = "ordinary"
         self.assertIn("Venezuelan", str(cm.exception))
+
+    def test_taxpayer_type_company_fiscal_ve_without_partner_country(self):
+        ve = self.env.ref("base.ve")
+        company = self.env["res.company"].create({"name": "Empresa VE nueva"})
+        company.account_fiscal_country_id = ve
+        partner = company.partner_id
+        self.assertFalse(partner.country_id)
+        partner.write({"taxpayer_type": "ordinary"})
+        self.assertEqual(partner.taxpayer_type, "ordinary")
 
     def test_partner_name_vat_locked_after_posted_move(self):
         partner = self.env["res.partner"].create(

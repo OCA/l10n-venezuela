@@ -14,7 +14,24 @@ export async function verifyConnectedFiscalMachine(driver, expected, helpers = {
     if (!expected || !expected.machine_id) {
         throw new Error("No hay máquina fiscal configurada en el diario.");
     }
-    const statusOk = await driver.readFpStatus();
+    if (expected.use_emulator) {
+        return {
+            training_mode: false,
+            emulator_mode: true,
+            verified: true,
+            message:
+                "Modo emulador activo: se omitió la verificación del serial fiscal.",
+        };
+    }
+    let statusOk = await driver.readFpStatus();
+    if (!statusOk && typeof driver.transport?.drainInput === "function") {
+        try {
+            await driver.transport.drainInput(300);
+        } catch {
+            // ignore
+        }
+        statusOk = await driver.readFpStatus();
+    }
     if (!statusOk) {
         throw new Error(
             driver.estado || "No se pudo leer el estado ENQ de la impresora conectada."

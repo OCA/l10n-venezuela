@@ -28,7 +28,12 @@ patch(ReceiptScreen.prototype, {
         return this.isVenezuelaPos && Boolean(this.currentOrder.raw?.account_move);
     },
     get l10nVeJournalEmissionMedium() {
-        return this.pos.config.l10n_ve_invoice_journal_emission_medium || "";
+        const orderJournal = this.currentOrder?.invoice_journal_id;
+        return (
+            orderJournal?.l10n_ve_emission_medium ||
+            this.pos.config?.invoice_journal_id?.l10n_ve_emission_medium ||
+            ""
+        );
     },
     get l10nVeLabelAccountingInvoiceNumber() {
         return _t("Accounting invoice number");
