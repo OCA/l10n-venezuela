@@ -206,6 +206,13 @@ class AccountPaymentRegister(models.TransientModel):
             if wiz.currency_id.compare_amounts(wiz.amount, cap) > 0:
                 wiz.amount = cap
 
+    def _l10n_ve_wizard_pays_full_residual(self):
+        self.ensure_one()
+        if not self.batches or not self.currency_id:
+            return False
+        totals = self._get_total_amounts_to_pay(self.batches)
+        return self.currency_id.compare_amounts(self.amount, totals["full_amount"]) == 0
+
     @api.depends(
         "early_payment_discount_mode",
         "can_edit_wizard",
@@ -213,24 +220,27 @@ class AccountPaymentRegister(models.TransientModel):
         "company_currency_id",
         "payment_difference",
         "l10n_ve_apply_igtf",
+        "amount",
+        "batches",
     )
     def _compute_payment_difference_handling(self):
+        super()._compute_payment_difference_handling()
         for wizard in self:
             if not wizard.can_edit_wizard:
-                wizard.payment_difference_handling = False
-            elif wizard.early_payment_discount_mode:
-                wizard.payment_difference_handling = "reconcile"
-            elif wizard.l10n_ve_apply_igtf:
+                continue
+            if wizard.early_payment_discount_mode:
+                continue
+            if wizard.l10n_ve_apply_igtf:
                 wizard.payment_difference_handling = "open"
-            elif (
+                continue
+            if (
                 wizard._l10n_ve_is_venezuela_company()
                 and wizard.currency_id
                 and wizard.currency_id != wizard.company_currency_id
                 and not wizard.currency_id.is_zero(wizard.payment_difference)
+                and wizard._l10n_ve_wizard_pays_full_residual()
             ):
                 wizard.payment_difference_handling = "reconcile"
-            else:
-                wizard.payment_difference_handling = "open"
 
     @api.depends(
         "can_edit_wizard",

@@ -707,31 +707,30 @@ class AccountMove(models.Model):
 
     def _l10n_ve_to_company_abs_amount(self):
         self.ensure_one()
-        company_cur = self.company_currency_id
-        if self.currency_id == company_cur:
-            return company_cur.round(abs(self.amount_total))
-        if not company_cur.is_zero(self.amount_total_signed):
-            return company_cur.round(abs(self.amount_total_signed))
-        date = self.invoice_date or self.date or fields.Date.context_today(self)
-        return company_cur.round(
-            self.currency_id._convert(
-                abs(self.amount_total), company_cur, self.company_id, date
-            )
+        lines = self.line_ids.filtered(
+            lambda line: line.display_type in ("product", "tax", "rounding")
         )
+        if lines:
+            return abs(sum(lines.mapped("balance")))
+        rp_lines = self.line_ids.filtered(
+            lambda line: line.account_id.account_type
+            in ("asset_receivable", "liability_payable")
+        )
+        if rp_lines:
+            return abs(sum(rp_lines.mapped("balance")))
+        return abs(self.amount_total_signed)
 
     def _l10n_ve_to_company_abs_untaxed_amount(self):
         self.ensure_one()
-        company_cur = self.company_currency_id
-        if self.currency_id == company_cur:
-            return company_cur.round(abs(self.amount_untaxed))
-        if not company_cur.is_zero(self.amount_untaxed_signed):
-            return company_cur.round(abs(self.amount_untaxed_signed))
-        date = self.invoice_date or self.date or fields.Date.context_today(self)
-        return company_cur.round(
-            self.currency_id._convert(
-                abs(self.amount_untaxed), company_cur, self.company_id, date
+        lines = self.line_ids.filtered(
+            lambda line: line.display_type == "product"
+            or (
+                line.display_type == "rounding" and not line.tax_repartition_line_id
             )
         )
+        if lines:
+            return abs(sum(lines.mapped("balance")))
+        return abs(self.amount_untaxed_signed)
 
     def _l10n_ve_posted_credit_on_invoice_company_amount(self):
         self.ensure_one()
@@ -1496,6 +1495,19 @@ class AccountMove(models.Model):
                 )
         self = self.with_context(force_draft=True)
         return super().button_cancel()
+
+    def _compute_show_reset_to_draft_button(self):
+        res = super()._compute_show_reset_to_draft_button()
+        ve_code = self.env.ref("base.ve").code
+        for move in self:
+            if (
+                move.country_code == ve_code
+                and move.move_type in ("in_invoice", "in_refund", "in_receipt")
+                and not move.inalterable_hash
+                and move.state in ("posted", "cancel")
+            ):
+                move.show_reset_to_draft_button = True
+        return res
 
     def button_draft(self):
         """Impide restablecer a borrador facturas de cliente venezolanas.

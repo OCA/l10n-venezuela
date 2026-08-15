@@ -316,17 +316,21 @@ class AccountMove(models.Model):
             moves
         )
 
-    def action_l10n_ve_open_global_discount_wizard(self):
+    def action_l10n_ve_open_discount_wizard(self):
         self.ensure_one()
-        self._l10n_ve_check_global_discount_allowed()
+        if self.state == "posted":
+            self._l10n_ve_check_post_discount_allowed()
+        else:
+            self._l10n_ve_check_global_discount_allowed()
         return {
-            "name": _("Descuento global"),
+            "name": _("Descuento"),
             "type": "ir.actions.act_window",
             "res_model": "l10n.ve.account.move.discount.wizard",
             "view_mode": "form",
             "target": "new",
             "context": {
                 "default_move_id": self.id,
+                "default_discount_currency_id": self.currency_id.id,
                 **(
                     {"default_reason_id": default_reason.id}
                     if (default_reason := self.env["l10n.ve.discount.reason"]._l10n_ve_get_default())
@@ -334,6 +338,9 @@ class AccountMove(models.Model):
                 ),
             },
         }
+
+    def action_l10n_ve_open_global_discount_wizard(self):
+        return self.action_l10n_ve_open_discount_wizard()
 
     def _l10n_ve_check_global_discount_allowed(self):
         self.ensure_one()
@@ -391,10 +398,176 @@ class AccountMove(models.Model):
 
         return self.reversal_move_ids.filtered(_is_post_discount_refund)
 
+    def _l10n_ve_discount_remaining_subtotal_by_taxes(self):
+        self.ensure_one()
+        remaining = l10n_ve_discount_logic.l10n_ve_remaining_subtotal_by_taxes(self)
+        if self.state != "posted":
+            return remaining
+        used = self._l10n_ve_post_discount_used_untaxed()
+        if self.currency_id.is_zero(used):
+            return remaining
+        tax_groups = list(remaining.keys())
+        weights = [remaining[taxes] for taxes in tax_groups]
+        parts = self._l10n_ve_split_amount_by_weights(used, weights)
+        result = {}
+        for taxes, part in zip(tax_groups, parts):
+            result[taxes] = max(0.0, remaining[taxes] - part)
+        return result
+
+    def _l10n_ve_discount_available_total(self, remaining=None):
+        self.ensure_one()
+        return self.currency_id.round(
+            self.amount_total - self._l10n_ve_post_discount_used_total()
+        )
+
+    def _l10n_ve_discount_available_in_currency(self, amount_base, currency):
+        self.ensure_one()
+        currency = currency or self.currency_id
+        if amount_base == "total":
+            if currency == self.company_currency_id:
+                return currency.round(
+                    abs(self.amount_total_signed)
+                    - self._l10n_ve_post_discount_used_total_company()
+                )
+            available = self.amount_total - self._l10n_ve_post_discount_used_total()
+            return self._l10n_ve_post_discount_amount_in_currency(
+                available, currency, amount_base="total"
+            )
+        if currency == self.company_currency_id:
+            return currency.round(
+                abs(self.amount_untaxed_signed)
+                - self._l10n_ve_post_discount_used_untaxed_company()
+            )
+        remaining = self._l10n_ve_discount_remaining_subtotal_by_taxes()
+        return self._l10n_ve_post_discount_amount_in_currency(
+            sum(remaining.values()), currency, amount_base="untaxed"
+        )
+
+    def _l10n_ve_invoice_company_rate(self, amount_base="untaxed"):
+        self.ensure_one()
+        if self.currency_id == self.company_currency_id:
+            return 1.0
+        if amount_base == "total":
+            if self.currency_id.is_zero(self.amount_total):
+                return 0.0
+            return abs(self.amount_total_signed) / abs(self.amount_total)
+        return self._l10n_ve_invoice_untaxed_company_rate()
+
+    def _l10n_ve_invoice_untaxed_company_rate(self):
+        self.ensure_one()
+        if self.currency_id == self.company_currency_id:
+            return 1.0
+        if self.currency_id.is_zero(self.amount_untaxed):
+            return 0.0
+        return abs(self.amount_untaxed_signed) / abs(self.amount_untaxed)
+
+    def _l10n_ve_post_discount_amount_in_currency(
+        self, amount_invoice_currency, currency, amount_base="untaxed"
+    ):
+        self.ensure_one()
+        if currency == self.currency_id:
+            return currency.round(amount_invoice_currency)
+        rate = self._l10n_ve_invoice_company_rate(amount_base)
+        if currency == self.company_currency_id:
+            return currency.round(amount_invoice_currency * rate)
+        date = self.invoice_date or fields.Date.context_today(self)
+        return self.currency_id._convert(
+            amount_invoice_currency, currency, self.company_id, date
+        )
+
+    def _l10n_ve_post_discount_amount_from_currency(
+        self, amount, currency, amount_base="untaxed"
+    ):
+        self.ensure_one()
+        if currency == self.currency_id:
+            return self.currency_id.round(amount)
+        rate = self._l10n_ve_invoice_company_rate(amount_base)
+        if currency == self.company_currency_id and rate:
+            return self.currency_id.round(amount / rate)
+        date = self.invoice_date or fields.Date.context_today(self)
+        return currency._convert(
+            amount, self.currency_id, self.company_id, date
+        )
+
+    def _l10n_ve_post_discount_credit_note_currency(self):
+        self.ensure_one()
+        if (
+            hasattr(self, "_l10n_ve_requires_refund_company_currency")
+            and self._l10n_ve_requires_refund_company_currency()
+        ):
+            return self.company_currency_id
+        return self.currency_id
+
+    def _l10n_ve_credit_untaxed_in_invoice_currency(self, credit):
+        self.ensure_one()
+        if credit.currency_id == self.currency_id:
+            return credit.amount_untaxed
+        credit_bs = abs(
+            sum(
+                credit.line_ids.filtered(
+                    lambda line: line.display_type == "product"
+                ).mapped("balance")
+            )
+        )
+        if self.currency_id == self.company_currency_id:
+            return self.currency_id.round(credit_bs)
+        rate = self._l10n_ve_invoice_untaxed_company_rate()
+        if not rate:
+            return 0.0
+        return self.currency_id.round(credit_bs / rate)
+
     def _l10n_ve_post_discount_used_untaxed(self):
         self.ensure_one()
         return self.currency_id.round(
-            sum(self._l10n_ve_post_discount_credit_notes().mapped("amount_untaxed"))
+            sum(
+                self._l10n_ve_credit_untaxed_in_invoice_currency(credit)
+                for credit in self._l10n_ve_post_discount_credit_notes()
+            )
+        )
+
+    def _l10n_ve_credit_total_in_invoice_currency(self, credit):
+        self.ensure_one()
+        if credit.currency_id == self.currency_id:
+            return credit.amount_total
+        credit_bs = abs(credit.amount_total_signed)
+        if self.currency_id == self.company_currency_id:
+            return self.currency_id.round(credit_bs)
+        rate = self._l10n_ve_invoice_company_rate("total")
+        if not rate:
+            return 0.0
+        return self.currency_id.round(credit_bs / rate)
+
+    def _l10n_ve_post_discount_used_total(self):
+        self.ensure_one()
+        return self.currency_id.round(
+            sum(
+                self._l10n_ve_credit_total_in_invoice_currency(credit)
+                for credit in self._l10n_ve_post_discount_credit_notes()
+            )
+        )
+
+    def _l10n_ve_post_discount_used_total_company(self):
+        self.ensure_one()
+        return self.company_currency_id.round(
+            sum(
+                abs(credit.amount_total_signed)
+                for credit in self._l10n_ve_post_discount_credit_notes()
+            )
+        )
+
+    def _l10n_ve_post_discount_used_untaxed_company(self):
+        self.ensure_one()
+        return self.company_currency_id.round(
+            sum(
+                abs(
+                    sum(
+                        credit.line_ids.filtered(
+                            lambda line: line.display_type == "product"
+                        ).mapped("balance")
+                    )
+                )
+                for credit in self._l10n_ve_post_discount_credit_notes()
+            )
         )
 
     def _l10n_ve_post_discount_available_untaxed(self):
@@ -450,8 +623,11 @@ class AccountMove(models.Model):
         )
         return lines[:1]
 
-    def _l10n_ve_prepare_post_discount_credit_note_lines(self, amount, reason):
+    def _l10n_ve_prepare_post_discount_credit_note_lines(
+        self, amount, reason, currency=None
+    ):
         self.ensure_one()
+        currency = currency or self.currency_id
         subtotal_by_taxes = self._l10n_ve_post_discount_subtotal_by_taxes()
         if not subtotal_by_taxes:
             raise UserError(
@@ -459,11 +635,13 @@ class AccountMove(models.Model):
             )
         tax_groups = list(subtotal_by_taxes.keys())
         weights = [subtotal_by_taxes[taxes] for taxes in tax_groups]
-        parts = self._l10n_ve_split_amount_by_weights(amount, weights)
+        parts = self._l10n_ve_split_amount_by_weights(
+            amount, weights, currency=currency
+        )
         line_name = _("Descuento: %(reason)s", reason=reason.name)
         line_vals = []
         for taxes, part in zip(tax_groups, parts):
-            if float_is_zero(part, precision_rounding=self.currency_id.rounding):
+            if float_is_zero(part, precision_rounding=currency.rounding):
                 continue
             sample = self._l10n_ve_post_discount_sample_line_for_taxes(taxes)
             account = self._l10n_ve_post_discount_account_for_taxes(taxes)
@@ -508,9 +686,20 @@ class AccountMove(models.Model):
                 {"price_unit": self.currency_id.round(line.price_unit * factor)}
             )
 
-    def _l10n_ve_create_post_discount_credit_note(self, amount, reason):
+    def _l10n_ve_create_post_discount_credit_note(
+        self, amount, reason, amount_cn=None
+    ):
         self.ensure_one()
-        line_vals = self._l10n_ve_prepare_post_discount_credit_note_lines(amount, reason)
+        target_currency = self._l10n_ve_post_discount_credit_note_currency()
+        if amount_cn is not None:
+            line_amount = target_currency.round(amount_cn)
+        else:
+            line_amount = self._l10n_ve_post_discount_amount_in_currency(
+                amount, target_currency
+            )
+        line_vals = self._l10n_ve_prepare_post_discount_credit_note_lines(
+            line_amount, reason, currency=target_currency
+        )
         credit_note = (
             self.env["account.move"]
             .with_context(l10n_ve_skip_exempt_tax_line=True)
@@ -521,7 +710,7 @@ class AccountMove(models.Model):
                     "partner_id": self.partner_id.id,
                     "journal_id": self.journal_id.id,
                     "invoice_date": fields.Date.context_today(self),
-                    "currency_id": self.currency_id.id,
+                    "currency_id": target_currency.id,
                     "l10n_ve_discount_reason_id": reason.id,
                     "ref": _(
                         "Descuento post-factura %(invoice)s: %(reason)s",
@@ -532,37 +721,15 @@ class AccountMove(models.Model):
                 }
             )
         )
-        credit_note._l10n_ve_force_refund_to_company_currency()
+        if credit_note.currency_id != target_currency:
+            credit_note._l10n_ve_force_refund_to_company_currency()
         credit_note.with_context(
             l10n_ve_skip_exempt_tax_line=True
-        )._l10n_ve_adjust_post_discount_to_untaxed_amount(amount)
+        )._l10n_ve_adjust_post_discount_to_untaxed_amount(line_amount)
         return credit_note
 
     def action_l10n_ve_open_post_discount_wizard(self):
-        self.ensure_one()
-        self._l10n_ve_check_post_discount_allowed()
-        return {
-            "name": _("Descuento post-factura"),
-            "type": "ir.actions.act_window",
-            "res_model": "l10n.ve.account.move.post.discount.wizard",
-            "view_mode": "form",
-            "target": "new",
-            "context": {
-                "default_move_id": self.id,
-                "default_available_untaxed_amount": (
-                    self._l10n_ve_post_discount_available_untaxed()
-                ),
-                **(
-                    {"default_reason_id": default_reason.id}
-                    if (
-                        default_reason := self.env[
-                            "l10n.ve.discount.reason"
-                        ]._l10n_ve_get_default()
-                    )
-                    else {}
-                ),
-            },
-        }
+        return self.action_l10n_ve_open_discount_wizard()
 
     def _l10n_ve_global_discount_applies(self):
         self.ensure_one()
@@ -656,7 +823,7 @@ class AccountMove(models.Model):
             if not base_line.get("special_type")
         ]
 
-    def _l10n_ve_split_amount_by_weights(self, amount, weights):
+    def _l10n_ve_split_amount_by_weights(self, amount, weights, currency=None):
         self.ensure_one()
         if not weights:
             return []
@@ -665,7 +832,8 @@ class AccountMove(models.Model):
         total_weight = sum(weights)
         if float_is_zero(total_weight, precision_rounding=1e-9):
             return [0.0] * len(weights)
-        prec = self.currency_id.decimal_places
+        currency = currency or self.currency_id
+        prec = currency.decimal_places
         parts = []
         accumulated = 0.0
         for weight in weights[:-1]:

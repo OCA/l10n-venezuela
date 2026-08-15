@@ -4,12 +4,14 @@
         <field name="name">l10n.ve.account.move.post.discount.wizard.form</field>
         <field name="model">l10n.ve.account.move.post.discount.wizard</field>
         <field name="arch" type="xml">
-            <form string="Descuento post-factura">
+            <form string="Descuento">
                 <group>
                     <field name="move_id" invisible="1" />
                     <field name="company_id" invisible="1" />
                     <field name="currency_id" invisible="1" />
-                    <field name="available_untaxed_amount" />
+                    <field name="company_currency_id" invisible="1" />
+                    <field name="move_state" invisible="1" />
+                    <field name="allowed_currency_ids" invisible="1" />
                     <field name="discount_mode" widget="radio" options="{'horizontal': true}" />
                     <field name="reason_id" options="{'no_create': True}" />
                     <field
@@ -19,6 +21,20 @@
                         required="discount_mode == 'percentage'"
                     />
                     <field
+                        name="amount_base"
+                        widget="radio"
+                        options="{'horizontal': true}"
+                        invisible="discount_mode != 'amount'"
+                        required="discount_mode == 'amount'"
+                    />
+                    <field
+                        name="discount_currency_id"
+                        invisible="discount_mode != 'amount'"
+                        required="discount_mode == 'amount'"
+                        options="{'no_create': True, 'no_open': True}"
+                    />
+                    <field name="available_amount" invisible="discount_mode != 'amount'" />
+                    <field
                         name="amount"
                         invisible="discount_mode != 'amount'"
                         required="discount_mode == 'amount'"
@@ -26,9 +42,9 @@
                 </group>
                 <footer>
                     <button
-                        name="action_create_credit_note"
+                        name="action_apply_discount"
                         type="object"
-                        string="Crear nota de crédito"
+                        string="Aplicar"
                         class="btn-primary"
                     />
                     <button special="cancel" string="Cancelar" class="btn-secondary" />

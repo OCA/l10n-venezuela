@@ -69,7 +69,7 @@
             </xpath>
             <xpath expr="//button[@name='button_draft']" position="attributes">
                 <!-- Art. 22-24 PA SNAT/2011/0071: usar NC en lugar de borrador. -->
-                <attribute name="invisible">not show_reset_to_draft_button or (country_code == 'VE' and move_type in ('out_invoice', 'out_refund', 'out_receipt'))</attribute>
+                <attribute name="invisible">not show_reset_to_draft_button or (country_code == 'VE' and move_type in ('out_invoice', 'out_refund', 'out_receipt', 'in_invoice', 'in_refund', 'in_receipt'))</attribute>
             </xpath>
             <xpath expr="//button[@name='button_cancel'][2]" position="attributes">
                 <attribute name="invisible">not id or state != 'draft' or move_type == 'entry' or (country_code == 'VE' and move_type in ('out_invoice', 'out_refund', 'out_receipt'))</attribute>
@@ -124,6 +124,14 @@
                     groups="l10n_ve_seniat.group_l10n_ve_invoice_void"
                     data-hotkey="x"
                     invisible="country_code != 'VE' or not l10n_ve_show_cancel_wizard"
+                />
+                <button
+                    name="button_draft"
+                    string="Restablecer a borrador"
+                    type="object"
+                    groups="account.group_account_invoice"
+                    data-hotkey="r"
+                    invisible="country_code != 'VE' or move_type not in ('in_invoice', 'in_refund', 'in_receipt') or state not in ('posted', 'cancel')"
                 />
             </xpath>
 

@@ -63,8 +63,10 @@ def l10n_ve_remaining_subtotal_by_taxes(document, subtotal_by_taxes=None):
     return running
 
 
-def l10n_ve_fixed_discount_to_untaxed(document, amount, amount_base, subtotal_by_taxes=None):
-    currency = document.currency_id
+def l10n_ve_fixed_discount_to_untaxed(
+    document, amount, amount_base, subtotal_by_taxes=None, currency=None
+):
+    currency = currency or document.currency_id
     if subtotal_by_taxes is None:
         subtotal_by_taxes = l10n_ve_remaining_subtotal_by_taxes(document)
     if amount_base != "total":
@@ -86,8 +88,12 @@ def l10n_ve_fixed_discount_to_untaxed(document, amount, amount_base, subtotal_by
     if float_is_zero(available_total, precision_rounding=currency.rounding):
         return 0.0
 
-    capped = min(amount, available_total)
-    parts = document._l10n_ve_split_amount_by_weights(capped, weights)
+    capped = amount
+    if currency == document.currency_id:
+        capped = min(amount, available_total)
+    parts = document._l10n_ve_split_amount_by_weights(
+        capped, weights, currency=currency
+    )
     untaxed_sum = 0.0
     for part, factor in zip(parts, factors):
         untaxed_sum += part / factor

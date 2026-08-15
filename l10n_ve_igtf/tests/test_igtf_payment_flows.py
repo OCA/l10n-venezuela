@@ -363,6 +363,22 @@ class TestIgtfPaymentFlows(TestL10nVeIgtfCommon):
             places=2,
         )
 
+    def test_invoice_usd_partial_payment_without_igtf_keeps_residual(self):
+        invoice = self._create_customer_invoice(amount=23.08, currency=self.usd)
+        payment, wizard = self._register_invoice_payment(
+            invoice=invoice,
+            amount=10.0,
+            currency=self.usd,
+            apply_igtf=False,
+            igtf_included=False,
+            return_wizard=True,
+        )
+        self._assert_no_writeoff_or_exchange_diff(invoice, payment)
+        invoice.invalidate_recordset()
+        self.assertAlmostEqual(payment.amount, 10.0, places=2)
+        self.assertAlmostEqual(invoice.amount_residual, 13.08, places=2)
+        self.assertNotEqual(invoice.payment_state, "paid")
+
     def test_invoice_usd_half_payment_usd_with_igtf_base_in_bs(self):
         invoice = self._create_customer_invoice(amount=100.0, currency=self.usd)
         payment, wizard = self._register_invoice_payment(

@@ -1169,6 +1169,7 @@ class TestAccountMove(L10nVeSeniatCommon):
             }
         )
         move.action_post()
+        self.assertTrue(move.show_reset_to_draft_button)
         move.button_draft()
         self.assertEqual(move.state, "draft")
 
