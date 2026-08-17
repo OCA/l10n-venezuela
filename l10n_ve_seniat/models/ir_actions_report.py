@@ -7,19 +7,18 @@ from odoo.exceptions import UserError
 class IrActionsReport(models.Model):
     _inherit = "ir.actions.report"
 
-    def _l10n_ve_is_account_invoice_pdf_report(self, report):
+    def _l10n_ve_is_original_invoice_report(self, report):
+        """True solo para el PDF fiscal oficial (botón Imprimir / is_invoice_report)."""
         if report.model != "account.move":
             return False
-        rname = (report.report_name or "")
-        if "report_invoice" in rname:
+        report_name = report.report_name or ""
+        if report_name == "l10n_ve_seniat.report_invoice_document":
             return True
-        return "invoice" in rname.lower() and "payment" not in rname.lower()
+        return bool(getattr(report, "is_invoice_report", False))
 
     def _l10n_ve_is_ve_blockable_invoice_report(self, report_ref):
         report = self._get_report(report_ref)
-        if hasattr(self, "_is_invoice_report") and self._is_invoice_report(report_ref):
-            return True
-        return self._l10n_ve_is_account_invoice_pdf_report(report)
+        return self._l10n_ve_is_original_invoice_report(report)
 
     def _l10n_ve_should_apply_book_paperformat(self, report_ref, res_ids):
         if not res_ids or not self._l10n_ve_is_ve_blockable_invoice_report(report_ref):
@@ -28,6 +27,7 @@ class IrActionsReport(models.Model):
         return bool(moves) and all(
             move.country_code == "VE"
             and move.move_type in ("out_invoice", "out_refund")
+            and move.l10n_ve_journal_emission_medium
             for move in moves
         )
 
@@ -101,7 +101,7 @@ class IrActionsReport(models.Model):
         return [report_id for report_id in valid_ids if report_id not in blocked_report_ids]
 
     def report_action(self, docids, data=None, config=True):
-        if self.model == "account.move" and self._l10n_ve_is_account_invoice_pdf_report(
+        if self.model == "account.move" and self._l10n_ve_is_original_invoice_report(
             self
         ):
             if isinstance(docids, models.Model):
@@ -198,8 +198,7 @@ class IrActionsReport(models.Model):
             self.env["account.move"]
             .browse(res_ids or [])
             .filtered(
-                lambda m: m.company_id.account_fiscal_country_id.code == "VE"
-                and m.move_type in ("out_invoice", "out_refund")
+                lambda m: m._l10n_ve_applies_fiscal_print_rules()
                 and m.state == "posted"
             )
         )

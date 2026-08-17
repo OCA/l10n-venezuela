@@ -213,6 +213,7 @@ class TestAccountMoveLine(L10nVeSeniatCommon):
             }
         )
         invoice.action_post()
+        invoice.l10n_ve_invoice_original_printed = True
         move = invoice._reverse_moves()
         move.action_post()
         line = move.line_ids.filtered(lambda aml: aml.display_type == "product")
@@ -292,6 +293,8 @@ class TestAccountMoveLine(L10nVeSeniatCommon):
         self.assertEqual(line.name, "asiento ok")
 
     def test_l10n_ve_report_invoice_lines_discount_last(self):
+        if "sale_discount_product_id" not in self.env.company._fields:
+            self.skipTest("sale_discount_product_id requires l10n_ve_loyalty")
         partner = self.env["res.partner"].create(
             {
                 "name": "Partner report",

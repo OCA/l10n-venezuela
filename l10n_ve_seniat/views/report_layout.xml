@@ -15,7 +15,9 @@
             expr="//div[hasclass('totals_taxes_company_currency')]"
             position="attributes"
         >
-            <attribute name="class">mb-2</attribute>
+            <attribute
+                name="class"
+            >mb-2 totals_taxes_company_currency</attribute>
         </xpath>
         <!-- <xpath expr="//p[hasclass('tax_computation_company_currency')]" priority="100" position="replace" /> -->
     </template>
@@ -432,7 +434,7 @@
                                                     />
                                                     <t
                                                         t-set="igtf_percent_value"
-                                                        t-value="o.company_id.l10n_ve_igtf_percent or 3.0"
+                                                        t-value="o.l10n_ve_report_igtf_percent()"
                                                     />
                                                     <t
                                                         t-set="igtf_percent_txt"
@@ -657,7 +659,7 @@
                         t-set="vat_percent"
                         t-value="vat_percent_tokens[0] if vat_percent_tokens else '16%'"
                     />
-                    <t t-set="igtf_percent_value" t-value="o.company_id.l10n_ve_igtf_percent or 3.0" />
+                    <t t-set="igtf_percent_value" t-value="o.l10n_ve_report_igtf_percent()" />
                     <t t-set="igtf_percent_txt" t-value="'%s' % igtf_percent_value" />
                     <t t-set="igtf_percent" t-value="igtf_percent_txt.replace('.', ',') + '%'" />
                     <div class="row">
@@ -762,7 +764,10 @@
 
     <template id="report_invoice" inherit_id="account.report_invoice">
         <xpath expr="//t[@t-call='account.report_invoice_document']" position="after">
-            <t t-call="l10n_ve_seniat.report_invoice_document" />
+            <t
+                t-if="o._l10n_ve_applies_fiscal_print_rules()"
+                t-call="l10n_ve_seniat.report_invoice_document"
+            />
         </xpath>
     </template>
 </odoo>

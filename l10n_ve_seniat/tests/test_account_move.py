@@ -3,6 +3,7 @@
 from datetime import date
 
 from dateutil.relativedelta import relativedelta
+from lxml import html as lxml_html
 from odoo import Command, fields
 from odoo.exceptions import UserError, ValidationError
 from odoo.tests import tagged
@@ -242,6 +243,23 @@ class TestAccountMove(L10nVeSeniatCommon):
                 "amount_type": "percent",
                 "type_tax_use": "sale",
                 "company_id": self.env.company.id,
+                "country_id": self.env.ref("base.ve").id,
+            }
+        )
+        product = self.env["product.product"].with_context(
+            l10n_ve_skip_product_tax_constraint=True
+        ).create(
+            {
+                "name": "Producto dos impuestos",
+                "list_price": 100.0,
+                "taxes_id": [
+                    Command.set(
+                        [self.company_data["default_tax_sale"].id, tax_b.id]
+                    )
+                ],
+                "supplier_taxes_id": [
+                    Command.set([self.company_data["default_tax_purchase"].id])
+                ],
             }
         )
         move = self.env["account.move"].create(
@@ -254,6 +272,7 @@ class TestAccountMove(L10nVeSeniatCommon):
                         0,
                         0,
                         {
+                            "product_id": product.id,
                             "name": "Line with 2 taxes",
                             "quantity": 1.0,
                             "price_unit": 100.0,
@@ -273,6 +292,7 @@ class TestAccountMove(L10nVeSeniatCommon):
                 ],
             }
         )
+        self.assertGreater(len(move.invoice_line_ids.tax_ids), 1)
         with self.assertRaises(UserError) as cm:
             move.action_post()
         self.assertIn("more than one tax", str(cm.exception))
@@ -894,6 +914,7 @@ class TestAccountMove(L10nVeSeniatCommon):
             self._create_invoice_vals(self.partner_ve)
         )
         invoice.action_post()
+        invoice.l10n_ve_invoice_original_printed = True
         credit_note = invoice._reverse_moves()
         credit_note.action_post()
         self.assertTrue(credit_note.l10n_ve_control_number)
@@ -949,6 +970,7 @@ class TestAccountMove(L10nVeSeniatCommon):
         )
         inv2.action_post()
         self.assertEqual(inv2.l10n_ve_control_number, "00-00000002")
+        inv1.l10n_ve_invoice_original_printed = True
         credit_note = inv1._reverse_moves()
         credit_note.action_post()
         self.assertEqual(credit_note.l10n_ve_control_number, "00-00000501")
@@ -1117,6 +1139,7 @@ class TestAccountMove(L10nVeSeniatCommon):
             self._create_invoice_vals(self.partner_ve)
         )
         invoice.action_post()
+        invoice.l10n_ve_invoice_original_printed = True
         move = invoice._reverse_moves()
         move.action_post()
         with self.assertRaises(ValidationError) as cm:
@@ -1206,6 +1229,8 @@ class TestAccountMove(L10nVeSeniatCommon):
         self.assertIn("ya está asignado", str(cm.exception).lower())
 
     def test_get_name_invoice_report_ve(self):
+        journal = self.company_data["default_journal_sale"]
+        journal.l10n_ve_emission_medium = "free"
         move = self.env["account.move"].create(
             self._create_invoice_vals(self.partner_ve)
         )
@@ -1213,6 +1238,135 @@ class TestAccountMove(L10nVeSeniatCommon):
             move._get_name_invoice_report(),
             "l10n_ve_seniat.report_invoice_document",
         )
+
+    def test_get_name_invoice_report_native_without_emission_medium(self):
+        journal = self.company_data["default_journal_sale"]
+        journal.write(
+            {
+                "l10n_ve_emission_medium": False,
+                "l10n_ve_invoice_section_id": False,
+                "l10n_ve_credit_note_section_id": False,
+                "l10n_ve_debit_note_section_id": False,
+            }
+        )
+        move = self.env["account.move"].create(
+            self._create_invoice_vals(self.partner_ve)
+        )
+        self.assertEqual(
+            move._get_name_invoice_report(),
+            "account.report_invoice_document",
+        )
+
+    def test_native_light_report_uses_dual_currency_totals_widget(self):
+        foreign_currency = self.env.ref("base.USD")
+        if foreign_currency == self.env.company.currency_id:
+            foreign_currency = self.env.ref("base.EUR")
+        journal = self.company_data["default_journal_sale"]
+        journal.write(
+            {
+                "l10n_ve_emission_medium": False,
+                "l10n_ve_invoice_section_id": False,
+                "l10n_ve_credit_note_section_id": False,
+                "l10n_ve_debit_note_section_id": False,
+            }
+        )
+        invoice_vals = self._create_invoice_vals(self.partner_ve)
+        invoice_vals["currency_id"] = foreign_currency.id
+        invoice_vals["l10n_ve_control_number"] = "00-00000001"
+        move = self.env["account.move"].create(invoice_vals)
+        move.action_post()
+        self.env.company.external_report_layout_id = self.env.ref(
+            "web.external_layout_standard"
+        )
+
+        report = self.env["ir.actions.report"]._render_qweb_html(
+            "account.report_invoice", move.ids
+        )[0]
+        html = report.decode() if isinstance(report, bytes) else report
+
+        self.assertIn("o_l10n_ve_dual_currency_totals", html)
+        self.assertIn("o_l10n_ve_dual_currency_header", html)
+        self.assertIn("Total a Pagar", html)
+        self.assertIn("Fecha de Documento", html)
+        self.assertNotIn("Base Imponible IGTF", html)
+        document = lxml_html.fromstring(html)
+        document_title = document.xpath("//h2")[0].text_content().strip()
+        self.assertEqual(document_title, move.name)
+
+    def test_native_tax_totals_hide_zero_percent_group(self):
+        journal = self.company_data["default_journal_sale"]
+        journal.write(
+            {
+                "l10n_ve_emission_medium": False,
+                "l10n_ve_invoice_section_id": False,
+                "l10n_ve_credit_note_section_id": False,
+                "l10n_ve_debit_note_section_id": False,
+            }
+        )
+        zero_tax_group = self.env["account.tax.group"].create(
+            {"name": "Hidden Zero Percent Group", "sequence": 100}
+        )
+        zero_tax = self.company_data["default_tax_sale"].copy(
+            {
+                "name": "IVA 0%",
+                "amount": 0.0,
+                "tax_group_id": zero_tax_group.id,
+            }
+        )
+        move = self.env["account.move"].create(
+            self._create_invoice_vals(self.partner_ve, tax_ids=[zero_tax.id])
+        )
+        self.env.company.external_report_layout_id = self.env.ref(
+            "web.external_layout_standard"
+        )
+
+        report = self.env["ir.actions.report"]._render_qweb_html(
+            "account.report_invoice", move.ids
+        )[0]
+        html = report.decode() if isinstance(report, bytes) else report
+
+        self.assertNotIn("Hidden Zero Percent Group", html)
+
+    def test_native_invoice_hides_header_for_all_web_layouts(self):
+        journal = self.company_data["default_journal_sale"]
+        journal.write(
+            {
+                "l10n_ve_emission_medium": False,
+                "l10n_ve_invoice_section_id": False,
+                "l10n_ve_credit_note_section_id": False,
+                "l10n_ve_debit_note_section_id": False,
+            }
+        )
+        move = self.env["account.move"].create(
+            self._create_invoice_vals(self.partner_ve)
+        )
+        layout_xmlids = (
+            "web.external_layout_striped",
+            "web.external_layout_boxed",
+            "web.external_layout_bold",
+            "web.external_layout_standard",
+            "web.external_layout_folder",
+            "web.external_layout_wave",
+            "web.external_layout_bubble",
+        )
+
+        for layout_xmlid in layout_xmlids:
+            with self.subTest(layout=layout_xmlid):
+                self.env.company.external_report_layout_id = self.env.ref(
+                    layout_xmlid
+                )
+                report = self.env["ir.actions.report"]._render_qweb_html(
+                    "account.report_invoice", move.ids
+                )[0]
+                report_html = (
+                    report.decode() if isinstance(report, bytes) else report
+                )
+                document = lxml_html.fromstring(report_html)
+                headers = document.xpath(
+                    "//*[contains(concat(' ', normalize-space(@class), ' '),"
+                    " ' header ')]"
+                )
+                self.assertFalse(headers)
 
     def test_action_print_pdf(self):
         move = self.env["account.move"].create(
@@ -1259,14 +1413,6 @@ class TestAccountMove(L10nVeSeniatCommon):
         self.assertEqual(move.get_extra_print_items(), [])
 
     def test_get_extra_print_items_posted_hides_pdf_download_without_original_print(self):
-        move = self.env["account.move"].create(
-            self._create_invoice_vals(self.partner_ve)
-        )
-        move.action_post()
-        self.assertEqual(move.get_extra_print_items(), [])
-        self.assertTrue(move._l10n_ve_allows_invoice_portal_view())
-
-    def test_portal_view_allowed_before_original_print_free_form(self):
         journal = self.company_data["default_journal_sale"]
         journal.l10n_ve_emission_medium = "free"
         journal.l10n_ve_free_form_print_medium = "pdf"
@@ -1274,9 +1420,27 @@ class TestAccountMove(L10nVeSeniatCommon):
             self._create_invoice_vals(self.partner_ve)
         )
         move.action_post()
-        self.assertFalse(move.l10n_ve_invoice_original_printed)
-        self.assertFalse(move._l10n_ve_allows_invoice_pdf_download())
-        self.assertTrue(move._l10n_ve_allows_invoice_portal_view())
+        self.assertEqual(move.get_extra_print_items(), [])
+
+    def test_get_extra_print_items_posted_without_emission_medium_uses_native(self):
+        journal = self.company_data["default_journal_sale"]
+        journal.write(
+            {
+                "l10n_ve_emission_medium": False,
+                "l10n_ve_invoice_section_id": False,
+                "l10n_ve_credit_note_section_id": False,
+                "l10n_ve_debit_note_section_id": False,
+            }
+        )
+        move = self.env["account.move"].create(
+            self._create_invoice_vals(self.partner_ve)
+        )
+        move.action_post()
+        self.assertFalse(move.l10n_ve_journal_emission_medium)
+        self.assertTrue(move._l10n_ve_show_download_pdf_action())
+        self.assertFalse(move.l10n_ve_hide_invoice_print_pdf)
+        self.assertFalse(move.l10n_ve_hide_invoice_preview_send)
+        self.assertEqual(len(move.get_extra_print_items()), 1)
 
     def test_get_extra_print_items_posted_shows_pdf_download_after_original_print(self):
         journal = self.company_data["default_journal_sale"]
@@ -1305,7 +1469,7 @@ class TestAccountMove(L10nVeSeniatCommon):
 
     def test_get_extra_print_items_hides_pdf_download_for_digital(self):
         journal = self.company_data["default_journal_sale"]
-        journal.l10n_ve_emission_medium = "digital"
+        self._l10n_ve_configure_journal_digital(journal)
         move = self.env["account.move"].create(
             self._create_invoice_vals(self.partner_ve)
         )
@@ -1315,7 +1479,7 @@ class TestAccountMove(L10nVeSeniatCommon):
 
     def test_hide_invoice_print_pdf_digital_not_sent(self):
         journal = self.company_data["default_journal_sale"]
-        journal.l10n_ve_emission_medium = "digital"
+        self._l10n_ve_configure_journal_digital(journal)
         move = self.env["account.move"].create(
             self._create_invoice_vals(self.partner_ve)
         )

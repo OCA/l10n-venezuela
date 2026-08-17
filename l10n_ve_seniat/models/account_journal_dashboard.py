@@ -130,36 +130,6 @@ class AccountJournal(models.Model):
             "visible": True,
             "month_label": format_date(self.env, month_start, date_format="MMMM y"),
             "items": items,
-            "dispatch_email": self._l10n_ve_seniat_dispatch_email_dashboard_data(
-                dispatch_available
-            ),
-        }
-
-    @api.model
-    def _l10n_ve_seniat_dispatch_email_dashboard_data(self, dispatch_available):
-        company = self.env.company
-        if not dispatch_available:
-            return {
-                "available": False,
-                "can_send": False,
-                "last_sent_label": False,
-            }
-        return {
-            "available": True,
-            "can_send": bool(
-                getattr(company, "l10n_ve_dispatch_guide_enabled", True)
-                and (company.l10n_ve_unfactured_dispatch_email_recipient or "").strip()
-            ),
-            "last_sent_label": company.l10n_ve_unfactured_dispatch_email_last_sent_label()
-            or False,
-        }
-
-    @api.model
-    def action_l10n_ve_send_unfactured_dispatch_guides_email(self):
-        company = self.env.company
-        company._l10n_ve_send_unfactured_dispatch_guides_email()
-        return self._l10n_ve_seniat_dispatch_email_dashboard_data(True) | {
-            "message": _("Correo de guías no facturadas enviado correctamente."),
         }
 
     @api.model

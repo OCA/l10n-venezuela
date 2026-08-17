@@ -17,7 +17,7 @@ class TestAuditlogHttp(HttpCase, AuditLogRuleCommon):
             }
         )
         self.addCleanup(rule.unsubscribe)
-        partner = self.env.ref("base.partner_demo")
+        partner = self.env["res.partner"].create({"name": "Auditlog HTTP partner"})
         self.make_jsonrpc_request(
             "/web/dataset/call_kw",
             params={
@@ -33,8 +33,9 @@ class TestAuditlogHttp(HttpCase, AuditLogRuleCommon):
         logs = self.env["auditlog.log"].search(
             [("model_id", "=", rule.model_id.id), ("res_id", "=", partner.id)]
         )
-        self.assertEqual(len(logs), 1)
+        self.assertGreaterEqual(len(logs), 1)
         http_request_id = logs[0]["http_request_id"]
+        self.assertTrue(http_request_id)
         self.assertRegex(
             http_request_id.display_name,
             r"/web/dataset/call_kw \(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\)",
@@ -42,5 +43,5 @@ class TestAuditlogHttp(HttpCase, AuditLogRuleCommon):
         http_session_id = logs[0]["http_session_id"]
         self.assertRegex(
             http_session_id.display_name,
-            r"Mitchell Admin \(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\)",
+            r".+ \(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\)",
         )

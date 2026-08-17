@@ -22,8 +22,10 @@ class SaleOrder(models.Model):
             book = section.book_id if section else False
             if book:
                 max_moves = max(book.l10n_ve_max_picking_lines or 10, 1)
-            elif journal.l10n_ve_emission_medium != "free":
-                max_moves = max(journal.l10n_ve_max_picking_lines or 10, 1)
+            elif journal.l10n_ve_emission_medium not in ("free", "fiscal_machine"):
+                max_moves = journal._l10n_ve_journal_picking_line_limit()
+                if not max_moves:
+                    continue
             else:
                 continue
             pickings = order.picking_ids.filtered(

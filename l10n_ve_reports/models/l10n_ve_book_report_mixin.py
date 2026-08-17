@@ -1,9 +1,5 @@
 from odoo import models
 
-from odoo.addons.l10n_ve_seniat.models.account_tax_group import (
-    ALIQUOT_TYPE_DEFAULT_RATES,
-)
-
 
 class L10nVeBookReportMixin(models.AbstractModel):
     _name = "l10n.ve.book.report.mixin"
@@ -252,17 +248,11 @@ class L10nVeBookReportMixin(models.AbstractModel):
             "total_exempt": 0.0,
             "base_general": 0.0,
             "amount_general": 0.0,
-            "percent_general": default_rates.get(
-                "general", ALIQUOT_TYPE_DEFAULT_RATES["general"]
-            ),
+            "percent_general": default_rates.get("general", 0.0),
             "base_reduced": 0.0,
             "amount_reduced": 0.0,
-            "percent_reduced": default_rates.get(
-                "reduced", ALIQUOT_TYPE_DEFAULT_RATES["reduced"]
-            ),
+            "percent_reduced": default_rates.get("reduced", 0.0),
             "base_extend": 0.0,
             "amount_extend": 0.0,
-            "percent_extend": default_rates.get(
-                "extend", ALIQUOT_TYPE_DEFAULT_RATES["extend"]
-            ),
+            "percent_extend": default_rates.get("extend", 0.0),
         }

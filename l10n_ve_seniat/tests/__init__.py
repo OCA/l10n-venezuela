@@ -5,7 +5,6 @@ from . import test_coverage_extra
 from . import test_http
 from . import test_product_template
 from . import test_res_partner
-from . import test_account_tax
 from . import test_account_move
 from . import test_credit_debit_button_scenarios
 from . import test_vendor_credit_debit
@@ -18,6 +17,6 @@ from . import test_ir_actions_report
 from . import test_res_country_municipality
 from . import test_res_currency_rate
 from . import test_account_journal_dashboard
-from . import test_l10n_ve_dispatch_guide_email
 from . import test_account_tax_group
+from . import test_account_fiscal_position
 from . import test_l10n_ve_book_report_columns

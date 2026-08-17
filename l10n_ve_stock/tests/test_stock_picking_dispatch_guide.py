@@ -1,18 +1,17 @@
 from odoo import Command
-from odoo.exceptions import ValidationError
+from odoo.exceptions import UserError
 from odoo.tests import Form, tagged
 
-from odoo.addons.sale_stock.tests.common import TestSaleStockCommon
+from odoo.addons.l10n_ve_seniat.tests.common import L10nVeSeniatCommon
 
 
 @tagged("post_install", "-at_install")
-class TestL10nVeStockDispatchGuide(TestSaleStockCommon):
+class TestL10nVeStockDispatchGuide(L10nVeSeniatCommon):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        cls.env.company.write(
-            {"account_fiscal_country_id": cls.env.ref("base.ve").id}
-        )
+        # Digital journal: free-form confirmation requires a dispatch guide section.
+        cls._l10n_ve_configure_journal_digital(cls.company_data["default_journal_sale"])
         cls._setup_l10n_ve_dispatch_section()
 
     @classmethod
@@ -176,9 +175,8 @@ class TestL10nVeStockDispatchGuide(TestSaleStockCommon):
         wh = self.env["stock.warehouse"].search(
             [("company_id", "=", self.env.company.id)], limit=1
         )
-        wh.l10n_ve_dispatch_guide_section_id = sec_b
-        with self.assertRaises(ValidationError):
-            self._create_ve_sale_and_validate_delivery()
+        with self.assertRaises(UserError):
+            wh.l10n_ve_dispatch_guide_section_id = sec_b
 
     def test_picking_invoice_ids_synced_from_sale_invoice(self):
         picking = self._create_ve_sale_and_validate_delivery()

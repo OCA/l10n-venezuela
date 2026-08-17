@@ -9,7 +9,7 @@
             <t t-if="o.company_id.account_fiscal_country_id.code == 'VE'">
                 <span
                     t-if="o.picking_type_id.code == 'outgoing'"
-                >Guía de Despacho: </span>
+                >GUIA DE DESPACHO - </span>
                 <span
                     t-elif="o.picking_type_id.code == 'internal'"
                 >Orden de Entrega: </span>
@@ -17,38 +17,13 @@
             </t>
         </xpath>
 
-        <!-- 2. "Sin derecho a Crédito Fiscal" + Datos del receptor (nombre y RIF) -->
+        <!-- 2. "Sin derecho a Crédito Fiscal" -->
         <xpath expr="//div[@id='informations']" position="inside">
             <t t-if="o.company_id.account_fiscal_country_id.code == 'VE'">
                 <!-- Art. 10 Num. 3: Expresión "Sin derecho a Crédito Fiscal" -->
                 <div class="col col-12 mb-2">
                     <strong class="text-danger"
                     >Sin derecho a Crédito Fiscal</strong>
-                </div>
-                <!-- Art. 10 Num. 5: Nombre y RIF del receptor -->
-                <div
-                    t-if="o.partner_id"
-                    class="col col-3 mw-100 mb-2"
-                    name="div_partner_name"
-                >
-                    <strong>Receptor</strong>
-                    <div class="m-0">
-                        <span
-                            t-out="o.partner_id.commercial_partner_id.name"
-                        >Nombre del receptor</span>
-                    </div>
-                </div>
-                <div
-                    t-if="o.partner_id.commercial_partner_id.vat"
-                    class="col col-3 mw-100 mb-2"
-                    name="div_partner_rif"
-                >
-                    <strong>RIF del Receptor</strong>
-                    <div class="m-0">
-                        <span
-                            t-out="o.partner_id.commercial_partner_id.vat"
-                        >J-12345678-9</span>
-                    </div>
                 </div>
                 <div
                     t-if="o.partner_id and (o.partner_id.phone or o.partner_id.mobile)"
@@ -74,6 +49,27 @@
                     </div>
                 </div>
             </t>
+        </xpath>
+
+        <xpath
+            expr="//div[@name='outgoing_delivery_address']/div[@t-out='o.move_ids[0].partner_id or o.partner_id']"
+            position="after"
+        >
+            <t
+                t-set="delivery_contact"
+                t-value="o.move_ids[0].partner_id or o.partner_id"
+            />
+            <div
+                t-if="delivery_contact and (delivery_contact.vat or delivery_contact.commercial_partner_id.vat)"
+                name="outgoing_delivery_vat"
+            >
+                <t
+                    t-out="o.company_id.account_fiscal_country_id.vat_label or 'RIF'"
+                />:
+                <span
+                    t-out="delivery_contact.vat or delivery_contact.commercial_partner_id.vat"
+                />
+            </div>
         </xpath>
 
         <!-- Art. 10 Num. 4: Agregar peso y volumen en la tabla de movimientos (estado != done) -->
@@ -149,4 +145,5 @@
             </t>
         </xpath>
     </template>
+
 </odoo>

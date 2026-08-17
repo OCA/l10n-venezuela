@@ -3,38 +3,57 @@ from odoo.exceptions import UserError, ValidationError
 from odoo.tests import tagged
 from odoo.tests.common import new_test_user
 
-from odoo.addons.account.tests.common import AccountTestInvoicingCommon
+from odoo.addons.l10n_ve_seniat.tests.common import L10nVeSeniatCommon
 
 
 @tagged("post_install", "-at_install")
-class TestL10nVeStockProductFiscalLocks(AccountTestInvoicingCommon):
+class TestL10nVeStockProductFiscalLocks(L10nVeSeniatCommon):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        cls.env.company.write(
-            {"account_fiscal_country_id": cls.env.ref("base.ve").id}
-        )
-        if not cls.tax_sale_b:
+        if not getattr(cls, "tax_sale_b", None):
             cls.tax_sale_b = cls.tax_sale_a.copy({"name": "sale_tax_b_dup"})
+        cls.locked_user = new_test_user(
+            cls.env,
+            login="ve_stock_fiscal_locked",
+            groups="base.group_user,stock.group_stock_manager,"
+            "sales_team.group_sale_salesman,account.group_account_invoice",
+        )
+        cls.unlocked_user = new_test_user(
+            cls.env,
+            login="ve_stock_fiscal_unlock",
+            groups="base.group_user,stock.group_stock_manager,"
+            "l10n_ve_seniat.group_l10n_ve_override_locked_master_data",
+        )
 
     def test_product_requires_exactly_one_sale_tax_ve(self):
+        ProductTemplate = self.env["product.template"].with_user(self.locked_user)
+        # Empty taxes_id is auto-filled by l10n_ve_seniat create(); two taxes must fail.
         with self.assertRaises(ValidationError):
-            self.env["product.template"].create(
-                {
-                    "name": "Sin impuesto",
-                    "is_storable": True,
-                    "taxes_id": [Command.clear()],
-                }
-            )
-        with self.assertRaises(ValidationError):
-            self.env["product.template"].create(
+            ProductTemplate.create(
                 {
                     "name": "Dos impuestos",
                     "is_storable": True,
+                    "company_id": self.env.company.id,
                     "taxes_id": [
                         Command.set((self.tax_sale_a + self.tax_sale_b).ids)
                     ],
                 }
+            )
+        tmpl = ProductTemplate.create(
+            {
+                "name": "Un impuesto",
+                "is_storable": True,
+                "company_id": self.env.company.id,
+                "taxes_id": [Command.set(self.tax_sale_a.ids)],
+                "supplier_taxes_id": [
+                    Command.set(self.company_data["default_tax_purchase"].ids)
+                ],
+            }
+        )
+        with self.assertRaises(ValidationError):
+            tmpl.with_context(l10n_ve_skip_auto_exent_taxes=True).write(
+                {"taxes_id": [Command.clear()]}
             )
 
     def test_product_default_code_and_taxes_locked_after_done_move(self):
@@ -79,25 +98,11 @@ class TestL10nVeStockProductFiscalLocks(AccountTestInvoicingCommon):
         move.move_line_ids.picked = True
         picking_in._action_done()
 
-        user = new_test_user(
-            self.env,
-            login="l10n_ve_stock_lock_user",
-            groups="stock.group_stock_manager",
-        )
-        self.assertFalse(
-            user.has_group("l10n_ve_seniat.group_l10n_ve_override_locked_master_data")
-        )
-        tmpl_as_user = tmpl.with_user(user)
+        tmpl_locked = tmpl.with_user(self.locked_user)
         with self.assertRaises(UserError):
-            tmpl_as_user.write({"default_code": "REF-002"})
+            tmpl_locked.write({"default_code": "REF-002"})
         with self.assertRaises(UserError):
-            tmpl_as_user.write({"taxes_id": [Command.set(self.tax_sale_b.ids)]})
+            tmpl_locked.write({"taxes_id": [Command.set(self.tax_sale_b.ids)]})
 
-        tmpl.write(
-            {
-                "default_code": "REF-ADM",
-                "taxes_id": [Command.set(self.tax_sale_b.ids)],
-            }
-        )
-        self.assertEqual(tmpl.default_code, "REF-ADM")
-        self.assertEqual(tmpl.taxes_id, self.tax_sale_b)
+        tmpl.with_user(self.unlocked_user).write({"default_code": "REF-002"})
+        self.assertEqual(tmpl.default_code, "REF-002")

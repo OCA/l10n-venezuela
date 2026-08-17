@@ -14,7 +14,7 @@ from odoo.addons.l10n_ve_seniat.tests.common import L10nVeSeniatCommon
 class TestL10nVeInvoiceEscp(L10nVeSeniatCommon):
     def test_build_escp_contains_factura_title(self):
         journal = self.company_data["default_journal_sale"]
-        journal.l10n_ve_free_form_print_medium = "continuous"
+        self._l10n_ve_configure_journal_free(journal, print_medium="continuous")
         move = self.env["account.move"].create(
             {
                 "move_type": "out_invoice",
@@ -54,7 +54,7 @@ class TestL10nVeInvoiceEscp(L10nVeSeniatCommon):
 
     def test_escp_margin_lines_from_talonario(self):
         journal = self.company_data["default_journal_sale"]
-        journal.l10n_ve_free_form_print_medium = "continuous"
+        self._l10n_ve_configure_journal_free(journal, print_medium="continuous")
         book = journal.l10n_ve_invoice_section_id.book_id
         book.l10n_ve_escp_invoice_margin_lines = 3
         move = self.env["account.move"].create(
@@ -94,7 +94,7 @@ class TestL10nVeInvoiceEscp(L10nVeSeniatCommon):
 
     def test_get_payload_requires_continuous_journal(self):
         journal = self.company_data["default_journal_sale"]
-        journal.l10n_ve_free_form_print_medium = "pdf"
+        self._l10n_ve_configure_journal_free(journal, print_medium="pdf")
         move = self.env["account.move"].create(
             {
                 "move_type": "out_invoice",
@@ -133,7 +133,7 @@ class TestL10nVeInvoiceEscp(L10nVeSeniatCommon):
 
     def test_continuous_print_action_is_client(self):
         journal = self.company_data["default_journal_sale"]
-        journal.l10n_ve_free_form_print_medium = "continuous"
+        self._l10n_ve_configure_journal_free(journal, print_medium="continuous")
         move = self.env["account.move"].create(
             {
                 "move_type": "out_invoice",
@@ -175,7 +175,7 @@ class TestL10nVeInvoiceEscp(L10nVeSeniatCommon):
 
     def test_pad_product_lines_to_book_max(self):
         journal = self.company_data["default_journal_sale"]
-        journal.l10n_ve_free_form_print_medium = "continuous"
+        self._l10n_ve_configure_journal_free(journal, print_medium="continuous")
         book = journal.l10n_ve_invoice_section_id.book_id
         book.l10n_ve_max_invoice_lines = 4
         move = self.env["account.move"].create(

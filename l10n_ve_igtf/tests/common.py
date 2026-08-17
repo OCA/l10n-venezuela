@@ -1,12 +1,11 @@
 from odoo import Command, fields
-from odoo.addons.account.tests.common import AccountTestInvoicingCommon
 from odoo.tools.misc import formatLang
 
+from odoo.addons.l10n_ve_seniat.tests.common import L10nVeSeniatCommon
 
-class TestL10nVeIgtfCommon(AccountTestInvoicingCommon):
+
+class TestL10nVeIgtfCommon(L10nVeSeniatCommon):
     @classmethod
-    @AccountTestInvoicingCommon.setup_country("ve")
-    @AccountTestInvoicingCommon.setup_chart_template("ve_seniat")
     def setUpClass(cls):
         super().setUpClass()
 
@@ -32,7 +31,7 @@ class TestL10nVeIgtfCommon(AccountTestInvoicingCommon):
                     "name": "IGTF Payable Test",
                     "code": "2102099",
                     "account_type": "liability_current",
-                    "company_id": cls.company.id,
+                    "company_ids": [Command.set([cls.company.id])],
                     "reconcile": True,
                 }
             )
@@ -43,6 +42,7 @@ class TestL10nVeIgtfCommon(AccountTestInvoicingCommon):
                 "l10n_ve_igtf_account_id": cls.igtf_account.id,
                 "l10n_ve_igtf_percent": 3.0,
                 "l10n_ve_igtf_currency_ids": [Command.set([cls.usd.id])],
+                "l10n_ve_igtf_allow_invoice_accrual": False,
             }
         )
 
@@ -72,6 +72,7 @@ class TestL10nVeIgtfCommon(AccountTestInvoicingCommon):
             {
                 "name": "IGTF Test Partner",
                 "vat": "V12345678",
+                "country_id": cls.env.ref("base.ve").id,
                 "invoice_sending_method": "manual",
                 "invoice_edi_format": False,
                 "property_account_receivable_id": cls.receivable_account.id,
@@ -187,7 +188,7 @@ class TestL10nVeIgtfCommon(AccountTestInvoicingCommon):
                     return tax_group
         return None
 
-    def _assert_no_writeoff_or_exchange_diff(self, invoice, payment):
+    def _assert_no_writeoff_or_exchange_diff(self, invoice, payment, allow_exchange=False):
         exchange_accounts = (
             self.company.income_currency_exchange_account_id
             | self.company.expense_currency_exchange_account_id
@@ -201,7 +202,8 @@ class TestL10nVeIgtfCommon(AccountTestInvoicingCommon):
             lambda line: line.account_id.account_type == "asset_receivable"
         )
         partials = receivable_lines.matched_debit_ids | receivable_lines.matched_credit_ids
-        self.assertFalse(partials.filtered("exchange_move_id"))
+        if not allow_exchange:
+            self.assertFalse(partials.filtered("exchange_move_id"))
 
     def _usd_amount_for_ves(self, amount_ves):
         return self.usd.round(amount_ves / self.usd_inverse_rate)
@@ -318,7 +320,8 @@ class TestL10nVeIgtfCommon(AccountTestInvoicingCommon):
                 )
             )
         if widget_currency.is_zero(total_net_paymentline_widget):
-            self.assertFalse(payment_line.get("l10n_ve_igtf_amount"))
+            if not payment.l10n_ve_apply_igtf:
+                self.assertFalse(payment_line.get("l10n_ve_igtf_amount"))
             return
 
         allocation_ratio = payment_line.get("l10n_ve_net_amount", payment_line.get("amount", 0.0)) / total_net_paymentline_widget

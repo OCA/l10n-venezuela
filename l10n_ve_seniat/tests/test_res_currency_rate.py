@@ -26,14 +26,15 @@ class TestResCurrencyRate(L10nVeSeniatCommon):
         )
 
     def _create_usd_invoice(self, post=False):
-        invoice = self.init_invoice(
-            "in_invoice",
+        return self._l10n_ve_create_invoice(
+            move_type="in_invoice",
+            partner=self.partner_a,
             invoice_date=self.today,
+            amounts=[100.0],
+            taxes=self.company_data["default_tax_purchase"],
             currency=self.usd,
+            post=post,
         )
-        if post:
-            invoice.action_post()
-        return invoice
 
     def test_rate_write_blocked_by_posted_invoice(self):
         rate = self._create_usd_rate()

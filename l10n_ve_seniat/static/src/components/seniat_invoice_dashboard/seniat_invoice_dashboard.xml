@@ -6,10 +6,7 @@
             class="o_l10n_ve_invoice_dashboard d-none d-md-flex border-bottom bg-view"
         >
             <t t-foreach="state.items" t-as="item" t-key="item.key">
-                <div
-                    class="o_l10n_ve_invoice_dashboard_card flex-grow-1 d-flex flex-column border-0 rounded-0"
-                    t-att-class="item.key === 'unfactured_dispatch_guides' ? 'o_l10n_ve_invoice_dashboard_card--dispatch' : ''"
-                >
+                <div class="o_l10n_ve_invoice_dashboard_card flex-grow-1 d-flex flex-column border-0 rounded-0">
                     <button
                         type="button"
                         class="btn flex-grow-1 d-flex flex-column p-3 text-center border-0 rounded-0 bg-transparent"
@@ -24,34 +21,6 @@
                             t-out="state.monthLabel"
                         />
                     </button>
-                    <div
-                        t-if="item.key === 'unfactured_dispatch_guides' and state.dispatchEmail.available"
-                        class="o_l10n_ve_invoice_dashboard_mail px-3 pb-2 d-flex align-items-center justify-content-center gap-2"
-                    >
-                        <span
-                            t-if="state.dispatchEmail.lastSentLabel"
-                            class="text-muted small"
-                            title="Último envío de correo"
-                        >
-                            <i class="fa fa-envelope-o me-1"/>
-                            <t t-out="state.dispatchEmail.lastSentLabel"/>
-                        </span>
-                        <span
-                            t-else=""
-                            class="text-muted small"
-                        >Sin envíos</span>
-                        <button
-                            type="button"
-                            class="btn btn-link btn-sm p-0 o_l10n_ve_invoice_dashboard_reload"
-                            title="Enviar listado por correo"
-                            t-att-disabled="!state.dispatchEmail.canSend or state.sendingDispatchEmail"
-                            t-on-click="sendDispatchEmail"
-                        >
-                            <i
-                                t-att-class="state.sendingDispatchEmail ? 'fa fa-refresh fa-spin' : 'fa fa-refresh'"
-                            />
-                        </button>
-                    </div>
                 </div>
             </t>
         </div>

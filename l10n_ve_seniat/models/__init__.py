@@ -1,18 +1,14 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 from . import template_ve
 from . import product_template
-from . import product_template_attribute_value
 from . import res_currency
 from . import res_currency_rate
 from . import res_partner
 from . import res_country_parish
 from . import res_country_municipality
-from . import account_tax
 from . import account_tax_group
 from . import res_company
 from . import l10n_ve_emission_medium
-from . import l10n_ve_implementer
-from . import l10n_ve_dispatch_guide_email
 from . import res_config_settings
 from . import account_book
 from . import l10n_ve_book_folio_void
@@ -26,6 +22,5 @@ from . import account_journal
 from . import account_journal_dashboard
 from . import account_payment
 from . import ir_actions_report
-from . import ir_actions_server
 from . import ir_http
 from . import ir_ui_menu

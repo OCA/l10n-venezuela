@@ -6,7 +6,8 @@ from odoo.addons.base.tests.common import BaseCommon
 
 # Register rule.py as a known path in odoo.tests.common for patching methods
 SETATTR_SOURCES["_patch_method"] = tuple(
-    list(SETATTR_SOURCES.get("_patch_method", [])) + ["/auditlog/models/rule.py"],
+    list(SETATTR_SOURCES.get("_patch_method", []))
+    + ["/l10n_ve_auditlog/models/rule.py"],
 )
 
 

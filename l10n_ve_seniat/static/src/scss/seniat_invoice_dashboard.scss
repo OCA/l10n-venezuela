@@ -16,19 +16,4 @@
     .o_l10n_ve_invoice_dashboard_count {
         color: $o-brand-primary;
     }
-
-    .o_l10n_ve_invoice_dashboard_card--dispatch {
-        .o_l10n_ve_invoice_dashboard_mail {
-            margin-top: -0.25rem;
-        }
-    }
-
-    .o_l10n_ve_invoice_dashboard_reload {
-        color: $o-brand-primary;
-        line-height: 1;
-
-        &:disabled {
-            opacity: 0.45;
-        }
-    }
 }

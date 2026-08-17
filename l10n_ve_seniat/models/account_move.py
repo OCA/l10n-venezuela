@@ -190,6 +190,8 @@ class AccountMove(models.Model):
                 continue
             if move.state != "posted":
                 continue
+            if not move.l10n_ve_journal_emission_medium:
+                continue
             if move._l10n_ve_blocking_invoice_report_before_digital_sent():
                 move.l10n_ve_hide_invoice_preview_send = True
                 continue
@@ -217,6 +219,8 @@ class AccountMove(models.Model):
             if move.country_code != "VE":
                 continue
             if move.move_type not in ("out_invoice", "out_refund"):
+                continue
+            if not move.l10n_ve_journal_emission_medium:
                 continue
             if move.l10n_ve_journal_emission_medium == "contingency":
                 move.l10n_ve_hide_invoice_print_pdf = True
@@ -704,6 +708,9 @@ class AccountMove(models.Model):
         if self._l10n_ve_get_effective_emission_medium() == "fiscal_machine":
             return False
         return True
+
+    def _l10n_ve_force_refund_to_company_currency(self):
+        """Hook extended by account_move_refund_currency for dual-currency refunds."""
 
     def _l10n_ve_to_company_abs_amount(self):
         self.ensure_one()
@@ -1424,7 +1431,7 @@ class AccountMove(models.Model):
                         )
 
             lines = []
-            for line in self.line_ids:
+            for line in move_id.line_ids:
                 if len(line.tax_ids) > 1:
                     tax_mapped = ", ".join(line.tax_ids.mapped("name"))
                     lines.append(f" - {line.name}: {tax_mapped}")
@@ -2188,7 +2195,7 @@ Please create a credit note instead.
 
     def _get_name_invoice_report(self):
         self.ensure_one()
-        if self.company_id.account_fiscal_country_id.code == "VE":
+        if self._l10n_ve_applies_fiscal_print_rules():
             return "l10n_ve_seniat.report_invoice_document"
         return super()._get_name_invoice_report()
 
@@ -2243,6 +2250,14 @@ Please create a credit note instead.
             )
         return super().action_invoice_sent()
 
+    def _l10n_ve_applies_fiscal_print_rules(self):
+        self.ensure_one()
+        return (
+            self.country_code == "VE"
+            and self.move_type in ("out_invoice", "out_refund")
+            and bool(self.l10n_ve_journal_emission_medium)
+        )
+
     def _l10n_ve_allows_invoice_pdf_download(self):
         self.ensure_one()
         if self.state != "posted":
@@ -2256,23 +2271,13 @@ Please create a credit note instead.
             return False
         return True
 
-    def _l10n_ve_allows_invoice_portal_view(self):
-        self.ensure_one()
-        if self.state != "posted":
-            return False
-        if self.country_code != "VE" or self.move_type not in ("out_invoice", "out_refund"):
-            return True
-        if self._l10n_ve_block_invoice_pdf_contingency():
-            return False
-        if self._l10n_ve_blocking_invoice_report_before_digital_sent():
-            return False
-        return True
-
     def _l10n_ve_show_download_pdf_action(self):
         self.ensure_one()
         if self.country_code != "VE":
             return True
         if self.move_type not in ("out_invoice", "out_refund"):
+            return True
+        if not self._l10n_ve_applies_fiscal_print_rules():
             return True
         return self._l10n_ve_allows_invoice_pdf_download()
 
@@ -2453,9 +2458,10 @@ Please create a credit note instead.
                     "USB (WebUSB), o cambie la impresión en forma libre a PDF en el diario."
                 )
             )
-        return super(
-            AccountMove, self.with_context(l10n_ve_invoice=True)
-        ).action_print_pdf()
+        ctx = {}
+        if self._l10n_ve_applies_fiscal_print_rules():
+            ctx["l10n_ve_invoice"] = True
+        return super(AccountMove, self.with_context(**ctx)).action_print_pdf()
 
     l10n_ve_lock_credit_debit_journal = fields.Boolean(
         compute="_compute_l10n_ve_lock_credit_debit_journal",
@@ -2603,6 +2609,31 @@ Please create a credit note instead.
                     text=text,
                 )
             )
+
+    def l10n_ve_report_invoice_lines(self):
+        self.ensure_one()
+        lines = self.invoice_line_ids.sorted(key=lambda line: (line.sequence, line.id))
+        if self.company_id.account_fiscal_country_id.code != "VE":
+            return lines
+        disc = getattr(self.company_id, "sale_discount_product_id", False)
+        if not disc:
+            return lines
+
+        def _is_discount_product_line(line):
+            return line.display_type == "product" and line.product_id == disc
+
+        discount_lines = lines.filtered(_is_discount_product_line)
+        if not discount_lines:
+            return lines
+        return lines.filtered(lambda line: not _is_discount_product_line(line)) + (
+            discount_lines
+        )
+
+    def l10n_ve_report_igtf_percent(self):
+        self.ensure_one()
+        if "l10n_ve_igtf_percent" in self.company_id._fields:
+            return self.company_id.l10n_ve_igtf_percent or 3.0
+        return 3.0
 
     def l10n_ve_report_exchange_rate_display(self):
         """Formatea el tipo de cambio para impresión en facturas en divisas.

@@ -6,4 +6,3 @@ from . import wizard
 
 def post_init_hook(env):
     env["res.company"]._l10n_ve_seniat_sale_fix_discount_products()
-    env["ir.actions.report"]._l10n_ve_unbind_extra_sale_order_pdf_reports()

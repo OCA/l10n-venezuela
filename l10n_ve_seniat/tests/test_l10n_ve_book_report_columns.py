@@ -1,5 +1,7 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
+from unittest import SkipTest
+
 from odoo.tests import tagged
 
 from odoo.addons.l10n_ve_seniat.tests.common import L10nVeSeniatCommon
@@ -10,9 +12,11 @@ class TestL10nVeBookReportColumns(L10nVeSeniatCommon):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        cls.env["ir.module.module"].search(
+        reports_module = cls.env["ir.module.module"].search(
             [("name", "=", "l10n_ve_reports"), ("state", "=", "installed")]
-        ).ensure_one()
+        )
+        if not reports_module:
+            raise SkipTest("l10n_ve_reports is not installed")
         cls.handler = cls.env["account.sales.book.report.handler.oca"]
         cls.tax_group_model = cls.env["account.tax.group"]
         cls.ve_country = cls.env.ref("base.ve")

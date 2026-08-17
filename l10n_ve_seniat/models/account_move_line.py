@@ -97,9 +97,17 @@ class AccountMoveLine(models.Model):
         prec = self.env["decimal.precision"].precision_get("Product Price")
         price = self.price_unit or 0.0
         if float_compare(price, 0.0, precision_digits=prec) <= 0:
+            disc_product = False
+            if "sale_discount_product_id" in self.company_id._fields:
+                disc_product = self.company_id.sale_discount_product_id
+            if self.product_id and disc_product and self.product_id == disc_product:
+                return
             tmpl = self.product_id.product_tmpl_id if self.product_id else False
             if tmpl and (
-                tmpl._l10n_ve_is_sale_discount_template()
+                (
+                    hasattr(tmpl, "_l10n_ve_is_sale_discount_template")
+                    and tmpl._l10n_ve_is_sale_discount_template()
+                )
                 or (
                     hasattr(tmpl, "_l10n_ve_is_loyalty_reward_discount_template")
                     and tmpl._l10n_ve_is_loyalty_reward_discount_template()
@@ -236,6 +244,29 @@ class AccountMoveLine(models.Model):
         self.with_context(l10n_ve_skip_exempt_tax_line=True).write(
             {"tax_ids": [Command.set(tax.ids)]}
         )
+
+    @api.constrains("discount", "move_id")
+    def _l10n_ve_check_line_discount(self):
+        prec = self.env["decimal.precision"].precision_get("Discount")
+        for line in self:
+            if line.display_type != "product":
+                continue
+            if line.move_id.move_type == "entry":
+                continue
+            if line.move_id.country_code != "VE":
+                continue
+            disc = line.discount or 0.0
+            if float_compare(disc, 100.0, precision_digits=prec) >= 0:
+                raise ValidationError(
+                    _(
+                        "No se permite un descuento del 100%% en la línea de factura. "
+                        'La línea "%(line)s" tiene %(discount)s%%.'
+                    )
+                    % {
+                        "line": line.name or _("Sin nombre"),
+                        "discount": disc,
+                    }
+                )
 
     def _put_unique_tax_per_line(self):
         """Impide más de un impuesto de venta por línea de factura.

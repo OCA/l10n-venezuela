@@ -202,10 +202,40 @@ class AccountMove(models.Model):
     def _l10n_ve_fiscal_serial_line_discount_amounts(self):
         self.ensure_one()
         base_lines, _tax_lines = self._get_rounded_base_and_tax_lines()
-        return self.env["account.tax"]._l10n_ve_get_line_discount_amounts(
-            base_lines,
-            self.company_id,
-        )
+        Tax = self.env["account.tax"]
+        if hasattr(Tax, "_l10n_ve_get_line_discount_amounts"):
+            return Tax._l10n_ve_get_line_discount_amounts(base_lines, self.company_id)
+        return self._l10n_ve_fiscal_serial_line_discount_amounts_fallback(base_lines)
+
+    def _l10n_ve_fiscal_serial_line_discount_amounts_fallback(self, base_lines):
+        """Untaxed line discounts when l10n_ve_loyalty is not installed."""
+        if not base_lines:
+            return {}
+        Tax = self.env["account.tax"]
+        discounted_lines = [
+            base_line
+            for base_line in base_lines
+            if (base_line.get("discount") or 0.0) > 0.0
+            and base_line.get("special_type") != "global_discount"
+        ]
+        if not discounted_lines:
+            return {}
+        for in_foreign_currency in (True, False):
+            Tax._add_and_round_raw_gross_total_excluded_and_discount(
+                base_lines,
+                self.company_id,
+                in_foreign_currency=in_foreign_currency,
+            )
+        amounts = {}
+        for base_line in discounted_lines:
+            record = base_line.get("record")
+            line_id = record.id if getattr(record, "id", False) else base_line.get("id")
+            if not line_id:
+                continue
+            amount = base_line["tax_details"].get("raw_discount_amount", 0.0)
+            if amount:
+                amounts[line_id] = amount
+        return amounts
 
     def _l10n_ve_fiscal_serial_invoice_lines_payload(self):
         self.ensure_one()

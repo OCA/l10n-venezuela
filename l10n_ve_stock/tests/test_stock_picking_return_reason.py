@@ -47,7 +47,7 @@ class TestL10nVeStockReturnTransferReason(TestStockCommon):
             .create({})
         )
         return_wizard.product_return_moves.quantity = 5
-        action = return_wizard.create_returns()
+        action = return_wizard.action_create_returns()
         return_picking = self.env["stock.picking"].browse(action["res_id"])
 
         self.assertTrue(return_picking.return_id)

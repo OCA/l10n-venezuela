@@ -103,6 +103,14 @@ class ResCurrencyRate(models.Model):
             if rec._l10n_ve_company_uses_rate_rules():
                 raise UserError(_("No se pueden eliminar tasas de cambio."))
 
+    @api.model_create_multi
+    def create(self, vals_list):
+        rates = super(
+            ResCurrencyRate,
+            self.with_context(l10n_ve_skip_currency_rate_validation=True),
+        ).create(vals_list)
+        return rates.with_context(l10n_ve_skip_currency_rate_validation=False)
+
     def write(self, vals):
         if self._l10n_ve_skip_validation():
             return super().write(vals)

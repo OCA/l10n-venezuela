@@ -24,15 +24,8 @@
                         />
                     </group>
                     <group
-                        string="Límites por pedido (otros medios de emisión)"
-                        invisible="type != 'sale' or l10n_ve_emission_medium == 'free'"
-                    >
-                        <field name="l10n_ve_max_invoice_lines" />
-                        <field name="l10n_ve_max_picking_lines" />
-                    </group>
-                    <group
                         string="Tramos (talonario)"
-                        invisible="type != 'sale' or l10n_ve_emission_medium in ('contingency', 'fiscal_machine', 'digital')"
+                        invisible="type != 'sale' or l10n_ve_emission_medium != 'free'"
                     >
                         <!-- Art. 13 num. 3-4 y Art. 27 PA SNAT/2011/0071: tramos NC/ND/factura. -->
                         <field
@@ -51,6 +44,26 @@
                         />
                     </group>
                 </page>
+            </xpath>
+            <xpath expr="//page[@name='advanced_settings']/group" position="inside">
+                <group
+                    name="l10n_ve_journal_order_limits"
+                    string="Límites por pedido"
+                    invisible="type != 'sale' or country_code != 'VE' or l10n_ve_emission_medium in ('free', 'fiscal_machine')"
+                >
+                    <field name="l10n_ve_limit_invoice_lines" />
+                    <field
+                        name="l10n_ve_max_invoice_lines"
+                        invisible="not l10n_ve_limit_invoice_lines"
+                        required="l10n_ve_limit_invoice_lines"
+                    />
+                    <field name="l10n_ve_limit_picking_lines" />
+                    <field
+                        name="l10n_ve_max_picking_lines"
+                        invisible="not l10n_ve_limit_picking_lines"
+                        required="l10n_ve_limit_picking_lines"
+                    />
+                </group>
             </xpath>
         </field>
     </record>

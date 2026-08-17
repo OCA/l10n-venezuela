@@ -35,8 +35,8 @@ class TestCoverageExtraAccountMove(L10nVeSeniatCommon):
                 "inverse_company_rate": 36.5,
             }
         )
-        move = self.init_invoice(
-            "out_invoice",
+        move = self._l10n_ve_create_invoice(
+            move_type="out_invoice",
             partner=self._ve_customer(),
             invoice_date=today,
             amounts=[100.0],
@@ -51,8 +51,8 @@ class TestCoverageExtraAccountMove(L10nVeSeniatCommon):
 
     def test_out_refund_second_credit_exceeds_origin_total_raises(self):
         customer = self._ve_customer()
-        invoice = self.init_invoice(
-            "out_invoice",
+        invoice = self._l10n_ve_create_invoice(
+            move_type="out_invoice",
             partner=customer,
             invoice_date=fields.Date.today(),
             amounts=[100.0],
@@ -335,6 +335,7 @@ class TestCoverageExtraAccountMove(L10nVeSeniatCommon):
             .with_context(active_model="account.move", active_ids=invoice.ids)
             .create({"reason": "NC Bs"})
         )
+        invoice.l10n_ve_invoice_original_printed = True
         wiz.reverse_moves()
         credit = wiz.new_move_ids
         credit.ensure_one()
@@ -508,8 +509,8 @@ class TestCoverageExtraAccountMove(L10nVeSeniatCommon):
                 "l10n_ve_credit_note_section_id": sec_cn.id,
             }
         )
-        invoice = self.init_invoice(
-            "out_invoice",
+        invoice = self._l10n_ve_create_invoice(
+            move_type="out_invoice",
             partner=self._ve_customer(),
             invoice_date=fields.Date.today(),
             amounts=[50.0],
@@ -517,6 +518,7 @@ class TestCoverageExtraAccountMove(L10nVeSeniatCommon):
             journal=journal,
             post=True,
         )
+        invoice.l10n_ve_invoice_original_printed = True
         wiz = (
             self.env["account.debit.note"]
             .with_context(active_model="account.move", active_ids=invoice.ids)
@@ -624,8 +626,8 @@ class TestCoverageExtraAccountMove(L10nVeSeniatCommon):
                 "vat": "J98765432",
             }
         )
-        bill = self.init_invoice(
-            "in_invoice",
+        bill = self._l10n_ve_create_invoice(
+            move_type="in_invoice",
             partner=supplier,
             invoice_date=fields.Date.today(),
             amounts=[90.0],
@@ -680,14 +682,15 @@ class TestCoverageExtraAccountMove(L10nVeSeniatCommon):
         self.assertEqual(move.state, "draft")
 
     def test_credit_note_limit_includes_posted_debit_notes(self):
-        invoice = self.init_invoice(
-            "out_invoice",
+        invoice = self._l10n_ve_create_invoice(
+            move_type="out_invoice",
             partner=self._ve_customer(),
             invoice_date=fields.Date.today(),
             amounts=[100.0],
             taxes=self.tax_sale_a,
             post=True,
         )
+        invoice.l10n_ve_invoice_original_printed = True
         wiz = (
             self.env["account.debit.note"]
             .with_context(active_model="account.move", active_ids=invoice.ids)
@@ -755,7 +758,7 @@ class TestCoverageExtraAccountMove(L10nVeSeniatCommon):
         bad = self.env["res.partner"].create(
             {
                 "name": "Tercero mal",
-                "country_id": self.env.ref("base.us").id,
+                "country_id": self.env.ref("base.ve").id,
                 "vat": "invalid-rif",
             }
         )
@@ -811,7 +814,12 @@ class TestCoverageExtraNonVeCompany(L10nVeSeniatCommon):
             )
         )
         self.assertTrue(tax)
-        partner = self.env["res.partner"].create({"name": "Cliente US sin VAT"})
+        partner = self.env["res.partner"].with_company(company).create(
+            {
+                "name": "Cliente US sin VAT",
+                "country_id": self.env.ref("base.us").id,
+            }
+        )
         move = (
             self.env["account.move"]
             .with_company(company)
@@ -887,8 +895,8 @@ class TestCoverageExtraNonVeCompany(L10nVeSeniatCommon):
 @tagged("post_install", "-at_install")
 class TestCoverageExtraInstallMode(L10nVeSeniatCommon):
     def test_install_mode_action_post_calls_super_only(self):
-        move = self.init_invoice(
-            "out_invoice",
+        move = self._l10n_ve_create_invoice(
+            move_type="out_invoice",
             partner=self.env["res.partner"].create(
                 {
                     "name": "Inst",

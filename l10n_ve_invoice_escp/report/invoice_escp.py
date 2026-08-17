@@ -152,7 +152,7 @@ def _tax_line_labels(move):
         if "%" in t
     ]
     vat_percent = vat_name_tokens[0] if vat_name_tokens else "16%"
-    igtf_val = move.company_id.l10n_ve_igtf_percent or 3.0
+    igtf_val = getattr(move.company_id, "l10n_ve_igtf_percent", None) or 3.0
     igtf_percent = str(igtf_val).replace(".", ",") + "%"
     return vat_percent, igtf_percent, vat_group, igtf_group, totals
 
@@ -387,7 +387,9 @@ def _l10n_ve_max_product_table_lines(move):
     section = move._l10n_ve_journal_fiscal_book_section()
     if section and section.book_id:
         mx = section.book_id.l10n_ve_max_invoice_lines
-    elif journal.l10n_ve_emission_medium != "free":
+    elif journal.l10n_ve_emission_medium not in ("free", "fiscal_machine"):
+        if not getattr(journal, "l10n_ve_limit_invoice_lines", False):
+            return None
         mx = journal.l10n_ve_max_invoice_lines
     else:
         return None

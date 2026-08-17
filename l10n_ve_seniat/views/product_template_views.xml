@@ -2,20 +2,12 @@
 <odoo>
     <record id="product_template_tree_l10n_ve_sale_tax" model="ir.ui.view">
         <!-- Art. 13 num. 9-11 PA SNAT/2011/0071: alícuota de venta por producto. -->
-        <field name="name">product.template.list.l10n.ve.sale.tax.readonly</field>
+        <field name="name">product.template.list.l10n.ve.sale.tax</field>
         <field name="model">product.template</field>
         <field name="inherit_id" ref="account.product_template_view_tree" />
         <field name="arch" type="xml">
             <field name="taxes_id" position="before">
-                <field
-                    name="l10n_ve_sale_taxes_readonly"
-                    column_invisible="1"
-                />
-                <field
-                    name="l10n_ve_sale_tax_id"
-                    optional="show"
-                    readonly="l10n_ve_sale_taxes_readonly"
-                />
+                <field name="l10n_ve_sale_tax_id" optional="show" />
             </field>
             <field name="taxes_id" position="attributes">
                 <attribute name="column_invisible">1</attribute>
@@ -29,7 +21,7 @@
         </field>
     </record>
     <record id="product_template_form_l10n_ve_sale_tax" model="ir.ui.view">
-        <field name="name">product.template.form.l10n.ve.sale.tax.readonly</field>
+        <field name="name">product.template.form.l10n.ve.sale.tax</field>
         <field name="model">product.template</field>
         <field name="inherit_id" ref="account.product_template_form_view" />
         <field name="arch" type="xml">
@@ -37,11 +29,9 @@
                 expr="//div[@name='taxes_div']//field[@name='taxes_id']"
                 position="before"
             >
-                <field name="l10n_ve_sale_taxes_readonly" invisible="1" />
                 <field
                     name="l10n_ve_sale_tax_id"
                     class="oe_inline"
-                    readonly="l10n_ve_sale_taxes_readonly"
                     context="{
                         'default_type_tax_use': 'sale',
                         'search_default_sale': 1,
@@ -63,7 +53,6 @@
                 position="attributes"
             >
                 <attribute name="invisible">1</attribute>
-                <attribute name="readonly">l10n_ve_sale_taxes_readonly</attribute>
             </xpath>
             <field name="supplier_taxes_id" position="before">
                 <field
@@ -85,7 +74,7 @@
         </field>
     </record>
     <record id="product_product_form_l10n_ve_sale_tax" model="ir.ui.view">
-        <field name="name">product.product.form.normalized.l10n.ve.sale.tax.readonly</field>
+        <field name="name">product.product.form.normalized.l10n.ve.sale.tax</field>
         <field name="model">product.product</field>
         <field name="inherit_id" ref="account.product_product_view_form_normalized_account" />
         <field name="arch" type="xml">
@@ -93,10 +82,8 @@
                 <attribute name="for">l10n_ve_sale_tax_id</attribute>
             </xpath>
             <field name="taxes_id" position="before">
-                <field name="l10n_ve_sale_taxes_readonly" invisible="1" />
                 <field
                     name="l10n_ve_sale_tax_id"
-                    readonly="l10n_ve_sale_taxes_readonly"
                     context="{
                         'default_type_tax_use': 'sale',
                         'search_default_sale': 1,
@@ -106,7 +93,6 @@
             </field>
             <field name="taxes_id" position="attributes">
                 <attribute name="invisible">1</attribute>
-                <attribute name="readonly">l10n_ve_sale_taxes_readonly</attribute>
             </field>
         </field>
     </record>

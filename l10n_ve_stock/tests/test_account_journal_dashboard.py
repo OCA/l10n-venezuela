@@ -27,7 +27,17 @@ class TestL10nVeSeniatInvoiceDashboardDispatch(TestL10nVeStockDispatchGuide):
         list_view = self.env.ref(
             "l10n_ve_stock.stock_picking_unfactured_dispatch_guide_tree"
         )
-        self.assertEqual(action.get("view_id"), list_view.id)
+        view_id = action.get("view_id")
+        if isinstance(view_id, (list, tuple)):
+            view_id = view_id[0]
+        if view_id:
+            self.assertEqual(view_id, list_view.id)
+        else:
+            self.assertIn((list_view.id, "list"), action.get("views") or [])
+            self.assertEqual(
+                (action.get("views") or [[None]])[0][0],
+                list_view.id,
+            )
         picking.invalidate_recordset(
             [
                 "l10n_ve_dispatch_guide_date",

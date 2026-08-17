@@ -11,7 +11,7 @@
             >
                 <attribute
                     name="invisible"
-                >type != 'sale' or l10n_ve_emission_medium in ('free', 'fiscal_machine')</attribute>
+                >type != 'sale' or country_code != 'VE' or l10n_ve_emission_medium in ('free', 'fiscal_machine')</attribute>
             </xpath>
             <xpath expr="//field[@name='l10n_ve_emission_medium']" position="after">
                 <field

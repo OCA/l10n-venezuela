@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template
+        id="report_saleorder_document_l10n_ve_no_fiscal"
+        inherit_id="sale.report_saleorder_document"
+        name="VE sale order native report: NO FISCAL markers"
+    >
+        <xpath expr="//t[@t-set='layout_document_title']" position="after">
+            <t t-set="layout_document_title">
+                <span t-if="doc.state in ('draft', 'sent')">Presupuesto - </span>
+                <span t-else="">Pedido de venta - </span>
+                <span t-field="doc.name" />
+            </t>
+        </xpath>
+        <xpath expr="//div[hasclass('page')]" position="before">
+            <t t-if="doc.company_id.account_fiscal_country_id.code == 'VE'">
+                <style>
+                    .page.o_l10n_ve_no_fiscal_page {
+                        position: relative;
+                    }
+                    .page.o_l10n_ve_no_fiscal_page::before {
+                        content: "NO FISCAL";
+                        position: absolute;
+                        top: 24%;
+                        left: 28%;
+                        transform: translate(-50%, -50%) rotate(-35deg);
+                        font-size: 3.5rem;
+                        font-weight: 700;
+                        font-family: Helvetica, Arial, sans-serif;
+                        text-transform: uppercase;
+                        letter-spacing: 0.08em;
+                        color: rgba(220, 53, 69, 0.12);
+                        pointer-events: none;
+                        z-index: 9999;
+                        white-space: nowrap;
+                        -webkit-print-color-adjust: exact;
+                        print-color-adjust: exact;
+                    }
+                </style>
+            </t>
+        </xpath>
+        <xpath expr="//div[hasclass('page')]" position="attributes">
+            <attribute
+                name="t-attf-class"
+            >page{{ ' o_l10n_ve_no_fiscal_page' if doc.company_id.account_fiscal_country_id.code == 'VE' else '' }}</attribute>
+        </xpath>
+        <xpath expr="//div[@id='informations']" position="before">
+            <div
+                t-if="doc.company_id.account_fiscal_country_id.code == 'VE'"
+                class="row mb-2"
+            >
+                <div class="col-12 text-end fw-bold text-uppercase">
+                    Sin derecho a crédito fiscal
+                </div>
+            </div>
+        </xpath>
+        <xpath expr="//th[@name='th_description']" position="before">
+            <th name="th_line_number" class="text-end text-nowrap">#</th>
+            <th name="th_default_code" class="text-start text-nowrap">CÓDIGO</th>
+        </xpath>
+        <xpath expr="//td[@name='td_name']" position="before">
+            <t
+                t-set="l10n_ve_line_number"
+                t-value="l10n_ve_line_number + 1"
+            />
+            <td name="td_line_number" class="text-end text-nowrap">
+                <span t-out="l10n_ve_line_number" />
+            </td>
+            <td name="td_default_code" class="text-start text-nowrap">
+                <span t-field="line.product_id.default_code" />
+            </td>
+        </xpath>
+        <xpath expr="//td[@name='td_name']/span[@t-field='line.name']" position="replace">
+            <span t-if="line.product_id" t-field="line.product_id.name" />
+            <span t-else="" t-field="line.name" />
+        </xpath>
+        <xpath expr="//t[@t-foreach='lines_to_report']" position="before">
+            <t t-set="l10n_ve_line_number" t-value="0" />
+        </xpath>
+    </template>
+    <template
+        id="report_saleorder_document_l10n_ve_totals"
+        inherit_id="sale.report_saleorder_document"
+        name="VE sale order native report: totals by state"
+    >
+        <xpath expr="//div[@name='so_total_summary']" position="replace">
+            <div
+                class="clearfix"
+                name="so_total_summary"
+                t-if="doc.company_id.account_fiscal_country_id.code != 'VE' or doc.state in ('draft', 'sent')"
+            >
+                <div id="total" class="row mt-n3" name="total">
+                    <div
+                        t-attf-class="#{'col-6' if report_type != 'html' else 'col-sm-7 col-md-6'} ms-auto"
+                    >
+                        <table class="o_total_table table table-borderless">
+                            <t t-call="sale.document_tax_totals">
+                                <t t-set="tax_totals" t-value="doc.tax_totals" />
+                                <t t-set="currency" t-value="doc.currency_id" />
+                            </t>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </xpath>
+    </template>
+</odoo>

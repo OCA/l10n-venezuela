@@ -1,7 +1,6 @@
 from . import account_move
 from . import sale_order
 from . import ir_actions_report
-from . import ir_actions_server
 from . import l10n_ve_stock_transfer_reason
 from . import product_product
 from . import product_template

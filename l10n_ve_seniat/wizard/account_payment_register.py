@@ -19,7 +19,7 @@ class AccountPaymentRegister(models.TransientModel):
                 lines |= line
         return lines
 
-    def _l10n_ve_is_same_day_full_unpaid_company_payment(self, installments):
+    def _l10n_ve_is_same_day_company_payment(self, installments):
         self.ensure_one()
         if not self._l10n_ve_company_is_venezuela():
             return False
@@ -55,6 +55,12 @@ class AccountPaymentRegister(models.TransientModel):
         )
         if set(open_lines.ids) != set(lines.ids):
             return False
+        return True
+
+    def _l10n_ve_is_same_day_full_unpaid_company_payment(self, installments):
+        if not self._l10n_ve_is_same_day_company_payment(installments):
+            return False
+        lines = self._l10n_ve_installment_lines(installments)
         for line in lines:
             if not line.currency_id.is_zero(
                 abs(line.amount_currency) - abs(line.amount_residual_currency)
@@ -75,7 +81,16 @@ class AccountPaymentRegister(models.TransientModel):
                 total += abs(sum(move_lines.mapped("amount_residual")))
         return self.company_currency_id.round(total)
 
+    def _l10n_ve_same_day_company_amount_from_residuals(self, installments):
+        self.ensure_one()
+        lines = self._l10n_ve_installment_lines(installments)
+        return self.company_currency_id.round(
+            abs(sum(lines.mapped("amount_residual")))
+        )
+
     def _convert_to_wizard_currency(self, installments):
         if self._l10n_ve_is_same_day_full_unpaid_company_payment(installments):
             return self._l10n_ve_same_day_company_amount_from_tax_totals(installments)
+        if self._l10n_ve_is_same_day_company_payment(installments):
+            return self._l10n_ve_same_day_company_amount_from_residuals(installments)
         return super()._convert_to_wizard_currency(installments)

@@ -1,24 +1,27 @@
 from odoo.exceptions import UserError
 from odoo.tests import tagged
 
-from odoo.addons.account.tests.common import AccountTestInvoicingCommon
+from odoo.addons.l10n_ve_seniat.tests.common import L10nVeSeniatCommon
 
 
 @tagged("post_install", "-at_install")
-class TestAccountMoveIvaAlert(AccountTestInvoicingCommon):
+class TestAccountMoveIvaAlert(L10nVeSeniatCommon):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        cls.company.account_fiscal_country_id = cls.env.ref("base.ve")
         cls.partner_no_withholding = cls.env["res.partner"].create(
             {
                 "name": "Proveedor sin retención",
+                "country_id": cls.env.ref("base.ve").id,
+                "vat": "J111111111",
                 "withholding_type_id": False,
             }
         )
         cls.partner_with_withholding = cls.env["res.partner"].create(
             {
                 "name": "Proveedor con retención",
+                "country_id": cls.env.ref("base.ve").id,
+                "vat": "J222222222",
             }
         )
 

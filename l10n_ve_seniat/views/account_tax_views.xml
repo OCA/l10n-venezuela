@@ -1,19 +1,12 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <odoo>
     <record id="view_tax_form_inherit_l10n_ve" model="ir.ui.view">
-        <!-- Art. 13 num. 9-11 PA SNAT/2011/0071: porcentajes oficiales de IVA. -->
         <field name="name">account.tax.form.inherit.l10n.ve</field>
         <field name="model">account.tax</field>
         <field name="inherit_id" ref="account.view_tax_form" />
         <field name="arch" type="xml">
             <xpath expr="//field[@name='company_id']" position="after">
                 <field name="country_code" invisible="1" />
-            </xpath>
-            <xpath expr="//field[@name='amount'][1]" position="attributes">
-                <attribute name="readonly">country_code == 'VE'</attribute>
-            </xpath>
-            <xpath expr="//list//field[@name='amount']" position="attributes">
-                <attribute name="readonly">country_code == 'VE'</attribute>
             </xpath>
         </field>
     </record>

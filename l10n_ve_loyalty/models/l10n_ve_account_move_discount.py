@@ -29,7 +29,7 @@ class L10nVeAccountMoveDiscount(models.Model):
         ondelete="restrict",
         default=lambda self: self.env["l10n.ve.discount.reason"]._l10n_ve_get_default(),
     )
-    name = fields.Char(related="reason_id.name", store=True, readonly=True)
+    name = fields.Char(related="reason_id.name", readonly=True)
     amount = fields.Monetary(
         string="Amount",
         required=True,

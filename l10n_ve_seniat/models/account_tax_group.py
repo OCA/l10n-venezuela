@@ -7,12 +7,6 @@ ALIQUOT_TYPE_SELECTION = [
     ("extend", "A - Extendida"),
 ]
 
-ALIQUOT_TYPE_DEFAULT_RATES = {
-    "general": 16.0,
-    "reduced": 8.0,
-    "extend": 31.0,
-}
-
 
 class AccountTaxGroup(models.Model):
     _inherit = "account.tax.group"
@@ -71,9 +65,6 @@ class AccountTaxGroup(models.Model):
         tax = self._l10n_ve_get_representative_tax(type_tax_use)
         if tax:
             return float(tax.amount)
-        report_type = self._l10n_ve_get_report_type()
-        if report_type and report_type != "exempt":
-            return ALIQUOT_TYPE_DEFAULT_RATES.get(report_type, 0.0)
         return 0.0
 
     @api.model
@@ -117,6 +108,6 @@ class AccountTaxGroup(models.Model):
     @api.model
     def _l10n_ve_get_tax_rate_for_type(self, company, aliquot_type, type_tax_use):
         tax_group_id = self._l10n_ve_build_tax_config(company).get(aliquot_type)
-        if tax_group_id:
-            return self.browse(tax_group_id)._l10n_ve_get_tax_rate(type_tax_use)
-        return ALIQUOT_TYPE_DEFAULT_RATES.get(aliquot_type, 0.0)
+        if not tax_group_id:
+            return 0.0
+        return self.browse(tax_group_id)._l10n_ve_get_tax_rate(type_tax_use)

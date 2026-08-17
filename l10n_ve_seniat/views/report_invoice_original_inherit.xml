@@ -1,1 +1,347 @@
-<odoo />
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <template id="document_tax_totals_dual_currency">
+        <t
+            t-set="all_tax_groups"
+            t-value="[group for subtotal in tax_totals.get('subtotals', []) for group in subtotal.get('tax_groups', [])]"
+        />
+        <t
+            t-set="vat_groups"
+            t-value="[group for group in all_tax_groups if group.get('id') != -1 and any(o.env['account.tax'].browse(group.get('involved_tax_ids', [])).mapped('amount'))]"
+        />
+        <t t-set="vat_group" t-value="vat_groups[0] if vat_groups else {}" />
+        <t
+            t-set="igtf_groups"
+            t-value="[group for group in all_tax_groups if group.get('id') == -1 and any(o.env['account.tax'].browse(group.get('involved_tax_ids', [])).mapped('amount'))]"
+        />
+        <t
+            t-set="igtf_group"
+            t-value="igtf_groups[0] if igtf_groups else {}"
+        />
+        <t
+            t-set="vat_percent_tokens"
+            t-value="[token for token in vat_group.get('group_name', '').replace(':', ' ').split() if '%' in token]"
+        />
+        <t
+            t-set="vat_percent"
+            t-value="vat_percent_tokens[0] if vat_percent_tokens else '16%'"
+        />
+        <t
+            t-set="igtf_percent_value"
+            t-value="o.l10n_ve_report_igtf_percent()"
+        />
+        <t
+            t-set="igtf_percent"
+            t-value="('%s' % igtf_percent_value).replace('.', ',') + '%'"
+        />
+        <tr class="o_l10n_ve_dual_currency_header">
+            <td />
+            <td class="text-end" t-out="comp_currency.name" />
+            <td class="text-end" t-out="doc_currency.name" />
+        </tr>
+        <tr class="o_subtotal">
+            <td>Subtotal:</td>
+            <td class="text-end">
+                <span
+                    t-out="tax_totals.get('l10n_ve_subtotal_gross', tax_totals.get('base_amount', 0)) if tax_totals.get('l10n_ve_show_global_discount') else tax_totals.get('base_amount', 0)"
+                    t-options='{"widget": "monetary", "display_currency": comp_currency}'
+                />
+            </td>
+            <td class="text-end">
+                <span
+                    t-out="tax_totals.get('l10n_ve_subtotal_gross_currency', tax_totals.get('base_amount_currency', 0)) if tax_totals.get('l10n_ve_show_global_discount') else tax_totals.get('base_amount_currency', 0)"
+                    t-options='{"widget": "monetary", "display_currency": doc_currency}'
+                />
+            </td>
+        </tr>
+        <tr t-if="tax_totals.get('l10n_ve_show_global_discount')">
+            <td>
+                Descuento
+                <t
+                    t-if="tax_totals.get('l10n_ve_global_discount_percentage')"
+                >
+                    (<t
+                        t-out="'%.2f' % (tax_totals.get('l10n_ve_global_discount_percentage') * 100.0)"
+                    />%):
+                </t>
+                <t t-else="">:</t>
+            </td>
+            <td class="text-end">
+                <span
+                    t-out="-tax_totals.get('l10n_ve_global_discount_amount', 0.0)"
+                    t-options='{"widget": "monetary", "display_currency": comp_currency}'
+                />
+            </td>
+            <td class="text-end">
+                <span
+                    t-out="-tax_totals.get('l10n_ve_global_discount_amount_currency', 0.0)"
+                    t-options='{"widget": "monetary", "display_currency": doc_currency}'
+                />
+            </td>
+        </tr>
+        <tr t-if="vat_group">
+            <td>B.I <t t-out="vat_percent" />:</td>
+            <td class="text-end">
+                <span
+                    t-out="vat_group.get('display_base_amount', vat_group.get('base_amount', 0))"
+                    t-options='{"widget": "monetary", "display_currency": comp_currency}'
+                />
+            </td>
+            <td class="text-end">
+                <span
+                    t-out="vat_group.get('display_base_amount_currency', vat_group.get('base_amount_currency', 0))"
+                    t-options='{"widget": "monetary", "display_currency": doc_currency}'
+                />
+            </td>
+        </tr>
+        <tr t-if="vat_group">
+            <td><t t-out="vat_percent" />:</td>
+            <td class="text-end">
+                <span
+                    t-out="vat_group.get('tax_amount', 0)"
+                    t-options='{"widget": "monetary", "display_currency": comp_currency}'
+                />
+            </td>
+            <td class="text-end">
+                <span
+                    t-out="vat_group.get('tax_amount_currency', 0)"
+                    t-options='{"widget": "monetary", "display_currency": doc_currency}'
+                />
+            </td>
+        </tr>
+        <tr t-if="o.l10n_ve_journal_emission_medium and igtf_group">
+            <td>Base Imponible IGTF:</td>
+            <td class="text-end">
+                <span
+                    t-out="igtf_group.get('display_base_amount', igtf_group.get('base_amount', 0))"
+                    t-options='{"widget": "monetary", "display_currency": comp_currency}'
+                />
+            </td>
+            <td class="text-end">
+                <span
+                    t-out="igtf_group.get('display_base_amount_currency', igtf_group.get('base_amount_currency', 0))"
+                    t-options='{"widget": "monetary", "display_currency": doc_currency}'
+                />
+            </td>
+        </tr>
+        <tr t-if="o.l10n_ve_journal_emission_medium and igtf_group">
+            <td>IGTF <t t-out="igtf_percent" />:</td>
+            <td class="text-end">
+                <span
+                    t-out="igtf_group.get('tax_amount', 0)"
+                    t-options='{"widget": "monetary", "display_currency": comp_currency}'
+                />
+            </td>
+            <td class="text-end">
+                <span
+                    t-out="igtf_group.get('tax_amount_currency', 0)"
+                    t-options='{"widget": "monetary", "display_currency": doc_currency}'
+                />
+            </td>
+        </tr>
+        <tr class="o_total">
+            <td><strong>Total a Pagar</strong></td>
+            <td class="text-end">
+                <strong
+                    t-out="tax_totals.get('total_amount', 0)"
+                    t-options='{"widget": "monetary", "display_currency": comp_currency}'
+                />
+            </td>
+            <td class="text-end">
+                <strong
+                    t-out="tax_totals.get('total_amount_currency', 0)"
+                    t-options='{"widget": "monetary", "display_currency": doc_currency}'
+                />
+            </td>
+        </tr>
+    </template>
+
+    <template
+        id="document_tax_totals_hide_zero_percent_groups"
+        inherit_id="account.document_tax_totals_template"
+    >
+        <xpath expr="//tr[hasclass('o_taxes')]" position="attributes">
+            <attribute
+                name="t-if"
+            >not o or o._name != 'account.move' or o.company_id.account_fiscal_country_id.code != 'VE' or any(o.env['account.tax'].browse(tax_group.get('involved_tax_ids', [])).mapped('amount'))</attribute>
+        </xpath>
+    </template>
+
+    <template
+        id="report_invoice_document_dual_currency_totals"
+        inherit_id="account.report_invoice_document"
+    >
+        <xpath expr="//t[@t-call='web.external_layout']" position="inside">
+            <t t-set="display_report_header" t-value="False" />
+        </xpath>
+        <xpath expr="//t[@t-set='layout_document_title']" position="after">
+            <t
+                t-if="o.company_id.account_fiscal_country_id.code == 'VE'"
+                t-set="layout_document_title"
+            >
+                <span t-field="o.name" />
+            </t>
+        </xpath>
+        <xpath
+            expr="//div[@name='invoice_date']/t[@t-if=&quot;o.move_type == 'out_invoice'&quot;]/strong"
+            position="attributes"
+        >
+            <attribute
+                name="t-out"
+            >'Fecha de Documento' if o.company_id.account_fiscal_country_id.code == 'VE' else 'Invoice Date'</attribute>
+        </xpath>
+        <xpath expr="//div[@id='right-elements']" position="before">
+            <t
+                t-set="l10n_ve_dual_currency_totals"
+                t-value="o.company_id.account_fiscal_country_id.code == 'VE' and o.tax_totals and o.company_currency_id != o.currency_id"
+            />
+        </xpath>
+        <xpath expr="//div[@id='right-elements']" position="attributes">
+            <attribute
+                name="t-attf-class"
+            >#{'col-5 mt-5' if report_type == 'pdf' else 'col-12 col-md-5'} ms-5 d-inline-block float-end {{ 'o_l10n_ve_dual_currency_totals' if l10n_ve_dual_currency_totals else '' }}</attribute>
+        </xpath>
+        <xpath
+            expr="//div[@id='total']//table[hasclass('o_total_table')]"
+            position="attributes"
+        >
+            <attribute
+                name="t-attf-class"
+            >o_total_table table table-borderless avoid-page-break-inside {{ 'l10n_ve_totals_dual' if l10n_ve_dual_currency_totals else 'l10n_ve_totals_single' }}</attribute>
+        </xpath>
+        <xpath
+            expr="//t[@t-call='account.document_tax_totals']"
+            position="attributes"
+        >
+            <attribute
+                name="t-if"
+            >o.tax_totals and not l10n_ve_dual_currency_totals</attribute>
+        </xpath>
+        <xpath
+            expr="//t[@t-call='account.document_tax_totals']"
+            position="after"
+        >
+            <t
+                t-if="l10n_ve_dual_currency_totals"
+                t-call="l10n_ve_seniat.document_tax_totals_dual_currency"
+            >
+                <t t-set="tax_totals" t-value="o.tax_totals or {}" />
+                <t t-set="doc_currency" t-value="o.currency_id" />
+                <t t-set="comp_currency" t-value="o.company_currency_id" />
+            </t>
+        </xpath>
+        <xpath
+            expr="//t[@t-call='account.document_tax_totals_company_currency_template']/.."
+            position="attributes"
+        >
+            <attribute
+                name="t-if"
+            >o.tax_totals.get('display_in_company_currency') and not l10n_ve_dual_currency_totals</attribute>
+        </xpath>
+        <xpath expr="//div[@id='right-elements']/div[hasclass('mb-2')]" position="attributes">
+            <attribute
+                name="class"
+                add="o_l10n_ve_total_amount_words"
+                separator=" "
+            />
+        </xpath>
+    </template>
+
+    <template
+        id="external_layout_striped_hide_account_move_header"
+        inherit_id="web.external_layout_striped"
+    >
+        <xpath
+            expr="//div[contains(concat(' ', normalize-space(@t-attf-class), ' '), ' header ')]"
+            position="attributes"
+        >
+            <attribute
+                name="t-if"
+            >display_report_header is not False</attribute>
+        </xpath>
+    </template>
+
+    <template
+        id="external_layout_boxed_hide_account_move_header"
+        inherit_id="web.external_layout_boxed"
+    >
+        <xpath
+            expr="//div[contains(concat(' ', normalize-space(@t-attf-class), ' '), ' header ')]"
+            position="attributes"
+        >
+            <attribute
+                name="t-if"
+            >display_report_header is not False</attribute>
+        </xpath>
+    </template>
+
+    <template
+        id="external_layout_bold_hide_account_move_header"
+        inherit_id="web.external_layout_bold"
+    >
+        <xpath
+            expr="//div[contains(concat(' ', normalize-space(@t-attf-class), ' '), ' header ')]"
+            position="attributes"
+        >
+            <attribute
+                name="t-if"
+            >display_report_header is not False</attribute>
+        </xpath>
+    </template>
+
+    <template
+        id="external_layout_standard_hide_account_move_header"
+        inherit_id="web.external_layout_standard"
+    >
+        <xpath
+            expr="//div[contains(concat(' ', normalize-space(@t-attf-class), ' '), ' header ')]"
+            position="attributes"
+        >
+            <attribute
+                name="t-if"
+            >display_report_header is not False</attribute>
+        </xpath>
+    </template>
+
+    <template
+        id="external_layout_folder_hide_account_move_header"
+        inherit_id="web.external_layout_folder"
+    >
+        <xpath
+            expr="//div[contains(concat(' ', normalize-space(@t-attf-class), ' '), ' header ')]"
+            position="attributes"
+        >
+            <attribute
+                name="t-if"
+            >display_report_header is not False</attribute>
+        </xpath>
+    </template>
+
+    <template
+        id="external_layout_wave_hide_account_move_header"
+        inherit_id="web.external_layout_wave"
+    >
+        <xpath
+            expr="//div[contains(concat(' ', normalize-space(@t-attf-class), ' '), ' header ')]"
+            position="attributes"
+        >
+            <attribute
+                name="t-if"
+            >display_report_header is not False</attribute>
+        </xpath>
+    </template>
+
+    <template
+        id="external_layout_bubble_hide_account_move_header"
+        inherit_id="web.external_layout_bubble"
+    >
+        <xpath
+            expr="//div[contains(concat(' ', normalize-space(@t-attf-class), ' '), ' header ')]"
+            position="attributes"
+        >
+            <attribute
+                name="t-if"
+            >display_report_header is not False</attribute>
+        </xpath>
+    </template>
+</odoo>

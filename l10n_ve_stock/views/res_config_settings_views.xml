@@ -6,13 +6,12 @@
         <field name="inherit_id" ref="l10n_ve_seniat.res_config_settings_l10n_ve_seniat" />
         <field name="arch" type="xml">
             <xpath
-                expr="//div[@id='l10n_ve_seniat_div_dispatch_email']"
-                position="replace"
+                expr="//div[@id='l10n_ve_seniat_div_lock_fiscal_data']"
+                position="after"
             >
                 <div
-                    id="l10n_ve_seniat_div_dispatch_email"
+                    id="l10n_ve_stock_div_dispatch_guide"
                     class="col-12 col-lg-6 o_setting_box"
-                    invisible="not l10n_ve_has_dispatch_guide_emission"
                 >
                     <div class="o_setting_left_pane">
                         <field name="l10n_ve_dispatch_guide_enabled" />
@@ -22,43 +21,6 @@
                         <div class="text-muted">
                             Habilita el uso y reporte de guías de despacho
                             ante el SENIAT.
-                        </div>
-                        <div
-                            class="content-group mt-3"
-                            groups="base.group_no_one"
-                            invisible="not l10n_ve_dispatch_guide_enabled"
-                        >
-                            <group>
-                                <field
-                                    name="l10n_ve_unfactured_dispatch_email_recipient"
-                                    placeholder="proveedores.sistemas@seniat.gob.ve"
-                                />
-                                <field
-                                    name="l10n_ve_unfactured_dispatch_email_schedule_enabled"
-                                />
-                                <label
-                                    for="l10n_ve_unfactured_dispatch_email_interval_number"
-                                    string="Enviar cada"
-                                    invisible="not l10n_ve_unfactured_dispatch_email_schedule_enabled"
-                                />
-                                <div
-                                    class="o_row"
-                                    invisible="not l10n_ve_unfactured_dispatch_email_schedule_enabled"
-                                >
-                                    <field
-                                        name="l10n_ve_unfactured_dispatch_email_interval_number"
-                                        class="oe_inline"
-                                    />
-                                    <field
-                                        name="l10n_ve_unfactured_dispatch_email_interval_type"
-                                        class="oe_inline"
-                                    />
-                                </div>
-                                <field
-                                    name="l10n_ve_unfactured_dispatch_email_last_sent"
-                                    readonly="1"
-                                />
-                            </group>
                         </div>
                     </div>
                 </div>

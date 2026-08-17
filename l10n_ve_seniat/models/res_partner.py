@@ -374,17 +374,22 @@ class ResPartner(models.Model):
 
         vat_regex = re.compile(
             r"""
-            ([vecjpg])                          # group 1 - kind
+            ^([vecjpg])                          # group 1 - kind
             (
-                (?P<optional_1>-)?                      # optional '-' (1)
-                [0-9]{2}
-                (?(optional_1)(?P<optional_2>[.])?)     # optional '.' (2) only if (1)
-                [0-9]{3}
-                (?(optional_2)[.])                      # mandatory '.' if (2)
-                [0-9]{3}
-                (?(optional_1)-)                        # mandatory '-' if (1)
-            )                                   # group 2 - identifier number
-            ([0-9]{1})?                         # check digit opcional
+                (?:
+                    (?P<optional_1>-)?                  # optional '-' (1)
+                    [0-9]{2}
+                    (?(optional_1)(?P<optional_2>[.])?) # optional '.' (2) only if (1)
+                    [0-9]{3}
+                    (?(optional_2)[.])                  # mandatory '.' if (2)
+                    [0-9]{3}
+                    (?(optional_1)-)                    # mandatory '-' if (1)
+                |
+                    [0-9]{7}                            # cédula compacta (ej. V7440703)
+                )
+            )                                       # group 2 - identifier number
+            ([0-9])?                                # dígito verificador opcional
+            $
         """,
             re.VERBOSE | re.IGNORECASE,
         )
@@ -475,8 +480,8 @@ class ResPartner(models.Model):
                 raise ValidationError(
                     _(
                         "El RIF («%(vat)s») no tiene un formato válido para contactos "
-                        "venezolanos. Use [V/E/J/C/P/G] y el número (ej.: V12345678, "
-                        "J-12.345.678-9)."
+                        "venezolanos. Use [V/E/J/C/P/G] y el número (ej.: V7440703, "
+                        "V12345678, J-12.345.678-9)."
                     )
                     % {"vat": vat}
                 )

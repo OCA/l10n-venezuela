@@ -6,7 +6,7 @@
         <field name="priority" eval="25" />
         <field name="arch" type="xml">
             <xpath
-                expr="//div[@id='l10n_ve_seniat_div_enforce_sale_price']"
+                expr="//div[@id='l10n_ve_seniat_div_lock_fiscal_data']"
                 position="after"
             >
                 <field name="l10n_ve_igtf_settings_eligible" invisible="1" />

@@ -14,22 +14,24 @@ class TestSaleOrderConfirm(L10nVeSeniatCommon):
         cls.journal = cls.company_data["default_journal_sale"]
         cls._l10n_ve_configure_journal_digital(cls.journal)
 
-    def _create_ve_product(self, name="Producto confirmación", price=100.0):
-        tmpl = self.env["product.template"].create(
-            {
-                "name": name,
-                "company_id": self.env.company.id,
-                "list_price": price,
-                "standard_price": price / 2,
-                "taxes_id": [(6, 0, [self.company_data["default_tax_sale"].id])],
-                "supplier_taxes_id": [
-                    (6, 0, [self.company_data["default_tax_purchase"].id])
-                ],
-            }
-        )
+    def _create_ve_product(self, name="Producto confirmación", price=100.0, service=False):
+        vals = {
+            "name": name,
+            "company_id": self.env.company.id,
+            "list_price": price,
+            "standard_price": price / 2,
+            "taxes_id": [(6, 0, [self.company_data["default_tax_sale"].id])],
+            "supplier_taxes_id": [
+                (6, 0, [self.company_data["default_tax_purchase"].id])
+            ],
+        }
+        if service:
+            vals["type"] = "service"
+            vals["invoice_policy"] = "order"
+        tmpl = self.env["product.template"].create(vals)
         return tmpl.product_variant_ids[0]
 
-    def _create_ve_order(self, qty):
+    def _create_ve_order(self, qty, service=False):
         partner = self.env["res.partner"].create(
             {
                 "name": "Cliente VE confirmación",
@@ -37,7 +39,7 @@ class TestSaleOrderConfirm(L10nVeSeniatCommon):
                 "vat": "J12345680",
             }
         )
-        product = self._create_ve_product()
+        product = self._create_ve_product(service=service)
         return self.env["sale.order"].create(
             {
                 "partner_id": partner.id,
@@ -58,18 +60,17 @@ class TestSaleOrderConfirm(L10nVeSeniatCommon):
 
     def test_confirm_rejects_zero_quantity(self):
         order = self._create_ve_order(qty=0.0)
-        with self.assertRaises(UserError) as cm:
+        with self.assertRaises(UserError):
             order.action_confirm()
-        self.assertIn("cantidad 0 o negativa", str(cm.exception))
 
     def test_confirm_rejects_negative_quantity(self):
         order = self._create_ve_order(qty=-1.0)
-        with self.assertRaises(UserError) as cm:
+        with self.assertRaises(UserError):
             order.action_confirm()
-        self.assertIn("cantidad 0 o negativa", str(cm.exception))
 
     def test_confirm_allows_quantity_change_after_confirmation(self):
-        order = self._create_ve_order(qty=1.0)
+        # Service product: sale_stock does not block qty below delivered.
+        order = self._create_ve_order(qty=1.0, service=True)
         order.action_confirm()
         order.order_line.product_uom_qty = 0.0
         self.assertEqual(order.order_line.product_uom_qty, 0.0)

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <template
+        id="document_tax_totals_global_discount"
+        inherit_id="account.document_tax_totals_template"
+    >
+        <xpath expr="//tr[hasclass('o_subtotal')]/td[2]/span" position="attributes">
+            <attribute
+                name="t-out"
+            >tax_totals.get('l10n_ve_subtotal_gross_currency', subtotal['base_amount_currency']) if tax_totals.get('l10n_ve_show_global_discount') and subtotal_index == 0 else subtotal['base_amount_currency']</attribute>
+        </xpath>
+        <xpath expr="//tr[hasclass('o_subtotal')]" position="after">
+            <tr
+                t-if="tax_totals.get('l10n_ve_show_global_discount') and subtotal_index == 0"
+                class="o_l10n_ve_global_discount"
+            >
+                <td>
+                    Descuento
+                    <t
+                        t-if="tax_totals.get('l10n_ve_global_discount_percentage')"
+                    >
+                        (<t
+                            t-out="'%.2f' % (tax_totals.get('l10n_ve_global_discount_percentage') * 100.0)"
+                        />%)
+                    </t>
+                </td>
+                <td class="text-end">
+                    <span
+                        class="text-nowrap"
+                        t-out="-tax_totals.get('l10n_ve_global_discount_amount_currency', 0.0)"
+                        t-options="{'widget': 'monetary', 'display_currency': currency}"
+                    />
+                </td>
+            </tr>
+        </xpath>
+    </template>
+
+    <template
+        id="document_tax_totals_company_currency_global_discount"
+        inherit_id="account.document_tax_totals_company_currency_template"
+    >
+        <xpath expr="//tr[hasclass('o_subtotal')]/td[2]/span" position="attributes">
+            <attribute
+                name="t-out"
+            >tax_totals.get('l10n_ve_subtotal_gross', subtotal['base_amount']) if tax_totals.get('l10n_ve_show_global_discount') and subtotal_index == 0 else subtotal['base_amount']</attribute>
+        </xpath>
+        <xpath expr="//tr[hasclass('o_subtotal')]" position="after">
+            <tr
+                t-if="tax_totals.get('l10n_ve_show_global_discount') and subtotal_index == 0"
+                class="o_l10n_ve_global_discount"
+            >
+                <td>
+                    Descuento
+                    <t
+                        t-if="tax_totals.get('l10n_ve_global_discount_percentage')"
+                    >
+                        (<t
+                            t-out="'%.2f' % (tax_totals.get('l10n_ve_global_discount_percentage') * 100.0)"
+                        />%)
+                    </t>
+                </td>
+                <td class="text-end">
+                    <span
+                        class="text-nowrap"
+                        t-out="-tax_totals.get('l10n_ve_global_discount_amount', 0.0)"
+                        t-options="{'widget': 'monetary', 'display_currency': currency}"
+                    />
+                </td>
+            </tr>
+        </xpath>
+    </template>
+</odoo>

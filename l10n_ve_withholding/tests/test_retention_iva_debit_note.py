@@ -3,21 +3,14 @@
 from odoo import Command, fields
 from odoo.tests import tagged
 
-from odoo.addons.account.tests.common import AccountTestInvoicingCommon
+from odoo.addons.l10n_ve_seniat.tests.common import L10nVeSeniatCommon
 
 
 @tagged("post_install", "-at_install")
-class TestRetentionIvaDebitNote(AccountTestInvoicingCommon):
+class TestRetentionIvaDebitNote(L10nVeSeniatCommon):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        cls.company.account_fiscal_country_id = cls.env.ref("base.ve")
-        cls.company.partner_id.write(
-            {
-                "vat": "J770023598",
-                "country_id": cls.env.ref("base.ve").id,
-            }
-        )
         cls.supplier = cls.env["res.partner"].create(
             {
                 "name": "Proveedor retención ND",

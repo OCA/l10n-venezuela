@@ -33,25 +33,6 @@ class AccountMove(models.Model):
                 )
         return res
 
-    def l10n_ve_report_invoice_lines(self):
-        self.ensure_one()
-        lines = self.invoice_line_ids.sorted(key=lambda line: (line.sequence, line.id))
-        if self.company_id.account_fiscal_country_id.code != "VE":
-            return lines
-        disc = getattr(self.company_id, "sale_discount_product_id", False)
-        if not disc:
-            return lines
-
-        def _is_discount_product_line(line):
-            return line.display_type == "product" and line.product_id == disc
-
-        discount_lines = lines.filtered(_is_discount_product_line)
-        if not discount_lines:
-            return lines
-        return lines.filtered(lambda line: not _is_discount_product_line(line)) + (
-            discount_lines
-        )
-
     def _l10n_ve_check_credit_note_creation_allowed(self):
         """Hook extended by l10n_ve_seniat with fiscal credit-note rules."""
 

@@ -21,6 +21,11 @@ class TestAccountMoveTaxTotalsGlobalDiscount(L10nVeSeniatCommon):
         )
 
     def _create_invoice(self, price_unit=100.0, quantity=1.0, discount=0.0):
+        product = self._create_product(
+            name="Product line",
+            list_price=price_unit,
+            taxes_id=[Command.set(self.company_data["default_tax_sale"].ids)],
+        )
         return self.env["account.move"].create(
             {
                 "move_type": "out_invoice",
@@ -30,6 +35,7 @@ class TestAccountMoveTaxTotalsGlobalDiscount(L10nVeSeniatCommon):
                         0,
                         0,
                         {
+                            "product_id": product.id,
                             "name": "Product line",
                             "quantity": quantity,
                             "price_unit": price_unit,
@@ -185,6 +191,23 @@ class TestAccountMoveTaxTotalsGlobalDiscount(L10nVeSeniatCommon):
         self.assertEqual(len(tax_totals["l10n_ve_global_discount_lines"]), 1)
         self.assertAlmostEqual(
             move.amount_untaxed, tax_totals["base_amount_currency"], places=2
+        )
+
+    def test_original_tax_totals_template_shows_global_discount(self):
+        move = self._create_invoice()
+        self._add_global_discount(move, "Promoción", 10.0)
+        rendered = self.env["ir.ui.view"]._render_template(
+            "account.document_tax_totals",
+            {
+                "currency": move.currency_id,
+                "tax_totals": move.tax_totals,
+            },
+        )
+        self.assertIn("o_l10n_ve_global_discount", rendered)
+        self.assertIn("Descuento", rendered)
+        self.assertLess(
+            rendered.index("o_subtotal"),
+            rendered.index("o_l10n_ve_global_discount"),
         )
 
     def test_tax_totals_groups_multiple_global_discounts(self):
@@ -362,6 +385,16 @@ class TestAccountMoveTaxTotalsGlobalDiscount(L10nVeSeniatCommon):
         company = self.env.company
         sale_tax = company.account_sale_tax_id
         exempt_tax = self.env["product.template"]._l10n_ve_get_exent_sale_tax(company)
+        product_taxed = self._create_product(
+            name="Gravada",
+            list_price=100.0,
+            taxes_id=[Command.set(sale_tax.ids)],
+        )
+        product_exempt = self._create_product(
+            name="Exenta",
+            list_price=50.0,
+            taxes_id=[Command.set(exempt_tax.ids)],
+        )
         move = self.env["account.move"].create(
             {
                 "move_type": "out_invoice",
@@ -369,6 +402,7 @@ class TestAccountMoveTaxTotalsGlobalDiscount(L10nVeSeniatCommon):
                 "invoice_line_ids": [
                     Command.create(
                         {
+                            "product_id": product_taxed.id,
                             "name": "Gravada",
                             "quantity": 1.0,
                             "price_unit": 100.0,
@@ -380,6 +414,7 @@ class TestAccountMoveTaxTotalsGlobalDiscount(L10nVeSeniatCommon):
                     ),
                     Command.create(
                         {
+                            "product_id": product_exempt.id,
                             "name": "Exenta",
                             "quantity": 1.0,
                             "price_unit": 50.0,
@@ -428,6 +463,11 @@ class TestAccountMoveGlobalDiscountJournalLines(L10nVeSeniatCommon):
         )
 
     def _create_invoice(self, price_unit=100.0, quantity=1.0):
+        product = self._create_product(
+            name="Product line",
+            list_price=price_unit,
+            taxes_id=[Command.set(self.company_data["default_tax_sale"].ids)],
+        )
         return self.env["account.move"].create(
             {
                 "move_type": "out_invoice",
@@ -437,6 +477,7 @@ class TestAccountMoveGlobalDiscountJournalLines(L10nVeSeniatCommon):
                         0,
                         0,
                         {
+                            "product_id": product.id,
                             "name": "Product line",
                             "quantity": quantity,
                             "price_unit": price_unit,
@@ -503,6 +544,16 @@ class TestAccountMoveGlobalDiscountJournalLines(L10nVeSeniatCommon):
             self.env.company
         )
 
+        product_taxed = self._create_product(
+            name="Taxed product",
+            list_price=100.0,
+            taxes_id=[Command.set(sale_tax.ids)],
+        )
+        product_exempt = self._create_product(
+            name="Exempt product",
+            list_price=50.0,
+            taxes_id=[Command.set(exempt_tax.ids)],
+        )
         move = self.env["account.move"].create(
             {
                 "move_type": "out_invoice",
@@ -510,6 +561,7 @@ class TestAccountMoveGlobalDiscountJournalLines(L10nVeSeniatCommon):
                 "invoice_line_ids": [
                     Command.create(
                         {
+                            "product_id": product_taxed.id,
                             "name": "Taxed product",
                             "quantity": 1.0,
                             "price_unit": 100.0,
@@ -519,6 +571,7 @@ class TestAccountMoveGlobalDiscountJournalLines(L10nVeSeniatCommon):
                     ),
                     Command.create(
                         {
+                            "product_id": product_exempt.id,
                             "name": "Exempt product",
                             "quantity": 1.0,
                             "price_unit": 50.0,
@@ -592,6 +645,16 @@ class TestAccountMoveGlobalDiscountJournalLines(L10nVeSeniatCommon):
             self.env.company
         )
 
+        product_taxed = self._create_product(
+            name="Taxed product",
+            list_price=1000.0,
+            taxes_id=[Command.set(sale_tax.ids)],
+        )
+        product_exempt = self._create_product(
+            name="Exempt product",
+            list_price=2000.0,
+            taxes_id=[Command.set(exempt_tax.ids)],
+        )
         move = self.env["account.move"].create(
             {
                 "move_type": "out_invoice",
@@ -599,6 +662,7 @@ class TestAccountMoveGlobalDiscountJournalLines(L10nVeSeniatCommon):
                 "invoice_line_ids": [
                     Command.create(
                         {
+                            "product_id": product_taxed.id,
                             "name": "Taxed product",
                             "quantity": 1.0,
                             "price_unit": 1000.0,
@@ -609,6 +673,7 @@ class TestAccountMoveGlobalDiscountJournalLines(L10nVeSeniatCommon):
                     ),
                     Command.create(
                         {
+                            "product_id": product_exempt.id,
                             "name": "Exempt product",
                             "quantity": 1.0,
                             "price_unit": 2000.0,
@@ -634,7 +699,20 @@ class TestAccountMoveGlobalDiscountJournalLines(L10nVeSeniatCommon):
         revenue_account = self.company_data["default_account_revenue"]
         discount_account = self.discount_allocation_account
         sale_tax = self.company_data["default_tax_sale"]
+        exempt_tax = self.env["product.template"]._l10n_ve_get_exent_sale_tax(
+            self.env.company
+        )
 
+        product_taxed = self._create_product(
+            name="Taxed product",
+            list_price=1000.0,
+            taxes_id=[Command.set(sale_tax.ids)],
+        )
+        product_exempt = self._create_product(
+            name="Exempt product",
+            list_price=2000.0,
+            taxes_id=[Command.set(exempt_tax.ids)],
+        )
         move = self.env["account.move"].create(
             {
                 "move_type": "out_invoice",
@@ -642,6 +720,7 @@ class TestAccountMoveGlobalDiscountJournalLines(L10nVeSeniatCommon):
                 "invoice_line_ids": [
                     Command.create(
                         {
+                            "product_id": product_taxed.id,
                             "name": "Taxed product",
                             "quantity": 1.0,
                             "price_unit": 1000.0,
@@ -652,17 +731,12 @@ class TestAccountMoveGlobalDiscountJournalLines(L10nVeSeniatCommon):
                     ),
                     Command.create(
                         {
+                            "product_id": product_exempt.id,
                             "name": "Exempt product",
                             "quantity": 1.0,
                             "price_unit": 2000.0,
                             "account_id": revenue_account.id,
-                            "tax_ids": [
-                                Command.set(
-                                    self.env["product.template"]._l10n_ve_get_exent_sale_tax(
-                                        self.env.company
-                                    ).ids
-                                )
-                            ],
+                            "tax_ids": [Command.set(exempt_tax.ids)],
                         }
                     ),
                 ],

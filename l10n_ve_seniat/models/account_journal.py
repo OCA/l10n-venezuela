@@ -19,7 +19,6 @@ class AccountJournal(models.Model):
             ("digital", "Facturación digital"),
         ],
         string="Medio de emisión",
-        default="free",
         copy=False,
         help=(
             "Forma libre: asigna correlativo desde el talonario interno. "
@@ -88,28 +87,55 @@ class AccountJournal(models.Model):
         ),
     )
 
-    l10n_ve_max_invoice_lines = fields.Integer(
-        string="Máximo de líneas por factura (diario)",
-        default=10,
+    l10n_ve_limit_invoice_lines = fields.Boolean(
+        string="Limitar líneas por factura",
+        default=False,
         copy=False,
         help=(
-            "Si el medio de emisión no es «Forma libre», al facturar desde ventas se "
-            "parte el pedido en varias facturas cuando supera este número de líneas de "
-            "producto. Con «Forma libre» y tramo de talonario configurado, se usa el "
-            "máximo definido en el talonario."
+            "Si está activo, al facturar desde ventas se parte el pedido cuando "
+            "supera el máximo configurado. Aplica sin medio de emisión o con "
+            "medios distintos de «Forma libre» y «Máquina fiscal»."
+        ),
+    )
+    l10n_ve_max_invoice_lines = fields.Integer(
+        string="Máximo de líneas por factura (diario)",
+        copy=False,
+        help="Número máximo de líneas de producto por factura cuando el límite está activo.",
+    )
+    l10n_ve_limit_picking_lines = fields.Boolean(
+        string="Limitar líneas por guía de despacho",
+        default=False,
+        copy=False,
+        help=(
+            "Si está activo, al confirmar el pedido se dividen los albaranes que "
+            "superan el máximo configurado. Aplica sin medio de emisión o con "
+            "medios distintos de «Forma libre» y «Máquina fiscal»."
         ),
     )
     l10n_ve_max_picking_lines = fields.Integer(
         string="Máximo de líneas por guía de despacho (diario)",
-        default=10,
         copy=False,
         help=(
-            "Si el medio de emisión no es «Forma libre», al confirmar el pedido se "
-            "dividen los albaranes de salida que superen este número de movimientos de "
-            "producto. Con «Forma libre» y talonario en el tramo del diario, se usa el "
-            "máximo del talonario."
+            "Número máximo de movimientos de producto por guía cuando el límite "
+            "está activo."
         ),
     )
+
+    def _l10n_ve_journal_invoice_line_limit(self):
+        self.ensure_one()
+        if not self.l10n_ve_limit_invoice_lines:
+            return 0
+        if not self.l10n_ve_max_invoice_lines or self.l10n_ve_max_invoice_lines < 1:
+            return 0
+        return self.l10n_ve_max_invoice_lines
+
+    def _l10n_ve_journal_picking_line_limit(self):
+        self.ensure_one()
+        if not self.l10n_ve_limit_picking_lines:
+            return 0
+        if not self.l10n_ve_max_picking_lines or self.l10n_ve_max_picking_lines < 1:
+            return 0
+        return self.l10n_ve_max_picking_lines
 
     @api.constrains("l10n_ve_fiscal_payment_code")
     def _check_l10n_ve_fiscal_payment_code(self):
@@ -158,28 +184,39 @@ class AccountJournal(models.Model):
                     % {"journal": journal.display_name}
                 )
 
-    @api.constrains("l10n_ve_max_invoice_lines", "l10n_ve_max_picking_lines")
+    @api.constrains(
+        "l10n_ve_limit_invoice_lines",
+        "l10n_ve_max_invoice_lines",
+        "l10n_ve_limit_picking_lines",
+        "l10n_ve_max_picking_lines",
+    )
     def _check_l10n_ve_journal_max_lines(self):
         for journal in self:
             if (
-                journal.l10n_ve_max_invoice_lines is not None
-                and journal.l10n_ve_max_invoice_lines < 1
+                journal.l10n_ve_limit_invoice_lines
+                and (
+                    not journal.l10n_ve_max_invoice_lines
+                    or journal.l10n_ve_max_invoice_lines < 1
+                )
             ):
                 raise ValidationError(
                     _(
-                        "El máximo de líneas por factura del diario «%(journal)s» debe "
-                        "ser al menos 1."
+                        "El diario «%(journal)s» debe indicar un máximo de líneas "
+                        "por factura de al menos 1 cuando el límite está activo."
                     )
                     % {"journal": journal.display_name}
                 )
             if (
-                journal.l10n_ve_max_picking_lines is not None
-                and journal.l10n_ve_max_picking_lines < 1
+                journal.l10n_ve_limit_picking_lines
+                and (
+                    not journal.l10n_ve_max_picking_lines
+                    or journal.l10n_ve_max_picking_lines < 1
+                )
             ):
                 raise ValidationError(
                     _(
-                        "El máximo de líneas por guía del diario «%(journal)s» debe "
-                        "ser al menos 1."
+                        "El diario «%(journal)s» debe indicar un máximo de líneas "
+                        "por guía de al menos 1 cuando el límite está activo."
                     )
                     % {"journal": journal.display_name}
                 )

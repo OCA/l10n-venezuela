@@ -57,14 +57,58 @@ class TestAccountJournal(L10nVeSeniatCommon):
                 }
             )
 
-    def test_journal_max_lines_defaults(self):
+    def test_journal_line_limits_disabled_by_default(self):
         journal = self.company_data["default_journal_sale"]
-        self.assertEqual(journal.l10n_ve_max_invoice_lines, 10)
-        self.assertEqual(journal.l10n_ve_max_picking_lines, 10)
+        self.assertFalse(journal.l10n_ve_limit_invoice_lines)
+        self.assertFalse(journal.l10n_ve_limit_picking_lines)
+        self.assertFalse(journal.l10n_ve_max_invoice_lines)
+        self.assertFalse(journal.l10n_ve_max_picking_lines)
+        self.assertEqual(journal._l10n_ve_journal_invoice_line_limit(), 0)
+        self.assertEqual(journal._l10n_ve_journal_picking_line_limit(), 0)
 
-    def test_journal_max_lines_below_one_raises(self):
+    def test_journal_line_limits_when_enabled(self):
+        journal = self.company_data["default_journal_sale"]
+        journal.write(
+            {
+                "l10n_ve_emission_medium": "digital",
+                "l10n_ve_limit_invoice_lines": True,
+                "l10n_ve_max_invoice_lines": 5,
+                "l10n_ve_limit_picking_lines": True,
+                "l10n_ve_max_picking_lines": 8,
+            }
+        )
+        self.assertEqual(journal._l10n_ve_journal_invoice_line_limit(), 5)
+        self.assertEqual(journal._l10n_ve_journal_picking_line_limit(), 8)
+
+    def test_journal_line_limits_without_emission_medium(self):
+        journal = self.company_data["default_journal_sale"]
+        journal.write(
+            {
+                "l10n_ve_emission_medium": False,
+                "l10n_ve_limit_invoice_lines": True,
+                "l10n_ve_max_invoice_lines": 3,
+                "l10n_ve_limit_picking_lines": True,
+                "l10n_ve_max_picking_lines": 4,
+            }
+        )
+        self.assertEqual(journal._l10n_ve_journal_invoice_line_limit(), 3)
+        self.assertEqual(journal._l10n_ve_journal_picking_line_limit(), 4)
+
+    def test_journal_line_limits_require_value_when_enabled(self):
         journal = self.company_data["default_journal_sale"]
         with self.assertRaises(ValidationError):
-            journal.write({"l10n_ve_max_invoice_lines": 0})
+            journal.write(
+                {
+                    "l10n_ve_emission_medium": "digital",
+                    "l10n_ve_limit_invoice_lines": True,
+                    "l10n_ve_max_invoice_lines": 0,
+                }
+            )
         with self.assertRaises(ValidationError):
-            journal.write({"l10n_ve_max_picking_lines": 0})
+            journal.write(
+                {
+                    "l10n_ve_emission_medium": "digital",
+                    "l10n_ve_limit_picking_lines": True,
+                    "l10n_ve_max_picking_lines": 0,
+                }
+            )

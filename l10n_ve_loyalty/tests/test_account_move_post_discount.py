@@ -20,8 +20,8 @@ class TestAccountMovePostDiscount(L10nVeSeniatCommon):
                 "vat": "J12345680",
             }
         )
-        cls.company_data["default_journal_sale"].write(
-            {"l10n_ve_emission_medium": "free"}
+        cls._l10n_ve_configure_journal_free(
+            cls.company_data["default_journal_sale"]
         )
         cls.reason_early = cls.env.ref(
             "l10n_ve_loyalty.l10n_ve_discount_reason_early_payment",
@@ -36,6 +36,11 @@ class TestAccountMovePostDiscount(L10nVeSeniatCommon):
         tax_ids = []
         if tax:
             tax_ids = [self.company_data["default_tax_sale"].id]
+        product = self._create_product(
+            name="Product line",
+            list_price=price_unit,
+            taxes_id=[Command.set(tax_ids)] if tax_ids else [Command.clear()],
+        )
         move = self.env["account.move"].create(
             {
                 "move_type": "out_invoice",
@@ -44,6 +49,7 @@ class TestAccountMovePostDiscount(L10nVeSeniatCommon):
                 "invoice_line_ids": [
                     Command.create(
                         {
+                            "product_id": product.id,
                             "name": "Product line",
                             "quantity": 1.0,
                             "price_unit": price_unit,
@@ -173,7 +179,7 @@ class TestAccountMovePostDiscount(L10nVeSeniatCommon):
         foreign = usd if company_ccy != usd else self.env.ref("base.EUR")
         foreign.write({"active": True})
         journal = self.company_data["default_journal_sale"]
-        journal.write({"l10n_ve_emission_medium": "free"})
+        self._l10n_ve_configure_journal_free(journal)
         date_invoice = fields.Date.today()
         self.env["res.currency.rate"].create(
             {
@@ -295,7 +301,7 @@ class TestAccountMovePostDiscount(L10nVeSeniatCommon):
         foreign = usd if company_ccy != usd else self.env.ref("base.EUR")
         foreign.write({"active": True})
         journal = self.company_data["default_journal_sale"]
-        journal.write({"l10n_ve_emission_medium": "free"})
+        self._l10n_ve_configure_journal_free(journal)
         date_invoice = fields.Date.today()
         self.env["res.currency.rate"].create(
             {
@@ -353,7 +359,7 @@ class TestAccountMovePostDiscount(L10nVeSeniatCommon):
         foreign = usd if company_ccy != usd else self.env.ref("base.EUR")
         foreign.write({"active": True})
         journal = self.company_data["default_journal_sale"]
-        journal.write({"l10n_ve_emission_medium": "free"})
+        self._l10n_ve_configure_journal_free(journal)
         date_invoice = fields.Date.today()
         self.env["res.currency.rate"].create(
             {

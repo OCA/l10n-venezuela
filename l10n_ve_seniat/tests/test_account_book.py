@@ -3,12 +3,21 @@
 from odoo import fields
 from odoo.exceptions import ValidationError
 from odoo.tests import tagged
+from odoo.tests.common import new_test_user
 
 from .common import L10nVeSeniatCommon
 
 
 @tagged("post_install", "-at_install")
 class TestAccountBook(L10nVeSeniatCommon):
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        cls.book_user = new_test_user(
+            cls.env,
+            login="l10n_ve_book_invoice_user",
+            groups="account.group_account_invoice",
+        )
     def _new_entry_move(self):
         return self.env["account.move"].create(
             {
@@ -564,7 +573,7 @@ class TestAccountBook(L10nVeSeniatCommon):
             }
         )
         with self.assertRaises(ValidationError):
-            doc.write({"number": 2})
+            doc.with_user(self.book_user).write({"number": 2})
 
     def test_document_unlink_without_context_raises(self):
         book = self.env["account.book"].create(
@@ -624,7 +633,7 @@ class TestAccountBook(L10nVeSeniatCommon):
             }
         )
         with self.assertRaises(ValidationError):
-            doc.unlink()
+            doc.with_user(self.book_user).unlink()
 
     def test_correlative_gap_in_section_raises(self):
         book = self.env["account.book"].create(
@@ -841,7 +850,12 @@ class TestAccountBook(L10nVeSeniatCommon):
                 limit=1,
             )
         )
-        partner_us = self.env["res.partner"].create({"name": "P us"})
+        partner_us = self.env["res.partner"].with_company(us_company).create(
+            {
+                "name": "P us",
+                "country_id": self.env.ref("base.us").id,
+            }
+        )
         move_us = (
             self.env["account.move"]
             .with_company(us_company)

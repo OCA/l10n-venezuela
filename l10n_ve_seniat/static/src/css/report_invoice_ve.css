@@ -161,25 +161,29 @@
 }
 #total .l10n_ve_totals_dual,
 #total .l10n_ve_totals_dual td,
-#total .l10n_ve_totals_dual span {
-    font-size: 13px !important;
+#total .l10n_ve_totals_dual span,
+#total .l10n_ve_totals_dual strong {
+    font-size: 12px !important;
 }
 
 #total .l10n_ve_totals_dual tr.o_total,
 #total .l10n_ve_totals_dual tr.o_total td,
-#total .l10n_ve_totals_dual tr.o_total span {
-    font-size: 15px !important;
+#total .l10n_ve_totals_dual tr.o_total span,
+#total .l10n_ve_totals_dual tr.o_total strong {
+    font-size: 13px !important;
 }
 
 #total .l10n_ve_totals_single,
 #total .l10n_ve_totals_single td,
-#total .l10n_ve_totals_single span {
+#total .l10n_ve_totals_single span,
+#total .l10n_ve_totals_single strong {
     font-size: 10px !important;
 }
 
 #total .l10n_ve_totals_single tr.o_total,
 #total .l10n_ve_totals_single tr.o_total td,
-#total .l10n_ve_totals_single tr.o_total span {
+#total .l10n_ve_totals_single tr.o_total span,
+#total .l10n_ve_totals_single tr.o_total strong {
     font-size: 11px !important;
 }
 
@@ -212,4 +216,46 @@
     padding-top: 1px !important;
     padding-bottom: 1px !important;
     line-height: 1.15 !important;
+}
+
+.o_l10n_ve_dual_currency_totals {
+    display: block !important;
+    width: 62% !important;
+    max-width: 62% !important;
+    margin-left: auto !important;
+    float: none !important;
+}
+
+.o_l10n_ve_dual_currency_totals > #total {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+.o_l10n_ve_dual_currency_totals > .o_l10n_ve_total_amount_words {
+    width: 100%;
+    margin-top: 0.35rem;
+}
+
+.o_l10n_ve_dual_currency_totals .o_total_table {
+    margin-bottom: 0;
+}
+
+.o_l10n_ve_dual_currency_totals .o_total_table td {
+    padding: 0.2rem 0.25rem;
+    line-height: 1.2;
+}
+
+.o_l10n_ve_dual_currency_totals .o_l10n_ve_dual_currency_header td {
+    padding-bottom: 0.25rem;
+    border-bottom: 1px solid #6c757d;
+    color: #6c757d;
+    font-size: 0.68rem;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.o_l10n_ve_dual_currency_totals .o_total td {
+    padding-top: 0.3rem;
+    border-top: 1.5px solid #6c757d;
 }

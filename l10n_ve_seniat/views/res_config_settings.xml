@@ -88,42 +88,6 @@
                         </div>
                     </setting>
                     <setting
-                        name="l10n_ve_implementer_settings"
-                        string="Implementador del sistema"
-                        help="Datos del implementador autorizado del sistema ante el SENIAT."
-                    >
-                        <div class="content-group">
-                            <div class="row mt16">
-                                <label
-                                    string="Razón social del implementador"
-                                    for="l10n_ve_implementer_name"
-                                    class="col-lg-6 o_light_label"
-                                />
-                                <field name="l10n_ve_implementer_name" class="col-lg-6" />
-                            </div>
-                            <div class="row mt16">
-                                <label
-                                    string="RIF del implementador"
-                                    for="l10n_ve_implementer_vat"
-                                    class="col-lg-6 o_light_label"
-                                />
-                                <field name="l10n_ve_implementer_vat" class="col-lg-6" />
-                            </div>
-                            <div class="row mt16">
-                                <label
-                                    string="Correo del implementador"
-                                    for="l10n_ve_implementer_email"
-                                    class="col-lg-6 o_light_label"
-                                />
-                                <field
-                                    name="l10n_ve_implementer_email"
-                                    class="col-lg-6"
-                                    placeholder="implementador@empresa.com"
-                                />
-                            </div>
-                        </div>
-                    </setting>
-                    <setting
                         name="l10n_ve_tax_groups_settings"
                         string="Grupos de impuestos SENIAT"
                         help="Configure el tipo de alícuota y el orden de aparición en los libros de ventas y compras desde los grupos de impuestos."
@@ -140,47 +104,6 @@
                             </div>
                         </div>
                     </setting>
-                    <field name="l10n_ve_has_dispatch_guide_emission" invisible="1" />
-                    <div
-                        id="l10n_ve_seniat_div_dispatch_email"
-                        class="col-12 col-lg-6 o_setting_box"
-                        groups="base.group_no_one"
-                    >
-                        <div class="o_setting_right_pane">
-                            <!-- Art. 21 PA SNAT/2011/0071; Art. 10 PA SNAT/2024/000102. -->
-                            <group>
-                                <field
-                                    name="l10n_ve_unfactured_dispatch_email_recipient"
-                                    placeholder="proveedores.sistemas@seniat.gob.ve"
-                                />
-                                <field
-                                    name="l10n_ve_unfactured_dispatch_email_schedule_enabled"
-                                />
-                                <label
-                                    for="l10n_ve_unfactured_dispatch_email_interval_number"
-                                    string="Enviar cada"
-                                    invisible="not l10n_ve_unfactured_dispatch_email_schedule_enabled"
-                                />
-                                <div
-                                    class="o_row"
-                                    invisible="not l10n_ve_unfactured_dispatch_email_schedule_enabled"
-                                >
-                                    <field
-                                        name="l10n_ve_unfactured_dispatch_email_interval_number"
-                                        class="oe_inline"
-                                    />
-                                    <field
-                                        name="l10n_ve_unfactured_dispatch_email_interval_type"
-                                        class="oe_inline"
-                                    />
-                                </div>
-                                <field
-                                    name="l10n_ve_unfactured_dispatch_email_last_sent"
-                                    readonly="1"
-                                />
-                            </group>
-                        </div>
-                    </div>
                     <div
                         id="l10n_ve_seniat_div_on_behalf_third_party"
                         class="col-12 col-lg-6 o_setting_box"
@@ -223,21 +146,6 @@
                             <div class="text-muted">
                                 Impide modificar datos fiscales del contacto
                                 cuando ya tiene movimientos contables asociados.
-                            </div>
-                        </div>
-                    </div>
-                    <div
-                        id="l10n_ve_seniat_div_enforce_sale_price"
-                        class="col-12 col-lg-6 o_setting_box"
-                    >
-                        <div class="o_setting_left_pane">
-                            <field name="l10n_ve_enforce_sale_price_ge_cost" />
-                        </div>
-                        <div class="o_setting_right_pane">
-                            <label for="l10n_ve_enforce_sale_price_ge_cost" />
-                            <div class="text-muted">
-                                Exige que el precio de venta del producto sea
-                                mayor o igual a su coste al facturar.
                             </div>
                         </div>
                     </div>

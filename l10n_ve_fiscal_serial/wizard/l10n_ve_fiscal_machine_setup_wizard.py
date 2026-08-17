@@ -1,6 +1,6 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
-from odoo import _, fields, models
+from odoo import _, api, fields, models
 from odoo.exceptions import UserError
 
 
@@ -145,6 +145,12 @@ class L10nVeFiscalMachineSetupWizard(models.TransientModel):
         "detect_message",
     }
 
+    @api.depends(
+        "detect_state",
+        "enq_status",
+        "registered_serial",
+        "fiscal_rif",
+    )
     def _compute_requires_manual_identification(self):
         for wizard in self:
             wizard.requires_manual_identification = (

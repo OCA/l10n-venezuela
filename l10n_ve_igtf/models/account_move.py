@@ -1343,22 +1343,6 @@ class AccountMove(models.Model):
         """Devuelve tax_totals enriquecido o False si no aplica."""
         self.ensure_one()
 
-        def _log_skip(reason, **extra):
-            if self._l10n_ve_igtf_move_applies() and self.is_invoice(
-                include_receipts=True
-            ):
-                tt = self.tax_totals or {}
-                _logger.info(
-                    "l10n_ve_igtf tax_totals skip move_id=%s name=%s reason=%s "
-                    "tax_totals_keys=%s extra=%s",
-                    self.id,
-                    self.name or "",
-                    reason,
-                    list(tt.keys()),
-                    extra,
-                )
-            return False
-
         if not self._l10n_ve_igtf_move_applies():
             return False
         if (
@@ -1366,24 +1350,11 @@ class AccountMove(models.Model):
             or not self.is_invoice(include_receipts=True)
             or not self.is_sale_document(include_receipts=True)
         ):
-            return _log_skip(
-                "no_tax_totals_or_not_invoice",
-                has_tax_totals=bool(self.tax_totals),
-                is_invoice=self.is_invoice(include_receipts=True),
-                is_sale=self.is_sale_document(include_receipts=True),
-            )
+            return False
         if not self.currency_id:
-            return _log_skip("no_currency_id")
+            return False
         if not self._l10n_ve_igtf_tax_totals_should_show_igtf_row():
-            return _log_skip(
-                "should_show_false",
-                currency_in_igtf_currencies=self.currency_id
-                in self.company_id.l10n_ve_igtf_currency_ids,
-                has_igtf_aml=bool(self._l10n_ve_igtf_aml()),
-                extra_pos_like=bool(
-                    self._l10n_ve_igtf_tax_totals_should_show_igtf_row_extra()
-                ),
-            )
+            return False
         if "l10n_ve_igtf_total_without_igtf_currency" in (self.tax_totals or {}):
             return False
         igtf_label = _("IGTF %(percent)s %%")
@@ -1396,15 +1367,7 @@ class AccountMove(models.Model):
         if self.currency_id.is_zero(
             igtf_amount_currency
         ) and self.company_currency_id.is_zero(igtf_amount_company_currency):
-            return _log_skip(
-                "zero_igtf_amounts",
-                generic_tuple=(
-                    igtf_base_amount_currency,
-                    igtf_base_amount_company_currency,
-                    igtf_amount_currency,
-                    igtf_amount_company_currency,
-                ),
-            )
+            return False
         totals = dict(self.tax_totals)
         total_doc_before_igtf = totals.get("total_amount_currency", 0.0)
         total_comp_before_igtf = totals.get("total_amount", 0.0)

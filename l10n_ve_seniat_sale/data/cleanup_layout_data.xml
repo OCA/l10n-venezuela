@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <delete model="report.layout" id="report_layout_l10n_ve_presupuesto" />
+    <delete model="ir.ui.view" id="external_layout_l10n_ve_presupuesto" />
+    <delete model="ir.ui.view" id="report_saleorder_document_ve" />
+    <delete model="ir.ui.view" id="quote_document_layout_preview_ve" />
+    <delete model="report.paperformat" id="paperformat_presupuesto_ve_letter_4cm" />
+</odoo>

@@ -193,8 +193,6 @@ class StockPicking(models.Model):
         "sale_id.amount_untaxed",
         "sale_id.currency_id",
         "sale_id.tax_totals",
-        "sale_id.l10n_ve_global_discount_ids",
-        "sale_id.l10n_ve_global_discount_ids.amount",
         "l10n_ve_dispatch_amount_total",
         "l10n_ve_dispatch_currency_id",
         "scheduled_date",
@@ -455,8 +453,19 @@ class StockPicking(models.Model):
         tax_totals = order.tax_totals or {}
         if tax_totals.get("l10n_ve_show_global_discount"):
             return tax_totals.get("l10n_ve_global_discount_amount_currency", 0.0) or 0.0
-        if order.l10n_ve_global_discount_ids:
-            return sum(order.l10n_ve_global_discount_ids.mapped("amount"))
+        if "l10n_ve_global_discount_ids" in order._fields:
+            discounts = order.l10n_ve_global_discount_ids
+            if discounts:
+                return sum(discounts.mapped("amount"))
+        disc_product = False
+        if "sale_discount_product_id" in order.company_id._fields:
+            disc_product = order.company_id.sale_discount_product_id
+        if disc_product:
+            disc_lines = order.order_line.filtered(
+                lambda line: not line.display_type and line.product_id == disc_product
+            )
+            if disc_lines:
+                return abs(sum(disc_lines.mapped("price_subtotal")))
         return 0.0
 
     def _l10n_ve_dispatch_guide_discount_amount(self, picking_subtotal=None):
@@ -727,10 +736,15 @@ class StockPicking(models.Model):
 
     def action_l10n_ve_print_dispatch_guide(self):
         if any(not picking.l10n_ve_dispatch_guide_enabled for picking in self):
-            return super().do_print_picking()
+            return super(
+                StockPicking, self.with_context(discard_logo_check=True)
+            ).do_print_picking()
+        self.l10n_ve_dispatch_guide_report_check()
         report = self.env.ref("l10n_ve_stock.action_report_l10n_ve_dispatch_guide")
         self.write({"printed": True})
-        return report.report_action(self)
+        return report.with_context(discard_logo_check=True).report_action(
+            self, config=False
+        )
 
     def do_print_picking(self):
         ve_outgoing = self.filtered(
@@ -745,7 +759,9 @@ class StockPicking(models.Model):
                     )
                 )
             return ve_outgoing.action_l10n_ve_print_dispatch_guide()
-        return super().do_print_picking()
+        return super(
+            StockPicking, self.with_context(discard_logo_check=True)
+        ).do_print_picking()
 
     def _action_open_dispatch_guide_validate_confirmation_wizard(self):
         self.ensure_one()
