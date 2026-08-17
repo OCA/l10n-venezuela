@@ -1,15 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <record id="stock.action_report_picking" model="ir.actions.report">
-        <field name="binding_model_id" eval="False" />
+        <field name="binding_model_id" ref="stock.model_stock_picking" />
+        <field name="binding_type">report</field>
     </record>
     <record id="stock.action_report_delivery" model="ir.actions.report">
-        <field name="binding_model_id" eval="False" />
+        <field name="binding_model_id" ref="stock.model_stock_picking" />
+        <field name="binding_type">report</field>
     </record>
     <record id="stock.action_report_picking_packages" model="ir.actions.report">
-        <field name="binding_model_id" eval="False" />
+        <field name="binding_model_id" ref="stock.model_stock_picking" />
+        <field name="binding_type">report</field>
     </record>
     <record id="stock.return_label_report" model="ir.actions.report">
-        <field name="binding_model_id" eval="False" />
+        <field name="binding_model_id" ref="stock.model_stock_picking" />
+        <field name="binding_type">report</field>
     </record>
 </odoo>

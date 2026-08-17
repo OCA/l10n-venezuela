@@ -65,7 +65,7 @@ class TestL10nVeStockPickingReports(TestL10nVeStockDispatchGuide):
             move.picked = True
         self._button_validate_through_wizards(picking)
         self.assertEqual(picking.state, "done")
-        action = picking.do_print_picking()
+        action = picking.action_l10n_ve_print_dispatch_guide()
         self.assertEqual(
             action.get("report_name"),
             "l10n_ve_stock.report_dispatch_guide",
@@ -218,7 +218,7 @@ class TestL10nVeStockPickingReports(TestL10nVeStockDispatchGuide):
         )
         picking = self._prepare_outgoing_sale_picking(product, 1)
         with self.assertRaises(UserError):
-            picking.do_print_picking()
+            picking.action_l10n_ve_print_dispatch_guide()
 
     def test_internal_picking_has_no_print_reports(self):
         picking_type = self.env["stock.picking.type"].search(

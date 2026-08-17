@@ -746,23 +746,6 @@ class StockPicking(models.Model):
             self, config=False
         )
 
-    def do_print_picking(self):
-        ve_outgoing = self.filtered(
-            lambda picking: picking._l10n_ve_is_ve_outgoing_dispatch_guide_picking()
-        )
-        if ve_outgoing:
-            if len(ve_outgoing) != len(self):
-                raise UserError(
-                    _(
-                        "No puede imprimir operaciones de picking mezclando entregas "
-                        "venezolanas con otros albaranes."
-                    )
-                )
-            return ve_outgoing.action_l10n_ve_print_dispatch_guide()
-        return super(
-            StockPicking, self.with_context(discard_logo_check=True)
-        ).do_print_picking()
-
     def _action_open_dispatch_guide_validate_confirmation_wizard(self):
         self.ensure_one()
         return {

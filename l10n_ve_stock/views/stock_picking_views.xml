@@ -100,28 +100,14 @@
                     column_invisible="parent.picking_type_code != 'outgoing' or not parent.l10n_ve_is_ve_country or not parent.l10n_ve_dispatch_guide_enabled"
                 />
             </xpath>
-            <xpath expr="//header/button[@name='do_print_picking']" position="attributes">
-                <attribute
-                    name="invisible"
-                >state != 'assigned' or (l10n_ve_dispatch_guide_enabled and l10n_ve_is_ve_country and picking_type_code == 'outgoing')</attribute>
-            </xpath>
             <xpath expr="//header/button[@name='do_print_picking']" position="after">
                 <button
                     name="action_l10n_ve_print_dispatch_guide"
-                    string="Imprimir"
+                    string="Dispatch Guide"
                     type="object"
                     groups="stock.group_stock_user"
                     invisible="not l10n_ve_dispatch_guide_enabled or not l10n_ve_is_ve_country or picking_type_code != 'outgoing' or state != 'done'"
-                    data-hotkey="o"
                 />
-            </xpath>
-            <xpath
-                expr="//header/button[@name='do_print_picking']/following-sibling::button[@type='action'][1]"
-                position="attributes"
-            >
-                <attribute
-                    name="invisible"
-                >state != 'done' or (l10n_ve_dispatch_guide_enabled and l10n_ve_is_ve_country and picking_type_code == 'outgoing')</attribute>
             </xpath>
         </field>
     </record>

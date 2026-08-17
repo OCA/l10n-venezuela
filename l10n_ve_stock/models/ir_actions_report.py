@@ -3,63 +3,10 @@ from collections import OrderedDict
 from odoo import models
 
 _L10N_VE_DISPATCH_GUIDE_REPORT_NAME = "l10n_ve_stock.report_dispatch_guide"
-_L10N_VE_DISPATCH_GUIDE_XMLID = "l10n_ve_stock.action_report_l10n_ve_dispatch_guide"
 
 
 class IrActionsReport(models.Model):
     _inherit = "ir.actions.report"
-
-    def _l10n_ve_is_dispatch_guide_report(self, report):
-        return (report.report_name or "") == _L10N_VE_DISPATCH_GUIDE_REPORT_NAME
-
-    def _l10n_ve_get_dispatch_guide_report(self):
-        return self.env.ref(_L10N_VE_DISPATCH_GUIDE_XMLID, raise_if_not_found=False)
-
-    def _l10n_ve_dispatch_guide_available_for_pickings(self, pickings):
-        dispatch_report = self._l10n_ve_get_dispatch_guide_report()
-        if not dispatch_report:
-            return False
-        ve_outgoing = pickings.filtered(
-            lambda picking: picking._l10n_ve_is_ve_outgoing_dispatch_guide_picking()
-        )
-        if not ve_outgoing:
-            return False
-        return all(
-            picking._l10n_ve_dispatch_guide_print_available() for picking in ve_outgoing
-        )
-
-    def get_valid_action_reports(self, model, record_ids):
-        valid_ids = super().get_valid_action_reports(model, record_ids)
-        if model != "stock.picking" or not record_ids:
-            return valid_ids
-        pickings = self.env["stock.picking"].browse(record_ids)
-        dispatch_report = self._l10n_ve_get_dispatch_guide_report()
-        if not dispatch_report:
-            return valid_ids
-        available = self._l10n_ve_dispatch_guide_available_for_pickings(pickings)
-        if dispatch_report.id in valid_ids and not available:
-            return [
-                report_id
-                for report_id in valid_ids
-                if report_id != dispatch_report.id
-            ]
-        return valid_ids
-
-    def report_action(self, docids, data=None, config=True):
-        if self._l10n_ve_is_dispatch_guide_report(self):
-            if isinstance(docids, models.Model):
-                pickings = docids
-            elif isinstance(docids, int):
-                pickings = self.env["stock.picking"].browse([docids])
-            elif isinstance(docids, list):
-                pickings = self.env["stock.picking"].browse(docids)
-            else:
-                pickings = self.env["stock.picking"]
-            if pickings and not self._l10n_ve_dispatch_guide_available_for_pickings(
-                pickings
-            ):
-                return {"type": "ir.actions.act_window_close"}
-        return super().report_action(docids, data=data, config=config)
 
     def get_paperformat(self):
         paperformat_id = self.env.context.get("l10n_ve_dispatch_guide_paperformat_id")

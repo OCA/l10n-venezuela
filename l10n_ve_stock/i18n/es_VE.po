@@ -360,8 +360,8 @@ msgstr "ID"
 
 #. module: l10n_ve_stock
 #: model_terms:ir.ui.view,arch_db:l10n_ve_stock.view_picking_form_inherit_l10n_ve
-msgid "Imprimir"
-msgstr "Imprimir"
+msgid "Dispatch Guide"
+msgstr "Guía de despacho"
 
 #. module: l10n_ve_stock
 #: model:ir.model.fields,field_description:l10n_ve_stock.field_stock_move__l10n_ve_dispatch_tax_ids
