@@ -7,7 +7,7 @@
     "author": "andyengit, Anderson Armeya, Odoo Community Association (OCA)",
     "maintainer": "andyengit",
     "category": "Inventory/Localizations",
-    "version": "18.0.1.0.18",
+    "version": "18.0.1.0.19",
     "depends": [
         "base",
         "web",
@@ -38,7 +38,6 @@
         "views/stock_report_actions.xml",
     ],
     "license": "AGPL-3",
-    "post_init_hook": "post_init_hook",
     "auto_install": ["stock", "l10n_ve_seniat"],
     "installable": True,
 }

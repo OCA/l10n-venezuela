@@ -1,8 +1,7 @@
 from collections import OrderedDict
 
-from odoo import api, models
+from odoo import models
 
-L10N_VE_SKIP_STOCK_PICKING_UNBIND = "l10n_ve_skip_stock_picking_unbind"
 _L10N_VE_DISPATCH_GUIDE_REPORT_NAME = "l10n_ve_stock.report_dispatch_guide"
 _L10N_VE_DISPATCH_GUIDE_XMLID = "l10n_ve_stock.action_report_l10n_ve_dispatch_guide"
 
@@ -10,65 +9,11 @@ _L10N_VE_DISPATCH_GUIDE_XMLID = "l10n_ve_stock.action_report_l10n_ve_dispatch_gu
 class IrActionsReport(models.Model):
     _inherit = "ir.actions.report"
 
-    @api.model_create_multi
-    def create(self, vals_list):
-        records = super().create(vals_list)
-        if not self.env.context.get(L10N_VE_SKIP_STOCK_PICKING_UNBIND):
-            records._l10n_ve_unbind_stock_picking_report_bindings()
-        return records
-
-    def write(self, vals):
-        res = super().write(vals)
-        if not self.env.context.get(L10N_VE_SKIP_STOCK_PICKING_UNBIND):
-            self._l10n_ve_unbind_stock_picking_report_bindings()
-        return res
-
     def _l10n_ve_is_dispatch_guide_report(self, report):
         return (report.report_name or "") == _L10N_VE_DISPATCH_GUIDE_REPORT_NAME
 
-    def _l10n_ve_is_blocked_picking_report_for_ve_outgoing(self, report):
-        if report.model != "stock.picking" or report.report_type != "qweb-pdf":
-            return False
-        return not self._l10n_ve_is_dispatch_guide_report(report)
-
-    def _l10n_ve_get_ve_outgoing_pickings(self, pickings):
-        return pickings.filtered(
-            lambda picking: picking._l10n_ve_is_ve_outgoing_dispatch_guide_picking()
-        )
-
-    def _l10n_ve_should_use_only_dispatch_guide_reports(self, pickings):
-        return bool(pickings) and len(self._l10n_ve_get_ve_outgoing_pickings(pickings)) == len(
-            pickings
-        )
-
     def _l10n_ve_get_dispatch_guide_report(self):
         return self.env.ref(_L10N_VE_DISPATCH_GUIDE_XMLID, raise_if_not_found=False)
-
-    def _l10n_ve_unbind_stock_picking_report_bindings(self):
-        picking_model = self.env["ir.model"]._get("stock.picking")
-        if not picking_model:
-            return
-        to_clear = self.sudo().filtered(
-            lambda report: report.binding_model_id == picking_model
-            and report.binding_type == "report"
-            and not self._l10n_ve_is_dispatch_guide_report(report)
-        )
-        if to_clear:
-            to_clear.with_context(
-                **{L10N_VE_SKIP_STOCK_PICKING_UNBIND: True}
-            ).write({"binding_model_id": False})
-
-    @api.model
-    def _l10n_ve_unbind_all_stock_picking_report_bindings(self):
-        picking_model = self.env["ir.model"]._get("stock.picking")
-        if not picking_model:
-            return
-        self.env["ir.actions.report"].sudo().search(
-            [
-                ("binding_model_id", "=", picking_model.id),
-                ("binding_type", "=", "report"),
-            ]
-        )._l10n_ve_unbind_stock_picking_report_bindings()
 
     def _l10n_ve_dispatch_guide_available_for_pickings(self, pickings):
         dispatch_report = self._l10n_ve_get_dispatch_guide_report()
@@ -89,34 +34,16 @@ class IrActionsReport(models.Model):
             return valid_ids
         pickings = self.env["stock.picking"].browse(record_ids)
         dispatch_report = self._l10n_ve_get_dispatch_guide_report()
-        if dispatch_report:
-            available = self._l10n_ve_dispatch_guide_available_for_pickings(pickings)
-            if dispatch_report.id in valid_ids and not available:
-                valid_ids = [
-                    report_id
-                    for report_id in valid_ids
-                    if report_id != dispatch_report.id
-                ]
-            elif (
-                dispatch_report.id not in valid_ids
-                and available
-                and self._l10n_ve_should_use_only_dispatch_guide_reports(pickings)
-            ):
-                valid_ids = [*valid_ids, dispatch_report.id]
-        if not valid_ids:
+        if not dispatch_report:
             return valid_ids
-        if not self._l10n_ve_should_use_only_dispatch_guide_reports(pickings):
-            return valid_ids
-        blocked_report_ids = {
-            report.id
-            for report in self.browse(valid_ids)
-            if self._l10n_ve_is_blocked_picking_report_for_ve_outgoing(report)
-        }
-        return [
-            report_id
-            for report_id in valid_ids
-            if report_id not in blocked_report_ids
-        ]
+        available = self._l10n_ve_dispatch_guide_available_for_pickings(pickings)
+        if dispatch_report.id in valid_ids and not available:
+            return [
+                report_id
+                for report_id in valid_ids
+                if report_id != dispatch_report.id
+            ]
+        return valid_ids
 
     def report_action(self, docids, data=None, config=True):
         if self._l10n_ve_is_dispatch_guide_report(self):
@@ -132,23 +59,6 @@ class IrActionsReport(models.Model):
                 pickings
             ):
                 return {"type": "ir.actions.act_window_close"}
-        if self.model == "stock.picking" and self._l10n_ve_is_blocked_picking_report_for_ve_outgoing(
-            self
-        ):
-            if isinstance(docids, models.Model):
-                pickings = docids
-            elif isinstance(docids, int):
-                pickings = self.env["stock.picking"].browse([docids])
-            elif isinstance(docids, list):
-                pickings = self.env["stock.picking"].browse(docids)
-            else:
-                pickings = self.env["stock.picking"]
-            if self._l10n_ve_should_use_only_dispatch_guide_reports(pickings):
-                dispatch_report = self._l10n_ve_get_dispatch_guide_report()
-                if dispatch_report:
-                    return dispatch_report.report_action(
-                        docids, data=data, config=config
-                    )
         return super().report_action(docids, data=data, config=config)
 
     def get_paperformat(self):

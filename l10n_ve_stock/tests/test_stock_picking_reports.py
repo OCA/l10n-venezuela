@@ -10,20 +10,15 @@ from .test_stock_picking_dispatch_guide import TestL10nVeStockDispatchGuide
 
 @tagged("post_install", "-at_install")
 class TestL10nVeStockPickingReports(TestL10nVeStockDispatchGuide):
-    def test_only_dispatch_guide_bound_to_stock_picking(self):
+    def test_dispatch_guide_bound_to_stock_picking(self):
         picking_model = self.env["ir.model"]._get("stock.picking")
         dispatch_report = self.env.ref(
             "l10n_ve_stock.action_report_l10n_ve_dispatch_guide"
         )
-        bound_reports = self.env["ir.actions.report"].search(
-            [
-                ("binding_model_id", "=", picking_model.id),
-                ("binding_type", "=", "report"),
-            ]
-        )
-        self.assertEqual(bound_reports, dispatch_report)
+        self.assertEqual(dispatch_report.binding_model_id, picking_model)
+        self.assertEqual(dispatch_report.binding_type, "report")
 
-    def test_ve_outgoing_picking_only_allows_dispatch_guide_report(self):
+    def test_ve_outgoing_picking_allows_dispatch_guide_report(self):
         product = self._create_product(
             name="Prod reportes",
             is_storable=True,
@@ -34,27 +29,13 @@ class TestL10nVeStockPickingReports(TestL10nVeStockDispatchGuide):
             move.quantity = move.product_uom_qty
             move.picked = True
         self._button_validate_through_wizards(picking)
-        report_model = self.env["ir.actions.report"]
-        bound_reports = report_model.search(
-            [
-                ("model", "=", "stock.picking"),
-                ("report_type", "=", "qweb-pdf"),
-                ("binding_model_id.model", "=", "stock.picking"),
-            ]
-        )
-        domain_reports = bound_reports.filtered("domain")
-        valid_ids = domain_reports.get_valid_action_reports(
-            "stock.picking", picking.ids
-        )
         dispatch_report = self.env.ref(
             "l10n_ve_stock.action_report_l10n_ve_dispatch_guide"
         )
-        self.assertIn(dispatch_report.id, valid_ids)
-        blocked = domain_reports.filtered(
-            lambda report: report.id in valid_ids
-            and report.id != dispatch_report.id
+        valid_ids = dispatch_report.get_valid_action_reports(
+            "stock.picking", picking.ids
         )
-        self.assertFalse(blocked)
+        self.assertIn(dispatch_report.id, valid_ids)
 
     def test_dispatch_guide_not_in_print_actions_before_delivery_done(self):
         product = self._create_product(
@@ -285,7 +266,7 @@ class TestL10nVeStockPickingReports(TestL10nVeStockDispatchGuide):
         )
         self.assertEqual(valid_ids, [])
 
-    def test_extra_picking_report_is_unbound_on_create(self):
+    def test_extra_picking_report_keeps_binding_on_create(self):
         picking_model = self.env["ir.model"]._get("stock.picking")
         extra_report = self.env["ir.actions.report"].create(
             {
@@ -297,17 +278,8 @@ class TestL10nVeStockPickingReports(TestL10nVeStockDispatchGuide):
                 "binding_type": "report",
             }
         )
-        dispatch_report = self.env.ref(
-            "l10n_ve_stock.action_report_l10n_ve_dispatch_guide"
-        )
-        self.assertFalse(extra_report.binding_model_id)
-        bound_reports = self.env["ir.actions.report"].search(
-            [
-                ("binding_model_id", "=", picking_model.id),
-                ("binding_type", "=", "report"),
-            ]
-        )
-        self.assertEqual(bound_reports, dispatch_report)
+        self.assertEqual(extra_report.binding_model_id, picking_model)
+        self.assertEqual(extra_report.binding_type, "report")
 
     def test_dispatch_guide_shows_company_header_without_control_number(self):
         product = self._create_product(name="Prod header guía", is_storable=True)
