@@ -139,13 +139,14 @@ class AccountMove(models.Model):
         origin = self.reversed_entry_id
         company_cur = self.company_currency_id
         origin_total = abs(origin.amount_total)
+        origin_company = origin._l10n_ve_to_company_abs_amount()
         if (
             self.currency_id == origin.currency_id
             and not self.currency_id.is_zero(origin_total)
-            and not company_cur.is_zero(origin.amount_total_signed)
+            and not company_cur.is_zero(origin_company)
         ):
             ratio = abs(self.amount_total) / origin_total
-            return company_cur.round(abs(origin.amount_total_signed) * ratio)
+            return company_cur.round(origin_company * ratio)
         origin_date = (
             origin.invoice_date or origin.date or fields.Date.context_today(self)
         )

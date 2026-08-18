@@ -135,7 +135,13 @@ class SaleOrder(models.Model):
         AccountTax._add_tax_details_in_base_lines(product_lines, self.company_id)
         discount_lines = self._l10n_ve_build_global_discount_base_lines(product_lines)
         if not discount_lines:
-            return base_lines
+            all_lines = product_lines + special_lines
+            if special_lines:
+                AccountTax._add_tax_details_in_base_lines(
+                    special_lines, self.company_id
+                )
+            AccountTax._round_base_lines_tax_details(all_lines, self.company_id)
+            return all_lines
 
         working_lines = product_lines + discount_lines
         AccountTax._add_tax_details_in_base_lines(discount_lines, self.company_id)
@@ -155,6 +161,8 @@ class SaleOrder(models.Model):
             in_foreign_currency=False,
             account_discount_base_lines=True,
         )
+        if special_lines:
+            AccountTax._add_tax_details_in_base_lines(special_lines, self.company_id)
         all_lines = working_lines + special_lines
         AccountTax._round_base_lines_tax_details(all_lines, self.company_id)
         return all_lines

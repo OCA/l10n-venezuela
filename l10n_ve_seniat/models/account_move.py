@@ -1,11 +1,13 @@
 import logging
 import re
+from collections import defaultdict
 
 from dateutil.relativedelta import relativedelta
 
 from odoo import _, api, fields, models
 from odoo.exceptions import AccessError, UserError, ValidationError
-from odoo.tools.float_utils import float_compare
+from odoo.tools import frozendict
+from odoo.tools.float_utils import float_compare, float_is_zero, float_round
 from odoo.tools.mail import html2plaintext
 from odoo.tools.misc import formatLang
 
@@ -715,7 +717,8 @@ class AccountMove(models.Model):
     def _l10n_ve_to_company_abs_amount(self):
         self.ensure_one()
         lines = self.line_ids.filtered(
-            lambda line: line.display_type in ("product", "tax", "rounding")
+            lambda line: line.display_type
+            in ("product", "tax", "rounding", "global_discount", "discount")
         )
         if lines:
             return abs(sum(lines.mapped("balance")))
@@ -730,7 +733,8 @@ class AccountMove(models.Model):
     def _l10n_ve_to_company_abs_untaxed_amount(self):
         self.ensure_one()
         lines = self.line_ids.filtered(
-            lambda line: line.display_type == "product"
+            lambda line: line.display_type
+            in ("product", "global_discount", "discount")
             or (
                 line.display_type == "rounding" and not line.tax_repartition_line_id
             )
@@ -1764,6 +1768,49 @@ Please create a credit note instead.
             )
         )
 
+    def _l10n_ve_fill_needed_term_dates(self):
+        for move in self:
+            terms = move.needed_terms
+            if not terms or not isinstance(terms, dict):
+                continue
+            fallback = (
+                move.invoice_date or move.date or fields.Date.context_today(move)
+            )
+            new_terms = {}
+            changed = False
+            for key, values in terms.items():
+                new_key = key
+                if key and not key.get("date_maturity"):
+                    new_key = frozendict(
+                        {**dict(key), "date_maturity": fallback}
+                    )
+                    changed = True
+                if new_key in new_terms:
+                    merged = dict(new_terms[new_key])
+                    merged["balance"] = merged.get("balance", 0.0) + values.get(
+                        "balance", 0.0
+                    )
+                    merged["amount_currency"] = merged.get(
+                        "amount_currency", 0.0
+                    ) + values.get("amount_currency", 0.0)
+                    new_terms[new_key] = merged
+                    changed = True
+                else:
+                    new_terms[new_key] = values
+            if changed:
+                move.needed_terms = new_terms
+
+    @api.depends(
+        "invoice_payment_term_id",
+        "invoice_date",
+        "currency_id",
+        "amount_total_in_currency_signed",
+        "invoice_date_due",
+    )
+    def _compute_needed_terms(self):
+        super()._compute_needed_terms()
+        self._l10n_ve_fill_needed_term_dates()
+
     @api.constrains("invoice_date", "invoice_date_due", "move_type")
     def _check_l10n_ve_invoice_date_due_not_before_invoice_date(self):
         for move in self:
@@ -2499,12 +2546,163 @@ Please create a credit note instead.
                     l10n_ve_skip_credit_debit_journal_lock=True
                 ).write(updates)
 
+    def _l10n_ve_is_product_discount_invoice_line(self, line):
+        if line.display_type != "product":
+            return False
+        disc = getattr(line.company_id, "sale_discount_product_id", False)
+        if disc and line.product_id == disc:
+            return True
+        tmpl = line.product_id.product_tmpl_id if line.product_id else False
+        if tmpl and (
+            (
+                hasattr(tmpl, "_l10n_ve_is_sale_discount_template")
+                and tmpl._l10n_ve_is_sale_discount_template()
+            )
+            or (
+                hasattr(tmpl, "_l10n_ve_is_loyalty_reward_discount_template")
+                and tmpl._l10n_ve_is_loyalty_reward_discount_template()
+            )
+        ):
+            return True
+        prec = self.env["decimal.precision"].precision_get("Product Price")
+        return float_compare(line.price_unit or 0.0, 0.0, precision_digits=prec) < 0
+
+    def _l10n_ve_credit_note_line_match_key(self, line):
+        prec = self.env["decimal.precision"].precision_get("Product Price")
+        sale_lines = ()
+        if "sale_line_ids" in line._fields:
+            sale_lines = tuple(sorted(line.sale_line_ids.ids))
+        return (
+            line.product_id.id or 0,
+            float_round(abs(line.price_unit or 0.0), precision_digits=prec),
+            tuple(sorted(line.tax_ids.ids)),
+            sale_lines,
+        )
+
+    def _l10n_ve_posted_credit_notes_for_remaining(self):
+        self.ensure_one()
+        refund_type = self._l10n_ve_refund_move_type()
+        credits = self.reversal_move_ids.filtered(
+            lambda move: (
+                move.state == "posted"
+                and move.move_type == refund_type
+                and not move.l10n_ve_debit_note_reversed_ids
+            )
+        )
+        return credits.filtered(
+            lambda move: not (
+                hasattr(move, "_l10n_ve_is_post_discount_credit_note")
+                and move._l10n_ve_is_post_discount_credit_note()
+            )
+        )
+
+    def _l10n_ve_credited_quantities_and_discount_amount(self):
+        self.ensure_one()
+        credited_qty = defaultdict(float)
+        credited_discount = 0.0
+        for credit in self._l10n_ve_posted_credit_notes_for_remaining():
+            for line in credit.invoice_line_ids:
+                if line.display_type != "product":
+                    continue
+                if credit._l10n_ve_is_product_discount_invoice_line(line):
+                    credited_discount += abs(line.price_subtotal or 0.0)
+                    continue
+                credited_qty[credit._l10n_ve_credit_note_line_match_key(line)] += abs(
+                    line.quantity or 0.0
+                )
+        return credited_qty, credited_discount
+
+    def _l10n_ve_apply_remaining_credit_note_lines(self):
+        ve_code = self.env.ref("base.ve").code
+        for credit in self:
+            if (
+                credit.country_code != ve_code
+                or credit.move_type not in ("out_refund", "in_refund")
+                or credit.l10n_ve_debit_note_reversed_ids
+                or not credit.reversed_entry_id
+            ):
+                continue
+            origin = credit.reversed_entry_id
+            credited_qty, credited_discount = (
+                origin._l10n_ve_credited_quantities_and_discount_amount()
+            )
+            if not credited_qty and float_is_zero(
+                credited_discount, precision_rounding=origin.currency_id.rounding
+            ):
+                continue
+            lines_to_unlink = credit.env["account.move.line"]
+            product_lines = credit.invoice_line_ids.filtered(
+                lambda line: line.display_type == "product"
+            ).sorted(lambda line: (line.sequence, line.id))
+            remaining_product = False
+            for line in product_lines:
+                if credit._l10n_ve_is_product_discount_invoice_line(line):
+                    line_amount = abs(line.price_subtotal or 0.0)
+                    take = min(line_amount, credited_discount)
+                    credited_discount = max(0.0, credited_discount - take)
+                    remaining_amount = line_amount - take
+                    if float_is_zero(
+                        remaining_amount,
+                        precision_rounding=credit.currency_id.rounding,
+                    ):
+                        lines_to_unlink |= line
+                        continue
+                    quantity = abs(line.quantity) or 1.0
+                    sign = (
+                        -1.0
+                        if float_compare(
+                            line.price_unit or 0.0,
+                            0.0,
+                            precision_digits=credit.currency_id.decimal_places,
+                        )
+                        < 0
+                        else 1.0
+                    )
+                    line.write(
+                        {
+                            "price_unit": sign
+                            * credit.currency_id.round(remaining_amount / quantity)
+                        }
+                    )
+                    remaining_product = True
+                    continue
+                key = credit._l10n_ve_credit_note_line_match_key(line)
+                qty = abs(line.quantity or 0.0)
+                take = min(qty, credited_qty.get(key, 0.0))
+                credited_qty[key] = max(0.0, credited_qty.get(key, 0.0) - take)
+                remaining_qty = qty - take
+                rounding = line.product_uom_id.rounding if line.product_uom_id else 1e-6
+                if float_is_zero(remaining_qty, precision_rounding=rounding):
+                    lines_to_unlink |= line
+                    continue
+                if float_compare(remaining_qty, qty, precision_rounding=rounding) != 0:
+                    line.write({"quantity": remaining_qty})
+                remaining_product = True
+            if lines_to_unlink:
+                lines_to_unlink.with_context(dynamic_unlink=True).unlink()
+            if not remaining_product:
+                raise UserError(
+                    _(
+                        "No queda saldo por acreditar en el documento origen "
+                        "%(origin)s.",
+                        origin=origin.display_name,
+                    )
+                )
+            if (
+                hasattr(credit, "_l10n_ve_refresh_global_discounts_from_lines")
+                and credit.l10n_ve_global_discount_ids
+            ):
+                credit._l10n_ve_refresh_global_discounts_from_lines()
+
     def _reverse_moves(self, default_values_list=None, cancel=False):
         self._l10n_ve_check_credit_note_creation_allowed()
         self._l10n_ve_check_credit_debit_allowed()
-        return super()._reverse_moves(
+        reverse_moves = super()._reverse_moves(
             default_values_list=default_values_list, cancel=cancel
         )
+        if not cancel:
+            reverse_moves._l10n_ve_apply_remaining_credit_note_lines()
+        return reverse_moves
 
     def action_reverse(self):
         self._l10n_ve_check_credit_note_creation_allowed()

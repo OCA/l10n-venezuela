@@ -210,6 +210,7 @@ class AccountMove(models.Model):
                             "amount": discount.amount,
                             "discount_type": discount.discount_type,
                             "discount_percentage": discount.discount_percentage,
+                            "amount_base": discount.amount_base,
                         }
                     )
                     for discount in move.l10n_ve_global_discount_ids
@@ -231,6 +232,53 @@ class AccountMove(models.Model):
                 "l10n.ve.account.move.discount"
             ]._l10n_ve_sync_global_discount_accounting_for_moves(moves_to_sync)
         return new_moves
+
+    def _l10n_ve_snapshot_global_discount_amounts_for_currency(self):
+        pending = []
+        for move in self:
+            if (
+                move.move_type not in ("out_refund", "in_refund")
+                or not move.l10n_ve_global_discount_ids
+                or move.currency_id == move.company_currency_id
+            ):
+                continue
+            if move._l10n_ve_is_post_discount_credit_note():
+                continue
+            pending.append(
+                (
+                    move,
+                    move.currency_id,
+                    {
+                        discount.id: (discount.amount, discount.discount_type)
+                        for discount in move.l10n_ve_global_discount_ids
+                    },
+                )
+            )
+        return pending
+
+    def _l10n_ve_apply_global_discount_amounts_after_currency(self, pending):
+        if not pending:
+            return
+        Discount = self.env["l10n.ve.account.move.discount"]
+        to_sync = self.env["account.move"]
+        for move, old_currency, amounts in pending:
+            if not move.exists() or move.currency_id == old_currency:
+                continue
+            origin = move.reversed_entry_id
+            converter = origin if origin else move
+            for discount in move.l10n_ve_global_discount_ids:
+                old_amount, discount_type = amounts.get(
+                    discount.id, (discount.amount, discount.discount_type)
+                )
+                if discount_type == "percentage":
+                    continue
+                discount.amount = converter._l10n_ve_post_discount_amount_in_currency(
+                    old_amount, move.currency_id
+                )
+            to_sync |= move
+        if to_sync:
+            to_sync._l10n_ve_refresh_percentage_global_discount_amounts()
+            Discount._l10n_ve_sync_global_discount_accounting_for_moves(to_sync)
 
     def _l10n_ve_get_product_discount_lines(self):
         self.ensure_one()

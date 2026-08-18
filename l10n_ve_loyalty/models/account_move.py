@@ -34,7 +34,7 @@ class AccountMove(models.Model):
         return res
 
     def _l10n_ve_check_credit_note_creation_allowed(self):
-        """Hook extended by l10n_ve_seniat with fiscal credit-note rules."""
+        return super()._l10n_ve_check_credit_note_creation_allowed()
 
     def _l10n_ve_is_post_discount_credit_note(self):
         self.ensure_one()
@@ -43,4 +43,7 @@ class AccountMove(models.Model):
         )
 
     def _l10n_ve_force_refund_to_company_currency(self):
-        """Hook extended by l10n_ve_seniat for dual-currency refunds."""
+        pending = self._l10n_ve_snapshot_global_discount_amounts_for_currency()
+        res = super()._l10n_ve_force_refund_to_company_currency()
+        self._l10n_ve_apply_global_discount_amounts_after_currency(pending)
+        return res

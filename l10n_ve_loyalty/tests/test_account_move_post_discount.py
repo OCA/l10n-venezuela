@@ -444,3 +444,100 @@ class TestAccountMovePostDiscount(L10nVeSeniatCommon):
         action = wizard.action_apply_discount()
         credit = self.env["account.move"].browse(action["res_id"])
         self.assertAlmostEqual(credit.amount_untaxed, expected_untaxed, delta=0.02)
+
+    def test_full_reversal_with_global_discount_stays_within_origin(self):
+        tax_ids = [self.company_data["default_tax_sale"].id]
+        invoice = self.env["account.move"].create(
+            {
+                "move_type": "out_invoice",
+                "partner_id": self.partner_ve.id,
+                "invoice_date": fields.Date.today(),
+                "invoice_line_ids": [
+                    Command.create(
+                        {
+                            "name": "Product line",
+                            "quantity": 1.0,
+                            "price_unit": 1000.0,
+                            "account_id": self.company_data[
+                                "default_account_revenue"
+                            ].id,
+                            "tax_ids": [Command.set(tax_ids)],
+                        }
+                    )
+                ],
+            }
+        )
+        self.env["l10n.ve.account.move.discount"].create(
+            {
+                "move_id": invoice.id,
+                "reason_id": self.reason_early.id,
+                "amount": 150.0,
+            }
+        )
+        invoice.action_post()
+        invoice.l10n_ve_invoice_original_printed = True
+        credit = invoice._reverse_moves()
+        self.assertTrue(credit.l10n_ve_global_discount_ids)
+        credit.action_post()
+        self.assertEqual(credit.state, "posted")
+        company_cur = invoice.company_currency_id
+        self.assertLessEqual(
+            company_cur.round(credit._l10n_ve_to_company_abs_amount()),
+            company_cur.round(invoice._l10n_ve_max_credit_note_company_amount()),
+        )
+
+    def test_full_reversal_usd_invoice_with_global_discount_posts(self):
+        company_ccy = self.env.company.currency_id
+        usd = self.env.ref("base.USD")
+        foreign = usd if company_ccy != usd else self.env.ref("base.EUR")
+        foreign.write({"active": True})
+        date_invoice = fields.Date.today()
+        self.env["res.currency.rate"].create(
+            {
+                "currency_id": foreign.id,
+                "company_id": self.env.company.id,
+                "name": date_invoice,
+                "inverse_company_rate": 36.5,
+            }
+        )
+        tax_ids = [self.company_data["default_tax_sale"].id]
+        invoice = self.env["account.move"].create(
+            {
+                "move_type": "out_invoice",
+                "partner_id": self.partner_ve.id,
+                "currency_id": foreign.id,
+                "invoice_date": date_invoice,
+                "invoice_line_ids": [
+                    Command.create(
+                        {
+                            "name": "Product USD",
+                            "quantity": 1.0,
+                            "price_unit": 100.0,
+                            "account_id": self.company_data[
+                                "default_account_revenue"
+                            ].id,
+                            "tax_ids": [Command.set(tax_ids)],
+                        }
+                    )
+                ],
+            }
+        )
+        self.env["l10n.ve.account.move.discount"].create(
+            {
+                "move_id": invoice.id,
+                "reason_id": self.reason_early.id,
+                "amount": 15.0,
+            }
+        )
+        invoice.action_post()
+        invoice.l10n_ve_invoice_original_printed = True
+        credit = invoice._reverse_moves()
+        self.assertTrue(credit.l10n_ve_global_discount_ids)
+        credit.action_post()
+        self.assertEqual(credit.state, "posted")
+        self.assertEqual(credit.currency_id, credit.company_currency_id)
+        company_cur = invoice.company_currency_id
+        self.assertLessEqual(
+            company_cur.round(credit._l10n_ve_to_company_abs_amount()),
+            company_cur.round(invoice._l10n_ve_max_credit_note_company_amount()),
+        )

@@ -7,6 +7,7 @@ from lxml import html as lxml_html
 from odoo import Command, fields
 from odoo.exceptions import UserError, ValidationError
 from odoo.tests import tagged
+from odoo.tools import frozendict
 
 from .common import L10nVeSeniatCommon
 
@@ -928,6 +929,114 @@ class TestAccountMove(L10nVeSeniatCommon):
         self.assertEqual(len(doc), 1)
         self.assertEqual(doc.number, 2)
 
+    def test_reverse_moves_uses_remaining_quantity_after_partial_credit(self):
+        tax_ids = [self.company_data["default_tax_sale"].id]
+        revenue = self.company_data["default_account_revenue"].id
+        invoice_lines = [
+            Command.create(
+                {
+                    "name": "Bobina",
+                    "quantity": 9.0,
+                    "price_unit": 30.15,
+                    "account_id": revenue,
+                    "tax_ids": [Command.set(tax_ids)],
+                }
+            ),
+            Command.create(
+                {
+                    "name": "Kit",
+                    "quantity": 6.0,
+                    "price_unit": 8.08,
+                    "account_id": revenue,
+                    "tax_ids": [Command.set(tax_ids)],
+                }
+            ),
+        ]
+        partial_lines = [
+            Command.create(
+                {
+                    "name": "Bobina",
+                    "quantity": 2.0,
+                    "price_unit": 30.15,
+                    "account_id": revenue,
+                    "tax_ids": [Command.set(tax_ids)],
+                }
+            ),
+        ]
+        has_discount_product = "sale_discount_product_id" in self.env.company._fields
+        if has_discount_product:
+            disc_product = self.env["product.product"].create(
+                {
+                    "name": "Descuento",
+                    "list_price": 0.0,
+                    "type": "service",
+                    "invoice_policy": "order",
+                    "taxes_id": [Command.clear()],
+                    "supplier_taxes_id": [Command.clear()],
+                }
+            )
+            self.env.company.sale_discount_product_id = disc_product
+            invoice_lines.append(
+                Command.create(
+                    {
+                        "product_id": disc_product.id,
+                        "name": "Descuento 10%",
+                        "quantity": 1.0,
+                        "price_unit": -39.741,
+                        "account_id": revenue,
+                        "tax_ids": [Command.clear()],
+                    }
+                )
+            )
+            partial_lines.append(
+                Command.create(
+                    {
+                        "product_id": disc_product.id,
+                        "name": "10.00% sobre 60.30",
+                        "quantity": 1.0,
+                        "price_unit": -6.03,
+                        "account_id": revenue,
+                        "tax_ids": [Command.clear()],
+                    }
+                )
+            )
+        invoice = self.env["account.move"].create(
+            {
+                "move_type": "out_invoice",
+                "partner_id": self.partner_ve.id,
+                "invoice_date": fields.Date.today(),
+                "invoice_line_ids": invoice_lines,
+            }
+        )
+        invoice.action_post()
+        invoice.l10n_ve_invoice_original_printed = True
+        partial = self.env["account.move"].create(
+            {
+                "move_type": "out_refund",
+                "reversed_entry_id": invoice.id,
+                "partner_id": invoice.partner_id.id,
+                "journal_id": invoice.journal_id.id,
+                "invoice_date": fields.Date.today(),
+                "invoice_line_ids": partial_lines,
+            }
+        )
+        partial.action_post()
+        credit = invoice._reverse_moves()
+        bobina = credit.invoice_line_ids.filtered(lambda line: line.name == "Bobina")
+        kit = credit.invoice_line_ids.filtered(lambda line: line.name == "Kit")
+        self.assertEqual(len(bobina), 1)
+        self.assertAlmostEqual(bobina.quantity, 7.0, places=2)
+        self.assertEqual(len(kit), 1)
+        self.assertAlmostEqual(kit.quantity, 6.0, places=2)
+        if has_discount_product:
+            discount = credit.invoice_line_ids.filtered(
+                lambda line: line.product_id == self.env.company.sale_discount_product_id
+            )
+            self.assertEqual(len(discount), 1)
+            self.assertAlmostEqual(discount.price_unit, -33.711, places=3)
+        credit.action_post()
+        self.assertEqual(credit.state, "posted")
+
     def test_correlative_sequences_independent_per_section(self):
         journal = self.company_data["default_journal_sale"]
         book = self.env["account.book"].create(
@@ -1832,3 +1941,41 @@ class TestAccountMove(L10nVeSeniatCommon):
         move.invoice_date = fields.Date.today()
         with self.assertRaises(ValidationError):
             move.invoice_date_due = fields.Date.today() - relativedelta(days=1)
+
+    def test_needed_terms_none_date_maturity_is_filled(self):
+        move = self.env["account.move"].create(
+            self._create_invoice_vals(self.partner_ve)
+        )
+        due_date = fields.Date.today()
+        move.needed_terms = {
+            frozendict(
+                {
+                    "move_id": move.id,
+                    "date_maturity": None,
+                    "discount_date": False,
+                }
+            ): {
+                "balance": 50.0,
+                "amount_currency": 50.0,
+            },
+            frozendict(
+                {
+                    "move_id": move.id,
+                    "date_maturity": due_date,
+                    "discount_date": False,
+                }
+            ): {
+                "balance": 50.0,
+                "amount_currency": 50.0,
+            },
+        }
+        move._l10n_ve_fill_needed_term_dates()
+        self.assertTrue(
+            all(
+                key.get("date_maturity")
+                for key in move.needed_terms
+                if key
+            )
+        )
+        move._compute_invoice_date_due()
+        self.assertEqual(move.invoice_date_due, due_date)
