@@ -20,7 +20,13 @@ class AccountMove(models.Model):
         self.ensure_one()
         numbers = []
         seen = set()
-        for picking in self.picking_ids.sorted("id"):
+        for picking in self.picking_ids.sorted(
+            lambda picking: (
+                picking.l10n_ve_control_number or "",
+                picking.name or "",
+                picking.id if isinstance(picking.id, int) else 0,
+            )
+        ):
             n = (picking.l10n_ve_control_number or "").strip()
             if n and n not in seen:
                 seen.add(n)
