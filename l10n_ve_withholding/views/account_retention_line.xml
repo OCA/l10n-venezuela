@@ -11,6 +11,15 @@
         <field name="arch" type="xml">
             <list string="Retention Lines">
                 <field name="name" />
+                <field name="affected_invoice_display_name" />
+                <button
+                    name="action_open_invoice"
+                    type="object"
+                    icon="fa-external-link"
+                    title="Open affected invoice"
+                    invisible="not move_id"
+                />
+                <field name="move_id" column_invisible="True" />
                 <field name="payment_id" />
             </list>
         </field>
@@ -28,6 +37,15 @@
             <form string="Retention Lines">
                 <group>
                     <field name="name" />
+                    <field name="affected_invoice_display_name" />
+                    <button
+                        name="action_open_invoice"
+                        type="object"
+                        string="Open affected invoice"
+                        icon="fa-external-link"
+                        invisible="not move_id"
+                    />
+                    <field name="move_id" invisible="1" />
                     <field name="base_ret" />
                     <field name="amount_tax_incurred" />
                     <field name="amount_tax_ret" />

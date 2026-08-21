@@ -1293,8 +1293,14 @@ msgstr "Indicador por cuenta de terceros"
 #. module: l10n_ve_seniat
 #: model:ir.model.fields,help:l10n_ve_seniat.field_account_bank_statement_line__reception_date
 #: model:ir.model.fields,help:l10n_ve_seniat.field_account_move__reception_date
-msgid "Indicates when the invoice was received by the client/company"
-msgstr "Indica cuándo el cliente/empresa recibió la factura"
+msgid ""
+"Date when the invoice was received by the client/company. When set, "
+"payment terms and installment due dates are computed from this date "
+"instead of the invoice date."
+msgstr ""
+"Fecha en que el cliente o la empresa recibió la factura. Si está definida, "
+"los plazos de pago y el vencimiento de las cuotas se calculan a partir de "
+"esta fecha en lugar de la fecha de la factura."
 
 #. module: l10n_ve_seniat
 #: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.view_l10n_ve_book_folio_void_wizard_form
@@ -2236,6 +2242,56 @@ msgstr "Recalcular tasa"
 #: model:ir.model.fields,field_description:l10n_ve_seniat.field_account_move__reception_date
 msgid "Reception Date"
 msgstr "Fecha de recepción"
+
+#. module: l10n_ve_seniat
+#: model:ir.model.fields,field_description:l10n_ve_seniat.field_res_company__l10n_ve_reception_date_payment_term_customer
+#: model:ir.model.fields,field_description:l10n_ve_seniat.field_res_config_settings__l10n_ve_reception_date_payment_term_customer
+msgid "Use reception date on customer invoices"
+msgstr "Usar fecha de recepción en facturas de cliente"
+
+#. module: l10n_ve_seniat
+#: model:ir.model.fields,field_description:l10n_ve_seniat.field_res_company__l10n_ve_reception_date_payment_term_vendor
+#: model:ir.model.fields,field_description:l10n_ve_seniat.field_res_config_settings__l10n_ve_reception_date_payment_term_vendor
+msgid "Use reception date on vendor bills"
+msgstr "Usar fecha de recepción en facturas de proveedor"
+
+#. module: l10n_ve_seniat
+#: model:ir.model.fields,help:l10n_ve_seniat.field_res_company__l10n_ve_reception_date_payment_term_customer
+#: model:ir.model.fields,help:l10n_ve_seniat.field_res_config_settings__l10n_ve_reception_date_payment_term_customer
+msgid ""
+"When enabled, payment terms and installment due dates on customer "
+"invoices start from the reception date."
+msgstr ""
+"Si está activo, los plazos de pago y el vencimiento de las cuotas en "
+"facturas de cliente se calculan a partir de la fecha de recepción."
+
+#. module: l10n_ve_seniat
+#: model:ir.model.fields,help:l10n_ve_seniat.field_res_company__l10n_ve_reception_date_payment_term_vendor
+#: model:ir.model.fields,help:l10n_ve_seniat.field_res_config_settings__l10n_ve_reception_date_payment_term_vendor
+msgid ""
+"When enabled, payment terms and installment due dates on vendor "
+"bills start from the reception date."
+msgstr ""
+"Si está activo, los plazos de pago y el vencimiento de las cuotas en "
+"facturas de proveedor se calculan a partir de la fecha de recepción."
+
+#. module: l10n_ve_seniat
+#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.res_config_settings_l10n_ve_seniat
+msgid ""
+"En facturas de cliente, los plazos de pago y las cuotas se calculan desde "
+"la fecha de recepción."
+msgstr ""
+"En facturas de cliente, los plazos de pago y las cuotas se calculan desde "
+"la fecha de recepción."
+
+#. module: l10n_ve_seniat
+#: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.res_config_settings_l10n_ve_seniat
+msgid ""
+"En facturas de proveedor, los plazos de pago y las cuotas se calculan "
+"desde la fecha de recepción."
+msgstr ""
+"En facturas de proveedor, los plazos de pago y las cuotas se calculan "
+"desde la fecha de recepción."
 
 #. module: l10n_ve_seniat
 #: model_terms:ir.ui.view,arch_db:l10n_ve_seniat.res_config_settings_l10n_ve_seniat

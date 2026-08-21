@@ -226,10 +226,30 @@ class AccountVeReportXHandler(models.AbstractModel):
         daily = self._daily()
         date_type = daily._get_daily_payments_date_type(options)
         bank_cash_journals = daily._get_selected_bank_cash_journals(report, options)
-        add_row(_("Arqueo por forma de cobro / diario"), "", None, level=0, markup="rx_arc")
+        add_row(
+            _("Payments by type and payment method"),
+            "",
+            None,
+            level=0,
+            markup="rx_arc",
+        )
 
         total_cash = 0.0
         total_ops = 0
+        payment_groups = {
+            "inbound": {
+                "name": _("Incoming payments"),
+                "methods": {},
+                "amount": 0.0,
+                "count": 0,
+            },
+            "outbound": {
+                "name": _("Outgoing payments"),
+                "methods": {},
+                "amount": 0.0,
+                "count": 0,
+            },
+        }
         for journal in bank_cash_journals.sorted(lambda j: (j.company_id.name, j.name)):
             posted = daily._get_posted_moves_by_date(
                 journal, company_ids, date_from, date_to, date_type
@@ -237,30 +257,80 @@ class AccountVeReportXHandler(models.AbstractModel):
             registered = posted.filtered(
                 lambda m, j=journal: daily._is_move_bank_liquidity_registered(m, j)
             )
-            subtotal = 0.0
             for move in registered:
-                bal = daily._get_move_liquidity_balance(move, journal)
-                subtotal += self._amount_to_report_currency(
-                    bal,
-                    journal.company_id,
+                display_date = daily._get_move_display_date(move, date_type)
+                amount = daily._get_move_display_report_amount(
+                    move,
+                    journal,
                     options,
-                    move.date,
+                    display_date,
                 )
-            n = len(registered)
-            if not n:
+                if daily._is_report_amount_zero(amount, options):
+                    continue
+                payment = daily._get_move_payment(move)
+                payment_type = (
+                    payment.payment_type
+                    if payment
+                    else "inbound"
+                    if amount >= 0.0
+                    else "outbound"
+                )
+                payment_method_line = daily._get_move_payment_method_line(move)
+                payment_method_name = (
+                    payment_method_line.name
+                    if payment_method_line
+                    else _("No payment method")
+                )
+                payment_method_label = _(
+                    "%(method)s - %(journal)s",
+                    method=payment_method_name,
+                    journal=journal.display_name,
+                )
+                method_key = (
+                    payment_method_name.strip().casefold(),
+                    journal.id,
+                )
+                methods = payment_groups[payment_type]["methods"]
+                if method_key not in methods:
+                    methods[method_key] = {
+                        "name": payment_method_label,
+                        "amount": 0.0,
+                        "count": 0,
+                    }
+                methods[method_key]["amount"] += amount
+                methods[method_key]["count"] += 1
+                payment_groups[payment_type]["amount"] += amount
+                payment_groups[payment_type]["count"] += 1
+                total_cash += amount
+                total_ops += 1
+
+        for payment_type in ("inbound", "outbound"):
+            payment_group = payment_groups[payment_type]
+            if not payment_group["count"]:
                 continue
-            total_ops += n
-            total_cash += subtotal
             add_row(
-                journal.display_name,
-                _("%(n)s operaciones", n=n),
-                subtotal,
+                payment_group["name"],
+                _("%(n)s operations", n=payment_group["count"]),
+                payment_group["amount"],
                 level=1,
+                line_class="total",
+                markup="rx_payment_type_%s" % payment_type,
             )
+            for method in sorted(
+                payment_group["methods"].values(),
+                key=lambda method: method["name"],
+            ):
+                add_row(
+                    method["name"],
+                    _("%(n)s operations", n=method["count"]),
+                    method["amount"],
+                    level=2,
+                    markup="rx_payment_method_%s" % payment_type,
+                )
 
         add_row(
-            _("Total cobros registrados (diarios seleccionados)"),
-            _("%(n)s operaciones", n=total_ops),
+            _("Total registered payments"),
+            _("%(n)s operations", n=total_ops),
             total_cash,
             level=1,
             line_class="total",

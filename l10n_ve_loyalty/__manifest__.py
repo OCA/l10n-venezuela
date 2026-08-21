@@ -5,7 +5,7 @@
     "website": "https://github.com/OCA/l10n-venezuela",
     "icon": "/poweredbyandy_saas/static/description/icon.png",
     "countries": ["ve"],
-    "version": "18.0.1.0.15",
+    "version": "18.0.1.0.16",
     "author": "andyengit, Odoo Community Association (OCA)",
     "maintainers": ["andyengit"],
     "category": "Accounting/Localizations",
@@ -17,6 +17,7 @@
         "l10n_ve_seniat",
     ],
     "data": [
+        "security/l10n_ve_loyalty_security.xml",
         "security/ir.model.access.csv",
         "data/l10n_ve_discount_reason_data.xml",
         "report/account_tax_totals_templates.xml",

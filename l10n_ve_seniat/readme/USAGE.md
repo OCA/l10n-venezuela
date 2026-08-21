@@ -20,5 +20,22 @@ Notas de crédito y débito
 
 Las notas reutilizan el mismo diario y contacto de la factura origen.
 
+Fecha de recepción y vencimientos
+---------------------------------
+
+1. En **Contabilidad → Configuración → Ajustes**, bloque **Venezuela**, active
+   **Usar fecha de recepción en facturas de cliente** y/o **Usar fecha de
+   recepción en facturas de proveedor**.
+2. Tras confirmar la factura, indique la **Fecha de recepción**. Esa fecha es
+   el inicio de los plazos de pago:
+   - Sin plazo de pago (contado): el vencimiento pasa a la fecha de recepción.
+   - Con plazo (por ejemplo, 30 días): el vencimiento y cada cuota se calculan
+     desde la recepción, no desde la fecha de la factura.
+   La fecha de vencimiento se muestra en el encabezado y en **Fecha de
+   vencimiento** de los apuntes contables.
+
+Ejemplo: factura del 1 de enero, recepción el 5 de enero y pago a 30 días →
+vencimiento el 4 de febrero.
+
 
 

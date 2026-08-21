@@ -46,6 +46,14 @@ class AccountRetentionLine(models.Model):
     amount_tax_incurred = fields.Float(string="tax incurred", digits=(16, 2))
     retention_rate = fields.Float(store=True, digits="Tasa")
     move_id = fields.Many2one("account.move", "move", ondelete="cascade", store=True)
+    supplier_invoice_reference = fields.Char(
+        related="move_id.ref",
+        string="Vendor Reference",
+    )
+    affected_invoice_display_name = fields.Char(
+        compute="_compute_affected_invoice_display_name",
+        string="Affected Invoice",
+    )
     is_client_retention = fields.Boolean(default=True)
     invoice_amount = fields.Float(
         string="Taxable income",
@@ -113,6 +121,25 @@ class AccountRetentionLine(models.Model):
         store=True,
     )
 
+    @api.depends(
+        "move_id.l10n_ve_control_number",
+        "move_id.ref",
+        "move_id.l10n_ve_invoice_number",
+        "move_id.name",
+    )
+    def _compute_affected_invoice_display_name(self):
+        for line in self:
+            move = line.move_id
+            identifier = (
+                move.l10n_ve_control_number
+                or move.ref
+                or move.l10n_ve_invoice_number
+            )
+            if identifier and move.name and identifier != move.name:
+                line.affected_invoice_display_name = f"{identifier} ({move.name})"
+            else:
+                line.affected_invoice_display_name = identifier or move.name
+
     @api.depends("retention_id.type_retention", "move_id")
     def _compute_name(self):
         for record in self:
@@ -158,6 +185,20 @@ class AccountRetentionLine(models.Model):
         if payments_to_unlink:
             payments_to_unlink.unlink()
         return super(AccountRetentionLine, lines).unlink()
+
+    def action_open_invoice(self):
+        self.ensure_one()
+        if not self.move_id:
+            return False
+        return {
+            "type": "ir.actions.act_window",
+            "name": self.supplier_invoice_reference or self.move_id.display_name,
+            "res_model": "account.move",
+            "res_id": self.move_id.id,
+            "view_mode": "form",
+            "views": [(self.env.ref("account.view_move_form").id, "form")],
+            "target": "current",
+        }
 
     @api.onchange("payment_concept_id")
     @api.depends("payment_concept_id", "move_id")

@@ -178,6 +178,22 @@ class AccountMoveRetention(models.Model):
             "target": "current",
         }
 
+    def action_print_iva_retention(self):
+        self.ensure_one()
+        if not self.iva_retention_id:
+            raise UserError(
+                _("No IVA retention document linked to this vendor bill.")
+            )
+        return self.iva_retention_id.action_print_retention_voucher()
+
+    def action_print_islr_retention(self):
+        self.ensure_one()
+        if not self.islr_retention_id:
+            raise UserError(
+                _("No ISLR retention document linked to this vendor bill.")
+            )
+        return self.islr_retention_id.action_print_retention_voucher()
+
     def action_post(self):
         """Create supplier retentions only after the move is actually posted."""
         res = super().action_post()

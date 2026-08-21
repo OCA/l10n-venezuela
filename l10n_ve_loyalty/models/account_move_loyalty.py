@@ -27,7 +27,9 @@ class AccountMove(models.Model):
             reason = self.env["l10n.ve.discount.reason"]._l10n_ve_get_default()
         if not reason:
             raise UserError(_("Configure at least one Venezuela discount reason."))
-        return self.env["l10n.ve.account.move.discount"].create(
+        return self.env["l10n.ve.account.move.discount"].with_context(
+            l10n_ve_skip_global_discount_access_check=True,
+        ).create(
             {
                 "move_id": self.id,
                 "reason_id": reason.id,

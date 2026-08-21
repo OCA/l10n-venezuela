@@ -1979,3 +1979,220 @@ class TestAccountMove(L10nVeSeniatCommon):
         )
         move._compute_invoice_date_due()
         self.assertEqual(move.invoice_date_due, due_date)
+
+    def _create_payment_term(self, name, lines):
+        return self.env["account.payment.term"].create(
+            {
+                "name": name,
+                "line_ids": [
+                    Command.create(
+                        {
+                            "value": "percent",
+                            "value_amount": value_amount,
+                            "nb_days": nb_days,
+                            "delay_type": delay_type,
+                        }
+                    )
+                    for value_amount, nb_days, delay_type in lines
+                ],
+            }
+        )
+
+    def _enable_reception_date_payment_terms(self, customer=False, vendor=False):
+        self.env.company.write(
+            {
+                "l10n_ve_reception_date_payment_term_customer": customer,
+                "l10n_ve_reception_date_payment_term_vendor": vendor,
+            }
+        )
+
+    def _payment_term_maturity_dates(self, move):
+        return move.line_ids.filtered(
+            lambda line: line.display_type == "payment_term"
+        ).sorted("date_maturity").mapped("date_maturity")
+
+    def test_reception_date_shifts_due_date_from_payment_term(self):
+        self._enable_reception_date_payment_terms(customer=True)
+        term = self._create_payment_term(
+            "Net 30", [(100.0, 30, "days_after")]
+        )
+        vals = self._create_invoice_vals(self.partner_ve)
+        vals["invoice_date"] = date(2026, 1, 1)
+        vals["invoice_payment_term_id"] = term.id
+        move = self.env["account.move"].create(vals)
+        self.assertEqual(move.invoice_date_due, date(2026, 1, 31))
+        move.reception_date = date(2026, 1, 5)
+        move.invalidate_recordset(["invoice_date_due", "line_ids"])
+        self.env["account.move.line"].invalidate_model(["date_maturity"])
+        self.assertEqual(move.invoice_date_due, date(2026, 2, 4))
+        self.assertEqual(
+            self._payment_term_maturity_dates(move), [date(2026, 2, 4)]
+        )
+
+    def test_reception_date_updates_due_date_after_post(self):
+        self._enable_reception_date_payment_terms(customer=True)
+        term = self._create_payment_term(
+            "Net 30 posted", [(100.0, 30, "days_after")]
+        )
+        vals = self._create_invoice_vals(self.partner_ve)
+        vals["invoice_date"] = date(2026, 1, 1)
+        vals["invoice_payment_term_id"] = term.id
+        move = self.env["account.move"].create(vals)
+        move.action_post()
+        self.assertEqual(move.invoice_date_due, date(2026, 1, 31))
+        move.reception_date = date(2026, 1, 5)
+        move.invalidate_recordset(["invoice_date_due", "line_ids"])
+        self.env["account.move.line"].invalidate_model(["date_maturity"])
+        self.assertEqual(move.invoice_date_due, date(2026, 2, 4))
+        self.assertEqual(
+            self._payment_term_maturity_dates(move), [date(2026, 2, 4)]
+        )
+        move.reception_date = False
+        move.invalidate_recordset(["invoice_date_due", "line_ids"])
+        self.env["account.move.line"].invalidate_model(["date_maturity"])
+        self.assertEqual(move.invoice_date_due, date(2026, 1, 31))
+        self.assertEqual(
+            self._payment_term_maturity_dates(move), [date(2026, 1, 31)]
+        )
+
+    def test_reception_date_applies_to_payment_term_installments(self):
+        self._enable_reception_date_payment_terms(vendor=True)
+        term = self._create_payment_term(
+            "30-60",
+            [
+                (50.0, 30, "days_after"),
+                (50.0, 60, "days_after"),
+            ],
+        )
+        vals = self._create_supplier_invoice_vals(self.partner_ve)
+        vals["invoice_date"] = date(2026, 1, 1)
+        vals["invoice_payment_term_id"] = term.id
+        move = self.env["account.move"].create(vals)
+        self.assertEqual(
+            self._payment_term_maturity_dates(move),
+            [date(2026, 1, 31), date(2026, 3, 2)],
+        )
+        move.action_post()
+        move.reception_date = date(2026, 1, 5)
+        move.invalidate_recordset(["invoice_date_due", "line_ids"])
+        self.env["account.move.line"].invalidate_model(["date_maturity"])
+        self.assertEqual(
+            self._payment_term_maturity_dates(move),
+            [date(2026, 2, 4), date(2026, 3, 6)],
+        )
+        self.assertEqual(move.invoice_date_due, date(2026, 3, 6))
+
+    def test_reception_date_uses_term_delay_not_invoice_delta(self):
+        self._enable_reception_date_payment_terms(vendor=True)
+        term = self._create_payment_term(
+            "End of month", [(100.0, 0, "days_after_end_of_month")]
+        )
+        vals = self._create_supplier_invoice_vals(self.partner_ve)
+        vals["invoice_date"] = date(2026, 1, 1)
+        vals["invoice_payment_term_id"] = term.id
+        move = self.env["account.move"].create(vals)
+        move.action_post()
+        self.assertEqual(move.invoice_date_due, date(2026, 1, 31))
+        move.reception_date = date(2026, 1, 5)
+        self.assertEqual(move.invoice_date_due, date(2026, 1, 31))
+        self.assertEqual(
+            self._payment_term_maturity_dates(move), [date(2026, 1, 31)]
+        )
+
+    def test_reception_date_ignored_when_customer_setting_off(self):
+        self._enable_reception_date_payment_terms(customer=False, vendor=True)
+        term = self._create_payment_term(
+            "Net 30 off", [(100.0, 30, "days_after")]
+        )
+        vals = self._create_invoice_vals(self.partner_ve)
+        vals["invoice_date"] = date(2026, 1, 1)
+        vals["invoice_payment_term_id"] = term.id
+        move = self.env["account.move"].create(vals)
+        move.action_post()
+        move.reception_date = date(2026, 1, 5)
+        move.invalidate_recordset(["invoice_date_due", "line_ids"])
+        self.env["account.move.line"].invalidate_model(["date_maturity"])
+        self.assertEqual(move.invoice_date_due, date(2026, 1, 31))
+        self.assertEqual(
+            self._payment_term_maturity_dates(move), [date(2026, 1, 31)]
+        )
+        self.assertFalse(move.l10n_ve_use_reception_date_payment_term)
+
+    def test_reception_date_vendor_setting_off_keeps_bill_due(self):
+        self._enable_reception_date_payment_terms(customer=True, vendor=False)
+        term = self._create_payment_term(
+            "Net 30 vendor off", [(100.0, 30, "days_after")]
+        )
+        vals = self._create_supplier_invoice_vals(self.partner_ve)
+        vals["invoice_date"] = date(2026, 1, 1)
+        vals["invoice_payment_term_id"] = term.id
+        move = self.env["account.move"].create(vals)
+        move.action_post()
+        move.reception_date = date(2026, 1, 5)
+        move.invalidate_recordset(["invoice_date_due", "line_ids"])
+        self.env["account.move.line"].invalidate_model(["date_maturity"])
+        self.assertEqual(move.invoice_date_due, date(2026, 1, 31))
+        self.assertEqual(
+            self._payment_term_maturity_dates(move), [date(2026, 1, 31)]
+        )
+        self.assertFalse(move.l10n_ve_use_reception_date_payment_term)
+
+    def test_reception_date_sets_due_when_no_payment_term(self):
+        self._enable_reception_date_payment_terms(customer=True)
+        vals = self._create_invoice_vals(self.partner_ve)
+        vals["invoice_date"] = date(2026, 8, 17)
+        vals["invoice_date_due"] = date(2026, 8, 17)
+        vals["invoice_payment_term_id"] = False
+        move = self.env["account.move"].create(vals)
+        move.action_post()
+        self.assertFalse(move.invoice_payment_term_id)
+        self.assertEqual(move.invoice_date_due, date(2026, 8, 17))
+        move.write(
+            {
+                "reception_date": date(2026, 8, 21),
+                "invoice_date_due": date(2026, 8, 17),
+            }
+        )
+        self.assertEqual(move.invoice_date_due, date(2026, 8, 21))
+        self.assertEqual(
+            self._payment_term_maturity_dates(move), [date(2026, 8, 21)]
+        )
+
+    def test_reception_date_write_overrides_old_due_from_form(self):
+        self._enable_reception_date_payment_terms(customer=True)
+        term = self._create_payment_term(
+            "Net 30 form", [(100.0, 30, "days_after")]
+        )
+        vals = self._create_invoice_vals(self.partner_ve)
+        vals["invoice_date"] = date(2026, 1, 1)
+        vals["invoice_payment_term_id"] = term.id
+        move = self.env["account.move"].create(vals)
+        move.action_post()
+        old_due = move.invoice_date_due
+        self.assertEqual(old_due, date(2026, 1, 31))
+        move.write(
+            {
+                "reception_date": date(2026, 1, 5),
+                "invoice_date_due": old_due,
+            }
+        )
+        self.assertEqual(move.invoice_date_due, date(2026, 2, 4))
+        self.assertEqual(
+            self._payment_term_maturity_dates(move), [date(2026, 2, 4)]
+        )
+
+    def test_reception_date_settings_related_on_config(self):
+        settings = self.env["res.config.settings"].create(
+            {
+                "company_id": self.env.company.id,
+                "l10n_ve_reception_date_payment_term_customer": True,
+                "l10n_ve_reception_date_payment_term_vendor": True,
+            }
+        )
+        settings.execute()
+        self.assertTrue(
+            self.env.company.l10n_ve_reception_date_payment_term_customer
+        )
+        self.assertTrue(
+            self.env.company.l10n_ve_reception_date_payment_term_vendor
+        )

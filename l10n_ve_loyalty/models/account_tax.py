@@ -153,6 +153,9 @@ class AccountTax(models.Model):
         totals["l10n_ve_global_discount_percentage"] = discount_totals[
             "global_discount_percentage"
         ]
+        totals["l10n_ve_can_manage_global_discount"] = self.env.user.has_group(
+            "l10n_ve_loyalty.group_l10n_ve_global_discount"
+        )
         company_currency = document.company_id.currency_id
         totals["display_in_company_currency"] = bool(
             document.currency_id and document.currency_id != company_currency

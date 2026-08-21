@@ -149,7 +149,21 @@ class AccountMove(models.Model):
                             "crédito o débito para empresas con fiscalidad venezolana."
                         )
                     )
-        return super().write(vals)
+        if (
+            "reception_date" in vals
+            and not self.env.context.get("l10n_ve_skip_reception_term_sync")
+        ):
+            to_sync = self.filtered(
+                lambda move: move._l10n_ve_use_reception_date_for_payment_terms()
+            )
+            to_sync.needed_terms_dirty = True
+        res = super().write(vals)
+        if (
+            "reception_date" in vals
+            and not self.env.context.get("l10n_ve_skip_reception_term_sync")
+        ):
+            self._l10n_ve_sync_payment_term_line_dates()
+        return res
 
     @api.model_create_multi
     def create(self, vals_list):
@@ -289,8 +303,15 @@ class AccountMove(models.Model):
         return self.l10n_ve_edi_send_state != "sent"
 
     reception_date = fields.Date(
-        help="Indicates when the invoice was received by the client/company",
+        help=(
+            "Date when the invoice was received by the client/company. When set, "
+            "payment terms and installment due dates are computed from this date "
+            "instead of the invoice date."
+        ),
         tracking=True,
+    )
+    l10n_ve_use_reception_date_payment_term = fields.Boolean(
+        compute="_compute_l10n_ve_use_reception_date_payment_term",
     )
     l10n_ve_invoice_date = fields.Datetime(
         string="Fecha del documento",
@@ -1768,14 +1789,242 @@ Please create a credit note instead.
             )
         )
 
+    @api.depends(
+        "company_id.l10n_ve_reception_date_payment_term_customer",
+        "company_id.l10n_ve_reception_date_payment_term_vendor",
+        "move_type",
+    )
+    def _compute_l10n_ve_use_reception_date_payment_term(self):
+        for move in self:
+            move.l10n_ve_use_reception_date_payment_term = (
+                move._l10n_ve_use_reception_date_for_payment_terms()
+            )
+
+    def _l10n_ve_use_reception_date_for_payment_terms(self):
+        self.ensure_one()
+        company = self.company_id
+        if self.move_type in ("out_invoice", "out_refund", "out_receipt"):
+            return bool(company.l10n_ve_reception_date_payment_term_customer)
+        if self.move_type in ("in_invoice", "in_refund", "in_receipt"):
+            return bool(company.l10n_ve_reception_date_payment_term_vendor)
+        return False
+
+    def _l10n_ve_payment_term_date_ref(self):
+        self.ensure_one()
+        reception_date = False
+        if self._l10n_ve_use_reception_date_for_payment_terms():
+            reception_date = self.reception_date
+        return (
+            reception_date
+            or self.invoice_date
+            or self.date
+            or fields.Date.context_today(self)
+        )
+
+    def _l10n_ve_reception_payment_term_due_dates(self):
+        self.ensure_one()
+        if not self._l10n_ve_use_reception_date_for_payment_terms():
+            return []
+        if self.invoice_payment_term_id:
+            date_ref = self._l10n_ve_payment_term_date_ref()
+            return [
+                line._get_due_date(date_ref)
+                for line in self.invoice_payment_term_id.line_ids
+            ]
+        if self.reception_date:
+            return [self.reception_date]
+        return []
+
+    def _l10n_ve_reception_term_sync_context(self):
+        return {
+            "l10n_ve_skip_reception_term_sync": True,
+            "skip_invoice_sync": True,
+            "skip_account_move_synchronization": True,
+            "skip_readonly_check": True,
+        }
+
+    @api.onchange("reception_date")
+    def _onchange_l10n_ve_reception_date(self):
+        for move in self:
+            due_dates = move._l10n_ve_reception_payment_term_due_dates()
+            if due_dates:
+                move.invoice_date_due = max(due_dates)
+
+    @api.depends("needed_terms", "reception_date")
+    def _compute_invoice_date_due(self):
+        super()._compute_invoice_date_due()
+        for move in self:
+            due_dates = move._l10n_ve_reception_payment_term_due_dates()
+            if due_dates:
+                move.invoice_date_due = max(due_dates)
+
+    @api.depends("show_payment_term_details", "line_ids.date_maturity")
+    def _compute_payment_term_details(self):
+        super()._compute_payment_term_details()
+
+    def _l10n_ve_sync_payment_term_line_dates(self):
+        for move in self:
+            if not move.is_invoice(include_receipts=True):
+                continue
+            if move.country_code and move.country_code != "VE":
+                continue
+            due_dates = move._l10n_ve_reception_payment_term_due_dates()
+            if (
+                not due_dates
+                and not move.invoice_payment_term_id
+                and not move.reception_date
+                and move.invoice_date
+            ):
+                due_dates = [move.invoice_date]
+            if not due_dates:
+                continue
+            date_ref = move._l10n_ve_payment_term_date_ref()
+            term_amls = move.line_ids.filtered(
+                lambda line: line.display_type == "payment_term"
+                or (
+                    not line.display_type
+                    and line.account_type
+                    in ("asset_receivable", "liability_payable")
+                )
+            ).sorted(lambda line: (line.date_maturity or date_ref, line.id))
+            unique_dates = list(dict.fromkeys(due_dates))
+            if len(term_amls) == len(unique_dates):
+                target_dates = unique_dates
+            else:
+                target_dates = due_dates
+            discount_date = False
+            if move.invoice_payment_term_id:
+                discount_date = move.invoice_payment_term_id._get_last_discount_date(
+                    date_ref
+                )
+            amls = term_amls.with_context(**self._l10n_ve_reception_term_sync_context())
+            for aml, due_date in zip(amls, target_dates):
+                vals = {}
+                if aml.date_maturity != due_date:
+                    vals["date_maturity"] = due_date
+                if aml.discount_date != discount_date:
+                    vals["discount_date"] = discount_date
+                if vals:
+                    aml.write(vals)
+            due = max(target_dates)
+            if due and move.invoice_date_due != due:
+                super(
+                    AccountMove,
+                    move.with_context(**self._l10n_ve_reception_term_sync_context()),
+                ).write({"invoice_date_due": due})
+
+    def _l10n_ve_rebuild_needed_terms_from_date_ref(self, date_ref):
+        self.ensure_one()
+        if not self.invoice_payment_term_id or not date_ref:
+            return
+        sign = 1 if self.is_inbound(include_receipts=True) else -1
+        invoice_payment_terms = self.invoice_payment_term_id._compute_terms(
+            date_ref=date_ref,
+            currency=self.currency_id,
+            tax_amount_currency=self.amount_tax * sign,
+            tax_amount=self.amount_tax_signed,
+            untaxed_amount_currency=self.amount_untaxed * sign,
+            untaxed_amount=self.amount_untaxed_signed,
+            company=self.company_id,
+            cash_rounding=self.invoice_cash_rounding_id,
+            sign=sign,
+        )
+        needed_terms = {}
+        for term_line in invoice_payment_terms["line_ids"]:
+            key = frozendict(
+                {
+                    "move_id": self.id,
+                    "date_maturity": fields.Date.to_date(term_line.get("date")),
+                    "discount_date": invoice_payment_terms.get("discount_date"),
+                }
+            )
+            values = {
+                "balance": term_line["company_amount"],
+                "amount_currency": term_line["foreign_amount"],
+                "discount_date": invoice_payment_terms.get("discount_date"),
+                "discount_balance": invoice_payment_terms.get("discount_balance")
+                or 0.0,
+                "discount_amount_currency": invoice_payment_terms.get(
+                    "discount_amount_currency"
+                )
+                or 0.0,
+            }
+            if key not in needed_terms:
+                needed_terms[key] = values
+            else:
+                needed_terms[key]["balance"] += values["balance"]
+                needed_terms[key]["amount_currency"] += values["amount_currency"]
+        self.needed_terms = needed_terms
+        self.needed_terms_dirty = True
+
+    def _l10n_ve_apply_reception_date_to_needed_terms(self):
+        for move in self:
+            if not move._l10n_ve_use_reception_date_for_payment_terms():
+                continue
+            if not move.reception_date:
+                continue
+            terms = move.needed_terms
+            if not terms or not isinstance(terms, dict):
+                continue
+            date_ref = move.reception_date
+            if move.invoice_payment_term_id:
+                new_dates = [
+                    line._get_due_date(date_ref)
+                    for line in move.invoice_payment_term_id.line_ids
+                ]
+            else:
+                new_dates = [date_ref]
+            if not new_dates:
+                continue
+            unique_new_dates = list(dict.fromkeys(new_dates))
+            items = [(key, values) for key, values in terms.items() if key]
+            items.sort(
+                key=lambda item: item[0].get("date_maturity") or date_ref
+            )
+            if len(items) == len(unique_new_dates):
+                target_dates = unique_new_dates
+            elif len(items) == len(new_dates):
+                target_dates = new_dates
+            elif move.id == move._origin.id:
+                move._l10n_ve_rebuild_needed_terms_from_date_ref(date_ref)
+                continue
+            else:
+                continue
+            discount_date = False
+            if move.invoice_payment_term_id:
+                discount_date = move.invoice_payment_term_id._get_last_discount_date(
+                    date_ref
+                )
+            new_terms = {}
+            for (key, values), new_date in zip(items, target_dates):
+                new_key = frozendict(
+                    {
+                        **dict(key),
+                        "date_maturity": new_date,
+                        "discount_date": discount_date,
+                    }
+                )
+                new_values = dict(values)
+                new_values["discount_date"] = discount_date
+                if new_key in new_terms:
+                    merged = dict(new_terms[new_key])
+                    merged["balance"] = merged.get("balance", 0.0) + new_values.get(
+                        "balance", 0.0
+                    )
+                    merged["amount_currency"] = merged.get(
+                        "amount_currency", 0.0
+                    ) + new_values.get("amount_currency", 0.0)
+                    new_terms[new_key] = merged
+                else:
+                    new_terms[new_key] = new_values
+            move.needed_terms = new_terms
+
     def _l10n_ve_fill_needed_term_dates(self):
         for move in self:
             terms = move.needed_terms
             if not terms or not isinstance(terms, dict):
                 continue
-            fallback = (
-                move.invoice_date or move.date or fields.Date.context_today(move)
-            )
+            fallback = move._l10n_ve_payment_term_date_ref()
             new_terms = {}
             changed = False
             for key, values in terms.items():
@@ -1803,12 +2052,14 @@ Please create a credit note instead.
     @api.depends(
         "invoice_payment_term_id",
         "invoice_date",
+        "reception_date",
         "currency_id",
         "amount_total_in_currency_signed",
         "invoice_date_due",
     )
     def _compute_needed_terms(self):
         super()._compute_needed_terms()
+        self._l10n_ve_apply_reception_date_to_needed_terms()
         self._l10n_ve_fill_needed_term_dates()
 
     @api.constrains("invoice_date", "invoice_date_due", "move_type")

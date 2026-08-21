@@ -115,6 +115,15 @@ class AccountRetention(models.Model):
         # states={"draft": [("readonly", False)]},
         help="Retentions",
     )
+    affected_invoice_ids = fields.Many2many(
+        "account.move",
+        compute="_compute_affected_invoice_ids",
+        string="Affected Invoices",
+    )
+    affected_invoice_display_names = fields.Char(
+        compute="_compute_affected_invoice_display_names",
+        string="Affected Invoices",
+    )
 
     payment_ids = fields.One2many(
         "account.payment",
@@ -212,6 +221,28 @@ class AccountRetention(models.Model):
                 domain.append(("partner_id", "=", retention.partner_id.id))
 
             retention.allowed_lines_move_ids = self.env["account.move"].search(domain)
+
+    @api.depends("retention_line_ids.move_id")
+    def _compute_affected_invoice_ids(self):
+        for retention in self:
+            retention.affected_invoice_ids = retention.retention_line_ids.mapped(
+                "move_id"
+            )
+
+    @api.depends(
+        "retention_line_ids.move_id.l10n_ve_control_number",
+        "retention_line_ids.move_id.ref",
+        "retention_line_ids.move_id.l10n_ve_invoice_number",
+        "retention_line_ids.move_id.name",
+    )
+    def _compute_affected_invoice_display_names(self):
+        for retention in self:
+            names = retention.retention_line_ids.mapped(
+                "affected_invoice_display_name"
+            )
+            retention.affected_invoice_display_names = ", ".join(
+                dict.fromkeys(name for name in names if name)
+            )
 
     @api.depends(
         "retention_line_ids.invoice_amount",
@@ -779,6 +810,16 @@ class AccountRetention(models.Model):
             "url": f"/web/get_xlsx_municipal_retention?&retention_id={self.id}",
             "target": "self",
         }
+
+    def action_print_retention_voucher(self):
+        self.ensure_one()
+        if self.state != "emitted":
+            raise UserError(_("Only emitted retentions can be printed."))
+        if self.type_retention == "municipal":
+            return self.action_print_municipal_retention_xlsx()
+        return self.env.ref(
+            "l10n_ve_withholding.retention_voucher_action"
+        ).report_action(self, config=False)
 
     def _set_sequence(self):
         for retention in self.filtered(lambda r: not r.number):

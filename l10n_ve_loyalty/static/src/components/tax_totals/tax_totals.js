@@ -15,11 +15,14 @@ class L10nVeGlobalDiscountDetailsPopover extends Component {
         currencyId: { type: Number, optional: true },
         onRemove: { type: Function },
         onRemoveAll: { type: Function },
+        canManageGlobalDiscount: { type: Boolean, optional: true },
         close: { type: Function, optional: true },
     };
 
     get showRemoveAll() {
-        return this.props.lines.length > 1;
+        return (
+            this.props.canManageGlobalDiscount && this.props.lines.length > 1
+        );
     }
 
     formatAmount(amount) {
@@ -59,6 +62,10 @@ const l10nVeGlobalDiscountTaxTotalsPatch = {
 
     get showGlobalDiscount() {
         return Boolean(this.l10nVeDiscountTotals.l10n_ve_show_global_discount);
+    },
+
+    get canManageGlobalDiscount() {
+        return Boolean(this.l10nVeDiscountTotals.l10n_ve_can_manage_global_discount);
     },
 
     get discountLines() {
@@ -122,6 +129,7 @@ const l10nVeGlobalDiscountTaxTotalsPatch = {
         this.discountPopover.open(ev.currentTarget, {
             lines: this.discountLines,
             currencyId: this.l10nVeDiscountTotals.currency_id,
+            canManageGlobalDiscount: this.canManageGlobalDiscount,
             onRemove: this.removeGlobalDiscount.bind(this),
             onRemoveAll: this.removeAllGlobalDiscounts.bind(this),
         });

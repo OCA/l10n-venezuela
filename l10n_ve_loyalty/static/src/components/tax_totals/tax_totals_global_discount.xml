@@ -29,6 +29,7 @@
                             <div class="text-muted small" t-out="formatLineDetail(line)" />
                         </div>
                         <button
+                            t-if="props.canManageGlobalDiscount"
                             type="button"
                             class="btn btn-link text-danger p-0"
                             title="Quitar descuento"

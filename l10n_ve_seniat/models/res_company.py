@@ -99,3 +99,19 @@ class ResCompany(models.Model):
         string="Bloquear datos fiscales con movimientos",
         default=True,
     )
+    l10n_ve_reception_date_payment_term_customer = fields.Boolean(
+        string="Use reception date on customer invoices",
+        help=(
+            "When enabled, payment terms and installment due dates on customer "
+            "invoices start from the reception date."
+        ),
+        default=False,
+    )
+    l10n_ve_reception_date_payment_term_vendor = fields.Boolean(
+        string="Use reception date on vendor bills",
+        help=(
+            "When enabled, payment terms and installment due dates on vendor "
+            "bills start from the reception date."
+        ),
+        default=False,
+    )

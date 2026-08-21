@@ -17,6 +17,54 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. module: l10n_ve_withholding
+#: model:ir.model.fields,field_description:l10n_ve_withholding.field_account_retention_line__affected_invoice_display_name
+msgid "Affected Invoice"
+msgstr "Factura afectada"
+
+#. module: l10n_ve_withholding
+#: model:ir.model.fields,field_description:l10n_ve_withholding.field_account_retention__affected_invoice_display_names
+#: model:ir.model.fields,field_description:l10n_ve_withholding.field_account_retention__affected_invoice_ids
+msgid "Affected Invoices"
+msgstr "Facturas afectadas"
+
+#. module: l10n_ve_withholding
+#. odoo-python
+#: code:addons/l10n_ve_withholding/models/account_retention.py:0
+msgid "Only emitted retentions can be printed."
+msgstr "Solo se pueden imprimir retenciones emitidas."
+
+#. module: l10n_ve_withholding
+#: model_terms:ir.ui.view,arch_db:l10n_ve_withholding.view_account_retention_line_form_l10n_ve_withholding
+#: model_terms:ir.ui.view,arch_db:l10n_ve_withholding.view_account_retention_line_tree_l10n_ve_withholding
+#: model_terms:ir.ui.view,arch_db:l10n_ve_withholding.view_retention_islr_form_l10n_ve_withholding
+#: model_terms:ir.ui.view,arch_db:l10n_ve_withholding.view_retention_iva_form_l10n_ve_withholding
+#: model_terms:ir.ui.view,arch_db:l10n_ve_withholding.view_retention_municipal_form_l10n_ve_withholding
+msgid "Open affected invoice"
+msgstr "Abrir factura afectada"
+
+#. module: l10n_ve_withholding
+#: model_terms:ir.ui.view,arch_db:l10n_ve_withholding.view_retention_islr_form_l10n_ve_withholding
+#: model_terms:ir.ui.view,arch_db:l10n_ve_withholding.view_retention_iva_form_l10n_ve_withholding
+#: model_terms:ir.ui.view,arch_db:l10n_ve_withholding.view_retention_municipal_form_l10n_ve_withholding
+msgid "Print"
+msgstr "Imprimir"
+
+#. module: l10n_ve_withholding
+#: model_terms:ir.ui.view,arch_db:l10n_ve_withholding.account_move_form_l10n_ve_withholding
+msgid "Print ISLR retention"
+msgstr "Imprimir retención de ISLR"
+
+#. module: l10n_ve_withholding
+#: model_terms:ir.ui.view,arch_db:l10n_ve_withholding.account_move_form_l10n_ve_withholding
+msgid "Print IVA retention"
+msgstr "Imprimir retención de IVA"
+
+#. module: l10n_ve_withholding
+#: model:ir.model.fields,field_description:l10n_ve_withholding.field_account_retention_line__supplier_invoice_reference
+msgid "Vendor Reference"
+msgstr "Referencia del proveedor"
+
+#. module: l10n_ve_withholding
 #: model_terms:ir.ui.view,arch_db:l10n_ve_withholding.report_iva_customer
 msgid ""
 "\"Decreto con Rango, Valor y Fuerza de Ley de Reforma de la Ley del Impuesto\n"
@@ -2588,13 +2636,13 @@ msgstr "El partner debe tener tipo de persona"
 #. odoo-python
 #: code:addons/l10n_ve_withholding/models/fees_retention.py:0
 msgid "The percentage of fees cannot be greater than 100%.\n"
-msgstr "El porcentaje de las tarifas no puede ser mayor que 100%"
+msgstr "El porcentaje de las tarifas no puede ser mayor que 100%\n"
 
 #. module: l10n_ve_withholding
 #. odoo-python
 #: code:addons/l10n_ve_withholding/models/fees_retention.py:0
 msgid "The rate percentage cannot be negative.\n"
-msgstr "El porcentaje de retención no puede ser negativo."
+msgstr "El porcentaje de retención no puede ser negativo.\n"
 
 #. module: l10n_ve_withholding
 #. odoo-python
@@ -2859,7 +2907,7 @@ msgstr "Debes ingresar una fecha de inicio y fin"
 #. odoo-python
 #: code:addons/l10n_ve_withholding/models/fees_retention.py:0
 msgid "You must enter the accumulated fees.\n"
-msgstr "Debes ingresar la tarifa acumulada"
+msgstr "Debes ingresar la tarifa acumulada\n"
 
 #. module: l10n_ve_withholding
 #: model:ir.actions.act_window,name:l10n_ve_withholding.action_economic_branch

@@ -5,11 +5,11 @@ from odoo.exceptions import ValidationError
 from odoo.tests import tagged
 
 from odoo.addons.l10n_ve_loyalty.models import l10n_ve_global_discount as discount_logic
-from odoo.addons.l10n_ve_seniat.tests.common import L10nVeSeniatCommon
+from odoo.addons.l10n_ve_loyalty.tests.common import L10nVeLoyaltyCommon
 
 
 @tagged("post_install", "-at_install")
-class TestAccountMovePostDiscount(L10nVeSeniatCommon):
+class TestAccountMovePostDiscount(L10nVeLoyaltyCommon):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()

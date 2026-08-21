@@ -5044,5 +5044,47 @@ msgstr "🇻🇪 Reporte X"
 msgid "🇻🇪 Trial Balance"
 msgstr "🇻🇪 Balance de Comprobación"
 
+#. module: l10n_ve_reports
+#. odoo-python
+#: code:addons/l10n_ve_reports/models/account_report_x.py:0
+msgid "%(n)s operations"
+msgstr "%(n)s operaciones"
+
+#. module: l10n_ve_reports
+#. odoo-python
+#: code:addons/l10n_ve_reports/models/account_report_x.py:0
+msgid "%(method)s - %(journal)s"
+msgstr "%(method)s - %(journal)s"
+
+#. module: l10n_ve_reports
+#. odoo-python
+#: code:addons/l10n_ve_reports/models/account_report_x.py:0
+msgid "Incoming payments"
+msgstr "Pagos entrantes"
+
+#. module: l10n_ve_reports
+#. odoo-python
+#: code:addons/l10n_ve_reports/models/account_report_x.py:0
+msgid "No payment method"
+msgstr "Sin método de pago"
+
+#. module: l10n_ve_reports
+#. odoo-python
+#: code:addons/l10n_ve_reports/models/account_report_x.py:0
+msgid "Outgoing payments"
+msgstr "Pagos salientes"
+
+#. module: l10n_ve_reports
+#. odoo-python
+#: code:addons/l10n_ve_reports/models/account_report_x.py:0
+msgid "Payments by type and payment method"
+msgstr "Pagos por tipo y método de pago"
+
+#. module: l10n_ve_reports
+#. odoo-python
+#: code:addons/l10n_ve_reports/models/account_report_x.py:0
+msgid "Total registered payments"
+msgstr "Total de pagos registrados"
+
 #~ msgid "Today"
 #~ msgstr "Hoy"

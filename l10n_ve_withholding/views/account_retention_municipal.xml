@@ -7,9 +7,11 @@
             <form string="Retention">
                 <header>
                     <button
-                        name="action_print_municipal_retention_xlsx"
+                        name="action_print_retention_voucher"
                         type="object"
-                        string="Print municipal retention XLSX"
+                        string="Print"
+                        icon="fa-print"
+                        invisible="state != 'emitted'"
                     />
                     <button
                         name="action_draft"
@@ -68,6 +70,13 @@
                         <field name="date" readonly="state in ['emitted', 'cancel']" />
                     </group>
                 </group>
+                <group>
+                    <field
+                        name="affected_invoice_display_names"
+                        readonly="1"
+                        invisible="not affected_invoice_display_names"
+                    />
+                </group>
                 <notebook>
                     <page name="retention_lines" string="Retention Lines">
                         <field
@@ -88,6 +97,17 @@
                                 <field
                                     name="move_id"
                                     domain="['&amp;',('id', 'in', parent.allowed_lines_move_ids), ('municipal_voucher_number', '=',False)]"
+                                />
+                                <field
+                                    name="affected_invoice_display_name"
+                                    readonly="1"
+                                />
+                                <button
+                                    name="action_open_invoice"
+                                    type="object"
+                                    icon="fa-external-link"
+                                    title="Open affected invoice"
+                                    invisible="not move_id"
                                 />
                                 <field
                                     name="company_id"
@@ -160,6 +180,10 @@
                 <field name="number" />
                 <field name="type" />
                 <field name="partner_id" />
+                <field
+                    name="affected_invoice_display_names"
+                    optional="show"
+                />
                 <field name="date" />
                 <field name="date_accounting" />
                 <field

@@ -130,3 +130,47 @@ class TestRetentionIvaDebitNote(L10nVeSeniatCommon):
         data = wizard._retention_iva(retention)
         self.assertEqual(data[0]["Tipo de documento"], "01")
         self.assertEqual(data[0]["Número del documento afectado"], "0")
+
+    def test_retention_exposes_affected_invoice_reference_and_action(self):
+        bill = self._create_vendor_bill(ref="FAC-RET-003")
+        retention = self._create_iva_retention_for_move(bill)
+        line = retention.retention_line_ids
+
+        self.assertEqual(retention.affected_invoice_ids, bill)
+        self.assertEqual(line.supplier_invoice_reference, bill.ref)
+        self.assertEqual(
+            line.affected_invoice_display_name,
+            f"{bill.ref} ({bill.name})",
+        )
+        self.assertEqual(
+            retention.affected_invoice_display_names,
+            f"{bill.ref} ({bill.name})",
+        )
+
+        bill.l10n_ve_invoice_number = "FM-RET-003"
+        self.assertEqual(
+            line.affected_invoice_display_name,
+            f"{bill.ref} ({bill.name})",
+        )
+
+        bill.l10n_ve_control_number = "99-00000003"
+        self.assertEqual(
+            line.affected_invoice_display_name,
+            f"99-00000003 ({bill.name})",
+        )
+
+        open_action = line.action_open_invoice()
+        self.assertEqual(open_action["res_model"], "account.move")
+        self.assertEqual(open_action["res_id"], bill.id)
+
+    def test_emitted_retention_can_be_printed_from_vendor_bill(self):
+        bill = self._create_vendor_bill(ref="FAC-RET-004")
+        retention = self._create_iva_retention_for_move(bill)
+
+        self.assertEqual(bill.iva_retention_id, retention)
+        print_action = bill.action_print_iva_retention()
+        self.assertEqual(print_action["type"], "ir.actions.report")
+        self.assertEqual(
+            print_action["report_name"],
+            "l10n_ve_withholding.retention_voucher_template",
+        )

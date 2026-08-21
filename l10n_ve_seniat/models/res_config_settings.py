@@ -26,6 +26,14 @@ class ResConfigSettings(models.TransientModel):
         related="company_id.l10n_ve_lock_partner_fiscal_data",
         readonly=False,
     )
+    l10n_ve_reception_date_payment_term_customer = fields.Boolean(
+        related="company_id.l10n_ve_reception_date_payment_term_customer",
+        readonly=False,
+    )
+    l10n_ve_reception_date_payment_term_vendor = fields.Boolean(
+        related="company_id.l10n_ve_reception_date_payment_term_vendor",
+        readonly=False,
+    )
 
     def action_open_l10n_ve_tax_groups(self):
         self.ensure_one()

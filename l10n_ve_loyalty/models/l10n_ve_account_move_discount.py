@@ -99,8 +99,18 @@ class L10nVeAccountMoveDiscount(models.Model):
             )._l10n_ve_sync_global_discount_journal_lines()
             moves._l10n_ve_rebalance_payment_term_from_lines()
 
+    @api.model
+    def _l10n_ve_check_global_discount_user_access(self):
+        if self.env.context.get("l10n_ve_skip_global_discount_access_check"):
+            return
+        if not self.env.user.has_group("l10n_ve_loyalty.group_l10n_ve_global_discount"):
+            raise UserError(
+                _("You do not have permission to manage global discounts.")
+            )
+
     @api.model_create_multi
     def create(self, vals_list):
+        self._l10n_ve_check_global_discount_user_access()
         records = super().create(vals_list)
         if not self.env.context.get("l10n_ve_skip_discount_refresh"):
             records._l10n_ve_check_move_editable()
@@ -113,6 +123,8 @@ class L10nVeAccountMoveDiscount(models.Model):
         return records
 
     def write(self, vals):
+        if {"reason_id", "amount", "discount_type", "discount_percentage"} & set(vals):
+            self._l10n_ve_check_global_discount_user_access()
         res = super().write(vals)
         if self.env.context.get("l10n_ve_skip_discount_refresh"):
             return res
@@ -136,6 +148,7 @@ class L10nVeAccountMoveDiscount(models.Model):
         return res
 
     def _l10n_ve_check_move_editable(self):
+        self._l10n_ve_check_global_discount_user_access()
         for discount in self:
             move = discount.move_id
             if move.state != "draft":
@@ -170,6 +183,32 @@ class AccountMove(models.Model):
     l10n_ve_show_post_discount_action = fields.Boolean(
         compute="_compute_l10n_ve_show_post_discount_action",
     )
+    l10n_ve_show_global_discount_action = fields.Boolean(
+        compute="_compute_l10n_ve_show_global_discount_action",
+    )
+
+    @api.depends(
+        "state",
+        "move_type",
+        "country_code",
+    )
+    def _compute_l10n_ve_show_global_discount_action(self):
+        for move in self:
+            move.l10n_ve_show_global_discount_action = (
+                move.country_code == "VE"
+                and move.state == "draft"
+                and move.is_invoice(include_receipts=True)
+                and move._l10n_ve_user_can_apply_global_discount()
+            )
+
+    def _l10n_ve_user_can_apply_global_discount(self):
+        return self.env.user.has_group("l10n_ve_loyalty.group_l10n_ve_global_discount")
+
+    def _l10n_ve_check_global_discount_user_access(self):
+        if not self._l10n_ve_user_can_apply_global_discount():
+            raise UserError(
+                _("You do not have permission to manage global discounts.")
+            )
 
     @api.depends(
         "state",
@@ -186,6 +225,12 @@ class AccountMove(models.Model):
             move.l10n_ve_show_post_discount_action = (
                 move._l10n_ve_allows_post_discount_action()
             )
+
+    def copy(self, default=None):
+        return super(
+            AccountMove,
+            self.with_context(l10n_ve_skip_global_discount_access_check=True),
+        ).copy(default=default)
 
     def copy_data(self, default=None):
         vals_list = super().copy_data(default=default)
@@ -392,6 +437,7 @@ class AccountMove(models.Model):
 
     def _l10n_ve_check_global_discount_allowed(self):
         self.ensure_one()
+        self._l10n_ve_check_global_discount_user_access()
         if self.country_code != "VE":
             raise UserError(_("Esta acción solo aplica a facturas venezolanas."))
         if self.state != "draft":
@@ -401,6 +447,8 @@ class AccountMove(models.Model):
 
     def _l10n_ve_allows_post_discount_action(self):
         self.ensure_one()
+        if not self._l10n_ve_user_can_apply_global_discount():
+            return False
         if self.country_code != "VE" or self.move_type != "out_invoice":
             return False
         if self.state != "posted":
@@ -415,6 +463,7 @@ class AccountMove(models.Model):
 
     def _l10n_ve_check_post_discount_allowed(self):
         self.ensure_one()
+        self._l10n_ve_check_global_discount_user_access()
         if self.country_code != "VE":
             raise UserError(_("Esta acción solo aplica a facturas venezolanas."))
         if self.move_type != "out_invoice":

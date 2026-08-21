@@ -34,6 +34,14 @@
                         title="Abrir retención de IVA"
                         invisible="not iva_retention_id"
                     />
+                    <button
+                        name="action_print_iva_retention"
+                        type="object"
+                        class="btn-link px-1 py-0 flex-shrink-0 align-baseline"
+                        icon="fa-print"
+                        title="Print IVA retention"
+                        invisible="not iva_retention_id"
+                    />
                 </div>
                 <label
                     for="islr_voucher_number"
@@ -56,6 +64,14 @@
                         class="btn-link px-1 py-0 flex-shrink-0 align-baseline"
                         icon="fa-external-link"
                         title="Abrir retención de ISLR"
+                        invisible="not islr_retention_id"
+                    />
+                    <button
+                        name="action_print_islr_retention"
+                        type="object"
+                        class="btn-link px-1 py-0 flex-shrink-0 align-baseline"
+                        icon="fa-print"
+                        title="Print ISLR retention"
                         invisible="not islr_retention_id"
                     />
                 </div>

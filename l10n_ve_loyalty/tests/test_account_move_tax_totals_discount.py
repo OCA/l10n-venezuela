@@ -4,11 +4,11 @@ from odoo import Command
 from odoo.exceptions import UserError, ValidationError
 from odoo.tests import tagged
 
-from odoo.addons.l10n_ve_seniat.tests.common import L10nVeSeniatCommon
+from odoo.addons.l10n_ve_loyalty.tests.common import L10nVeLoyaltyCommon
 
 
 @tagged("post_install", "-at_install")
-class TestAccountMoveTaxTotalsGlobalDiscount(L10nVeSeniatCommon):
+class TestAccountMoveTaxTotalsGlobalDiscount(L10nVeLoyaltyCommon):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
@@ -439,7 +439,7 @@ class TestAccountMoveTaxTotalsGlobalDiscount(L10nVeSeniatCommon):
 
 
 @tagged("post_install", "-at_install")
-class TestAccountMoveGlobalDiscountJournalLines(L10nVeSeniatCommon):
+class TestAccountMoveGlobalDiscountJournalLines(L10nVeLoyaltyCommon):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
@@ -760,3 +760,36 @@ class TestAccountMoveGlobalDiscountJournalLines(L10nVeSeniatCommon):
         self.assertAlmostEqual(taxed_product_line.amount_currency, -960.1, places=2)
         self.assertEqual(global_discount_lines.account_id, discount_account)
         self.assertAlmostEqual(sum(move.line_ids.mapped("balance")), 0.0, places=2)
+
+    def test_global_discount_requires_permission(self):
+        move = self._create_invoice(price_unit=100.0)
+        invoice_user = self.env["res.users"].create(
+            {
+                "name": "Invoice user without discount",
+                "login": "l10n_ve_invoice_no_discount",
+                "groups_id": [
+                    Command.set(
+                        [
+                            self.env.ref("base.group_user").id,
+                            self.env.ref("account.group_account_invoice").id,
+                        ]
+                    )
+                ],
+            }
+        )
+        env = self.env(user=invoice_user)
+        move_as_user = move.with_env(env)
+        with self.assertRaises(UserError):
+            move_as_user.action_l10n_ve_open_global_discount_wizard()
+        with self.assertRaises(UserError):
+            self.env["l10n.ve.account.move.discount"].with_env(env).create(
+                {
+                    "move_id": move.id,
+                    "reason_id": self._get_discount_reason("Blocked").id,
+                    "amount": 10.0,
+                }
+            )
+        self.assertFalse(move_as_user.l10n_ve_show_global_discount_action)
+        self.assertFalse(
+            move_as_user.tax_totals.get("l10n_ve_can_manage_global_discount")
+        )

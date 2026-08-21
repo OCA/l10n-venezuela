@@ -7,3 +7,10 @@ To generate the auxiliary liquidity books:
 #. Export the report to PDF or XLSX using the standard report actions.
 
 Each book only includes posted movements on the default liquidity account of the selected journals.
+
+To review payments:
+
+#. Go to **Accounting > SENIAT > Reports**.
+#. Open **Reporte X** to review incoming and outgoing payments consolidated by payment method.
+#. Open **Pagos por diario** to review totals by journal and payment method.
+#. Expand a payment method to display its registered and pending transactions, or collapse it to display only its consolidated total.

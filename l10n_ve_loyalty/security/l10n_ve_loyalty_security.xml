@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="group_l10n_ve_global_discount" model="res.groups">
+        <field name="name">Global discounts</field>
+        <field
+            name="category_id"
+            ref="l10n_ve_seniat.module_category_l10n_ve_seniat_access"
+        />
+        <field
+            name="comment"
+        >Allows applying, editing and removing global discounts on Venezuelan invoices.</field>
+    </record>
+</odoo>

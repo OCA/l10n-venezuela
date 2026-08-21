@@ -1,5 +1,6 @@
 {
     "name": "Venezuela IGTF",
+    "version": "18.0.1.0.0",
     "website": "https://github.com/OCA/l10n-venezuela",
     "icon": "/poweredbyandy_saas/static/description/icon.png",
     "countries": ["ve"],

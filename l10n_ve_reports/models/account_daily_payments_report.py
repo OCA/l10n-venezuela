@@ -4,8 +4,9 @@ from collections import defaultdict
 from datetime import timedelta
 
 from odoo import _, fields, models
-from odoo.addons.web.controllers.utils import clean_action
 from odoo.exceptions import UserError
+
+from odoo.addons.web.controllers.utils import clean_action
 
 
 class DailyPaymentsReportCustomHandler(models.AbstractModel):
@@ -886,87 +887,82 @@ class DailyPaymentsReportCustomHandler(models.AbstractModel):
             )
             for method_group in sorted_method_groups:
                 payment_method_line = method_group["payment_method_line"]
+                method_line_id = self._get_payment_method_group_line_id(
+                    report, journal, payment_method_line
+                )
                 lines.append(
                     (
                         0,
                         {
-                            "id": self._get_payment_method_group_line_id(
-                                report, journal, payment_method_line
-                            ),
+                            "id": method_line_id,
                             "name": method_group["name"],
-                            "columns": self._build_row_columns(report, options, {}),
+                            "columns": self._build_amount_total_columns(
+                                report,
+                                options,
+                                method_group["totals"],
+                            ),
                             "level": 1,
-                            "unfoldable": False,
+                            "unfoldable": True,
+                            "unfolded": (
+                                method_line_id in options["unfolded_lines"]
+                                or options["unfold_all"]
+                            ),
                         },
                     )
                 )
-                method_markup = payment_method_line.id if payment_method_line else "none"
+                method_markup = (
+                    payment_method_line.id if payment_method_line else "none"
+                )
                 if method_group["registered_lines"]:
+                    registered_section_id = report._get_generic_line_id(
+                        "account.journal",
+                        journal.id,
+                        parent_line_id=method_line_id,
+                        markup="daily_pay_section_done_%s" % method_markup,
+                    )
                     lines.append(
                         (
                             0,
                             {
-                                "id": report._get_generic_line_id(
-                                    "account.journal",
-                                    journal.id,
-                                    markup="daily_pay_section_done_%s" % method_markup,
-                                ),
+                                "id": registered_section_id,
                                 "name": _("Pagos y cobros registrados"),
                                 "columns": self._build_row_columns(
                                     report, options, {}
                                 ),
                                 "level": 2,
                                 "unfoldable": False,
+                                "parent_id": method_line_id,
                             },
                         )
                     )
+                    for _sequence, line in method_group["registered_lines"]:
+                        line["parent_id"] = registered_section_id
                     lines.extend(method_group["registered_lines"])
                 if method_group["pending_lines"]:
+                    pending_section_id = report._get_generic_line_id(
+                        "account.journal",
+                        journal.id,
+                        parent_line_id=method_line_id,
+                        markup="daily_pay_section_pending_%s" % method_markup,
+                    )
                     lines.append(
                         (
                             0,
                             {
-                                "id": report._get_generic_line_id(
-                                    "account.journal",
-                                    journal.id,
-                                    markup="daily_pay_section_pending_%s"
-                                    % method_markup,
-                                ),
+                                "id": pending_section_id,
                                 "name": _("Pendientes (borrador y cuentas puente)"),
                                 "columns": self._build_row_columns(
                                     report, options, {}
                                 ),
                                 "level": 2,
                                 "unfoldable": False,
+                                "parent_id": method_line_id,
                             },
                         )
                     )
+                    for _sequence, line in method_group["pending_lines"]:
+                        line["parent_id"] = pending_section_id
                     lines.extend(method_group["pending_lines"])
-                lines.append(
-                    (
-                        0,
-                        {
-                            "id": report._get_generic_line_id(
-                                "account.journal",
-                                journal.id,
-                                markup="daily_pay_payment_method_subtotal_%s"
-                                % method_markup,
-                            ),
-                            "name": _(
-                                "Total (%(method)s)",
-                                method=method_group["name"],
-                            ),
-                            "columns": self._build_amount_total_columns(
-                                report,
-                                options,
-                                method_group["totals"],
-                            ),
-                            "level": 2,
-                            "unfoldable": False,
-                            "class": "total",
-                        },
-                    )
-                )
             lines.append(
                 (
                     0,

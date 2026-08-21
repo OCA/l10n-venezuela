@@ -149,6 +149,36 @@
                             </div>
                         </div>
                     </div>
+                    <div
+                        id="l10n_ve_seniat_div_reception_date_customer"
+                        class="col-12 col-lg-6 o_setting_box"
+                    >
+                        <div class="o_setting_left_pane">
+                            <field name="l10n_ve_reception_date_payment_term_customer" />
+                        </div>
+                        <div class="o_setting_right_pane">
+                            <label for="l10n_ve_reception_date_payment_term_customer" />
+                            <div class="text-muted">
+                                En facturas de cliente, los plazos de pago y las
+                                cuotas se calculan desde la fecha de recepción.
+                            </div>
+                        </div>
+                    </div>
+                    <div
+                        id="l10n_ve_seniat_div_reception_date_vendor"
+                        class="col-12 col-lg-6 o_setting_box"
+                    >
+                        <div class="o_setting_left_pane">
+                            <field name="l10n_ve_reception_date_payment_term_vendor" />
+                        </div>
+                        <div class="o_setting_right_pane">
+                            <label for="l10n_ve_reception_date_payment_term_vendor" />
+                            <div class="text-muted">
+                                En facturas de proveedor, los plazos de pago y las
+                                cuotas se calculan desde la fecha de recepción.
+                            </div>
+                        </div>
+                    </div>
                 </block>
             </xpath>
         </field>
