@@ -9,7 +9,7 @@
     "author": "andyengit, Odoo Community Association (OCA)",
     "maintainers": ["andyengit"],
     "website": "https://github.com/OCA/l10n-venezuela",
-    "license": "LGPL-3",
+    "license": "AGPL-3",
     "countries": ["ve"],
     "depends": [
         "l10n_ve_seniat",

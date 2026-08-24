@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+    <t t-inherit="point_of_sale.CashMovePopup" t-inherit-mode="extension">
+        <xpath expr="//div[hasclass('input-amount')]" position="before">
+            <div t-if="showCashMethodSelector" class="mb-2">
+                <label class="form-label">Cash register</label>
+                <select class="form-select" t-model.number="state.paymentMethodId">
+                    <t t-foreach="getCashPaymentMethods()" t-as="cashMethod" t-key="cashMethod.id">
+                        <option t-att-value="cashMethod.id" t-esc="cashMethod.name"/>
+                    </t>
+                </select>
+            </div>
+        </xpath>
+        <xpath expr="//Input[@tModel=&quot;[state, 'amount']&quot;]" position="attributes">
+            <attribute name="icon">{type: 'string', value: selectedCashCurrency.symbol}</attribute>
+            <attribute name="iconOnLeftSide">false</attribute>
+        </xpath>
+    </t>
+</templates>

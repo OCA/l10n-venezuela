@@ -21,7 +21,7 @@ class TestSaleOrderGlobalDiscount(L10nVeSeniatCommon):
             l10n_ve_max_invoice_lines=1,
         )
         discount_group = cls.env.ref(
-            "pba_discount_management.group_pba_global_sale_invoice_discount",
+            "l10n_ve_loyalty.group_l10n_ve_global_discount",
             raise_if_not_found=False,
         )
         if discount_group:

@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_pos_payment_form_currency_pos" model="ir.ui.view">
+        <field name="name">pos.payment.form.currency.pos</field>
+        <field name="model">pos.payment</field>
+        <field name="inherit_id" ref="point_of_sale.view_pos_payment_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='amount']" position="after">
+                <field name="currency_id" readonly="1"/>
+                <field name="payment_currency_id" readonly="1"/>
+                <field name="payment_currency_amount" readonly="1"/>
+                <field name="payment_currency_rate" readonly="1"/>
+            </xpath>
+            <xpath expr="//sheet" position="after">
+                <chatter/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_pos_payment_tree_currency_pos" model="ir.ui.view">
+        <field name="name">pos.payment.list.currency.pos</field>
+        <field name="model">pos.payment</field>
+        <field name="inherit_id" ref="point_of_sale.view_pos_payment_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='amount']" position="after">
+                <field name="payment_currency_id" optional="show"/>
+                <field name="payment_currency_amount" optional="show"/>
+                <field name="payment_currency_rate" optional="hide"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_pos_payment_search_currency_pos" model="ir.ui.view">
+        <field name="name">pos.payment.search.currency.pos</field>
+        <field name="model">pos.payment</field>
+        <field name="inherit_id" ref="point_of_sale.view_pos_payment_search"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='amount']" position="after">
+                <field name="payment_currency_id"/>
+            </xpath>
+            <xpath expr="//group" position="inside">
+                <filter
+                    name="foreign_currency_payments"
+                    string="Foreign Currency Payments"
+                    domain="[('is_foreign_currency_payment', '=', True)]"
+                />
+                <filter
+                    name="group_by_payment_currency"
+                    string="Payment Currency"
+                    context="{'group_by': 'payment_currency_id'}"
+                />
+            </xpath>
+        </field>
+    </record>
+
+    <record id="action_pos_payment_foreign_currency" model="ir.actions.act_window">
+        <field name="name">Multi-Currency Payments</field>
+        <field name="res_model">pos.payment</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('is_foreign_currency_payment', '=', True)]</field>
+        <field name="context">{'search_default_group_by_payment_currency': 1}</field>
+    </record>
+
+    <menuitem
+        id="menu_pos_payment_foreign_currency"
+        parent="point_of_sale.menu_point_of_sale"
+        action="action_pos_payment_foreign_currency"
+        sequence="4"
+        groups="point_of_sale.group_pos_manager,point_of_sale.group_pos_user"
+    />
+</odoo>

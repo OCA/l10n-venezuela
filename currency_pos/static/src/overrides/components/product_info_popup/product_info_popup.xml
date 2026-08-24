@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+    <t t-inherit="point_of_sale.ProductInfoPopup" t-inherit-mode="extension">
+        <xpath expr="//table[./t[@t-foreach='props.info.productInfo.pricelists']]" position="replace">
+            <table class="table table-borderless">
+                <t t-foreach="props.info.productInfo.pricelists" t-as="pricelist" t-key="pricelist.id">
+                    <tr>
+                        <td t-esc="pricelist.name"/>
+                        <td>
+                            <t t-esc="getPricelistPriceLabel(pricelist)"/>
+                            <div t-if="getPricelistSecondaryPrice(pricelist)" class="text-muted small">
+                                <t t-esc="getPricelistSecondaryPrice(pricelist)"/>
+                            </div>
+                        </td>
+                    </tr>
+                </t>
+            </table>
+        </xpath>
+    </t>
+</templates>

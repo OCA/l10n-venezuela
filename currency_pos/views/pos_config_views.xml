@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="pos_config_view_form_currency_pos" model="ir.ui.view">
+        <field name="name">pos.config.form.currency.pos</field>
+        <field name="model">pos.config</field>
+        <field name="inherit_id" ref="point_of_sale.pos_config_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//setting[@id='other_devices']" position="before">
+                <setting string="Multi-Currency Payments" help="Allow payment methods in a currency different from the POS currency.">
+                    <field name="allow_multi_currency_payment"/>
+                </setting>
+            </xpath>
+        </field>
+    </record>
+</odoo>

@@ -18,6 +18,8 @@ exclude: |
   /build/|/dist/|
   # Ignore test files in addons
   /tests/samples/.*|
+  # Local i18n helper scripts (not part of the addons)
+  ^complete_i18n\.py$|^export_i18n\.py$|^fix_i18n\.py$|
   # You don't usually want a bot to modify your legal texts
   (LICENSE.*|COPYING.*)
 default_language_version:

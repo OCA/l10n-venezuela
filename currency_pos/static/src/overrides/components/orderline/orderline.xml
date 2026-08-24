@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+    <t t-inherit="point_of_sale.Orderline" t-inherit-mode="extension">
+        <xpath expr="//div[contains(@class, 'product-price')]" position="inside">
+            <t t-if="shouldShowConversion() and getConvertedPrice()">
+                <br/>
+                <span class="text-muted small">
+                    <t t-esc="getConvertedPrice()"/>
+                </span>
+            </t>
+        </xpath>
+        <xpath expr="//t[@t-if='line.price !== 0']" position="inside">
+            <t t-if="shouldShowConversion() and getConvertedUnitPrice()">
+                <span class="text-muted small ms-1">
+                    (<t t-esc="getConvertedUnitPrice()"/>)
+                </span>
+            </t>
+        </xpath>
+    </t>
+</templates>

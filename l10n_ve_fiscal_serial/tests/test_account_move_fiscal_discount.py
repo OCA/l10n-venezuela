@@ -11,6 +11,12 @@ class TestAccountMoveFiscalDiscount(L10nVeSeniatCommon):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
+        discount_group = cls.env.ref(
+            "l10n_ve_loyalty.group_l10n_ve_global_discount",
+            raise_if_not_found=False,
+        )
+        if discount_group:
+            cls.env.user.groups_id = [Command.link(discount_group.id)]
         cls.partner_ve = cls.env["res.partner"].create(
             {
                 "name": "Partner fiscal discount",

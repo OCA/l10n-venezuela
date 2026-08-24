@@ -83,7 +83,7 @@ class TestL10nVeStockPickingReports(TestL10nVeStockDispatchGuide):
         picking.move_ids.quantity = picking.move_ids.product_uom_qty
         picking.move_ids.picked = True
         picking.button_validate()
-        action = picking.do_print_picking()
+        action = picking.with_context(discard_logo_check=True).do_print_picking()
         self.assertEqual(action.get("report_name"), "stock.report_picking")
 
     def test_delivery_report_does_not_duplicate_recipient_data(self):

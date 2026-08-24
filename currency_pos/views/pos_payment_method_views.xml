@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="pos_payment_method_view_form_currency_pos" model="ir.ui.view">
+        <field name="name">pos.payment.method.form.currency.pos</field>
+        <field name="model">pos.payment.method</field>
+        <field name="inherit_id" ref="point_of_sale.pos_payment_method_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='journal_id']" position="after">
+                <field name="payment_currency_id" readonly="1"/>
+            </xpath>
+            <xpath expr="//sheet" position="inside">
+                <notebook>
+                    <page string="Contabilidad" name="currency_pos_accounting" invisible="not journal_id">
+                        <group name="currency_pos_payment_method_lines">
+                            <group>
+                                <field
+                                    name="inbound_payment_method_line_id"
+                                    options="{'no_create': True}"
+                                />
+                                <field
+                                    name="inbound_payment_account_id"
+                                    invisible="not inbound_payment_method_line_id"
+                                    readonly="1"
+                                />
+                            </group>
+                            <group>
+                                <field
+                                    name="outbound_payment_method_line_id"
+                                    options="{'no_create': True}"
+                                />
+                                <field
+                                    name="outbound_payment_account_id"
+                                    invisible="not outbound_payment_method_line_id"
+                                    readonly="1"
+                                />
+                            </group>
+                        </group>
+                    </page>
+                </notebook>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="pos_payment_method_view_tree_currency_pos" model="ir.ui.view">
+        <field name="name">pos.payment.method.list.currency.pos</field>
+        <field name="model">pos.payment.method</field>
+        <field name="inherit_id" ref="point_of_sale.pos_payment_method_view_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='journal_id']" position="after">
+                <field name="payment_currency_id" optional="show"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

@@ -7,7 +7,9 @@ from zoneinfo import ZoneInfo
 import requests
 
 from odoo import fields
-from odoo.tests import TransactionCase
+from odoo.tests import tagged
+
+from odoo.addons.account.tests.common import AccountTestInvoicingCommon
 
 CARACAS_TZ = ZoneInfo("America/Caracas")
 
@@ -22,7 +24,8 @@ BCV_HTML = b"""
 """
 
 
-class TestResCurrencyRateProviderBCV(TransactionCase):
+@tagged("post_install", "-at_install")
+class TestResCurrencyRateProviderBCV(AccountTestInvoicingCommon):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
@@ -33,14 +36,8 @@ class TestResCurrencyRateProviderBCV(TransactionCase):
         cls.usd = cls.env.ref("base.USD")
         cls.eur = cls.env.ref("base.EUR")
         (cls.ves | cls.usd | cls.eur).write({"active": True})
-        cls.company = cls.env["res.company"].create(
-            {
-                "name": "VE BCV Company",
-                "currency_id": cls.ves.id,
-            }
-        )
-        cls.env.user.company_ids += cls.company
-        cls.env.user.company_id = cls.company
+        cls.company = cls.env.company
+        cls.company.currency_id = cls.ves
         cls.provider = cls.env["res.currency.rate.provider"].create(
             {
                 "service": "bcv",

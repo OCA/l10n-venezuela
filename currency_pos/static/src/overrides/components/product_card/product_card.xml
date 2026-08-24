@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t t-inherit="point_of_sale.ProductCard" t-inherit-mode="extension">
+        <xpath expr="//div[@t-if='props.comboExtraPrice']" position="before">
+            <div class="product-price-footer text-center py-2 bg-light border-top">
+                <div class="mb-1">
+                    <span class="fw-bold fs-3 text-primary">
+                        <t t-esc="productPrice"/>
+                    </span>
+                </div>
+                <div t-if="productPricesInOtherCurrencies.length" class="small text-muted">
+                    <t t-foreach="productPricesInOtherCurrencies" t-as="currencyPrice" t-key="currencyPrice.currency.id">
+                        <div>
+                            <t t-esc="currencyPrice.price"/>
+                        </div>
+                    </t>
+                </div>
+            </div>
+        </xpath>
+    </t>
+
+</templates>

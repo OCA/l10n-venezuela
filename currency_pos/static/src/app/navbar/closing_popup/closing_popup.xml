@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+    <t t-inherit="point_of_sale.ClosePosPopup" t-inherit-mode="extension">
+        <xpath expr="//div[hasclass('payment-methods-overview')]/div[hasclass('w-100') and hasclass('mb-3')][1]" position="replace">
+            <t t-if="pos.config.cash_control">
+                <t t-foreach="getCashDetailsList()" t-as="cashDetails" t-key="cashDetails.id">
+                    <t t-set="diff" t-value="getDifference(cashDetails.id)" />
+                    <t t-set="counted" t-value="state.payments[cashDetails.id]?.counted || '0'" />
+                    <t t-set="moveData" t-value="getCashMoveData(cashDetails)"/>
+                    <div class="w-100 mb-3">
+                        <div class="d-flex align-items-center justify-content-between fs-3">
+                            <span t-esc="cashDetails.name" />
+                            <span t-esc="formatClosingCashExpected(cashDetails)" />
+                        </div>
+                        <div class="d-flex align-items-center justify-content-between text-muted border-start ps-2">
+                            <span>Opening</span>
+                            <span t-esc="formatClosingCashOpening(cashDetails)" />
+                        </div>
+                        <div t-if="cashDetails.payment_amount" class="d-flex align-items-center justify-content-between text-muted border-start ps-2">
+                            <span>Payments in <t t-esc="cashDetails.name"/></span>
+                            <span class="align-top" t-esc="formatClosingPaymentSubAmount(cashDetails)"/>
+                        </div>
+                        <PaymentMethodBreakdown title.translate="Cash In / Out" total_amount="moveData.total" transactions="moveData.moves"/>
+                        <div class="d-flex align-items-center justify-content-between text-muted border-start ps-2">
+                            <span>Counted</span>
+                            <span t-esc="formatClosingCountedDisplay(cashDetails, env.utils.parseValidFloat(counted))" />
+                        </div>
+                        <div class="d-flex align-items-center justify-content-between text-muted border-start ps-2" t-att-class="{'text-danger fw-bold': diff}">
+                            <span>Difference</span>
+                            <span class="cash-difference" t-esc="formatClosingDifferenceDisplay(cashDetails, cashDetails.id)" />
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </xpath>
+
+        <xpath expr="//div[@t-if='pos.config.cash_control and pos.config.module_pos_hr']" position="replace">
+            <t t-if="pos.config.cash_control and pos.config.module_pos_hr">
+                <t t-foreach="getCashDetailsList()" t-as="cashDetails" t-key="cashDetails.id">
+                    <t t-set="diff" t-value="getDifference(cashDetails.id)" />
+                    <t t-set="counted" t-value="state.payments[cashDetails.id]?.counted || '0'" />
+                    <t t-set="moveData" t-value="getCashMoveData(cashDetails)"/>
+                    <div class="w-100 mb-3">
+                        <div class="d-flex align-items-center justify-content-between fs-3">
+                            <span t-esc="cashDetails.name" />
+                            <span t-esc="formatClosingCashExpected(cashDetails)" />
+                        </div>
+                        <div class="d-flex align-items-center justify-content-between text-muted border-start ps-2">
+                            <span>Opening</span>
+                            <span t-esc="formatClosingCashOpening(cashDetails)" />
+                        </div>
+                        <t t-if="cashDetails.has_foreign_currency">
+                            <div t-if="cashDetails.payment_amount" class="d-flex align-items-center justify-content-between text-muted border-start ps-2">
+                                <span>Payments in <t t-esc="cashDetails.name"/></span>
+                                <span class="align-top" t-esc="formatClosingPaymentSubAmount(cashDetails)"/>
+                            </div>
+                            <PaymentMethodBreakdown title.translate="Cash In / Out" total_amount="moveData.total" transactions="moveData.moves"/>
+                        </t>
+                        <t t-else="">
+                            <PaymentMethodBreakdown title.translate="Payments" total_amount="cashDetails.payment_amount" transactions="cashDetails.amount_per_employee || []"/>
+                            <PaymentMethodBreakdown title.translate="Cash in/out" total_amount="moveData.total" transactions="cashDetails.moves_per_employee || moveData.moves"/>
+                        </t>
+                        <div class="d-flex align-items-center justify-content-between text-muted border-start ps-2">
+                            <span>Counted</span>
+                            <span t-esc="formatClosingCountedDisplay(cashDetails, env.utils.parseValidFloat(counted))" />
+                        </div>
+                        <div class="d-flex align-items-center justify-content-between text-muted border-start ps-2" t-att-class="{'text-danger fw-bold': diff}">
+                            <span>Difference</span>
+                            <span class="cash-difference" t-esc="formatClosingDifferenceDisplay(cashDetails, cashDetails.id)" />
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </xpath>
+
+        <xpath expr="//div[@t-foreach='props.non_cash_payment_methods'][1]//div[hasclass('fs-3')]/span[2]" position="attributes">
+            <attribute name="t-esc">formatClosingPaymentAmount(pm)</attribute>
+        </xpath>
+        <xpath expr="//div[@t-foreach='props.non_cash_payment_methods'][1]//span[text()='Counted']/following-sibling::span[1]" position="attributes">
+            <attribute name="t-esc">formatClosingCountedDisplay(pm, counted)</attribute>
+        </xpath>
+        <xpath expr="//div[@t-foreach='props.non_cash_payment_methods'][1]//span[text()='Difference']/following-sibling::span[1]" position="attributes">
+            <attribute name="t-esc">formatClosingDifferenceDisplay(pm, pm.id)</attribute>
+        </xpath>
+
+        <xpath expr="//t[@t-if='pos.config.module_pos_hr']//div[@t-foreach='props.non_cash_payment_methods']//div[hasclass('fs-3')]/span[2]" position="attributes">
+            <attribute name="t-esc">formatClosingPaymentAmount(pm)</attribute>
+        </xpath>
+        <xpath expr="//t[@t-if='pos.config.module_pos_hr']//div[@t-foreach='props.non_cash_payment_methods']//span[text()='Difference']/following-sibling::span[1]" position="attributes">
+            <attribute name="t-esc">formatClosingDifferenceDisplay(pm, pm.id)</attribute>
+        </xpath>
+
+        <xpath expr="//div[hasclass('mb-3')][.//label[contains(., 'Cash Count')]]" position="replace">
+            <t t-if="pos.config.cash_control">
+                <t t-foreach="getCashDetailsList()" t-as="cashDetails" t-key="cashDetails.id">
+                    <div class="mb-3">
+                        <label class="form-label">
+                            <t t-esc="cashDetails.name"/> Count
+                        </label>
+                        <div class="d-flex w-100 gap-2 mt-1">
+                            <Input tModel="[state.payments[cashDetails.id], 'counted']"
+                                callback.bind="(value) => this.setManualCashInput(value, cashDetails.id)"
+                                isValid.bind="env.utils.isValidFloat"
+                                icon="{type: 'string', value: getCurrencySymbol(cashDetails)}"
+                                iconOnLeftSide="false"
+                                class="'cash-input w-100'"/>
+                            <button class="icon fa fa-money btn btn-secondary"
+                                t-on-click="() => this.openDetailsPopup(cashDetails)" />
+                            <button class="icon fa fa-clone btn btn-secondary"
+                                t-on-click="() => this.autoFillCashCount(cashDetails)" />
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </xpath>
+        <xpath expr="//div[@t-foreach='props.non_cash_payment_methods'][1]//Input" position="attributes">
+            <attribute name="icon">{type: 'string', value: getCurrencySymbol(pm)}</attribute>
+            <attribute name="iconOnLeftSide">false</attribute>
+        </xpath>
+    </t>
+</templates>

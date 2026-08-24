@@ -65,23 +65,21 @@ class TestL10nVeModulesInstalled(TransactionCase):
             [("name", "in", list(EXPECTED_MODULES)), ("state", "=", "installed")]
         )
         missing = set(EXPECTED_MODULES) - set(installed.mapped("name"))
-        self.assertFalse(missing, "Missing installed modules: %s" % sorted(missing))
+        self.assertFalse(missing, f"Missing installed modules: {sorted(missing)}")
 
     def test_account_move_exposes_cross_module_fields(self):
         fields_map = self.env["account.move"]._fields
         missing = [name for name in MOVE_FIELDS if name not in fields_map]
-        self.assertFalse(missing, "account.move missing fields: %s" % missing)
+        self.assertFalse(missing, f"account.move missing fields: {missing}")
 
     def test_payment_register_exposes_igtf_and_advance(self):
         fields_map = self.env["account.payment.register"]._fields
         missing = [name for name in REGISTER_FIELDS if name not in fields_map]
-        self.assertFalse(
-            missing, "account.payment.register missing fields: %s" % missing
-        )
+        self.assertFalse(missing, f"account.payment.register missing fields: {missing}")
 
     def test_cross_module_models_exist(self):
         missing = [name for name in MODELS if name not in self.env]
-        self.assertFalse(missing, "Missing models: %s" % missing)
+        self.assertFalse(missing, f"Missing models: {missing}")
 
     def test_report_actions_are_available(self):
         for xmlid in (

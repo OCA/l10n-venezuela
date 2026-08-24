@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="module_category_currency_account" model="ir.module.category">
+        <field name="name">Multimoneda</field>
+        <field name="sequence">50</field>
+    </record>
+
+    <record id="group_product_multicurrency_cost" model="res.groups">
+        <field name="name">Ver costo de producto en multimoneda</field>
+        <field name="category_id" ref="module_category_currency_account"/>
+    </record>
+</odoo>

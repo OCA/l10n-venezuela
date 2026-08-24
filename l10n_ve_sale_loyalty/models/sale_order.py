@@ -224,7 +224,9 @@ class SaleOrder(models.Model):
                 sale_discount = self.env["l10n.ve.sale.order.discount"].browse(
                     discount_id
                 )
-                Discount.create(
+                Discount.with_context(
+                    l10n_ve_skip_global_discount_access_check=True
+                ).create(
                     {
                         "move_id": move.id,
                         "reason_id": sale_discount.reason_id.id,

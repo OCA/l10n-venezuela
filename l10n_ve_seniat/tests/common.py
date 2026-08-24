@@ -1,6 +1,7 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
 from odoo import Command, fields
+from odoo.tools import SQL
 
 from odoo.addons.account.tests.common import AccountTestInvoicingCommon
 
@@ -46,9 +47,7 @@ class L10nVeSeniatCommon(AccountTestInvoicingCommon):
             "timestamp without time zone": "'2026-01-01'",
             "timestamp with time zone": "'2026-01-01'",
         }
-        model_fields = (
-            cls.env[model_name]._fields if model_name in cls.env else {}
-        )
+        model_fields = cls.env[model_name]._fields if model_name in cls.env else {}
         for column_name, data_type in cr.fetchall():
             sql_default = fallbacks.get(data_type)
             field = model_fields.get(column_name)
@@ -63,7 +62,8 @@ class L10nVeSeniatCommon(AccountTestInvoicingCommon):
                     if field.type == "boolean":
                         sql_default = "true" if default else "false"
                     elif field.type in ("char", "text", "selection", "html"):
-                        sql_default = "'%s'" % str(default).replace("'", "''")
+                        escaped = str(default).replace("'", "''")
+                        sql_default = f"'{escaped}'"
                     elif field.type in ("integer", "float", "monetary"):
                         sql_default = str(default)
                     elif field.type == "many2one":
@@ -71,8 +71,12 @@ class L10nVeSeniatCommon(AccountTestInvoicingCommon):
             if not sql_default:
                 continue
             cr.execute(
-                'ALTER TABLE "%s" ALTER COLUMN "%s" SET DEFAULT %s'
-                % (table_name, column_name, sql_default)
+                SQL(
+                    "ALTER TABLE %s ALTER COLUMN %s SET DEFAULT %s",
+                    SQL.identifier(table_name),
+                    SQL.identifier(column_name),
+                    SQL(sql_default),
+                )
             )
 
     @classmethod
