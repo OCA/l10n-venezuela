@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <odoo>
-    <delete model="ir.actions.report" id="action_report_saleorder_ve" />
     <record id="sale.action_report_saleorder" model="ir.actions.report">
         <field name="name">Presupuesto / Pedido de venta</field>
         <field name="report_name">sale.report_saleorder</field>

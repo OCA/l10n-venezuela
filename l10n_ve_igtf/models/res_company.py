@@ -120,7 +120,7 @@ class ResCompany(models.Model):
     @api.constrains(
         "l10n_ve_igtf_account_id",
         "account_fiscal_country_id",
-        "partner_id.taxpayer_type",
+        "partner_id",
     )
     def _check_l10n_ve_igtf_account_required_for_special(self):
         if self.env.context.get("l10n_ve_skip_igtf_account_check"):

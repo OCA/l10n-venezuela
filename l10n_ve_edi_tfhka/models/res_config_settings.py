@@ -210,22 +210,26 @@ class ResConfigSettings(models.TransientModel):
     )
     tfhka_iva_supplier_retention_edi_serie = fields.Char(
         related="company_id.iva_supplier_retention_journal_id.l10n_ve_edi_tfhka_serie",
+        string="IVA TFHKA series",
         readonly=False,
     )
     tfhka_iva_supplier_retention_edi_sucursal = fields.Char(
         related=(
             "company_id.iva_supplier_retention_journal_id.l10n_ve_edi_tfhka_sucursal"
         ),
+        string="IVA TFHKA establishment",
         readonly=False,
     )
     tfhka_islr_supplier_retention_edi_serie = fields.Char(
         related="company_id.islr_supplier_retention_journal_id.l10n_ve_edi_tfhka_serie",
+        string="ISLR TFHKA series",
         readonly=False,
     )
     tfhka_islr_supplier_retention_edi_sucursal = fields.Char(
         related=(
             "company_id.islr_supplier_retention_journal_id.l10n_ve_edi_tfhka_sucursal"
         ),
+        string="ISLR TFHKA establishment",
         readonly=False,
     )
 

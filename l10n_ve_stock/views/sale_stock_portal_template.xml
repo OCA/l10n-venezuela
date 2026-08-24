@@ -28,7 +28,7 @@
         inherit_id="sale_stock.sale_order_portal_content_inherit_sale_stock"
     >
         <xpath
-            expr="//div[@name='delivery_order']/div[@class='small d-lg-inline-block']"
+            expr="//div[@name='delivery_order']/div[hasclass('small') and hasclass('d-lg-inline-block')]"
             position="after"
         >
             <div

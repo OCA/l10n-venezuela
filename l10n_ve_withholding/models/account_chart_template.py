@@ -62,17 +62,13 @@ class AccountChartTemplate(models.AbstractModel):
         }
 
         if template_code == "ve_seniat":
-            # Retencion de ISLR de Proveedores
-            vals["rip"]["default_account_id"] = "account_activa_account_2172004"
-            vals["rip"]["suspense_account_id"] = "account_activa_account_9999909"
-            # Retencion de ISLR de Clientes
-            vals["ric"]["default_account_id"] = "account_activa_account_1151003"
-            vals["ric"]["suspense_account_id"] = "account_activa_account_9999909"
-            # Retencion de ISLR de Proveedores
-            vals["islrp"]["default_account_id"] = "account_activa_account_2172002"
-            vals["islrp"]["suspense_account_id"] = "account_activa_account_9999909"
-            # Retencion de ISLR de Clientes
-            vals["islrc"]["default_account_id"] = "account_activa_account_1151002"
-            vals["islrc"]["suspense_account_id"] = "account_activa_account_9999909"
+            vals["rip"]["default_account_id"] = "account_account_2103001"
+            vals["rip"]["suspense_account_id"] = "account_account_1999001"
+            vals["ric"]["default_account_id"] = "account_account_1107005"
+            vals["ric"]["suspense_account_id"] = "account_account_1999001"
+            vals["islrp"]["default_account_id"] = "account_account_2103002"
+            vals["islrp"]["suspense_account_id"] = "account_account_1999001"
+            vals["islrc"]["default_account_id"] = "account_account_1107004"
+            vals["islrc"]["suspense_account_id"] = "account_account_1999001"
 
         return vals

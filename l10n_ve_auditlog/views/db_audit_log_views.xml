@@ -131,13 +131,13 @@
                         type="object"
                         string="Install Triggers"
                         class="btn-primary"
-                        groups="group_auditlog_manager"
+                        groups="l10n_ve_auditlog.group_auditlog_manager"
                     />
                     <button
                         name="action_uninstall_triggers"
                         type="object"
                         string="Uninstall Triggers"
-                        groups="group_auditlog_manager"
+                        groups="l10n_ve_auditlog.group_auditlog_manager"
                         confirm="This will remove all PostgreSQL audit triggers. Continue?"
                     />
                 </header>
@@ -176,13 +176,13 @@
         parent="menu_audit"
         action="action_l10n_ve_db_audit_log"
         sequence="5"
-        groups="group_auditlog_user"
+        groups="l10n_ve_auditlog.group_auditlog_user"
     />
     <menuitem
         id="menu_l10n_ve_db_audit_table"
         parent="menu_audit"
         action="action_l10n_ve_db_audit_table"
         sequence="6"
-        groups="group_auditlog_manager"
+        groups="l10n_ve_auditlog.group_auditlog_manager"
     />
 </odoo>

@@ -1,6 +1,6 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
-from odoo import _, fields, models
+from odoo import fields, models
 from odoo.exceptions import UserError, ValidationError
 from odoo.tools import float_compare, float_is_zero
 
@@ -187,7 +187,7 @@ def l10n_ve_validate_global_discount_total(document):
                 > 0
             ):
                 raise UserError(
-                    _(
+                    document.env._(
                         "El descuento (%(discount)s) supera el subtotal disponible "
                         "(%(subtotal)s)."
                     )
@@ -207,7 +207,7 @@ def l10n_ve_validate_global_discount_total(document):
         > 0
     ):
         raise UserError(
-            _(
+            document.env._(
                 "La suma de los descuentos globales (%(discount)s) supera el "
                 "subtotal facturable (%(subtotal)s)."
             )
@@ -221,7 +221,7 @@ def l10n_ve_check_single_percentage_global_discount(discounts):
     )
     if len(percentage_discounts) > 1:
         raise ValidationError(
-            _("Solo puede existir un descuento global por porcentaje.")
+            discounts.env._("Solo puede existir un descuento global por porcentaje.")
         )
 
 

@@ -93,6 +93,6 @@
         parent="menu_audit"
         action="action_fiscal_document_event_log"
         sequence="4"
-        groups="group_auditlog_user"
+        groups="l10n_ve_auditlog.group_auditlog_user"
     />
 </odoo>

@@ -194,6 +194,16 @@ msgid "Proveedor de facturacion digital"
 msgstr "Proveedor de facturacion digital"
 
 #. module: l10n_ve_edi
+#: model:ir.model.fields,field_description:l10n_ve_edi.field_res_config_settings__l10n_ve_edi_iva_supplier_retention_provider
+msgid "IVA digital billing provider"
+msgstr "Proveedor de facturacion digital IVA"
+
+#. module: l10n_ve_edi
+#: model:ir.model.fields,field_description:l10n_ve_edi.field_res_config_settings__l10n_ve_edi_islr_supplier_retention_provider
+msgid "ISLR digital billing provider"
+msgstr "Proveedor de facturacion digital ISLR"
+
+#. module: l10n_ve_edi
 #: model:ir.model.fields.selection,name:l10n_ve_edi.selection__account_move__l10n_ve_edi_send_state__queued
 #: model:ir.model.fields.selection,name:l10n_ve_edi.selection__l10n_ve_edi_mixin__l10n_ve_edi_send_state__queued
 msgid "Queued"

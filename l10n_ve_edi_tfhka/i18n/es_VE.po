@@ -212,6 +212,16 @@ msgid "Serie (TFHKA)"
 msgstr "Serie (TFHKA)"
 
 #. module: l10n_ve_edi_tfhka
+#: model:ir.model.fields,field_description:l10n_ve_edi_tfhka.field_res_config_settings__tfhka_iva_supplier_retention_edi_serie
+msgid "IVA TFHKA series"
+msgstr "Serie IVA (TFHKA)"
+
+#. module: l10n_ve_edi_tfhka
+#: model:ir.model.fields,field_description:l10n_ve_edi_tfhka.field_res_config_settings__tfhka_islr_supplier_retention_edi_serie
+msgid "ISLR TFHKA series"
+msgstr "Serie ISLR (TFHKA)"
+
+#. module: l10n_ve_edi_tfhka
 #: model:ir.model,name:l10n_ve_edi_tfhka.model_l10n_ve_edi_tfhka_api_service
 msgid "Servicio API TFHKA Venezuela"
 msgstr "Servicio API TFHKA Venezuela"
@@ -232,6 +242,16 @@ msgstr "Éxito"
 #: model:ir.model.fields,field_description:l10n_ve_edi_tfhka.field_account_journal__l10n_ve_edi_tfhka_sucursal
 msgid "Sucursal / establecimiento (TFHKA)"
 msgstr "Sucursal / establecimiento (TFHKA)"
+
+#. module: l10n_ve_edi_tfhka
+#: model:ir.model.fields,field_description:l10n_ve_edi_tfhka.field_res_config_settings__tfhka_iva_supplier_retention_edi_sucursal
+msgid "IVA TFHKA establishment"
+msgstr "Sucursal / establecimiento IVA (TFHKA)"
+
+#. module: l10n_ve_edi_tfhka
+#: model:ir.model.fields,field_description:l10n_ve_edi_tfhka.field_res_config_settings__tfhka_islr_supplier_retention_edi_sucursal
+msgid "ISLR TFHKA establishment"
+msgstr "Sucursal / establecimiento ISLR (TFHKA)"
 
 #. module: l10n_ve_edi_tfhka
 #: model:ir.model.fields,field_description:l10n_ve_edi_tfhka.field_res_config_settings__tfhka_password

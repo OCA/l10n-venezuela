@@ -493,7 +493,7 @@ class AccountPaymentRegister(models.TransientModel):
         total_igtf = igtf_already + igtf_this_company
 
         if total_igtf > max_igtf:
-            _logger.warning(
+            _logger.info(
                 "IGTF exceeds limit in payment register; it will "
                 "be capped on payment line creation."
             )
@@ -674,7 +674,6 @@ class AccountPaymentRegister(models.TransientModel):
     @api.onchange(
         "batches",
         "company_id",
-        "company_id.l10n_ve_igtf_percent",
         "l10n_ve_igtf_limit_reached",
     )
     def _onchange_l10n_ve_igtf_limit_reached(self):
