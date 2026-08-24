@@ -6,7 +6,7 @@
     "author": "Anderson Armeya, andyengit, Odoo Community Association (OCA)",
     "maintainers": ["andyengit"],
     "category": "Sales/Localizations",
-    "version": "18.0.1.1.3",
+    "version": "18.0.1.1.4",
     "depends": [
         "base",
         "web",
@@ -16,7 +16,6 @@
         "account",
     ],
     "data": [
-        "data/cleanup_layout_data.xml",
         "data/report_sale_actions.xml",
         "data/sale_order_server_actions.xml",
         "report/report_saleorder_native_inherit.xml",

@@ -75,10 +75,7 @@ class ResCompany(models.Model):
                 continue
             if "fiscal_machine" in codes:
                 raise ValidationError(
-                    _(
-                        "No se puede tener Forma libre y Máquina Fiscal "
-                        "al mismo tiempo."
-                    )
+                    _("No se puede tener Forma libre y Máquina Fiscal al mismo tiempo.")
                 )
             if "digital_billing" in codes:
                 raise ValidationError(
@@ -118,8 +115,9 @@ class ResCompany(models.Model):
     )
 
     def init(self):
-        super().init()
+        result = super().init()
         self._l10n_ve_ensure_sql_defaults()
+        return result
 
     @api.model
     def _l10n_ve_ensure_sql_defaults(self):
@@ -157,17 +155,16 @@ class ResCompany(models.Model):
                 """,
                 (table_name,),
             )
-            model_fields = self.env[model_name]._fields if model_name in self.env else {}
+            model_fields = (
+                self.env[model_name]._fields if model_name in self.env else {}
+            )
             for column_name, data_type in cr.fetchall():
                 sql_default = fallbacks.get(data_type)
                 field = model_fields.get(column_name)
                 if field is not None:
                     default = field.default
                     if callable(default):
-                        try:
-                            default = default(self.env[model_name])
-                        except Exception:
-                            default = None
+                        default = None
                     if default is not None and default is not False:
                         if field.type == "boolean":
                             sql_default = "true" if default else "false"

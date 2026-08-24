@@ -122,7 +122,7 @@ class AccountRetention(models.Model):
     )
     affected_invoice_display_names = fields.Char(
         compute="_compute_affected_invoice_display_names",
-        string="Affected Invoices",
+        string="Affected Invoice Names",
     )
 
     payment_ids = fields.One2many(

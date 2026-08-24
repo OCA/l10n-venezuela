@@ -16,7 +16,7 @@ class AccountMoveLine(models.Model):
     )
     price_subtotal_currency = fields.Monetary(
         string="Subtotal in Company Currency",
-        compute="_compute_subtotal_company_currency",
+        compute="_compute_price_subtotal_currency",
         currency_field="company_currency_id",
         store=True,
     )
@@ -25,20 +25,27 @@ class AccountMoveLine(models.Model):
         currency_field="company_currency_id",
     )
 
-    @api.depends("balance", "move_id.move_type")
-    def _compute_subtotal_company_currency(self):
+    def _l10n_ve_company_currency_subtotal(self):
+        self.ensure_one()
         invoice_types = (
             "out_invoice",
             "in_invoice",
             "out_refund",
             "in_refund",
         )
+        if self.move_id.move_type in invoice_types:
+            return abs(self.balance)
+        return 0.0
+
+    @api.depends("balance", "move_id.move_type")
+    def _compute_subtotal_company_currency(self):
         for line in self:
-            amount = (
-                abs(line.balance) if line.move_id.move_type in invoice_types else 0.0
-            )
-            line.subtotal_company_currency = amount
-            line.price_subtotal_currency = amount
+            line.subtotal_company_currency = line._l10n_ve_company_currency_subtotal()
+
+    @api.depends("balance", "move_id.move_type")
+    def _compute_price_subtotal_currency(self):
+        for line in self:
+            line.price_subtotal_currency = line._l10n_ve_company_currency_subtotal()
 
     @api.depends("subtotal_company_currency", "discount", "quantity")
     def _compute_price_unit_company_currency(self):

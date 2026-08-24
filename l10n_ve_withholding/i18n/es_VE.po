@@ -23,6 +23,10 @@ msgstr "Factura afectada"
 
 #. module: l10n_ve_withholding
 #: model:ir.model.fields,field_description:l10n_ve_withholding.field_account_retention__affected_invoice_display_names
+msgid "Affected Invoice Names"
+msgstr "Nombres de facturas afectadas"
+
+#. module: l10n_ve_withholding
 #: model:ir.model.fields,field_description:l10n_ve_withholding.field_account_retention__affected_invoice_ids
 msgid "Affected Invoices"
 msgstr "Facturas afectadas"
