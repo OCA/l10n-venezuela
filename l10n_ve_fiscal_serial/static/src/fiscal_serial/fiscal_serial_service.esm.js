@@ -1,4 +1,13 @@
-import {registry} from "@web/core/registry";
+import {
+    FLAG_21,
+    TAX_MAP,
+    TfhkaFiscalMachine,
+    createTfhkaFiscalMachine,
+} from "./tfhka_fiscal_machine";
+import {
+    FiscalSerialAuditLogger,
+    createFiscalSerialAuditLogger,
+} from "./fiscal_serial_audit";
 import {
     PrinterStatus,
     SVPrinterData,
@@ -12,26 +21,17 @@ import {
     formatWebSerialPortLabel,
     readWebSerialPortInfo,
 } from "./tfhka_transport_webserial";
-import {getSampleHkaInvoiceLines} from "./tfhka_invoice_samples";
-import {
-    FLAG_21,
-    TAX_MAP,
-    TfhkaFiscalMachine,
-    createTfhkaFiscalMachine,
-} from "./tfhka_fiscal_machine";
 import {
     autoDetectFiscalMachine,
     parseTfhkaSvStatusResponse,
 } from "../fiscal_machine/fiscal_machine_detect";
-import {verifyConnectedFiscalMachine} from "../fiscal_machine/fiscal_machine_verify";
-import {
-    FiscalSerialAuditLogger,
-    createFiscalSerialAuditLogger,
-} from "./fiscal_serial_audit";
 import {
     mfReportzFromDailyClosureString,
     parseTfhkaS1StatusResponse,
 } from "./tfhka_s1_parser";
+import {getSampleHkaInvoiceLines} from "./tfhka_invoice_samples";
+import {registry} from "@web/core/registry";
+import {verifyConnectedFiscalMachine} from "../fiscal_machine/fiscal_machine_verify";
 
 export const l10nVeFiscalSerialService = {
     dependencies: [],

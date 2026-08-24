@@ -1,11 +1,9 @@
-/** @odoo-module */
-import {registry} from "@web/core/registry";
-import {useService} from "@web/core/utils/hooks";
-
 import {
     JournalDashboardActivity,
     journalDashboardActivity,
 } from "@account/components/journal_dashboard_activity/journal_dashboard_activity";
+import {registry} from "@web/core/registry";
+import {useService} from "@web/core/utils/hooks";
 
 export class JournalDashboardActivityTaxReport extends JournalDashboardActivity {
     setup() {

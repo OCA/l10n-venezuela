@@ -1,5 +1,3 @@
-/** @odoo-module **/
-
 import {TfhkaFiscalMachine} from "./tfhka_fiscal_machine";
 
 const SAMPLE_PARTNER = {

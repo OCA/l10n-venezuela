@@ -1,5 +1,3 @@
-/** @odoo-module **/
-
 // ----------------------------------------------------------------------------------------------------------------------
 // This class provides some helpers function to do assertions on tours
 // ----------------------------------------------------------------------------------------------------------------------
@@ -42,6 +40,8 @@ export class Asserts {
     // Assert that 'actual' and 'expected' are equal
     static isEqual(actual, expected) {
         Asserts.check(
+            // Loose equality is intentional: isStrictEqual covers ===.
+            // eslint-disable-next-line eqeqeq
             actual == expected,
             `${actual} is equal to expected ${expected}`,
             `${actual} is not equal to expected ${expected}`

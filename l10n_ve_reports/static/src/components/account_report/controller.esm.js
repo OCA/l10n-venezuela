@@ -1,12 +1,10 @@
-/* global owl:readonly */
+/* eslint-disable complexity */
 
 import {browser} from "@web/core/browser/browser";
+import {logAccountReportDate} from "./account_report_date_debug";
+import {removeTaxGroupingFromLineId} from "@l10n_ve_reports/js/util";
 import {session} from "@web/session";
 import {useService} from "@web/core/utils/hooks";
-
-import {removeTaxGroupingFromLineId} from "@l10n_ve_reports/js/util";
-
-import {logAccountReportDate} from "./account_report_date_debug";
 
 export class AccountReportController {
     constructor(action) {
@@ -34,7 +32,8 @@ export class AccountReportController {
             }
         );
         this.actionReportId = this.action.context.report_id;
-        const isOpeningReport = !this.action?.keep_journal_groups_options; // True when opening the report, except when coming from the breadcrumb
+        // True when opening the report, except when coming from the breadcrumb
+        const isOpeningReport = !this.action?.keep_journal_groups_options;
         const mainReportOptions = await this.loadReportOptions(
             this.actionReportId,
             false,
@@ -68,13 +67,10 @@ export class AccountReportController {
     }
 
     incrementCallNumber(cacheKey = null) {
-        if (!cacheKey) {
-            cacheKey = this.getCacheKey(
-                this.options.sections_source_id,
-                this.options.report_id
-            );
-        }
-        this.loadingCallNumberByCacheKey[cacheKey] += 1;
+        const resolvedCacheKey =
+            cacheKey ||
+            this.getCacheKey(this.options.sections_source_id, this.options.report_id);
+        this.loadingCallNumberByCacheKey[resolvedCacheKey] += 1;
     }
 
     async displayReport(reportId) {
@@ -120,7 +116,10 @@ export class AccountReportController {
         )) {
             const cachedOptions = await cachedOptionsPromise;
 
-            if (rootOptionKey === "" || cachedOptions.hasOwnProperty(rootOptionKey)) {
+            if (
+                rootOptionKey === "" ||
+                Object.prototype.hasOwnProperty.call(cachedOptions, rootOptionKey)
+            ) {
                 delete this.reportOptionsMap[cacheKey];
                 delete this.reportInformationMap[cacheKey];
             }
@@ -132,7 +131,8 @@ export class AccountReportController {
             loading_call_number: newOptions.loading_call_number,
         });
 
-        this.saveSessionOptions(newOptions); // The new options will be loaded from the session. Saving them now ensures the new filter is taken into account.
+        // The new options will be loaded from the session.
+        this.saveSessionOptions(newOptions);
         await this.displayReport(newOptions.report_id);
     }
 
@@ -145,7 +145,7 @@ export class AccountReportController {
                 section.id
             );
             if (
-                section.id != this.options.report_id &&
+                section.id !== this.options.report_id &&
                 !this.reportInformationMap[cacheKey]
             ) {
                 await this.loadReport(section.id, true);
@@ -163,8 +163,8 @@ export class AccountReportController {
     }
 
     async loadReport(reportId, preloading = false) {
-        const options = await this.loadReportOptions(reportId, preloading, false); // This also sets the promise in the cache
-        const reportToDisplayId = options.report_id; // Might be different from reportId, in case the report to open uses sections
+        const options = await this.loadReportOptions(reportId, preloading, false);
+        const reportToDisplayId = options.report_id;
 
         const cacheKey = this.getCacheKey(
             options.sections_source_id,
@@ -636,7 +636,7 @@ export class AccountReportController {
             }
             // The unfolded line is found, providing a reference for adding children in the 'linesOrder' array.
             if (lineOrderValue === lineIndex) {
-                unfoldedLineIndex = parseInt(lineOrderIndex);
+                unfoldedLineIndex = parseInt(lineOrderIndex, 10);
             }
         }
 

@@ -1,7 +1,7 @@
 import {Component, useEffect, useRef, useState} from "@odoo/owl";
 import {useAutofocus, useService} from "@web/core/utils/hooks";
-import {_t} from "@web/core/l10n/translation";
 import {DateTimeInput} from "@web/core/datetime/datetime_input";
+import {_t} from "@web/core/l10n/translation";
 
 const {DateTime} = luxon;
 

@@ -1,11 +1,9 @@
-/** @odoo-module **/
-
 import {Component, xml} from "@odoo/owl";
-import {registry} from "@web/core/registry";
-import {useService} from "@web/core/utils/hooks";
 import {_t} from "@web/core/l10n/translation";
-import {standardWidgetProps} from "@web/views/widgets/standard_widget_props";
 import {l10nVeFiscalSerialExecuteConfigure} from "../fiscal_serial/fiscal_serial_configure";
+import {registry} from "@web/core/registry";
+import {standardWidgetProps} from "@web/views/widgets/standard_widget_props";
+import {useService} from "@web/core/utils/hooks";
 
 export class FiscalConfigureButton extends Component {
     static props = {

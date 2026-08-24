@@ -1,3 +1,4 @@
+/* eslint-disable complexity */
 import {AlertDialog} from "@web/core/confirmation_dialog/confirmation_dialog";
 import {ControlButtons} from "@point_of_sale/app/screens/product_screen/control_buttons/control_buttons";
 import {NumberPopup} from "@point_of_sale/app/utils/input_popups/number_popup";

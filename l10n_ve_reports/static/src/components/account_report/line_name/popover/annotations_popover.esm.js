@@ -1,8 +1,8 @@
 import {Component, onWillDestroy, useRef, useState} from "@odoo/owl";
-import {useService} from "@web/core/utils/hooks";
-import {DateTimeInput} from "@web/core/datetime/datetime_input";
 import {AnnotationPopoverLine} from "@l10n_ve_reports/components/account_report/line_name/popover_line/annotation_popover_line";
+import {DateTimeInput} from "@web/core/datetime/datetime_input";
 import {removeTaxGroupingFromLineId} from "@l10n_ve_reports/js/util";
+import {useService} from "@web/core/utils/hooks";
 
 const {DateTime} = luxon;
 

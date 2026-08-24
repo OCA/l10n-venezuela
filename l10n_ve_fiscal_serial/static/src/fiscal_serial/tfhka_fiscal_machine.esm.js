@@ -1,7 +1,4 @@
-/** @odoo-module **/
-
-/* eslint-disable no-undef */
-
+/* eslint-disable complexity */
 import {isTfhkaEnqSts1Operativa, isTfhkaEnqSts2SinErrorFiscal} from "./tfhka_protocol";
 import {
     mfReportzFromDailyClosureString,
@@ -1052,15 +1049,15 @@ export class TfhkaFiscalMachine {
 
     _nextEmulatorReportZ(baseClosureCounter = null) {
         const base = this._toIntOrNull(baseClosureCounter);
-        if (base !== null) {
+        if (base === null) {
+            EMULATOR_LAST_REPORT_Z += 1;
+        } else {
             const nextFromS1 = base + 1;
             if (nextFromS1 > EMULATOR_LAST_REPORT_Z) {
                 EMULATOR_LAST_REPORT_Z = nextFromS1;
             } else {
                 EMULATOR_LAST_REPORT_Z += 1;
             }
-        } else {
-            EMULATOR_LAST_REPORT_Z += 1;
         }
         return EMULATOR_LAST_REPORT_Z;
     }

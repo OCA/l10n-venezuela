@@ -1,5 +1,6 @@
 from odoo import _, api, fields, models
 from odoo.exceptions import ValidationError
+from odoo.tools import SQL
 
 
 class ResCompany(models.Model):
@@ -115,3 +116,75 @@ class ResCompany(models.Model):
         ),
         default=False,
     )
+
+    def init(self):
+        super().init()
+        self._l10n_ve_ensure_sql_defaults()
+
+    @api.model
+    def _l10n_ve_ensure_sql_defaults(self):
+        cr = self.env.cr
+        targets = (
+            ("res_company", "res.company"),
+            ("product_template", "product.template"),
+            ("product_product", "product.product"),
+        )
+        fallbacks = {
+            "boolean": "false",
+            "integer": "0",
+            "bigint": "0",
+            "smallint": "0",
+            "numeric": "0",
+            "double precision": "0",
+            "real": "0",
+            "character varying": "''",
+            "character": "''",
+            "text": "''",
+            "date": "'2026-01-01'",
+            "timestamp without time zone": "'2026-01-01'",
+            "timestamp with time zone": "'2026-01-01'",
+        }
+        for table_name, model_name in targets:
+            cr.execute(
+                """
+                SELECT column_name, data_type
+                FROM information_schema.columns
+                WHERE table_schema = 'public'
+                  AND table_name = %s
+                  AND is_nullable = 'NO'
+                  AND column_default IS NULL
+                  AND column_name <> 'id'
+                """,
+                (table_name,),
+            )
+            model_fields = self.env[model_name]._fields if model_name in self.env else {}
+            for column_name, data_type in cr.fetchall():
+                sql_default = fallbacks.get(data_type)
+                field = model_fields.get(column_name)
+                if field is not None:
+                    default = field.default
+                    if callable(default):
+                        try:
+                            default = default(self.env[model_name])
+                        except Exception:
+                            default = None
+                    if default is not None and default is not False:
+                        if field.type == "boolean":
+                            sql_default = "true" if default else "false"
+                        elif field.type in ("char", "text", "selection", "html"):
+                            escaped = str(default).replace("'", "''")
+                            sql_default = f"'{escaped}'"
+                        elif field.type in ("integer", "float", "monetary"):
+                            sql_default = str(default)
+                        elif field.type == "many2one":
+                            sql_default = str(int(getattr(default, "id", default)))
+                if not sql_default:
+                    continue
+                cr.execute(
+                    SQL(
+                        "ALTER TABLE %s ALTER COLUMN %s SET DEFAULT %s",
+                        SQL.identifier(table_name),
+                        SQL.identifier(column_name),
+                        SQL(sql_default),
+                    )
+                )

@@ -1,11 +1,9 @@
-/** @odoo-module **/
-
 import {Component, onMounted, onWillStart, useState} from "@odoo/owl";
+import {CONNECTION_STATUS} from "../fiscal_connection/fiscal_connection_service";
 import {Dropdown} from "@web/core/dropdown/dropdown";
 import {DropdownItem} from "@web/core/dropdown/dropdown_item";
 import {registry} from "@web/core/registry";
 import {useService} from "@web/core/utils/hooks";
-import {CONNECTION_STATUS} from "../fiscal_connection/fiscal_connection_service";
 
 export class FiscalMachineSystray extends Component {
     static template = "l10n_ve_fiscal_serial.FiscalMachineSystray";
@@ -21,7 +19,7 @@ export class FiscalMachineSystray extends Component {
             await this.connection.bootstrap();
         });
         onMounted(() => {
-            void this.connection.refreshAuthorization();
+            this.connection.refreshAuthorization();
         });
     }
 

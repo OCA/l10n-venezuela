@@ -15,7 +15,6 @@
     ],
     "external_dependencies": {
         "python": ["requests", "Pillow", "pytesseract"],
-        "bin": ["tesseract"],
     },
     "installable": True,
     "application": False,

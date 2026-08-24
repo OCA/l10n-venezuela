@@ -71,10 +71,11 @@ class ReportExportWizard(models.TransientModel):
         self.ensure_one()
         to_create_attachments = []
         report_options = self.env.context["account_report_generation_options"]
-        for format in self.export_format_ids:
-            # format.fun_to_call is a button function, so it has to be public
-            fun_name = format.fun_to_call
-            report_function_params = [format.fun_param] if format.fun_param else []
+        for export_format in self.export_format_ids:
+            fun_name = export_format.fun_to_call
+            report_function_params = (
+                [export_format.fun_param] if export_format.fun_param else []
+            )
             if self.report_id.custom_handler_model_id and hasattr(
                 self.env[self.report_id.custom_handler_model_name], fun_name
             ):
@@ -86,7 +87,7 @@ class ReportExportWizard(models.TransientModel):
                 report, report_options, *report_function_params
             )
 
-            to_create_attachments.append(format.apply_export(report_action))
+            to_create_attachments.append(export_format.apply_export(report_action))
 
         return to_create_attachments
 

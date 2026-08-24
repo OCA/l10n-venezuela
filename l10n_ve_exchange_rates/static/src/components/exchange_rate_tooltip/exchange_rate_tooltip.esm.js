@@ -1,5 +1,3 @@
-/** @odoo-module **/
-
 import {Component, onWillStart, useState} from "@odoo/owl";
 import {Dropdown} from "@web/core/dropdown/dropdown";
 import {DropdownItem} from "@web/core/dropdown/dropdown_item";

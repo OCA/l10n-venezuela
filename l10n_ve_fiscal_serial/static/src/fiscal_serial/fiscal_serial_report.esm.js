@@ -1,8 +1,7 @@
-/** @odoo-module **/
-
+/* eslint-disable complexity */
+import {TfhkaWebSerialTransport} from "./tfhka_transport_webserial";
 import {_t} from "@web/core/l10n/translation";
 import {createFiscalSerialAuditLogger} from "./fiscal_serial_audit";
-import {TfhkaWebSerialTransport} from "./tfhka_transport_webserial";
 
 const REPORT_LABELS = {
     report_x: _t("Reporte X"),

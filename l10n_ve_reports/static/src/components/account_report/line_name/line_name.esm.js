@@ -1,12 +1,9 @@
-/** @odoo-module */
-
+import {Component, useRef, useState} from "@odoo/owl";
+import {AccountReportAnnotationsPopover} from "@l10n_ve_reports/components/account_report/line_name/popover/annotations_popover";
 import {Dropdown} from "@web/core/dropdown/dropdown";
 import {DropdownItem} from "@web/core/dropdown/dropdown_item";
-import {useService} from "@web/core/utils/hooks";
 import {usePopover} from "@web/core/popover/popover_hook";
-import {Component, useRef, useState} from "@odoo/owl";
-
-import {AccountReportAnnotationsPopover} from "@l10n_ve_reports/components/account_report/line_name/popover/annotations_popover";
+import {useService} from "@web/core/utils/hooks";
 
 export class AccountReportLineName extends Component {
     static template = "l10n_ve_reports.AccountReportLineName";

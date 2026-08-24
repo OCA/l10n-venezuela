@@ -1,14 +1,7 @@
-/** @odoo-module */
-
-import {registry} from "@web/core/registry";
-import {useService} from "@web/core/utils/hooks";
-import {ControlPanel} from "@web/search/control_panel/control_panel";
-
 import {Component, onWillStart, useRef, useState, useSubEnv} from "@odoo/owl";
-
-import {AccountReportController} from "@l10n_ve_reports/components/account_report/controller";
 import {AccountReportButtonsBar} from "@l10n_ve_reports/components/account_report/buttons_bar/buttons_bar";
 import {AccountReportCogMenu} from "@l10n_ve_reports/components/account_report/cog_menu/cog_menu";
+import {AccountReportController} from "@l10n_ve_reports/components/account_report/controller";
 import {AccountReportEllipsis} from "@l10n_ve_reports/components/account_report/ellipsis/ellipsis";
 import {AccountReportFilters} from "@l10n_ve_reports/components/account_report/filters/filters";
 import {AccountReportHeader} from "@l10n_ve_reports/components/account_report/header/header";
@@ -16,7 +9,10 @@ import {AccountReportLine} from "@l10n_ve_reports/components/account_report/line
 import {AccountReportLineCell} from "@l10n_ve_reports/components/account_report/line_cell/line_cell";
 import {AccountReportLineName} from "@l10n_ve_reports/components/account_report/line_name/line_name";
 import {AccountReportSearchBar} from "@l10n_ve_reports/components/account_report/search_bar/search_bar";
+import {ControlPanel} from "@web/search/control_panel/control_panel";
+import {registry} from "@web/core/registry";
 import {standardActionServiceProps} from "@web/webclient/actions/action_service";
+import {useService} from "@web/core/utils/hooks";
 import {useSetupAction} from "@web/search/action_hook";
 
 export class AccountReport extends Component {
@@ -45,7 +41,7 @@ export class AccountReport extends Component {
             rootRef: this.rootRef,
             getLocalState: () => {
                 return {
-                    keep_journal_groups_options: true, // Used when using the breadcrumb
+                    keep_journal_groups_options: true,
                 };
             },
         });

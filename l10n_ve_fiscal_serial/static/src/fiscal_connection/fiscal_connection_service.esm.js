@@ -1,10 +1,7 @@
-/** @odoo-module **/
-
-/* eslint-disable no-undef */
-
+/* eslint-disable complexity */
+import {TfhkaWebSerialTransport} from "../fiscal_serial/tfhka_transport_webserial";
 import {reactive} from "@odoo/owl";
 import {registry} from "@web/core/registry";
-import {TfhkaWebSerialTransport} from "../fiscal_serial/tfhka_transport_webserial";
 
 export const CONNECTION_STATUS = {
     HIDDEN: "hidden",
@@ -117,7 +114,9 @@ export const l10nVeFiscalConnectionService = {
                     CLOSE_TIMEOUT_MS,
                     "close-timeout"
                 );
-            } catch {}
+            } catch {
+                /* Ignore serial port cleanup errors. */
+            }
         };
 
         const _applyAuthorizationStatus = (machine) => {
@@ -220,7 +219,7 @@ export const l10nVeFiscalConnectionService = {
             if (!_portMatchesMachine(event.target, machine)) {
                 return;
             }
-            void _closeDriver();
+            _closeDriver();
             state.portAuthorized = false;
             state.enqStatusLabel = "";
             state.enqErrorLabel = "";
@@ -255,7 +254,10 @@ export const l10nVeFiscalConnectionService = {
 
         const _waitHeartbeatIdle = async () => {
             const deadline = Date.now() + HEARTBEAT_TIMEOUT_MS + 1000;
-            while (heartbeatRunning && Date.now() < deadline) {
+            while (Date.now() < deadline) {
+                if (!heartbeatRunning) {
+                    return;
+                }
                 await new Promise((resolve) => setTimeout(resolve, 25));
             }
         };
@@ -323,9 +325,9 @@ export const l10nVeFiscalConnectionService = {
             if (!_isDriverOpen()) {
                 return;
             }
-            void _runHeartbeat();
+            _runHeartbeat();
             heartbeatTimer = setInterval(() => {
-                void _runHeartbeat();
+                _runHeartbeat();
             }, HEARTBEAT_INTERVAL_MS);
         };
 
@@ -465,7 +467,9 @@ export const l10nVeFiscalConnectionService = {
                         );
                         state.registeredSerial = parsed?.RegisteredMachineNumber || "";
                     }
-                } catch {}
+                } catch {
+                    /* Ignore serial port cleanup errors. */
+                }
             }
             return {statusOk, alreadyOpen: false};
         };
@@ -671,7 +675,7 @@ export const l10nVeFiscalConnectionService = {
                 heartbeatPaused = false;
                 if (_isDriverOpen()) {
                     _startHeartbeat();
-                    void _runHeartbeat();
+                    _runHeartbeat();
                 }
             }
         };
@@ -739,7 +743,7 @@ export const l10nVeFiscalConnectionService = {
             _clearAuthTimer();
             authTimer = setInterval(() => {
                 if (state.visible && !state.busy && !_isDriverOpen()) {
-                    void refreshAuthorization();
+                    refreshAuthorization();
                 }
             }, AUTH_INTERVAL_MS);
         };
@@ -768,10 +772,10 @@ export const l10nVeFiscalConnectionService = {
         };
 
         env.bus.addEventListener("WEB_CLIENT_READY", () => {
-            void bootstrap();
+            bootstrap();
         });
-        void Promise.resolve().then(() => {
-            void bootstrap();
+        Promise.resolve().then(() => {
+            bootstrap();
         });
 
         return {

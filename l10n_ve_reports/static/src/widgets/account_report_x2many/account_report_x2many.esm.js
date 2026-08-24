@@ -1,15 +1,13 @@
-/** @odoo-module **/
-
+import {X2ManyField, x2ManyField} from "@web/views/fields/x2many/x2many_field";
 import {onWillRender, useRef} from "@odoo/owl";
+import {useOpenX2ManyRecord, useX2ManyCrud} from "@web/views/fields/relational_utils";
 import {ConfirmationDialog} from "@web/core/confirmation_dialog/confirmation_dialog";
+import {ListRenderer} from "@web/views/list/list_renderer";
 import {WarningDialog} from "@web/core/errors/error_dialogs";
 import {_t} from "@web/core/l10n/translation";
-import {useService} from "@web/core/utils/hooks";
-import {useNestedSortable} from "@web/core/utils/nested_sortable";
 import {registry} from "@web/core/registry";
-import {ListRenderer} from "@web/views/list/list_renderer";
-import {X2ManyField, x2ManyField} from "@web/views/fields/x2many/x2many_field";
-import {useOpenX2ManyRecord, useX2ManyCrud} from "@web/views/fields/relational_utils";
+import {useNestedSortable} from "@web/core/utils/nested_sortable";
+import {useService} from "@web/core/utils/hooks";
 
 export class AccountReportListRenderer extends ListRenderer {
     static template = "l10n_ve_reports.AccountReportList";
@@ -174,7 +172,7 @@ export class AccountReportListRenderer extends ListRenderer {
     }
 
     async setRecordHierarchy(currentElement, parentElement) {
-        const currentRecordIndex = parseInt(currentElement.dataset.record_index);
+        const currentRecordIndex = parseInt(currentElement.dataset.record_index, 10);
         const parentRecordIndex = parentElement?.dataset.record_index;
         const parentRecord = parentRecordIndex
             ? this.props.list.records[parentRecordIndex].data
@@ -223,10 +221,11 @@ export class AccountReportListRenderer extends ListRenderer {
     ) {
         const currentRecordIndex = currentElement.dataset.record_index;
         const currentRecordDescendantsCount = parseInt(
-            currentElement.dataset.descendants_count
+            currentElement.dataset.descendants_count,
+            10
         );
         const lastDescendantIndex =
-            parseInt(currentRecordIndex) + currentRecordDescendantsCount;
+            parseInt(currentRecordIndex, 10) + currentRecordDescendantsCount;
         const recordsToMove = this.props.list.records.slice(
             currentRecordIndex,
             lastDescendantIndex + 1
@@ -242,15 +241,16 @@ export class AccountReportListRenderer extends ListRenderer {
 
         if (previousRecordIndex) {
             newCurrentRecordIndex =
-                parseInt(previousRecordIndex) +
+                parseInt(previousRecordIndex, 10) +
                 1 +
-                parseInt(previousElementDescendantCount);
+                parseInt(previousElementDescendantCount, 10);
         } else if (nextRecordIndex) {
             // We add the element in the first position
-            newCurrentRecordIndex = parseInt(nextRecordIndex);
+            newCurrentRecordIndex = parseInt(nextRecordIndex, 10);
         } else {
             // We add the element as a first child
-            newCurrentRecordIndex = parseInt(parentElement?.dataset.record_index) + 1;
+            newCurrentRecordIndex =
+                parseInt(parentElement?.dataset.record_index, 10) + 1;
         }
 
         // If the original position of the line we want to move is before the position we want to drop it, then we need
@@ -360,9 +360,9 @@ export class AccountReportsLinesListX2ManyField extends X2ManyField {
             saveRecord: async (record) => {
                 for (const [
                     index,
-                    record,
+                    lineRecord,
                 ] of this.props.record.data.line_ids.records.entries())
-                    record.update({sequence: index + 1});
+                    lineRecord.update({sequence: index + 1});
 
                 record.update({
                     sequence: this.props.record.data.line_ids.records.length,

@@ -1,5 +1,4 @@
-/** @odoo-module **/
-
+/* eslint-disable complexity */
 export function mfReportzFromDailyClosureString(counter) {
     if (counter === undefined || counter === null || String(counter).trim() === "") {
         return null;
@@ -18,11 +17,13 @@ export function mfReportzFromDailyClosureString(counter) {
 }
 
 function normalizeS1Raw(raw) {
-    return String(raw || "")
-        .replace(/\r/g, "")
-        .replace(/\x02/g, "")
-        .replace(/\x03[\s\S]*$/g, "")
-        .trim();
+    let text = String(raw || "").replace(/\r/g, "");
+    text = text.split(String.fromCharCode(2)).join("");
+    const etxIndex = text.indexOf(String.fromCharCode(3));
+    if (etxIndex >= 0) {
+        text = text.slice(0, etxIndex);
+    }
+    return text.trim();
 }
 
 function splitS1Parts(raw) {

@@ -1,7 +1,6 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
 from odoo import Command, fields
-from odoo.tools import SQL
 
 from odoo.addons.account.tests.common import AccountTestInvoicingCommon
 
@@ -18,72 +17,8 @@ class L10nVeSeniatCommon(AccountTestInvoicingCommon):
         return super()._create_product(**create_values)
 
     @classmethod
-    def _l10n_ve_ensure_sql_defaults(cls, table_name, model_name):
-        cr = cls.env.cr
-        cr.execute(
-            """
-            SELECT column_name, data_type
-            FROM information_schema.columns
-            WHERE table_schema = 'public'
-              AND table_name = %s
-              AND is_nullable = 'NO'
-              AND column_default IS NULL
-              AND column_name <> 'id'
-            """,
-            (table_name,),
-        )
-        fallbacks = {
-            "boolean": "false",
-            "integer": "0",
-            "bigint": "0",
-            "smallint": "0",
-            "numeric": "0",
-            "double precision": "0",
-            "real": "0",
-            "character varying": "''",
-            "character": "''",
-            "text": "''",
-            "date": "'2026-01-01'",
-            "timestamp without time zone": "'2026-01-01'",
-            "timestamp with time zone": "'2026-01-01'",
-        }
-        model_fields = cls.env[model_name]._fields if model_name in cls.env else {}
-        for column_name, data_type in cr.fetchall():
-            sql_default = fallbacks.get(data_type)
-            field = model_fields.get(column_name)
-            if field is not None:
-                default = field.default
-                if callable(default):
-                    try:
-                        default = default(cls.env[model_name])
-                    except Exception:
-                        default = None
-                if default is not None and default is not False:
-                    if field.type == "boolean":
-                        sql_default = "true" if default else "false"
-                    elif field.type in ("char", "text", "selection", "html"):
-                        escaped = str(default).replace("'", "''")
-                        sql_default = f"'{escaped}'"
-                    elif field.type in ("integer", "float", "monetary"):
-                        sql_default = str(default)
-                    elif field.type == "many2one":
-                        sql_default = str(int(getattr(default, "id", default)))
-            if not sql_default:
-                continue
-            cr.execute(
-                SQL(
-                    "ALTER TABLE %s ALTER COLUMN %s SET DEFAULT %s",
-                    SQL.identifier(table_name),
-                    SQL.identifier(column_name),
-                    SQL(sql_default),
-                )
-            )
-
-    @classmethod
     def _create_company(cls, **create_values):
-        cls._l10n_ve_ensure_sql_defaults("res_company", "res.company")
-        cls._l10n_ve_ensure_sql_defaults("product_template", "product.template")
-        cls._l10n_ve_ensure_sql_defaults("product_product", "product.product")
+        cls.env["res.company"]._l10n_ve_ensure_sql_defaults()
         Company = cls.env["res.company"]
         for fname, field in Company._fields.items():
             if (

@@ -1,4 +1,4 @@
-/* eslint-disable no-undef */
+/* eslint-disable complexity */
 import {
     ACK,
     ENQ,
@@ -15,14 +15,14 @@ import {
     encodeLatin1,
 } from "./tfhka_protocol";
 import {
-    mfReportzFromDailyClosureString,
-    parseTfhkaS1StatusResponse,
-} from "./tfhka_s1_parser";
-import {
     TfhkaWebSerialTransport,
     formatWebSerialError,
     readWebSerialPortInfo,
 } from "./tfhka_transport_webserial";
+import {
+    mfReportzFromDailyClosureString,
+    parseTfhkaS1StatusResponse,
+} from "./tfhka_s1_parser";
 
 const ENQ_READ_OPTS = {
     byteTimeout: 280,
@@ -390,7 +390,9 @@ export class TfhkaFiscal {
             await this._auditPortOpenFailure(this.estado);
             try {
                 await this.transport.close();
-            } catch {}
+            } catch {
+                /* Ignore serial port cleanup errors. */
+            }
             return false;
         }
     }
@@ -745,12 +747,12 @@ export class TfhkaFiscal {
                         num2 = bResp[index];
                     }
                 }
-                if ((st ^ er ^ 3) !== num2) {
-                    this.erroValid = false;
-                    this._darStatusError(0, 144);
-                } else {
+                if ((st ^ er ^ 3) === num2) {
                     this.erroValid = true;
                     this._darStatusError(st, er);
+                } else {
+                    this.erroValid = false;
+                    this._darStatusError(0, 144);
                 }
                 if (
                     this.status !== null &&

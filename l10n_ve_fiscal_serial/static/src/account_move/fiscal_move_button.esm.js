@@ -1,10 +1,9 @@
-/** @odoo-module **/
-
+/* eslint-disable complexity */
 import {Component, xml} from "@odoo/owl";
+import {TfhkaWebSerialTransport} from "../fiscal_serial/tfhka_transport_webserial";
+import {createFiscalSerialAuditLogger} from "../fiscal_serial/fiscal_serial_audit";
 import {registry} from "@web/core/registry";
 import {useService} from "@web/core/utils/hooks";
-import {createFiscalSerialAuditLogger} from "../fiscal_serial/fiscal_serial_audit";
-import {TfhkaWebSerialTransport} from "../fiscal_serial/tfhka_transport_webserial";
 
 const ACTION_TO_CHECK_METHOD = {
     print_out_invoice: "check_print_out_invoice",

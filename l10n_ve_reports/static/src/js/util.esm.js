@@ -46,7 +46,7 @@ export function parseLineId(lineID, markupAsString = false) {
         return [
             (markupAsString ? markup : parseMarkup(markup)) || null,
             model || null,
-            model && value ? parseInt(value) : value || null,
+            model && value ? parseInt(value, 10) : value || null,
         ];
     });
 }

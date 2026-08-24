@@ -1,7 +1,6 @@
 import {useRef, useState} from "@odoo/owl";
-import {useHotkey} from "@web/core/hotkeys/hotkey_hook";
-
 import {AccountReportLineCell} from "@l10n_ve_reports/components/account_report/line_cell/line_cell";
+import {useHotkey} from "@web/core/hotkeys/hotkey_hook";
 
 export class AccountReportLineCellEditable extends AccountReportLineCell {
     static template = "l10n_ve_reports.AccountReportLineCellEditable";

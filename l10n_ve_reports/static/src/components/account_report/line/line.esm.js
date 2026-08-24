@@ -1,12 +1,8 @@
-/** @odoo-module */
-
-import {localization} from "@web/core/l10n/localization";
-
-import {useService} from "@web/core/utils/hooks";
 import {Component, useState} from "@odoo/owl";
-
 import {AccountReportDebugPopover} from "@l10n_ve_reports/components/account_report/line/popover/debug_popover";
 import {AccountReportLineCellEditable} from "@l10n_ve_reports/components/account_report/line_cell_editable/line_cell_editable";
+import {localization} from "@web/core/l10n/localization";
+import {useService} from "@web/core/utils/hooks";
 
 export class AccountReportLine extends Component {
     static template = "l10n_ve_reports.AccountReportLine";
@@ -105,14 +101,14 @@ export class AccountReportLine extends Component {
     isHiddenBySearchFilter(lineId = null) {
         // If no lineId is provided, this will execute on the current line object
         // Otherwise, it will execute on the given lineId
-        lineId ||= this.props.line.id;
+        const resolvedLineId = lineId || this.props.line.id;
 
         if (!("lines_searched" in this.controller)) return false;
 
         for (const searchLineId of this.controller.lines_searched)
             if (
-                this.controller.isLineRelatedTo(searchLineId, lineId) ||
-                lineId === searchLineId
+                this.controller.isLineRelatedTo(searchLineId, resolvedLineId) ||
+                resolvedLineId === searchLineId
             )
                 return false;
 

@@ -1,7 +1,5 @@
-/** @odoo-module */
-
-import {registry} from "@web/core/registry";
 import {download} from "@web/core/network/download";
+import {registry} from "@web/core/registry";
 
 async function executeAccountReportDownload({env, action}) {
     env.services.ui.block();

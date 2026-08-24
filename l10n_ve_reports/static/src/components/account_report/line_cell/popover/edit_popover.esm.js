@@ -1,8 +1,5 @@
-/** @odoo-module */
-
-import {useAutofocus, useService} from "@web/core/utils/hooks";
-
 import {Component, useRef} from "@odoo/owl";
+import {useAutofocus, useService} from "@web/core/utils/hooks";
 
 export class AccountReportEditPopover extends Component {
     static template = "l10n_ve_reports.AccountReportEditPopover";

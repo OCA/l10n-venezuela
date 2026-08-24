@@ -1,5 +1,3 @@
-/** @odoo-module **/
-
 const {DateTime} = luxon;
 
 import {Asserts} from "./asserts";
@@ -89,7 +87,7 @@ registry.category("web_tour.tours").add("account_reports_sections", {
         },
         {
             content: "Check that the date has changed",
-            trigger: `#filter_date button:not(:contains(${DateTime.now().minus({months: 1}).year}))`, // We need to remove one month for the case where we are in january. It will impact the year.
+            trigger: `#filter_date button:not(:contains(${DateTime.now().minus({months: 1}).year}))`,
             run: (actionHelper) => {
                 const nextYear = DateTime.now().plus({years: 1}).year;
 

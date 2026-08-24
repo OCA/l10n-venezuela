@@ -1,15 +1,14 @@
-/** @odoo-module **/
-
+/* eslint-disable complexity */
 import {Component, onWillUnmount, status, useComponent, useState} from "@odoo/owl";
-import {registry} from "@web/core/registry";
-import {useService} from "@web/core/utils/hooks";
-import {standardWidgetProps} from "@web/views/widgets/standard_widget_props";
-import {autoDetectFiscalMachine} from "./fiscal_machine_detect";
-import {createFiscalSerialAuditLogger} from "../fiscal_serial/fiscal_serial_audit";
 import {
     describeTfhkaEnqSts1,
     describeTfhkaEnqSts2,
 } from "../fiscal_serial/tfhka_protocol";
+import {autoDetectFiscalMachine} from "./fiscal_machine_detect";
+import {createFiscalSerialAuditLogger} from "../fiscal_serial/fiscal_serial_audit";
+import {registry} from "@web/core/registry";
+import {standardWidgetProps} from "@web/views/widgets/standard_widget_props";
+import {useService} from "@web/core/utils/hooks";
 
 const pendingDetections = new Set();
 
@@ -192,7 +191,9 @@ export class FiscalMachinePortDetectWidget extends Component {
                         {save: false}
                     );
                 }
-            } catch {}
+            } catch {
+                /* Ignore serial port cleanup errors. */
+            }
             console.error("[l10n_ve_fiscal_serial][detect]", error);
             if (this._isAlive()) {
                 this.notification.add(message, {type: "danger"});
@@ -204,7 +205,9 @@ export class FiscalMachinePortDetectWidget extends Component {
                         reason: hadError ? "error" : "finally_cleanup",
                         detail: errorDetail,
                     });
-                } catch {}
+                } catch {
+                    /* Ignore serial port cleanup errors. */
+                }
             } else if (auditLogger) {
                 await auditLogger.flush();
             }

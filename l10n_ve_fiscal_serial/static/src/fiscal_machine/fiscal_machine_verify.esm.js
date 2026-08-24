@@ -1,5 +1,4 @@
-/** @odoo-module **/
-
+/* eslint-disable complexity */
 const TFHKA_TRAINING_STS1 = 64;
 
 function normalizeSerial(value) {

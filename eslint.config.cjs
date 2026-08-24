@@ -1,3 +1,4 @@
+var globals = require('globals');
 jsdoc = require("eslint-plugin-jsdoc");
 
 const config = [{
@@ -16,6 +17,8 @@ const config = [{
             openerp: "readonly",
             owl: "readonly",
             luxon: "readonly",
+            QUnit: "readonly",
+            ...globals.browser,
         },
 
         ecmaVersion: 2024,
@@ -191,21 +194,11 @@ const config = [{
     },
 
 }, {
-    files: ["**/*.esm.js"],
+    files: ["**/*.esm.js", "**/*test.js"],
 
     languageOptions: {
         ecmaVersion: 2024,
         sourceType: "module",
-        globals: {
-            console: "readonly",
-            document: "readonly",
-            DOMParser: "readonly",
-            fetch: "readonly",
-            localStorage: "readonly",
-            location: "readonly",
-            window: "readonly",
-            XMLSerializer: "readonly",
-        },
     },
 }];
 

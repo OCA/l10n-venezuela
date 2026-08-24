@@ -1,13 +1,12 @@
+import {useChildSubEnv, useState} from "@odoo/owl";
 import {AttachmentViewMoveLine} from "./attachment_view_move_line";
-
+import {ListController} from "@web/views/list/list_controller";
+import {ListRenderer} from "@web/views/list/list_renderer";
+import {SIZES} from "@web/core/ui/ui_service";
+import {listView} from "@web/views/list/list_view";
+import {makeActiveField} from "@web/model/relational_model/utils";
 import {registry} from "@web/core/registry";
 import {useService} from "@web/core/utils/hooks";
-import {listView} from "@web/views/list/list_view";
-import {ListRenderer} from "@web/views/list/list_renderer";
-import {ListController} from "@web/views/list/list_controller";
-import {SIZES} from "@web/core/ui/ui_service";
-import {useChildSubEnv, useState} from "@odoo/owl";
-import {makeActiveField} from "@web/model/relational_model/utils";
 
 export class AccountMoveLineListController extends ListController {
     static template = "l10n_ve_reports.MoveLineListView";

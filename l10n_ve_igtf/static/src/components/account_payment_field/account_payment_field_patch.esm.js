@@ -1,5 +1,3 @@
-/** @odoo-module **/
-
 import {AccountPaymentField} from "@account/components/account_payment_field/account_payment_field";
 import {_t} from "@web/core/l10n/translation";
 import {patch} from "@web/core/utils/patch";

@@ -1,7 +1,5 @@
-/** @odoo-module */
-
-import {useService} from "@web/core/utils/hooks";
 import {Component} from "@odoo/owl";
+import {useService} from "@web/core/utils/hooks";
 
 export class AccountReportCarryoverPopover extends Component {
     static template = "l10n_ve_reports.AccountReportCarryoverPopover";

@@ -1,5 +1,3 @@
-/** @odoo-module **/
-
 import {deserializeDate, formatDate} from "@web/core/l10n/dates";
 import {Component} from "@odoo/owl";
 import {_t} from "@web/core/l10n/translation";

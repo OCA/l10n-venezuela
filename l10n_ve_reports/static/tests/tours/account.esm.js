@@ -1,6 +1,6 @@
 import {_t} from "@web/core/l10n/translation";
-import {patch} from "@web/core/utils/patch";
 import {accountTourSteps} from "@account/js/tours/account";
+import {patch} from "@web/core/utils/patch";
 
 patch(accountTourSteps, {
     onboarding() {

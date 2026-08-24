@@ -1,7 +1,4 @@
-/** @odoo-module **/
-
-/* eslint-disable no-undef */
-
+/* eslint-disable complexity */
 const AUDIT_MODEL = "l10n.ve.fiscal.serial.audit";
 const FLUSH_BATCH_SIZE = 15;
 
@@ -125,7 +122,7 @@ export class FiscalSerialAuditLogger {
         }
         this.buffer.push(event);
         if (this.buffer.length >= FLUSH_BATCH_SIZE) {
-            void this.flush();
+            this.flush();
         }
     }
 

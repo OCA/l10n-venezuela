@@ -397,8 +397,10 @@ to fiscal fields.</p>
 </div>
 <div class="section" id="installation">
 <h1><a class="toc-backref" href="#toc-entry-2">Installation</a></h1>
-<p>The server needs Tesseract OCR and the Python packages <tt class="docutils literal">requests</tt>,
-<tt class="docutils literal">Pillow</tt> and <tt class="docutils literal">pytesseract</tt>.</p>
+<p>The RIF OCR lookup needs the Python packages <tt class="docutils literal">requests</tt>, <tt class="docutils literal">Pillow</tt>
+and <tt class="docutils literal">pytesseract</tt>, plus the <tt class="docutils literal">tesseract</tt> binary on the server PATH.
+The module can be installed without Tesseract; SENIAT queries that use
+OCR will fail until the binary is present.</p>
 <p>On Debian or Ubuntu:</p>
 <pre class="literal-block">
 apt install tesseract-ocr

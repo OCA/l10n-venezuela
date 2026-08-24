@@ -1,9 +1,8 @@
-/** @odoo-module */
-import {registry} from "@web/core/registry";
-import {useService} from "@web/core/utils/hooks";
 import {Component} from "@odoo/owl";
-import {standardActionServiceProps} from "@web/webclient/actions/action_service";
 import {Dialog} from "@web/core/dialog/dialog";
+import {registry} from "@web/core/registry";
+import {standardActionServiceProps} from "@web/webclient/actions/action_service";
+import {useService} from "@web/core/utils/hooks";
 
 class RedirectAction extends Component {
     static template = "l10n_ve_reports.redirectAction";

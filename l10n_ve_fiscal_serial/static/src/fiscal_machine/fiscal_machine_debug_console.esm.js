@@ -1,10 +1,7 @@
-/** @odoo-module **/
-
-/* eslint-disable no-undef */
-
+/* eslint-disable complexity */
 import {Component, onWillUnmount, useState} from "@odoo/owl";
-import {useService} from "@web/core/utils/hooks";
 import {createFiscalSerialAuditLogger} from "../fiscal_serial/fiscal_serial_audit";
+import {useService} from "@web/core/utils/hooks";
 
 const TFHKA_COMMAND_DELAY_MS = 200;
 
@@ -51,7 +48,7 @@ export class FiscalMachineDebugConsole extends Component {
         this.auditLogger = null;
         this._isUIBlocked = false;
         onWillUnmount(() => {
-            void this._cleanupOnUnmount();
+            this._cleanupOnUnmount();
         });
     }
 
@@ -165,7 +162,9 @@ export class FiscalMachineDebugConsole extends Component {
                 reason: "user_request",
                 detail: "Salió del formulario de la máquina fiscal.",
             });
-        } catch {}
+        } catch {
+            /* Ignore serial port cleanup errors. */
+        }
         this.driver = null;
         this.auditLogger = null;
         this._clearBlockingProgress();

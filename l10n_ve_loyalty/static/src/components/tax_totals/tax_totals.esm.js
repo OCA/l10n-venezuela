@@ -1,11 +1,9 @@
-/** @odoo-module **/
-
+import {Component} from "@odoo/owl";
 import {TaxTotalsComponent} from "@account/components/tax_totals/tax_totals";
 import {formatMonetary} from "@web/views/fields/formatters";
 import {patch} from "@web/core/utils/patch";
 import {usePopover} from "@web/core/popover/popover_hook";
 import {useService} from "@web/core/utils/hooks";
-import {Component} from "@odoo/owl";
 
 class L10nVeGlobalDiscountDetailsPopover extends Component {
     static template = "l10n_ve_loyalty.GlobalDiscountDetailsPopover";

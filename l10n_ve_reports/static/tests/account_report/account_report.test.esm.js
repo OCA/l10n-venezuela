@@ -1,13 +1,11 @@
-import {expect, test} from "@odoo/hoot";
-
 import {click, contains, mailModels} from "@mail/../tests/mail_test_helpers";
-
 import {
     defineModels,
     getService,
     mountWithCleanup,
     onRpc,
 } from "@web/../tests/web_test_helpers";
+import {expect, test} from "@odoo/hoot";
 import {WebClient} from "@web/webclient/webclient";
 
 // Due to dependency with mail module, we have to define their models for our tests.

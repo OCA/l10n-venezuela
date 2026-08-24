@@ -1,4 +1,4 @@
-/* eslint-disable no-undef */
+/* eslint-disable complexity */
 export function formatWebSerialError(err) {
     if (!err) {
         return "Error desconocido.";
@@ -214,14 +214,20 @@ export class TfhkaWebSerialTransport {
         if (pendingRead) {
             try {
                 await reader.cancel();
-            } catch {}
+            } catch {
+                /* Ignore serial port cleanup errors. */
+            }
             try {
                 await pendingRead;
-            } catch {}
+            } catch {
+                /* Ignore serial port cleanup errors. */
+            }
         }
         try {
             reader.releaseLock();
-        } catch {}
+        } catch {
+            /* Ignore serial port cleanup errors. */
+        }
     }
 
     async open(serialPort, options = {}) {
@@ -245,7 +251,9 @@ export class TfhkaWebSerialTransport {
             if (err?.name === "InvalidStateError") {
                 try {
                     await serialPort.close();
-                } catch {}
+                } catch {
+                    /* Ignore serial port cleanup errors. */
+                }
                 await new Promise((resolve) => setTimeout(resolve, 100));
                 await serialPort.open(openOptions);
             } else {
@@ -265,7 +273,9 @@ export class TfhkaWebSerialTransport {
         this._ioChain = Promise.resolve();
         try {
             await port.close();
-        } catch {}
+        } catch {
+            /* Ignore serial port cleanup errors. */
+        }
         await new Promise((resolve) => setTimeout(resolve, 50));
     }
 
@@ -287,7 +297,9 @@ export class TfhkaWebSerialTransport {
             } finally {
                 try {
                     writer.releaseLock();
-                } catch {}
+                } catch {
+                    /* Ignore serial port cleanup errors. */
+                }
             }
             await new Promise((r) => setTimeout(r, postMs));
         });

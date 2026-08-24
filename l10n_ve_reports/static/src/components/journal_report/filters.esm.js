@@ -1,5 +1,5 @@
-import {patch} from "@web/core/utils/patch";
 import {AccountReportFilters} from "@l10n_ve_reports/components/account_report/filters/filters";
+import {patch} from "@web/core/utils/patch";
 
 patch(AccountReportFilters.prototype, {
     get hasExtraOptionsFilter() {

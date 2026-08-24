@@ -1,8 +1,5 @@
-/** @odoo-module **/
-
-import {mockDownload} from "@web/../tests/helpers/utils";
-
 import {createWebClient, doAction} from "@web/../tests/webclient/helpers";
+import {mockDownload} from "@web/../tests/helpers/utils";
 
 let serverData = null;
 globalThis.QUnit.module("Account Reports", {}, function () {

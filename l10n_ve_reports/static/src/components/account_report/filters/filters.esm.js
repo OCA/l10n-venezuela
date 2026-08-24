@@ -1,16 +1,13 @@
-import {_t} from "@web/core/l10n/translation";
 import {Component, useState} from "@odoo/owl";
-
-import {useService} from "@web/core/utils/hooks";
-import {WarningDialog} from "@web/core/errors/error_dialogs";
-
 import {DateTimeInput} from "@web/core/datetime/datetime_input";
 import {Dropdown} from "@web/core/dropdown/dropdown";
 import {DropdownItem} from "@web/core/dropdown/dropdown_item";
 import {MultiRecordSelector} from "@web/core/record_selectors/multi_record_selector";
+import {WarningDialog} from "@web/core/errors/error_dialogs";
+import {_t} from "@web/core/l10n/translation";
 import {formatDate} from "@web/core/l10n/dates";
-
 import {logAccountReportDate} from "../account_report_date_debug";
+import {useService} from "@web/core/utils/hooks";
 
 const {DateTime} = luxon;
 
@@ -140,16 +137,15 @@ export class AccountReportFilters extends Component {
         const listToDisplay = [];
         for (const mapping of accountTypeMappings) {
             if (
-                mapping.list.every((accountType) =>
+                mapping.list.every((mappedType) =>
                     selectedAccountType
-                        .map((accountType) => accountType.id)
-                        .includes(accountType)
+                        .map((selectedType) => selectedType.id)
+                        .includes(mappedType)
                 )
             ) {
                 listToDisplay.push(mapping.name);
-                // Delete already checked id
                 selectedAccountType = selectedAccountType.filter(
-                    (accountType) => !mapping.list.includes(accountType.id)
+                    (selectedType) => !mapping.list.includes(selectedType.id)
                 );
             }
         }
@@ -196,7 +192,7 @@ export class AccountReportFilters extends Component {
         if (date) {
             return DateTime.fromISO(date);
         }
-        return DateTime.now(); // Default to today
+        return DateTime.now();
     }
 
     get selectedAmlIrFilters() {
@@ -482,16 +478,16 @@ export class AccountReportFilters extends Component {
             4: {start: 10, end: 12},
         };
 
-        dateTo = dateTo.plus({months: this.dateFilter.quarter * 3});
+        const shiftedDateTo = dateTo.plus({months: this.dateFilter.quarter * 3});
 
         const quarterDateFrom = DateTime.utc(
-            dateTo.year,
-            quarterMonths[dateTo.quarter].start,
+            shiftedDateTo.year,
+            quarterMonths[shiftedDateTo.quarter].start,
             1
         );
         const quarterDateTo = DateTime.utc(
-            dateTo.year,
-            quarterMonths[dateTo.quarter].end,
+            shiftedDateTo.year,
+            quarterMonths[shiftedDateTo.quarter].end,
             1
         );
 
@@ -513,8 +509,8 @@ export class AccountReportFilters extends Component {
         );
 
         if (
-            periodicitySettings.start_month == 1 &&
-            periodicitySettings.start_day == 1
+            periodicitySettings.start_month === 1 &&
+            periodicitySettings.start_day === 1
         ) {
             switch (periodicitySettings.months_per_period) {
                 case 1:
@@ -570,7 +566,10 @@ export class AccountReportFilters extends Component {
         const numberPeriods = ev.target.value;
 
         if (numberPeriods >= 1)
-            this.controller.options.comparison.number_period = parseInt(numberPeriods);
+            this.controller.options.comparison.number_period = parseInt(
+                numberPeriods,
+                10
+            );
         else
             this.dialog.add(WarningDialog, {
                 title: _t("Odoo Warning"),
@@ -617,10 +616,10 @@ export class AccountReportFilters extends Component {
                 optionsDate: this.controller.options.date,
             });
         }
-        if (optionValue !== undefined) {
-            await this.controller.updateOption(optionKey, optionValue);
-        } else {
+        if (optionValue === undefined) {
             await this.controller.toggleOption(optionKey);
+        } else {
+            await this.controller.updateOption(optionKey, optionValue);
         }
 
         if (reload) {
@@ -657,7 +656,7 @@ export class AccountReportFilters extends Component {
             this.ToggleSelectedJournal(journal);
             this.controller.options.__journal_group_action = {
                 action: wasSelected ? "remove" : "add",
-                id: parseInt(journal.id),
+                id: parseInt(journal.id, 10),
             };
             // Toggle the selected status after the action is set
             journal.selected = !wasSelected;
@@ -696,7 +695,7 @@ export class AccountReportFilters extends Component {
                     journal.unfolded = !journal.unfolded;
                     inSelectedCompanySection = true;
                 } else if (inSelectedCompanySection) {
-                    break; // Reached another company divider, exit the loop
+                    break;
                 }
             }
             if (inSelectedCompanySection && journal.model === "account.journal") {

@@ -1,7 +1,6 @@
-import {_t} from "@web/core/l10n/translation";
-
 import {AccountReport} from "@l10n_ve_reports/components/account_report/account_report";
 import {AccountReportFilters} from "@l10n_ve_reports/components/account_report/filters/filters";
+import {_t} from "@web/core/l10n/translation";
 
 export class SalesReportFilters extends AccountReportFilters {
     static template = "l10n_ve_reports.SalesReportFilters";

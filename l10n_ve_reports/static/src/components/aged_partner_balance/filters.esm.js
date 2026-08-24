@@ -1,9 +1,7 @@
-/** @odoo-module */
-
-import {_t} from "@web/core/l10n/translation";
-import {WarningDialog} from "@web/core/errors/error_dialogs";
 import {AccountReport} from "@l10n_ve_reports/components/account_report/account_report";
 import {AccountReportFilters} from "@l10n_ve_reports/components/account_report/filters/filters";
+import {WarningDialog} from "@web/core/errors/error_dialogs";
+import {_t} from "@web/core/l10n/translation";
 
 export class AgedPartnerBalanceFilters extends AccountReportFilters {
     static template = "l10n_ve_reports.AgedPartnerBalanceFilters";
@@ -12,7 +10,7 @@ export class AgedPartnerBalanceFilters extends AccountReportFilters {
     // Aging Interval
     // ------------------------------------------------------------------------------------------------------------------
     async setAgingInterval(ev) {
-        const agingInterval = parseInt(ev.target.value);
+        const agingInterval = parseInt(ev.target.value, 10);
         if (agingInterval < 1) {
             this.dialog.add(WarningDialog, {
                 title: _t("Odoo Warning"),

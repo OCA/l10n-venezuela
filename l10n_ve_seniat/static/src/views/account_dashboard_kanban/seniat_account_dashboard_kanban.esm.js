@@ -1,9 +1,7 @@
-/** @odoo-module */
-
-import {registry} from "@web/core/registry";
-import {accountDashboardKanbanView} from "@account/views/account_dashboard_kanban/account_dashboard_kanban_view";
 import {DashboardKanbanRenderer} from "@account/views/account_dashboard_kanban/account_dashboard_kanban_renderer";
 import {SeniatInvoiceDashboard} from "../../components/seniat_invoice_dashboard/seniat_invoice_dashboard";
+import {accountDashboardKanbanView} from "@account/views/account_dashboard_kanban/account_dashboard_kanban_view";
+import {registry} from "@web/core/registry";
 
 export class SeniatDashboardKanbanRenderer extends DashboardKanbanRenderer {
     static components = {

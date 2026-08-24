@@ -1,5 +1,4 @@
-/** @odoo-module **/
-
+/* eslint-disable complexity */
 const TFHKA_SV_MODEL_CODES = {
     Z1F: {printer_type: "other", name: "SRP812"},
 };
@@ -10,11 +9,13 @@ const TFHKA_PRINTER_TYPE_HINTS = [
 ];
 
 function normalizeSvRaw(raw) {
-    return String(raw || "")
-        .replace(/\r/g, "")
-        .replace(/\x02/g, "")
-        .replace(/\x03[\s\S]*$/g, "")
-        .trim();
+    let text = String(raw || "").replace(/\r/g, "");
+    text = text.split(String.fromCharCode(2)).join("");
+    const etxIndex = text.indexOf(String.fromCharCode(3));
+    if (etxIndex >= 0) {
+        text = text.slice(0, etxIndex);
+    }
+    return text.trim();
 }
 
 function inferPrinterType(modelCode, modelName) {

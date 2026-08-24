@@ -1,3 +1,4 @@
+/* eslint-disable complexity */
 import {floatIsZero, roundPrecision} from "@web/core/utils/numbers";
 import {lt, uuidv4} from "@point_of_sale/utils";
 import {PosOrder} from "@point_of_sale/app/models/pos_order";

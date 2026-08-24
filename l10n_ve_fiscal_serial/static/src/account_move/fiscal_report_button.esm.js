@@ -1,10 +1,8 @@
-/** @odoo-module **/
-
 import {Component, xml} from "@odoo/owl";
-import {registry} from "@web/core/registry";
-import {useService} from "@web/core/utils/hooks";
 import {_t} from "@web/core/l10n/translation";
 import {l10nVeFiscalSerialExecuteReport} from "../fiscal_serial/fiscal_serial_report";
+import {registry} from "@web/core/registry";
+import {useService} from "@web/core/utils/hooks";
 
 const ACTION_LABELS = {
     report_x: _t("Reporte X"),
