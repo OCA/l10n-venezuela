@@ -26,7 +26,10 @@
                     >
                         <div class="flex-grow-1">
                             <div t-out="line.name" />
-                            <div class="text-muted small" t-out="formatLineDetail(line)" />
+                            <div
+                                class="text-muted small"
+                                t-out="formatLineDetail(line)"
+                            />
                         </div>
                         <button
                             t-if="props.canManageGlobalDiscount"
@@ -69,8 +72,12 @@
             </tr>
             <tr t-if="totals and totals.l10n_ve_show_global_discount">
                 <td class="o_td_label">
-                    <label class="o_form_label o_tax_total_label d-flex align-items-center gap-1">
-                        <span>Descuento<span t-out="globalDiscountPercentageLabel"/></span>
+                    <label
+                        class="o_form_label o_tax_total_label d-flex align-items-center gap-1"
+                    >
+                        <span>Descuento<span
+                            t-out="globalDiscountPercentageLabel"
+                        /></span>
                         <button
                             type="button"
                             class="btn btn-link p-0 o_l10n_ve_discount_info_btn"
@@ -88,10 +95,7 @@
                         t-out="formatMonetary(-totals.l10n_ve_global_discount_amount_currency)"
                     />
                 </td>
-                <td
-                    t-if="totals.display_in_company_currency"
-                    class="o_tax_group ps-5"
-                >
+                <td t-if="totals.display_in_company_currency" class="o_tax_group ps-5">
                     <span
                         class="o_tax_group_amount_value o_list_monetary"
                         dir="ltr"
@@ -128,8 +132,12 @@
             </tr>
             <tr t-if="taxTotals and taxTotals.l10n_ve_show_global_discount">
                 <td class="o_td_label">
-                    <label class="o_form_label o_tax_total_label d-flex align-items-center gap-1">
-                        <span>Descuento<span t-out="globalDiscountPercentageLabel"/></span>
+                    <label
+                        class="o_form_label o_tax_total_label d-flex align-items-center gap-1"
+                    >
+                        <span>Descuento<span
+                            t-out="globalDiscountPercentageLabel"
+                        /></span>
                         <button
                             type="button"
                             class="btn btn-link p-0 o_l10n_ve_discount_info_btn"
@@ -157,5 +165,4 @@
             </tr>
         </xpath>
     </t>
-
 </templates>

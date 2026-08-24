@@ -193,9 +193,7 @@ class TestBankCashBookReport(TestAccountReportsCommon):
             self.bank_journal,
         )
         movement_lines = [
-            line
-            for line in lines
-            if line.get("caret_options") == "account.move.line"
+            line for line in lines if line.get("caret_options") == "account.move.line"
         ]
         self.assertEqual(len(movement_lines), 2)
 
@@ -234,9 +232,7 @@ class TestBankCashBookReport(TestAccountReportsCommon):
         self.assertNotIn(self.bank_journal.display_name, line_names)
 
         movement_lines = [
-            line
-            for line in lines
-            if line.get("caret_options") == "account.move.line"
+            line for line in lines if line.get("caret_options") == "account.move.line"
         ]
         self.assertEqual(len(movement_lines), 1)
         movement_values = self._get_line_column_values(

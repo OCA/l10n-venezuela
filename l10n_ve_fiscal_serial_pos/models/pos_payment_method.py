@@ -38,7 +38,11 @@ class PosPaymentMethod(models.Model):
     @api.model
     def _load_pos_data_fields(self, config_id):
         fields_list = super()._load_pos_data_fields(config_id)
-        for field_name in ("journal_id", "l10n_ve_fiscal_payment_code", "is_cash_count"):
+        for field_name in (
+            "journal_id",
+            "l10n_ve_fiscal_payment_code",
+            "is_cash_count",
+        ):
             if field_name not in fields_list:
                 fields_list.append(field_name)
         return fields_list

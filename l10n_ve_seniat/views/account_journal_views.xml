@@ -15,7 +15,11 @@
             </xpath>
             <xpath expr="//notebook" position="inside">
                 <!-- Art. 6-8 PA SNAT/2011/0071; Art. 3-7 PA SNAT/2024/000102: medio de emisión. -->
-                <page name="l10n_ve_seniat_page" string="SENIAT" invisible="type != 'sale'">
+                <page
+                    name="l10n_ve_seniat_page"
+                    string="SENIAT"
+                    invisible="type != 'sale'"
+                >
                     <group string="Configuración">
                         <field name="l10n_ve_emission_medium" />
                         <field

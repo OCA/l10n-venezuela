@@ -139,7 +139,7 @@ class TestTaxReport(TestAccountReportsCommon):
                             "debit": 0.0,
                             "credit": 120.0,
                             "account_id": cls.tax_account_1.id,
-                            "tax_repartition_line_id": cls.sale_tax_percentage_excl.invoice_repartition_line_ids.filtered(
+                            "tax_repartition_line_id": cls.sale_tax_percentage_excl.invoice_repartition_line_ids.filtered(  # noqa: E501
                                 lambda x: x.repartition_type == "tax"
                             ).id,
                         }
@@ -149,7 +149,7 @@ class TestTaxReport(TestAccountReportsCommon):
                             "debit": 0.0,
                             "credit": 200.0,
                             "account_id": cls.tax_account_1.id,
-                            "tax_repartition_line_id": cls.sale_tax_percentage_incl_1.invoice_repartition_line_ids.filtered(
+                            "tax_repartition_line_id": cls.sale_tax_percentage_incl_1.invoice_repartition_line_ids.filtered(  # noqa: E501
                                 lambda x: x.repartition_type == "tax"
                             ).id,
                             "tax_ids": [Command.set(cls.sale_tax_percentage_excl.ids)],
@@ -229,7 +229,7 @@ class TestTaxReport(TestAccountReportsCommon):
                             "debit": 720.0,
                             "credit": 0.0,
                             "account_id": cls.tax_account_1.id,
-                            "tax_repartition_line_id": cls.none_tax_percentage_excl.invoice_repartition_line_ids.filtered(
+                            "tax_repartition_line_id": cls.none_tax_percentage_excl.invoice_repartition_line_ids.filtered(  # noqa: E501
                                 lambda x: x.repartition_type == "tax"
                             ).id,
                         }
@@ -239,7 +239,7 @@ class TestTaxReport(TestAccountReportsCommon):
                             "debit": 400.0,
                             "credit": 0.0,
                             "account_id": cls.tax_account_1.id,
-                            "tax_repartition_line_id": cls.none_tax_percentage_incl_2.invoice_repartition_line_ids.filtered(
+                            "tax_repartition_line_id": cls.none_tax_percentage_incl_2.invoice_repartition_line_ids.filtered(  # noqa: E501
                                 lambda x: x.repartition_type == "tax"
                             ).id,
                             "tax_ids": [Command.set(cls.none_tax_percentage_excl.ids)],
@@ -260,7 +260,8 @@ class TestTaxReport(TestAccountReportsCommon):
         )
         cls.move_purchase.action_post()
 
-        # Instantiate test data for fiscal_position option of the tax report (both for checking the report and VAT closing)
+        # Instantiate test data for fiscal_position option of the tax report (both for
+        # checking the report and VAT closing)
 
         # Create a foreign partner
         cls.test_fpos_foreign_partner = cls.env["res.partner"].create(
@@ -313,7 +314,8 @@ class TestTaxReport(TestAccountReportsCommon):
             ],
         )
 
-        # Create a fiscal_position to automatically map the default tax for partner "Mare Cel" to our test tax
+        # Create a fiscal_position to automatically map the default tax for partner
+        # "Mare Cel" to our test tax
         cls.foreign_vat_fpos = cls.env["account.fiscal.position"].create(
             {
                 "name": "Test fpos",
@@ -455,17 +457,24 @@ class TestTaxReport(TestAccountReportsCommon):
         tax_repartition,
         company=None,
     ):
-        """Creates a basic test tax, as well as tax report lines and tags, connecting them all together.
+        """Creates a basic test tax, as well as tax report lines and tags, connecting
+        them all together.
 
-        A tax report line will be created within tax report for each of the elements in tax_repartition,
-        for both invoice and refund, so that the resulting repartition lines each reference their corresponding
-        report line. Negative tags will be assign for refund lines; postive tags for invoice ones.
+        A tax report line will be created within tax report for each of the elements in
+        tax_repartition,
+        for both invoice and refund, so that the resulting repartition lines each
+        reference their corresponding
+        report line. Negative tags will be assign for refund lines; postive tags for
+        invoice ones.
 
         :param tax_report: The report to create lines for.
-        :param percentage: The created tax has amoun_type='percent'. This parameter contains its amount.
+        :param percentage: The created tax has amoun_type='percent'. This parameter
+        contains its amount.
         :param type_tax_use: type_tax_use of the tax to create
-        :param tax_repartition: List of tuples in the form [(factor_percent, account, use_in_tax_closing)], one tuple
-                                for each tax repartition line to create (base lines will be automatically created).
+        :param tax_repartition: List of tuples in the form [(factor_percent, account,
+        use_in_tax_closing)], one tuple
+                                for each tax repartition line to create (base lines will
+                                be automatically created).
         """
         tax = cls.env["account.tax"].create(
             {
@@ -537,9 +546,12 @@ class TestTaxReport(TestAccountReportsCommon):
         """Checks the result of the VAT closing
 
         :param options: the tax report options to make the closing for
-        :param closing_vals_by_fpos: A list of dict(fiscal_position: [dict(line_vals)], where fiscal_position is (possibly empty)
-                                     account.fiscal.position record, and line_vals, the expected values for each closing move lines.
-                                     In case the option 'companies' contains more than 1 company, a tuple (company, fiscal_position)
+        :param closing_vals_by_fpos: A list of dict(fiscal_position: [dict(line_vals)],
+        where fiscal_position is (possibly empty)
+                                     account.fiscal.position record, and line_vals, the
+                                     expected values for each closing move lines.
+                                     In case the option 'companies' contains more than 1
+                                     company, a tuple (company, fiscal_position)
                                      replaces the fiscal_position key
         """
         with patch.object(
@@ -568,11 +580,11 @@ class TestTaxReport(TestAccountReportsCommon):
             self.assertEqual(
                 len(closing_vals_by_fpos),
                 len(vat_closing_moves),
-                "Exactly one move should have been generated per fiscal position; nothing else.",
+                "Exactly one move should have been generated per fiscal position; nothing else.",  # noqa: E501
             )
 
     def test_vat_closing_single_fpos(self):
-        """Tests the VAT closing when a foreign VAT fiscal position is selected on the tax report"""
+        """Tests the VAT closing when a foreign VAT fiscal position is selected on the tax report"""  # noqa: E501
         options = self._generate_options(
             self.basic_tax_report,
             fields.Date.from_string("2021-01-15"),
@@ -611,9 +623,11 @@ class TestTaxReport(TestAccountReportsCommon):
 
     def test_vat_closing_moves_with_lock_date(self):
         """
-        Check that we are still able to create a tax closing event if the lock date is set as the closing move
+        Check that we are still able to create a tax closing event if the lock date is
+        set as the closing move
         is not dependent of the lock date.
-        This also ensures that if we try to close again this period with a move already posted we get the same
+        This also ensures that if we try to close again this period with a move already
+        posted we get the same
         """
         self.env.company.tax_lock_date = fields.Date.from_string("2021-12-31")
 
@@ -626,7 +640,7 @@ class TestTaxReport(TestAccountReportsCommon):
 
         action = (
             self.env["account.tax.report.handler"]
-            .with_context({"override_tax_closing_warning": True})
+            .with_context(override_tax_closing_warning=True)
             .action_periodic_vat_entries(options)
         )
         move = self.env["account.move"].browse(action["res_id"])
@@ -640,14 +654,14 @@ class TestTaxReport(TestAccountReportsCommon):
 
         action = (
             self.env["account.tax.report.handler"]
-            .with_context({"override_tax_closing_warning": True})
+            .with_context(override_tax_closing_warning=True)
             .action_periodic_vat_entries(options)
         )
         same_move = self.env["account.move"].browse(action["res_id"])
         self.assertEqual(move.id, same_move.id)
 
     def test_vat_closing_domestic(self):
-        """Tests the VAT closing when a foreign VAT fiscal position is selected on the tax report"""
+        """Tests the VAT closing when a foreign VAT fiscal position is selected on the tax report"""  # noqa: E501
         options = self._generate_options(
             self.basic_tax_report,
             fields.Date.from_string("2021-01-15"),
@@ -685,7 +699,8 @@ class TestTaxReport(TestAccountReportsCommon):
         )
 
     def test_vat_closing_everything(self):
-        """Tests the VAT closing when the option to show all foreign VAT fiscal positions is activated.
+        """Tests the VAT closing when the option to show all foreign VAT fiscal
+        positions is activated.
         One closing move should then be generated per fiscal position.
         """
         options = self._generate_options(
@@ -749,7 +764,8 @@ class TestTaxReport(TestAccountReportsCommon):
         )
 
     def test_vat_closing_generic(self):
-        """VAT closing for the generic report should create one closing move per fiscal position + a domestic one.
+        """VAT closing for the generic report should create one closing move per fiscal
+        position + a domestic one.
         One closing move should then be generated per fiscal position.
         """
         for generic_report_xml_id in (
@@ -910,7 +926,7 @@ class TestTaxReport(TestAccountReportsCommon):
         assertTaxClosingAvailable(False, branch_2_1)
 
     def test_tax_report_fpos_domestic(self):
-        """Test tax report's content for 'domestic' foreign VAT fiscal position option."""
+        """Test tax report's content for 'domestic' foreign VAT fiscal position option."""  # noqa: E501
         options = self._generate_options(
             self.basic_tax_report,
             fields.Date.from_string("2021-01-01"),
@@ -1021,8 +1037,10 @@ class TestTaxReport(TestAccountReportsCommon):
         )
 
     def test_tax_report_single_fpos(self):
-        """When opening the tax report from a foreign country for which there exists only one
-        foreing VAT fiscal position, this fiscal position should be selected by default in the
+        """When opening the tax report from a foreign country for which there exists
+        only one
+        foreing VAT fiscal position, this fiscal position should be selected by default
+        in the
         report's options.
         """
         new_tax_report = self.env["account.report"].create(
@@ -1056,7 +1074,7 @@ class TestTaxReport(TestAccountReportsCommon):
         self.assertEqual(
             options["fiscal_position"],
             foreign_vat_fpos.id,
-            "When only one VAT fiscal position is available for a non-domestic country, it should be chosen by default",
+            "When only one VAT fiscal position is available for a non-domestic country, it should be chosen by default",  # noqa: E501
         )
 
     def test_tax_report_grid(self):
@@ -1091,7 +1109,8 @@ class TestTaxReport(TestAccountReportsCommon):
         )
 
         # We create the lines in a different order from the one they have in report,
-        # so that we ensure sequence is taken into account properly when rendering the report
+        # so that we ensure sequence is taken into account properly when rendering the
+        # report
         tax_section = self._create_tax_report_line(
             "Tax",
             tax_report,
@@ -1359,7 +1378,8 @@ class TestTaxReport(TestAccountReportsCommon):
         )
         refund_wizard.modify_moves()
 
-        # We check the taxes on refund have impacted the report properly (everything should be 0)
+        # We check the taxes on refund have impacted the report properly (everything
+        # should be 0)
         self.assertLinesValues(
             report._get_lines(options),
             #   Name                                         Balance
@@ -1524,25 +1544,35 @@ class TestTaxReport(TestAccountReportsCommon):
 
         Since _create_caba_taxes_for_report_lines creates asymmetric taxes (their 75%
         repartition line does not impact the report line at refund), we can be sure this
-        function helper gives a complete coverage, and does not shadow any result due, for
+        function helper gives a complete coverage, and does not shadow any result due,
+        for
         example, to some undesired swapping between debit and credit.
 
-        :param expected_columns:          The columns we want the final tax report to contain
+        :param expected_columns:          The columns we want the final tax report to
+        contain
 
-        :param expected_lines:            The lines we want the final tax report to contain
+        :param expected_lines:            The lines we want the final tax report to
+        contain
 
-        :param on_invoice_created:        A function to be called when a single invoice has
-                                          just been created, taking the invoice as a parameter
-                                          (This can be used to reconcile the invoice with something, for example)
+        :param on_invoice_created:        A function to be called when a single invoice
+        has
+                                          just been created, taking the invoice as a
+                                          parameter
+                                          (This can be used to reconcile the invoice
+                                          with something, for example)
 
-        :param on_all_invoices_created:   A function to be called when all the invoices corresponding
+        :param on_all_invoices_created:   A function to be called when all the invoices
+        corresponding
                                           to a tax type have been created, taking the
                                           recordset of all these invoices as a parameter
-                                          (Use it to reconcile invoice and credit note together, for example)
+                                          (Use it to reconcile invoice and credit note
+                                          together, for example)
 
-        :param invoice_generator:         A function used to generate an invoice. A default
+        :param invoice_generator:         A function used to generate an invoice. A
+        default
                                           one is called if none is provided, creating
-                                          an invoice with a single line amounting to 100,
+                                          an invoice with a single line amounting to
+                                          100,
                                           with the provided tax set on it.
         """
 
@@ -1658,7 +1688,8 @@ class TestTaxReport(TestAccountReportsCommon):
         """Cash basis moves create for taxes based on payments are handled differently
         by the report; we want to ensure their sign is managed properly.
         """
-        # 100 (base, invoice) - 100 (base, refund) + 20 (tax, invoice) - 5 (25% tax, refund) = 15
+        # 100 (base, invoice) - 100 (base, refund) + 20 (tax, invoice) - 5 (25% tax,
+        # refund) = 15
         self._run_caba_generic_test(
             #   Name                      Balance
             [0, 1],
@@ -1683,7 +1714,8 @@ class TestTaxReport(TestAccountReportsCommon):
                 lambda x: x.account_type in ("asset_receivable", "liability_payable")
             ).reconcile()
 
-        # 100 (base, invoice) - 100 (base, refund) + 20 (tax, invoice) - 5 (25% tax, refund) = 15
+        # 100 (base, invoice) - 100 (base, refund) + 20 (tax, invoice) - 5 (25% tax,
+        # refund) = 15
         self._run_caba_generic_test(
             #   Name                      Balance
             [0, 1],
@@ -1706,7 +1738,8 @@ class TestTaxReport(TestAccountReportsCommon):
             """Create a misc operation equivalent to a full payment and reconciles
             the invoice with it.
             """
-            # Pay the invoice with a misc operation simulating a payment, so that the cash basis entries are created
+            # Pay the invoice with a misc operation simulating a payment, so that the
+            # cash basis entries are created
             invoice_reconcilable_line = invoice.line_ids.filtered(
                 lambda x: x.account_type in ("liability_payable", "asset_receivable")
             )
@@ -1739,7 +1772,8 @@ class TestTaxReport(TestAccountReportsCommon):
             )
             (invoice_reconcilable_line + payment_reconcilable_line).reconcile()
 
-        # 100 (base, invoice) - 100 (base, refund) + 20 (tax, invoice) - 5 (25% tax, refund) = 15
+        # 100 (base, invoice) - 100 (base, refund) + 20 (tax, invoice) - 5 (25% tax,
+        # refund) = 15
         self._run_caba_generic_test(
             #   Name                      Balance
             [0, 1],
@@ -1787,7 +1821,8 @@ class TestTaxReport(TestAccountReportsCommon):
                 }
             )._create_payments()
 
-        # 50 (base, invoice) - 50 (base, refund) + 10 (tax, invoice) - 2.5 (25% tax, refund) = 7.5
+        # 50 (base, invoice) - 50 (base, refund) + 10 (tax, invoice) - 2.5 (25% tax,
+        # refund) = 7.5
         self._run_caba_generic_test(
             #   Name                     Balance
             [0, 1],
@@ -2241,7 +2276,9 @@ class TestTaxReport(TestAccountReportsCommon):
                 "line_ids": [
                     Command.create(
                         {
-                            "name": "Test with %s" % ", ".join(taxes.mapped("name")),
+                            "name": "Test with {}".format(
+                                ", ".join(taxes.mapped("name"))
+                            ),
                             "account_id": self.company_data[
                                 "default_account_revenue"
                             ].id,
@@ -2270,7 +2307,7 @@ class TestTaxReport(TestAccountReportsCommon):
 
         self.assertTrue(
             move.always_tax_exigible,
-            "A move without payable/receivable line should always be exigible, whatever its taxes.",
+            "A move without payable/receivable line should always be exigible, whatever its taxes.",  # noqa: E501
         )
 
         # Check tax report by grid
@@ -2349,7 +2386,8 @@ class TestTaxReport(TestAccountReportsCommon):
                 }
             )
 
-        # -100 (base, invoice) + 100 (base, refund) - 20 (tax, invoice) + 5 (25% tax, refund) = -15
+        # -100 (base, invoice) + 100 (base, refund) - 20 (tax, invoice) + 5 (25% tax,
+        # refund) = -15
         self._run_caba_generic_test(
             #   Name                      Balance
             [0, 1],
@@ -2362,7 +2400,8 @@ class TestTaxReport(TestAccountReportsCommon):
         )
 
     def test_fiscal_position_switch_all_option_flow(self):
-        """'all' fiscal position option sometimes must be reset or enforced in order to keep
+        """'all' fiscal position option sometimes must be reset or enforced in order to
+        keep
         the report consistent. We check those cases here.
         """
         foreign_tax_report = self.env["account.report"].create(
@@ -2396,7 +2435,7 @@ class TestTaxReport(TestAccountReportsCommon):
         self.assertEqual(
             to_check["fiscal_position"],
             "all",
-            "Opening the report with 'all' fiscal_position option should work if there are fiscal positions for different states in that country",
+            "Opening the report with 'all' fiscal_position option should work if there are fiscal positions for different states in that country",  # noqa: E501
         )
 
         # Case 2: 'all' not allowed if domestic and no fpos
@@ -2409,7 +2448,7 @@ class TestTaxReport(TestAccountReportsCommon):
         self.assertEqual(
             to_check["fiscal_position"],
             "domestic",
-            "Opening the domestic report with 'all' should change to 'domestic' if there's no state-specific fiscal position in the country",
+            "Opening the domestic report with 'all' should change to 'domestic' if there's no state-specific fiscal position in the country",  # noqa: E501
         )
 
         # Case 3: 'all' not allowed on foreign report with 1 fpos
@@ -2419,7 +2458,7 @@ class TestTaxReport(TestAccountReportsCommon):
         self.assertEqual(
             to_check["fiscal_position"],
             foreign_vat_fpos.id,
-            "Opening a foreign report with only one single fiscal position with 'all' option should change if to only select this fiscal position",
+            "Opening a foreign report with only one single fiscal position with 'all' option should change if to only select this fiscal position",  # noqa: E501
         )
 
         # Case 4: always 'all' on generic report
@@ -2645,8 +2684,10 @@ class TestTaxReport(TestAccountReportsCommon):
             all_companies,
             company_2 + company_3,
         ):
-            # In the regular flow, selected companies are changed from the selector, in the UI.
-            # The tax unit option of the report changes the value of the selector, so it'll
+            # In the regular flow, selected companies are changed from the selector, in
+            # the UI.
+            # The tax unit option of the report changes the value of the selector, so
+            # it'll
             # always stay consistent with allowed_company_ids.
             options = self._generate_options(
                 tax_unit_report.with_context(allowed_company_ids=active_companies.ids),
@@ -2665,20 +2706,20 @@ class TestTaxReport(TestAccountReportsCommon):
                         for available_unit in options["available_tax_units"]
                     )
                 ),
-                "The tax unit should always be available when self.env.company is part of it.",
+                "The tax unit should always be available when self.env.company is part of it.",  # noqa: E501
             )
 
             self.assertEqual(
                 options["tax_unit"] != "company_only",
                 active_companies == unit_companies,
-                "The tax unit option should only be enabled when all the companies of the unit are selected, and nothing else.",
+                "The tax unit option should only be enabled when all the companies of the unit are selected, and nothing else.",  # noqa: E501
             )
 
             self.assertLinesValues(
                 tax_unit_report.with_context(
                     allowed_company_ids=active_companies.ids
                 )._get_lines(options),
-                #   Name                                                          Balance
+                # Name                                                          Balance
                 [0, 1],
                 [
                     # Company 1
@@ -2749,7 +2790,8 @@ class TestTaxReport(TestAccountReportsCommon):
                     },
                 ],
                 (company_1, self.foreign_vat_fpos): [
-                    # Don't check accounts here; they are gotten by searching on taxes, basically we don't care about them as it's 0-balanced.
+                    # Don't check accounts here; they are gotten by searching on taxes,
+                    # basically we don't care about them as it's 0-balanced.
                     {
                         "debit": 0,
                         "credit": 0,
@@ -2775,7 +2817,7 @@ class TestTaxReport(TestAccountReportsCommon):
         )
 
     def test_tax_unit_create_horizontal_group(self):
-        """This test will try to create two tax units to see if the creation of horizontal group works as expected"""
+        """This test will try to create two tax units to see if the creation of horizontal group works as expected"""  # noqa: E501
         company_1 = self.company_data["company"]
         company_2 = self.company_data_2["company"]
         company_2.currency_id = company_1.currency_id
@@ -2805,7 +2847,9 @@ class TestTaxReport(TestAccountReportsCommon):
         )
 
         # Check if the two last horizontal_group are the one created from the tax unit
-        horizontal_groups = self.env["account.report.horizontal.group.oca"].search([])[-2:]
+        horizontal_groups = self.env["account.report.horizontal.group.oca"].search([])[
+            -2:
+        ]
         self.assertEqual(
             ["First Tax Unit", "Second Tax Unit"], horizontal_groups.mapped("name")
         )
@@ -2842,7 +2886,8 @@ class TestTaxReport(TestAccountReportsCommon):
         self.assertFalse(tax_unit.fpos_synced)
         tax_unit.action_sync_unit_fiscal_positions()
         for current_company in unit_companies:
-            # verify that partners for other companies in the unit have a fiscal position that removes taxes
+            # verify that partners for other companies in the unit have a fiscal
+            # position that removes taxes
             created_fp = tax_unit._get_tax_unit_fiscal_positions(
                 companies=current_company
             )
@@ -2863,7 +2908,8 @@ class TestTaxReport(TestAccountReportsCommon):
         tax_unit._compute_fiscal_position_completion()
         self.assertTrue(tax_unit.fpos_synced)
 
-        # remove company 3 from the unit and verify that the fiscal positions are removed from the relevant companies
+        # remove company 3 from the unit and verify that the fiscal positions are
+        # removed from the relevant companies
         tax_unit.write({"company_ids": [Command.unlink(company_3.id)]})
         self.assertFalse(tax_unit.fpos_synced)
         tax_unit.action_sync_unit_fiscal_positions()
@@ -2927,10 +2973,12 @@ class TestTaxReport(TestAccountReportsCommon):
             )
 
     def test_vat_unit_with_foreign_vat_fpos(self):
-        # Company 1 has the test country as domestic country, and a foreign VAT fpos in a different province
+        # Company 1 has the test country as domestic country, and a foreign VAT fpos in
+        # a different province
         company_1 = self.company_data["company"]
 
-        # Company 2 belongs to a different country, and has a foreign VAT fpos to the test country, with just one
+        # Company 2 belongs to a different country, and has a foreign VAT fpos to the
+        # test country, with just one
         # move adding 1000 in the first line of the report.
         company_2 = self.company_data_2["company"]
         company_2.currency_id = company_1.currency_id
@@ -2993,9 +3041,12 @@ class TestTaxReport(TestAccountReportsCommon):
             }
         )
 
-        # Opening the tax report for test country, we should see the same as in test_tax_report_fpos_everything + the 1000 of company 2, whatever the main company
+        # Opening the tax report for test country, we should see the same as in
+        # test_tax_report_fpos_everything + the 1000 of company 2, whatever the main
+        # company
 
-        # Varying the order of the two companies (and hence changing the "main" active one) should make no difference.
+        # Varying the order of the two companies (and hence changing the "main" active
+        # one) should make no difference.
         for unit_companies in ((company_1 + company_2), (company_2 + company_1)):
             options = self._generate_options(
                 self.basic_tax_report.with_context(
@@ -3014,7 +3065,7 @@ class TestTaxReport(TestAccountReportsCommon):
 
             self.assertLinesValues(
                 self.basic_tax_report._get_lines(options),
-                #   Name                                                          Balance
+                # Name                                                          Balance
                 [0, 1],
                 [
                     # out_invoice + 1000 from company_2 on the first line
@@ -3044,7 +3095,8 @@ class TestTaxReport(TestAccountReportsCommon):
     @freeze_time("2023-10-05 02:00:00")
     def test_tax_report_with_entries_with_sale_and_purchase_taxes(self):
         """Ensure signs are managed properly for entry moves.
-        This test runs the case where invoice/bill like entries are created and reverted.
+        This test runs the case where invoice/bill like entries are created and
+        reverted.
         """
         today = fields.Date.today()
         company = self.env.user.company_id
@@ -3137,7 +3189,7 @@ class TestTaxReport(TestAccountReportsCommon):
             self.assertEqual(
                 move.line_ids.tax_repartition_line_id,
                 move.reversal_move_ids.line_ids.tax_repartition_line_id,
-                "The same repartition line should be used when reverting a misc operation, to ensure they sum up to 0 in all cases.",
+                "The same repartition line should be used when reverting a misc operation, to ensure they sum up to 0 in all cases.",  # noqa: E501
             )
 
         options = self._generate_options(tax_report, today, today)
@@ -3160,7 +3212,8 @@ class TestTaxReport(TestAccountReportsCommon):
 
     @freeze_time("2023-10-05 02:00:00")
     def test_invoice_like_entry_reverse_caba_report(self):
-        """Cancelling the reconciliation of an invoice using cash basis taxes should reverse the cash basis move
+        """Cancelling the reconciliation of an invoice using cash basis taxes should
+        reverse the cash basis move
         in such a way that the original cash basis move lines' impact falls down to 0.
         """
         self.env.company.tax_exigibility = True
@@ -3206,7 +3259,7 @@ class TestTaxReport(TestAccountReportsCommon):
                             "repartition_type": "base",
                             "tag_ids": [
                                 Command.set(
-                                    report_line_invoice_base.expression_ids._get_matching_tags(
+                                    report_line_invoice_base.expression_ids._get_matching_tags(  # noqa: E501
                                         "+"
                                     ).ids
                                 )
@@ -3218,7 +3271,7 @@ class TestTaxReport(TestAccountReportsCommon):
                             "repartition_type": "tax",
                             "tag_ids": [
                                 Command.set(
-                                    report_line_invoice_tax.expression_ids._get_matching_tags(
+                                    report_line_invoice_tax.expression_ids._get_matching_tags(  # noqa: E501
                                         "+"
                                     ).ids
                                 )
@@ -3232,7 +3285,7 @@ class TestTaxReport(TestAccountReportsCommon):
                             "repartition_type": "base",
                             "tag_ids": [
                                 Command.set(
-                                    report_line_refund_base.expression_ids._get_matching_tags(
+                                    report_line_refund_base.expression_ids._get_matching_tags(  # noqa: E501
                                         "+"
                                     ).ids
                                 )
@@ -3244,7 +3297,7 @@ class TestTaxReport(TestAccountReportsCommon):
                             "repartition_type": "tax",
                             "tag_ids": [
                                 Command.set(
-                                    report_line_refund_tax.expression_ids._get_matching_tags(
+                                    report_line_refund_tax.expression_ids._get_matching_tags(  # noqa: E501
                                         "+"
                                     ).ids
                                 )
@@ -3349,22 +3402,24 @@ class TestTaxReport(TestAccountReportsCommon):
             autospec=True,
             side_effect=lambda *args, **kwargs: [],
         ):
-            # Generate the tax closing entry and close the period without posting it, so that we can assert on the exception
+            # Generate the tax closing entry and close the period without posting it, so
+            # that we can assert on the exception
             vat_closing_move = self.env[
                 "account.generic.tax.report.handler"
             ]._generate_tax_closing_entries(self.basic_tax_report, options)
             vat_closing_move.action_post()
 
-        # Calling the action_periodic_vat_entries method should return the existing tax closing entry.
+        # Calling the action_periodic_vat_entries method should return the existing tax
+        # closing entry.
         vat_closing_action = (
             self.env["account.generic.tax.report.handler"]
-            .with_context({"override_tax_closing_warning": True})
+            .with_context(override_tax_closing_warning=True)
             .action_periodic_vat_entries(options)
         )
         self.assertEqual(vat_closing_move.id, vat_closing_action["res_id"])
 
     def setup_multi_vat_context(self):
-        """Setup 2 tax reports, taxes and partner to represent a multiVat context in which both taxes affect both tax report"""
+        """Setup 2 tax reports, taxes and partner to represent a multiVat context in which both taxes affect both tax report"""  # noqa: E501
 
         def get_positive_tag(report_line):
             return report_line.expression_ids._get_matching_tags().filtered(
@@ -3624,7 +3679,8 @@ class TestTaxReport(TestAccountReportsCommon):
         company_2.country_id = self.fiscal_country
         company_2.currency_id = self.company_data["company"].currency_id
 
-        # create two foreign fiscal positions (FPs), so we could create moves for each of them
+        # create two foreign fiscal positions (FPs), so we could create moves for each
+        # of them
         foreign_vat_fpos = self.env["account.fiscal.position"].create(
             [
                 {
@@ -3838,7 +3894,7 @@ class TestTaxReport(TestAccountReportsCommon):
             )
 
     def test_tax_report_w_rounding_line(self):
-        """Check that the tax report is correct when a rounding line is added to an invoice."""
+        """Check that the tax report is correct when a rounding line is added to an invoice."""  # noqa: E501
         self.env["res.config.settings"].create(
             {"company_id": self.company_data["company"].id, "group_cash_rounding": True}
         )
@@ -3930,12 +3986,13 @@ class TestTaxReport(TestAccountReportsCommon):
 
         self.assertLinesValues(
             report._get_lines(options),
-            #   Name                                                                                         Base      Tax
+            # Name
+            # Base      Tax
             [0, 1, 2],
             [
                 ("Sales", "", 0.63),
                 (
-                    f"{self.sale_tax_percentage_incl_1.name} ({self.sale_tax_percentage_incl_1.amount}%)",
+                    f"{self.sale_tax_percentage_incl_1.name} ({self.sale_tax_percentage_incl_1.amount}%)",  # noqa: E501
                     1.05,
                     0.21,
                 ),
@@ -3950,19 +4007,20 @@ class TestTaxReport(TestAccountReportsCommon):
 
         self.assertLinesValues(
             report._get_lines(options),
-            #   Name                                                                                         Base      Tax
+            # Name
+            # Base      Tax
             [0, 1, 2],
             [
                 ("Sales", "", 0.63),
                 (self.company_data["default_account_revenue"].display_name, "", 0.63),
                 (
-                    f"{self.sale_tax_percentage_incl_1.name} ({self.sale_tax_percentage_incl_1.amount}%)",
+                    f"{self.sale_tax_percentage_incl_1.name} ({self.sale_tax_percentage_incl_1.amount}%)",  # noqa: E501
                     1.05,
                     0.21,
                 ),
                 (f"{tax.name} ({tax.amount}%)", 1.92, 0.42),
                 (
-                    f'Total {self.company_data["default_account_revenue"].display_name}',
+                    f"Total {self.company_data['default_account_revenue'].display_name}",  # noqa: E501
                     "",
                     0.63,
                 ),
@@ -3976,18 +4034,19 @@ class TestTaxReport(TestAccountReportsCommon):
 
         self.assertLinesValues(
             report._get_lines(options),
-            #   Name                                                                                               Base      Tax
+            # Name
+            # Base      Tax
             [0, 1, 2],
             [
                 ("Sales", "", 0.63),
                 (
-                    f"{self.sale_tax_percentage_incl_1.name} ({self.sale_tax_percentage_incl_1.amount}%)",
+                    f"{self.sale_tax_percentage_incl_1.name} ({self.sale_tax_percentage_incl_1.amount}%)",  # noqa: E501
                     "",
                     0.21,
                 ),
                 (self.company_data["default_account_revenue"].display_name, 1.05, 0.21),
                 (
-                    f"Total {self.sale_tax_percentage_incl_1.name} ({self.sale_tax_percentage_incl_1.amount}%)",
+                    f"Total {self.sale_tax_percentage_incl_1.name} ({self.sale_tax_percentage_incl_1.amount}%)",  # noqa: E501
                     "",
                     0.21,
                 ),
@@ -4001,10 +4060,13 @@ class TestTaxReport(TestAccountReportsCommon):
 
     def test_tax_report_closing_entry_reset_to_draft(self):
         """
-        Test the reset to draft functionality to ensure no duplicate closing entry is created.
+        Test the reset to draft functionality to ensure no duplicate closing entry is
+        created.
 
-        This test checks that when a tax report closing entry is posted and then reset to draft,
-        creating a subsequent closing entry will not result in a duplicate. Instead, the same
+        This test checks that when a tax report closing entry is posted and then reset
+        to draft,
+        creating a subsequent closing entry will not result in a duplicate. Instead, the
+        same
         initial closing entry will be reused.
         """
         options = self._generate_options(
@@ -4012,7 +4074,7 @@ class TestTaxReport(TestAccountReportsCommon):
         )
         vat_closing_action = (
             self.env["account.generic.tax.report.handler"]
-            .with_context({"override_tax_closing_warning": True})
+            .with_context(override_tax_closing_warning=True)
             .action_periodic_vat_entries(options)
         )
         initial_closing_entry = self.env["account.move"].browse(
@@ -4023,7 +4085,7 @@ class TestTaxReport(TestAccountReportsCommon):
         initial_closing_entry.button_draft()
         vat_closing_action = (
             self.env["account.generic.tax.report.handler"]
-            .with_context({"override_tax_closing_warning": True})
+            .with_context(override_tax_closing_warning=True)
             .action_periodic_vat_entries(options)
         )
         subsequent_closing_entry = self.env["account.move"].browse(
@@ -4033,7 +4095,8 @@ class TestTaxReport(TestAccountReportsCommon):
 
     def test_tax_report_closing_entry_draft_with_new_entries(self):
         """
-        Test whether the tax closing entry gets untouched when reset to draft and the VAT closing button is clicked again.
+        Test whether the tax closing entry gets untouched when reset to draft and the
+        VAT closing button is clicked again.
         """
         options = self._generate_options(
             self.basic_tax_report, "2023-01-01", "2023-03-31"
@@ -4048,7 +4111,7 @@ class TestTaxReport(TestAccountReportsCommon):
         )
         initial_vat_closing_action = (
             self.env["account.generic.tax.report.handler"]
-            .with_context({"override_tax_closing_warning": True})
+            .with_context(override_tax_closing_warning=True)
             .action_periodic_vat_entries(options)
         )
         initial_closing_entry = self.env["account.move"].browse(
@@ -4070,7 +4133,7 @@ class TestTaxReport(TestAccountReportsCommon):
         )
         subsequent_vat_closing_action = (
             self.env["account.generic.tax.report.handler"]
-            .with_context({"override_tax_closing_warning": True})
+            .with_context(override_tax_closing_warning=True)
             .action_periodic_vat_entries(options)
         )
         subsequent_closing_entry = self.env["account.move"].browse(
@@ -4161,15 +4224,17 @@ class TestTaxReport(TestAccountReportsCommon):
                     "All generated closing moves should be in draft",
                 )
                 main_closing_move = closing_moves.filtered(
-                    lambda x: x.company_id == main_company
+                    lambda x: x.company_id == main_company  # noqa: B023
                 )
                 self.assertEqual(len(main_closing_move), 1)
 
                 with self.enter_test_mode():
                     action = main_closing_move.action_post()
                     self.assertTrue(action["params"]["depending_action"])
-                    # When posting the main closing move a component will open to propose you to post the depending moves.
-                    # So while the depending moves are not posted the main closing will not be posted.
+                    # When posting the main closing move a component will open to
+                    # propose you to post the depending moves.
+                    # So while the depending moves are not posted the main closing will
+                    # not be posted.
                     self.assertTrue(main_closing_move.state == "draft")
                     (closing_moves - main_closing_move).action_post()
                     self.assertTrue(
@@ -4183,7 +4248,8 @@ class TestTaxReport(TestAccountReportsCommon):
 
     def test_tax_report_prevent_draft_if_subsequent_posted(self):
         """
-        Test the reset to draft functionality to ensure it is not possible to reset to draft a closing entry
+        Test the reset to draft functionality to ensure it is not possible to reset to
+        draft a closing entry
         if subsequent closing entries are already posted.
         """
         options = self._generate_options(
@@ -4191,7 +4257,7 @@ class TestTaxReport(TestAccountReportsCommon):
         )
         vat_closing_action = (
             self.env["account.generic.tax.report.handler"]
-            .with_context({"override_tax_closing_warning": True})
+            .with_context(override_tax_closing_warning=True)
             .action_periodic_vat_entries(options)
         )
         Q1_closing_entry = self.env["account.move"].browse(vat_closing_action["res_id"])
@@ -4203,12 +4269,13 @@ class TestTaxReport(TestAccountReportsCommon):
         )
         vat_closing_action = (
             self.env["account.generic.tax.report.handler"]
-            .with_context({"override_tax_closing_warning": True})
+            .with_context(override_tax_closing_warning=True)
             .action_periodic_vat_entries(options)
         )
         Q2_closing_entry = self.env["account.move"].browse(vat_closing_action["res_id"])
 
-        # We need to force recompute the entry as it is already generated from posting the Q1 entry.
+        # We need to force recompute the entry as it is already generated from posting
+        # the Q1 entry.
         Q2_closing_entry = self.env[
             "account.generic.tax.report.handler"
         ]._generate_tax_closing_entries(
@@ -4227,12 +4294,12 @@ class TestTaxReport(TestAccountReportsCommon):
         self.assertEqual(
             period_start,
             expected_start,
-            f"Period start date ({fields.Date.to_string(period_start)}) doesn't match the expected period start date: ({fields.Date.to_string(expected_start)})",
+            f"Period start date ({fields.Date.to_string(period_start)}) doesn't match the expected period start date: ({fields.Date.to_string(expected_start)})",  # noqa: E501
         )
         self.assertEqual(
             period_end,
             expected_end,
-            f"Period end date ({fields.Date.to_string(period_end)}) doesn't match the expected period end date: ({fields.Date.to_string(expected_end)})",
+            f"Period end date ({fields.Date.to_string(period_end)}) doesn't match the expected period end date: ({fields.Date.to_string(expected_end)})",  # noqa: E501
         )
 
     @freeze_time("2024-09-01")

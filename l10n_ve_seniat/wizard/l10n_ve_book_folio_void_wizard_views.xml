@@ -9,7 +9,10 @@
                 <group>
                     <field name="book_id" readonly="1" />
                     <field name="section_id" options="{'no_create': True}" />
-                    <field name="reason" placeholder="Indique el motivo por el que consume un correlativo sin factura u otro documento." />
+                    <field
+                        name="reason"
+                        placeholder="Indique el motivo por el que consume un correlativo sin factura u otro documento."
+                    />
                 </group>
                 <footer>
                     <button
@@ -19,7 +22,12 @@
                         class="btn-primary"
                         data-hotkey="q"
                     />
-                    <button string="Cancelar" class="btn-secondary" special="cancel" data-hotkey="x" />
+                    <button
+                        string="Cancelar"
+                        class="btn-secondary"
+                        special="cancel"
+                        data-hotkey="x"
+                    />
                 </footer>
             </form>
         </field>

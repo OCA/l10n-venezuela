@@ -10,7 +10,7 @@ class ResCompany(models.Model):
         comodel_name="account.account",
         string="Cuenta de anticipos de cliente",
         domain=(
-            "[('account_type', 'in', %s), ('deprecated', '=', False)]"
+            "[('account_type', 'in', %s), ('deprecated', '=', False)]"  # noqa: UP031
             % (CUSTOMER_ADVANCE_ACCOUNT_TYPES,)
         ),
         check_company=True,
@@ -23,7 +23,7 @@ class ResCompany(models.Model):
         comodel_name="account.account",
         string="Cuenta de anticipos de proveedor",
         domain=(
-            "[('account_type', 'in', %s), ('deprecated', '=', False)]"
+            "[('account_type', 'in', %s), ('deprecated', '=', False)]"  # noqa: UP031
             % (SUPPLIER_ADVANCE_ACCOUNT_TYPES,)
         ),
         check_company=True,

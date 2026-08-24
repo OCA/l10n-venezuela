@@ -83,7 +83,10 @@
                                 select="1"
                                 readonly="state in ['emitted', 'cancel']"
                             />
-                            <field name="date" readonly="state in ['emitted', 'cancel']" />
+                            <field
+                                name="date"
+                                readonly="state in ['emitted', 'cancel']"
+                            />
                         </group>
                     </group>
                     <group>
@@ -217,10 +220,7 @@
                 <field name="number" />
                 <field name="type" />
                 <field name="partner_id" />
-                <field
-                    name="affected_invoice_display_names"
-                    optional="show"
-                />
+                <field name="affected_invoice_display_names" optional="show" />
                 <field name="date" />
                 <field name="date_accounting" />
                 <field

@@ -14,7 +14,7 @@ class AccountPayment(models.Model):
     _inherit = "account.payment"
 
     destination_account_id = fields.Many2one(
-        domain="[('account_type', 'in', %s), ('deprecated', '=', False)]"
+        domain="[('account_type', 'in', %s), ('deprecated', '=', False)]"  # noqa: UP031
         % (_DESTINATION_ACCOUNT_TYPES,)
     )
     payment_has_invoice_lines = fields.Boolean(
@@ -101,12 +101,13 @@ class AccountPayment(models.Model):
         "payment_has_invoice_lines",
     )
     def _compute_destination_account_id(self):
-        super()._compute_destination_account_id()
+        result = super()._compute_destination_account_id()
         for payment in self:
             if payment._should_post_to_customer_advance_account():
                 payment.destination_account_id = payment._get_customer_advance_account()
             elif payment._should_post_to_supplier_advance_account():
                 payment.destination_account_id = payment._get_supplier_advance_account()
+        return result
 
     def _l10n_ve_get_advance_liquidity_lines(self):
         self.ensure_one()
@@ -130,8 +131,10 @@ class AccountPayment(models.Model):
             )
             if not advance_lines:
                 continue
-            payment_advance_lines = payment._l10n_ve_get_advance_liquidity_lines().filtered(
-                lambda line: not line.reconciled
+            payment_advance_lines = (
+                payment._l10n_ve_get_advance_liquidity_lines().filtered(
+                    lambda line: not line.reconciled
+                )
             )
             if payment_advance_lines and advance_lines:
                 (payment_advance_lines + advance_lines).reconcile()

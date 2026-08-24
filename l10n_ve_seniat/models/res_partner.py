@@ -210,9 +210,10 @@ class ResPartner(models.Model):
         "l10n_ve_display_name_vat_first",
     )
     def _compute_display_name(self):
-        if not self.env.context.get(
-            "l10n_ve_display_name_vat_first"
-        ) or not self._l10n_ve_fiscal_locks_apply():
+        if (
+            not self.env.context.get("l10n_ve_display_name_vat_first")
+            or not self._l10n_ve_fiscal_locks_apply()
+        ):
             return super()._compute_display_name()
         for partner in self:
             name = partner.with_context(lang=self.env.lang)._get_complete_name()

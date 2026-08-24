@@ -8,12 +8,12 @@ class AccountTaxUnit(models.Model):
     _name = "account.tax.unit"
     _description = "Tax Unit"
 
-    name = fields.Char(string="Name", required=True)
+    name = fields.Char(required=True)
     country_id = fields.Many2one(
         string="Country",
         comodel_name="res.country",
         required=True,
-        help="The country in which this tax unit is used to group your companies' tax reports declaration.",
+        help="The country in which this tax unit is used to group your companies' tax reports declaration.",  # noqa: E501
     )
     vat = fields.Char(
         string="Tax ID",
@@ -30,12 +30,12 @@ class AccountTaxUnit(models.Model):
         string="Main Company",
         comodel_name="res.company",
         required=True,
-        help="Main company of this unit; the one actually reporting and paying the taxes.",
+        help="Main company of this unit; the one actually reporting and paying the taxes.",  # noqa: E501
     )
     fpos_synced = fields.Boolean(
         string="Fiscal Positions Synchronised",
         compute="_compute_fiscal_position_completion",
-        help="Technical field indicating whether Fiscal Positions exist for all companies in the unit",
+        help="Technical field indicating whether Fiscal Positions exist for all companies in the unit",  # noqa: E501
     )
 
     def create(self, vals_list):
@@ -49,7 +49,7 @@ class AccountTaxUnit(models.Model):
                         Command.create(
                             {
                                 "field_name": "company_id",
-                                "domain": f"[('account_tax_unit_ids', 'in', {tax_unit.id})]",
+                                "domain": f"[('account_tax_unit_ids', 'in', {tax_unit.id})]",  # noqa: E501
                             }
                         ),
                     ],
@@ -78,7 +78,7 @@ class AccountTaxUnit(models.Model):
 
         for tax_unit in res:
             generic_tax_report.variant_report_ids.filtered(
-                lambda variant: variant.country_id == tax_unit.country_id
+                lambda variant: variant.country_id == tax_unit.country_id  # noqa: B023
             ).write(
                 {
                     "horizontal_group_ids": [
@@ -102,7 +102,7 @@ class AccountTaxUnit(models.Model):
                     self.env["res.company"]
                     .search([])
                     .with_company(origin_company)
-                    .partner_id.filtered(lambda p: p.property_account_position_id == fp)
+                    .partner_id.filtered(lambda p: p.property_account_position_id == fp)  # noqa: B023
                     if fp
                     else self.env["res.partner"]
                 )
@@ -119,16 +119,19 @@ class AccountTaxUnit(models.Model):
         Retrieves or creates fiscal positions for all companies specified.
         Each Fiscal Position contains all the taxes of the company mapped to no tax
 
-        @param {recordset} companies: companies for which to find/create fiscal positions
-        @param {boolean} create_or_refresh: a boolean indicating whether the fiscal positions should be created if not found
-        @return {recordset} all the fiscal positions found/created for the companies requested.
+        @param {recordset} companies: companies for which to find/create fiscal
+        positions
+        @param {boolean} create_or_refresh: a boolean indicating whether the fiscal
+        positions should be created if not found
+        @return {recordset} all the fiscal positions found/created for the companies
+        requested.
         """
         fiscal_positions = self.env["account.fiscal.position"].with_context(
             allowed_company_ids=self.env.user.company_ids.ids
         )
         for unit in self:
             for company in companies:
-                fp_identifier = "account.tax_unit_%s_fp_%s" % (unit.id, company.id)
+                fp_identifier = f"account.tax_unit_{unit.id}_fp_{company.id}"
                 existing_fp = self.env.ref(fp_identifier, raise_if_not_found=False)
                 if create_or_refresh:
                     taxes_to_map = (
@@ -188,7 +191,7 @@ class AccountTaxUnit(models.Model):
                 ):
                     raise ValidationError(
                         _(
-                            "Company %(company)s already belongs to a tax unit in %(country)s. A company can at most be part of one tax unit per country.",
+                            "Company %(company)s already belongs to a tax unit in %(country)s. A company can at most be part of one tax unit per country.",  # noqa: E501
                             company=company.name,
                             country=record.country_id.name,
                         )
@@ -197,7 +200,7 @@ class AccountTaxUnit(models.Model):
             if len(currencies) > 1:
                 raise ValidationError(
                     _(
-                        "A tax unit can only be created between companies sharing the same main currency."
+                        "A tax unit can only be created between companies sharing the same main currency."  # noqa: E501
                     )
                 )
 
@@ -215,7 +218,7 @@ class AccountTaxUnit(models.Model):
             if len(record.company_ids) < 2:
                 raise ValidationError(
                     _(
-                        "A tax unit must contain a minimum of two companies. You might want to delete the unit."
+                        "A tax unit must contain a minimum of two companies. You might want to delete the unit."  # noqa: E501
                     )
                 )
 
@@ -235,7 +238,7 @@ class AccountTaxUnit(models.Model):
             ):
                 raise ValidationError(
                     _(
-                        "The country detected for this VAT number does not match the one set on this Tax Unit."
+                        "The country detected for this VAT number does not match the one set on this Tax Unit."  # noqa: E501
                     )
                 )
 

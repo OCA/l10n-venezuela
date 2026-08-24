@@ -395,7 +395,8 @@ class TestAgedReceivableReport(TestAccountReportsCommon):
         self.assertLinesValues(
             # pylint: disable=C0326
             sorted_report_lines,
-            #   Name                      Not Due On       1 - 30      31 - 60      61 - 90     91 - 120        Older          Total
+            # Name                      Not Due On       1 - 30      31 - 60      61 -
+            # 90     91 - 120        Older          Total
             [0, 3, 4, 5, 6, 7, 8, 9],
             [
                 (
@@ -451,7 +452,8 @@ class TestAgedReceivableReport(TestAccountReportsCommon):
         self.assertLinesValues(
             # pylint: disable=C0326
             self.report.sort_lines(sorted_report_lines, options),
-            #   Name                      Not Due On       1 - 30      31 - 60      61 - 90     91 - 120        Older          Total
+            # Name                      Not Due On       1 - 30      31 - 60      61 -
+            # 90     91 - 120        Older          Total
             [0, 3, 4, 5, 6, 7, 8, 9],
             [
                 (
@@ -507,7 +509,8 @@ class TestAgedReceivableReport(TestAccountReportsCommon):
         self.assertLinesValues(
             # pylint: disable=C0326
             self.report.sort_lines(sorted_report_lines, options),
-            #   Name                      Not Due On       1 - 30      31 - 60       61 - 90     91 - 120        Older          Total
+            # Name                      Not Due On       1 - 30      31 - 60       61 -
+            # 90     91 - 120        Older          Total
             [0, 3, 4, 5, 6, 7, 8, 9],
             [
                 (
@@ -571,7 +574,8 @@ class TestAgedReceivableReport(TestAccountReportsCommon):
         self.assertLinesValues(
             # pylint: disable=C0326
             self.report.sort_lines(report_lines, options),
-            #   Name                     Not Due On       1 - 30      31 - 60       61 - 90    91 - 120        Older          Total
+            # Name                     Not Due On       1 - 30      31 - 60       61 -
+            # 90    91 - 120        Older          Total
             [0, 3, 4, 5, 6, 7, 8, 9],
             [
                 (
@@ -628,7 +632,7 @@ class TestAgedReceivableReport(TestAccountReportsCommon):
         )
 
     def test_aged_receivable_unknown_partner(self):
-        """Test that journal items without a partner in the receivable account appear as unknown partner."""
+        """Test that journal items without a partner in the receivable account appear as unknown partner."""  # noqa: E501
 
         misc_move = self.env["account.move"].create(
             {
@@ -665,7 +669,8 @@ class TestAgedReceivableReport(TestAccountReportsCommon):
         self.assertLinesValues(
             # pylint: disable=C0326
             self.report._get_lines(options),
-            #   Name                Not Due On       1 - 30      31 - 60      61 - 90     91 - 120        Older          Total
+            # Name                Not Due On       1 - 30      31 - 60      61 - 90
+            # 91 - 120        Older          Total
             [0, 3, 4, 5, 6, 7, 8, 9],
             [
                 (
@@ -696,7 +701,8 @@ class TestAgedReceivableReport(TestAccountReportsCommon):
         self.assertLinesValues(
             # pylint: disable=C0326
             self.report._get_lines(options),
-            #   Name             Not Due On      1 - 30     31 - 60     61 - 90    91 - 120       Older        Total
+            # Name             Not Due On      1 - 30     31 - 60     61 - 90    91 -
+            # 120       Older        Total
             [0, 3, 4, 5, 6, 7, 8, 9],
             [
                 ("Aged Receivable", 100.0, 100.0, 100.0, 600.0, 300.0, 100.0, 1300.0),
@@ -716,7 +722,8 @@ class TestAgedReceivableReport(TestAccountReportsCommon):
         self.assertLinesValues(
             # pylint: disable=C0326
             self.report._get_lines(options),
-            #   Name               Not Due On      1 - 30     31 - 60     61 - 90    91 - 120       Older         Total
+            # Name               Not Due On      1 - 30     31 - 60     61 - 90    91 -
+            # 120       Older         Total
             [0, 3, 4, 5, 6, 7, 8, 9],
             [
                 (
@@ -745,7 +752,8 @@ class TestAgedReceivableReport(TestAccountReportsCommon):
         self.assertLinesValues(
             # pylint: disable=C0326
             self.report._get_lines(options),
-            #   Name             Not Due On      1 - 30     31 - 60     61 - 90    91 - 120       Older        Total
+            # Name             Not Due On      1 - 30     31 - 60     61 - 90    91 -
+            # 120       Older        Total
             [0, 3, 4, 5, 6, 7, 8, 9],
             [
                 ("Aged Receivable", -133.33, 1466.67, 0.0, 0.0, 0.0, 133.33, 1466.67),
@@ -787,7 +795,8 @@ class TestAgedReceivableReport(TestAccountReportsCommon):
         self.assertLinesValues(
             # pylint: disable=C0326
             self.report.sort_lines(report_lines, options),
-            #   Name                     Invoice Date   Not Due On       1 - 30      31 - 60       61 - 90     91 - 120        Older          Total
+            # Name                     Invoice Date   Not Due On       1 - 30      31 -
+            # 60       61 - 90     91 - 120        Older          Total
             [0, 1, 3, 4, 5, 6, 7, 8, 9],
             [
                 (
@@ -1035,7 +1044,8 @@ class TestAgedReceivableReport(TestAccountReportsCommon):
         self.assertLinesValues(
             # pylint: disable=C0326
             self.report.sort_lines(report_lines, options),
-            #   Name                       Not Due On       1 - 30      31 - 60      61 - 90     91 - 120        Older          Total
+            # Name                       Not Due On       1 - 30      31 - 60      61 -
+            # 90     91 - 120        Older          Total
             [0, 3, 4, 5, 6, 7, 8, 9],
             [
                 (
@@ -1123,7 +1133,8 @@ class TestAgedReceivableReport(TestAccountReportsCommon):
         self.assertLinesValues(
             # pylint: disable=C0326
             self.report.sort_lines(report_lines, options),
-            #   Name                      Not Due On       1 - 30      31 - 60      61 - 90     91 - 120        Older          Total
+            # Name                      Not Due On       1 - 30      31 - 60      61 -
+            # 90     91 - 120        Older          Total
             [0, 3, 4, 5, 6, 7, 8, 9],
             [
                 (
@@ -1188,7 +1199,8 @@ class TestAgedReceivableReport(TestAccountReportsCommon):
         self.assertLinesValues(
             # pylint: disable=C0326
             self.report.sort_lines(report_lines, options),
-            #   Name                   Not Due On       1 - 30      31 - 60      61 - 90     91 - 120        Older          Total
+            # Name                   Not Due On       1 - 30      31 - 60      61 - 90
+            # 91 - 120        Older          Total
             [0, 3, 4, 5, 6, 7, 8, 9],
             [
                 (
@@ -1294,7 +1306,8 @@ class TestAgedReceivableReport(TestAccountReportsCommon):
         self.assertLinesValues(
             # pylint: disable=C0326
             self.report._get_lines(options),
-            #   Name                  Not Due On      1 - 30     31 - 60     61 - 90    91 - 120       Older        Total
+            # Name                  Not Due On      1 - 30     31 - 60     61 - 90    91
+            # - 120       Older        Total
             [0, 3, 4, 5, 6, 7, 8, 9],
             [
                 ("Aged Receivable", 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0),
@@ -1307,7 +1320,8 @@ class TestAgedReceivableReport(TestAccountReportsCommon):
             options,
         )
 
-        # It should still work if both  invoice and refund are partially reconciled with the same amount
+        # It should still work if both  invoice and refund are partially reconciled with
+        # the same amount
         self.env["account.payment.register"].with_context(
             active_ids=invoice.ids, active_model="account.move"
         ).create(
@@ -1331,7 +1345,8 @@ class TestAgedReceivableReport(TestAccountReportsCommon):
         self.assertLinesValues(
             # pylint: disable=C0326
             self.report._get_lines(options),
-            #   Name                  Not Due On      1 - 30     31 - 60     61 - 90    91 - 120       Older        Total
+            # Name                  Not Due On      1 - 30     31 - 60     61 - 90    91
+            # - 120       Older        Total
             [0, 3, 4, 5, 6, 7, 8, 9],
             [
                 ("Aged Receivable", 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0),
@@ -1344,7 +1359,8 @@ class TestAgedReceivableReport(TestAccountReportsCommon):
             options,
         )
 
-        # It should still work if both  invoice and refund are fully reconciled in the future
+        # It should still work if both  invoice and refund are fully reconciled in the
+        # future
         self.env["account.payment.register"].with_context(
             active_ids=invoice.ids, active_model="account.move"
         ).create(
@@ -1368,7 +1384,8 @@ class TestAgedReceivableReport(TestAccountReportsCommon):
         self.assertLinesValues(
             # pylint: disable=C0326
             self.report._get_lines(options),
-            #   Name                  Not Due On      1 - 30     31 - 60     61 - 90    91 - 120       Older        Total
+            # Name                  Not Due On      1 - 30     31 - 60     61 - 90    91
+            # - 120       Older        Total
             [0, 3, 4, 5, 6, 7, 8, 9],
             [
                 ("Aged Receivable", 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0),
@@ -1415,7 +1432,8 @@ class TestAgedReceivableReport(TestAccountReportsCommon):
 
         self.assertLinesValues(
             self.report._get_lines(options),
-            #   Name                 Not Due On      1 - 30     31 - 60     61 - 90    91 - 120       Older        Total
+            # Name                 Not Due On      1 - 30     31 - 60     61 - 90    91
+            # - 120       Older        Total
             [0, 3, 4, 5, 6, 7, 8, 9],
             [
                 ("Aged Receivable", 378.0, 0.0, 0.0, 0.0, 0.0, 0.0, 378.0),
@@ -1441,7 +1459,8 @@ class TestAgedReceivableReport(TestAccountReportsCommon):
 
         self.assertLinesValues(
             self.report._get_lines(options),
-            #   Name                            Not Due On    1 - 30     31 - 60     61 - 90    91 - 120       Older        Total
+            # Name                            Not Due On    1 - 30     31 - 60     61 -
+            # 90    91 - 120       Older        Total
             [0, 3, 4, 5, 6, 7, 8, 9],
             [
                 ("Aged Receivable", 378.0, 0.0, 0.0, 0.0, 0.0, 0.0, 378.0),
@@ -1505,7 +1524,7 @@ class TestAgedReceivableReport(TestAccountReportsCommon):
         )
 
     def test_aged_receivable_partial_reconcile_currency(self):
-        """Check that 'Amount Currency' column values are displayed and computed correctly."""
+        """Check that 'Amount Currency' column values are displayed and computed correctly."""  # noqa: E501
         foreign_partner = self.env["res.partner"].create({"name": "foreign_partner"})
         currency = self.other_currency
         currency.active = True
@@ -1554,7 +1573,8 @@ class TestAgedReceivableReport(TestAccountReportsCommon):
         self.assertLinesValues(
             # pylint: disable=C0326
             self.report._get_unfolded_lines(self.report._get_lines(options), line_id),
-            #   Name                                      Due Date     Amount Currency     Currency     As Of     Total
+            # Name                                      Due Date     Amount Currency
+            # Currency     As Of     Total
             [0, 1, 2, 3, 5, 11],
             [
                 ("foreign_partner", "", "", "", 50.0, 50.0),
@@ -1574,7 +1594,8 @@ class TestAgedReceivableReport(TestAccountReportsCommon):
             self.report._get_unfolded_lines(
                 self.report._get_lines(new_options), line_id
             ),
-            #   Name                                      Due Date     Amount Currency     Currency     As Of     1-30     Total
+            # Name                                      Due Date     Amount Currency
+            # Currency     As Of     1-30     Total
             [0, 1, 2, 3, 5, 6, 11],
             [
                 ("foreign_partner", "", "", "", 0.0, 45.0, 45.0),
@@ -1593,7 +1614,8 @@ class TestAgedReceivableReport(TestAccountReportsCommon):
         # With the default interval of 30
         self.assertLinesValues(
             self.report.sort_lines(initial_report_lines, options),
-            #   Name                    Not Due On       1 - 30       31 - 60       62 - 90     91 - 120        Older        Total
+            # Name                    Not Due On       1 - 30       31 - 60       62 -
+            # 90     91 - 120        Older        Total
             [0, 3, 4, 5, 6, 7, 8, 9],
             [
                 (
@@ -1628,7 +1650,8 @@ class TestAgedReceivableReport(TestAccountReportsCommon):
         # With the interval of 60
         self.assertLinesValues(
             self.report.sort_lines(report_lines, options),
-            #   Name                    Not Due On       1 - 60     61 - 120     121 - 180   181 - 240        Older          Total
+            # Name                    Not Due On       1 - 60     61 - 120     121 - 180
+            # 181 - 240        Older          Total
             [0, 3, 4, 5, 6, 7, 8, 9],
             [
                 (

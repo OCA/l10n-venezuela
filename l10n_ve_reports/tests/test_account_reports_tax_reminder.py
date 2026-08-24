@@ -20,13 +20,13 @@ class TestAccountReportsTaxReminder(TestAccountReportsCommon):
         cls.options = cls._generate_options(cls.report, "2024-08-01", "2024-08-31")
         action = (
             cls.env["account.tax.report.handler"]
-            .with_context({"override_tax_closing_warning": True})
+            .with_context(override_tax_closing_warning=True)
             .action_periodic_vat_entries(cls.options)
         )
         cls.tax_return_move = cls.env["account.move"].browse(action["res_id"])
 
     def test_posting_adds_an_activity(self):
-        """Posting the tax report move should be adding the proper tax to be sent activity"""
+        """Posting the tax report move should be adding the proper tax to be sent activity"""  # noqa: E501
         act_type_tax_to_pay = self.env.ref(
             "account_reports.mail_activity_type_tax_report_to_pay"
         )
@@ -72,12 +72,12 @@ class TestAccountReportsTaxReminder(TestAccountReportsCommon):
             [
                 {
                     "activity_type_id": act_type_report_to_send.id,
-                    "summary": f'Send tax report: {self.tax_return_move.date.strftime("%B %Y")}',
+                    "summary": f"Send tax report: {self.tax_return_move.date.strftime('%B %Y')}",  # noqa: E501
                     "date_deadline": fields.Date.context_today(self.env.user),
                 },
                 {
                     "activity_type_id": act_type_tax_to_pay.id,
-                    "summary": f'Pay tax: {self.tax_return_move.date.strftime("%B %Y")}',
+                    "summary": f"Pay tax: {self.tax_return_move.date.strftime('%B %Y')}",  # noqa: E501
                     "date_deadline": fields.Date.context_today(self.env.user),
                 },
             ],
@@ -105,11 +105,12 @@ class TestAccountReportsTaxReminder(TestAccountReportsCommon):
             "resetting to draft and posting again shouldn't create a new activity",
         )
 
-        # 0.0 tax returns create a send tax report activity but shouldn't trigger the payment activity
+        # 0.0 tax returns create a send tax report activity but shouldn't trigger the
+        # payment activity
         options = self._generate_options(self.report, "2024-09-01", "2024-09-30")
         action = (
             self.env["account.tax.report.handler"]
-            .with_context({"override_tax_closing_warning": True})
+            .with_context(override_tax_closing_warning=True)
             .action_periodic_vat_entries(options)
         )
         next_tax_return_move = self.env["account.move"].browse(action["res_id"])
@@ -132,7 +133,7 @@ class TestAccountReportsTaxReminder(TestAccountReportsCommon):
             [
                 {
                     "activity_type_id": act_type_report_to_send.id,
-                    "summary": f'Send tax report: {next_tax_return_move.date.strftime("%B %Y")}',
+                    "summary": f"Send tax report: {next_tax_return_move.date.strftime('%B %Y')}",  # noqa: E501
                     "date_deadline": fields.Date.context_today(self.env.user),
                 }
             ],
@@ -172,14 +173,15 @@ class TestAccountReportsTaxReminder(TestAccountReportsCommon):
 
     def test_tax_closing_activity_reminder_duplication(self):
         """
-        Test triggering multiple times the closing action don't recreate an activity for the closing move even if the moves are cancelled
+        Test triggering multiple times the closing action don't recreate an activity for
+        the closing move even if the moves are cancelled
         """
         # Cancel the main one to be able to create new ones for this closing
         self.tax_return_move.button_cancel()
-        for i in range(0, 2):
+        for _i in range(0, 2):
             action = (
                 self.env["account.tax.report.handler"]
-                .with_context({"override_tax_closing_warning": True})
+                .with_context(override_tax_closing_warning=True)
                 .action_periodic_vat_entries(self.options)
             )
             move = self.env["account.move"].browse(action["res_id"])
@@ -190,7 +192,7 @@ class TestAccountReportsTaxReminder(TestAccountReportsCommon):
         self.assertEqual(
             len(activity),
             1,
-            "You cannot have duplicate tax closing reminder for the same report on the same period",
+            "You cannot have duplicate tax closing reminder for the same report on the same period",  # noqa: E501
         )
 
     def test_tax_closing_activity_reminder_post(self):
@@ -230,7 +232,8 @@ class TestAccountReportsTaxReminder(TestAccountReportsCommon):
 
     def test_tax_closing_activity_reminder_reset_on_periodicity_change(self):
         """
-        Test that when changing the periodicity, the old activities got replaced by new ones
+        Test that when changing the periodicity, the old activities got replaced by new
+        ones
         """
         old_activity = self.env.company._get_tax_closing_reminder_activity(
             self.report.id, fields.Date.from_string(self.options["date"]["date_to"])

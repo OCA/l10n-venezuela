@@ -1,19 +1,22 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <odoo>
     <record id="view_pos_pos_form_l10n_ve_pos_igtf" model="ir.ui.view">
         <field name="name">pos.order.form.l10n.ve.pos.igtf</field>
         <field name="model">pos.order</field>
-        <field name="inherit_id" ref="point_of_sale.view_pos_pos_form"/>
+        <field name="inherit_id" ref="point_of_sale.view_pos_pos_form" />
         <field name="arch" type="xml">
-            <xpath expr="//field[@name='payment_ids']//field[@name='amount']" position="after">
-                <field name="include_igtf" optional="hide"/>
-                <field name="igtf_amount" optional="hide"/>
-                <field name="foreign_igtf_amount" optional="hide"/>
+            <xpath
+                expr="//field[@name='payment_ids']//field[@name='amount']"
+                position="after"
+            >
+                <field name="include_igtf" optional="hide" />
+                <field name="igtf_amount" optional="hide" />
+                <field name="foreign_igtf_amount" optional="hide" />
             </xpath>
             <xpath expr="//group[@name='order_fields']" position="after">
                 <group string="IGTF POS" name="l10n_ve_pos_igtf_group" colspan="4">
-                    <field name="igtf_amount"/>
-                    <field name="bi_igtf"/>
+                    <field name="igtf_amount" />
+                    <field name="bi_igtf" />
                 </group>
             </xpath>
         </field>

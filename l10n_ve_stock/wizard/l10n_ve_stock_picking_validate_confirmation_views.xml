@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <odoo>
     <record id="view_l10n_ve_stock_picking_validate_confirmation" model="ir.ui.view">
         <field name="name">l10n_ve.stock.picking.validate.confirmation.form</field>

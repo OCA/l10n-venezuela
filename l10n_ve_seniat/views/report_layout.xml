@@ -15,9 +15,7 @@
             expr="//div[hasclass('totals_taxes_company_currency')]"
             position="attributes"
         >
-            <attribute
-                name="class"
-            >mb-2 totals_taxes_company_currency</attribute>
+            <attribute name="class">mb-2 totals_taxes_company_currency</attribute>
         </xpath>
         <!-- <xpath expr="//p[hasclass('tax_computation_company_currency')]" priority="100" position="replace" /> -->
     </template>
@@ -90,17 +88,18 @@
                                 /> - RIF: <t
                                     t-out="o.l10n_ve_third_party_partner_id.vat"
                                 /></span>
-                                <div
-                                    class="text-muted small"
-                                >
+                                <div class="text-muted small">
                                     <span
-                                >Ventas por cuenta de terceros Art. 10 de la Ley del IVA.</span>
+                                    >Ventas por cuenta de terceros Art. 10 de la Ley del IVA.</span>
                                 </div>
                                 <div
                                     t-if="o.l10n_ve_certified_copy_deadline"
                                     class="text-muted small mb-2"
                                 >
-                                    <span>Obligación Art. 32 PA00071: Entregar copia certificada al cliente a más tardar el <span t-field="o.l10n_ve_certified_copy_deadline"/></span>.
+                                    <span
+                                >Obligación Art. 32 PA00071: Entregar copia certificada al cliente a más tardar el <span
+                                    t-field="o.l10n_ve_certified_copy_deadline"
+                                /></span>.
                                 </div>
                             </t>
                             <!-- Art. 13 num. 5-7 PA SNAT/2011/0071; Art. 7 num. 3 y 7 PA SNAT/2024/000102: adquiriente. -->
@@ -199,7 +198,10 @@
                                 />
                                 <span t-else="">de contado</span>
                             </div>
-                            <t t-set="l10n_ve_exchange_rate_display" t-value="o.l10n_ve_report_exchange_rate_display()" />
+                            <t
+                                t-set="l10n_ve_exchange_rate_display"
+                                t-value="o.l10n_ve_report_exchange_rate_display()"
+                            />
                             <!-- Art. 13 num. 14 PA SNAT/2011/0071; Art. 15 Ley del IVA; Art. 38 RLIVA: tipo de cambio. -->
                             <div class="d-block text-uppercase">
                                 <strong>Moneda:</strong>
@@ -272,27 +274,26 @@
                                         >Cant.</th>
                                         <th
                                             class="col text-uppercase fw-bold text-nowrap"
-                                        >PRECIO U.<t
-                                            t-if="show_company_currency"
-                                        > <t
-                                            t-out="o.currency_id.symbol"
-                                        /></t></th>
+                                        >PRECIO U.<t t-if="show_company_currency">
+                                            <t t-out="o.currency_id.symbol" />
+                                        </t></th>
                                         <th
                                             class="col-1 text-uppercase fw-bold text-nowrap"
                                             t-if="show_company_currency"
                                         >SUBTOTAL BS</th>
                                         <th
                                             class="col-1 text-uppercase fw-bold text-nowrap"
-                                        >SUBTOTAL<t
-                                            t-if="show_company_currency"
-                                        > <t
-                                            t-out="o.currency_id.symbol"
-                                        /></t></th>
+                                        >SUBTOTAL<t t-if="show_company_currency">
+                                            <t t-out="o.currency_id.symbol" />
+                                        </t></th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <t t-set="l10n_ve_line_item" t-value="0" />
-                                    <t t-foreach="o.l10n_ve_report_invoice_lines()" t-as="line">
+                                    <t
+                                        t-foreach="o.l10n_ve_report_invoice_lines()"
+                                        t-as="line"
+                                    >
                                         <tr
                                             t-att-class="'fw-bold o_line_section' if line.display_type == 'line_section' else 'fst-italic o_line_note' if line.display_type == 'line_note' else ''"
                                         >
@@ -373,251 +374,297 @@
                                 </tbody>
                             </table>
                             <t t-if="l10n_ve_cn_nd_bs">
-                                <t t-call="l10n_ve_seniat.report_invoice_footer_cn_bs" />
+                                <t
+                                    t-call="l10n_ve_seniat.report_invoice_footer_cn_bs"
+                                />
                             </t>
                             <t t-else="">
-                            <div class="overflow-hidden">
-                                <div
-                                    id="right-elements"
-                                    t-attf-class="{{ 'col-6' if show_company_currency else 'col-4' }} mt-2 d-inline-block float-end"
-                                >
-                                    <div id="total" class="clearfix row ms-3">
-                                        <div class="ms-auto">
-                                            <t
-                                                t-set="tax_totals"
-                                                t-value="o.tax_totals or {}"
-                                            />
-                                            <t
-                                                t-set="doc_currency"
-                                                t-value="o.currency_id"
-                                            />
-                                            <t
-                                                t-set="comp_currency"
-                                                t-value="o.company_currency_id"
-                                            />
-                                            <style>
+                                <div class="overflow-hidden">
+                                    <div
+                                        id="right-elements"
+                                        t-attf-class="{{ 'col-6' if show_company_currency else 'col-4' }} mt-2 d-inline-block float-end"
+                                    >
+                                        <div id="total" class="clearfix row ms-3">
+                                            <div class="ms-auto">
+                                                <t
+                                                    t-set="tax_totals"
+                                                    t-value="o.tax_totals or {}"
+                                                />
+                                                <t
+                                                    t-set="doc_currency"
+                                                    t-value="o.currency_id"
+                                                />
+                                                <t
+                                                    t-set="comp_currency"
+                                                    t-value="o.company_currency_id"
+                                                />
+                                                <style>
                                                 #total .tax-totals-table tbody tr:first-child td {
                                                     border-top: none !important;
                                                 }
                                             </style>
-                                            <table
-                                                class="table table-sm table-borderless tax-totals-table mb-0"
-                                            >
-                                                <tbody>
-                                                    <t
-                                                        t-set="all_tax_groups"
-                                                        t-value="[group for subtotal in tax_totals.get('subtotals', []) for group in subtotal.get('tax_groups', [])]"
-                                                    />
-                                                    <t
-                                                        t-set="vat_groups"
-                                                        t-value="[group for group in all_tax_groups if group.get('id') != -1]"
-                                                    />
-                                                    <t
-                                                        t-set="vat_group"
-                                                        t-value="vat_groups[0] if vat_groups else {}"
-                                                    />
-                                                    <t
-                                                        t-set="igtf_groups"
-                                                        t-value="[group for group in all_tax_groups if group.get('id') == -1]"
-                                                    />
-                                                    <t
-                                                        t-set="igtf_group"
-                                                        t-value="igtf_groups[0] if igtf_groups else {}"
-                                                    />
-                                                    <t
-                                                        t-set="vat_percent_tokens"
-                                                        t-value="[token for token in vat_group.get('group_name', '').replace(':', ' ').split() if '%' in token]"
-                                                    />
-                                                    <t
-                                                        t-set="vat_percent"
-                                                        t-value="vat_percent_tokens[0] if vat_percent_tokens else '16%'"
-                                                    />
-                                                    <t
-                                                        t-set="igtf_percent_value"
-                                                        t-value="o.l10n_ve_report_igtf_percent()"
-                                                    />
-                                                    <t
-                                                        t-set="igtf_percent_txt"
-                                                        t-value="'%s' % igtf_percent_value"
-                                                    />
-                                                    <t
-                                                        t-set="igtf_percent"
-                                                        t-value="igtf_percent_txt.replace('.', ',') + '%'"
-                                                    />
-                                                    <tr>
-                                                        <td
-                                                            class="text-end pe-2 py-2"
-                                                            style="border-bottom: 1px solid #6c757d;"
-                                                        >Subtotal:</td>
-                                                        <t t-if="show_company_currency">
+                                                <table
+                                                    class="table table-sm table-borderless tax-totals-table mb-0"
+                                                >
+                                                    <tbody>
+                                                        <t
+                                                            t-set="all_tax_groups"
+                                                            t-value="[group for subtotal in tax_totals.get('subtotals', []) for group in subtotal.get('tax_groups', [])]"
+                                                        />
+                                                        <t
+                                                            t-set="vat_groups"
+                                                            t-value="[group for group in all_tax_groups if group.get('id') != -1]"
+                                                        />
+                                                        <t
+                                                            t-set="vat_group"
+                                                            t-value="vat_groups[0] if vat_groups else {}"
+                                                        />
+                                                        <t
+                                                            t-set="igtf_groups"
+                                                            t-value="[group for group in all_tax_groups if group.get('id') == -1]"
+                                                        />
+                                                        <t
+                                                            t-set="igtf_group"
+                                                            t-value="igtf_groups[0] if igtf_groups else {}"
+                                                        />
+                                                        <t
+                                                            t-set="vat_percent_tokens"
+                                                            t-value="[token for token in vat_group.get('group_name', '').replace(':', ' ').split() if '%' in token]"
+                                                        />
+                                                        <t
+                                                            t-set="vat_percent"
+                                                            t-value="vat_percent_tokens[0] if vat_percent_tokens else '16%'"
+                                                        />
+                                                        <t
+                                                            t-set="igtf_percent_value"
+                                                            t-value="o.l10n_ve_report_igtf_percent()"
+                                                        />
+                                                        <t
+                                                            t-set="igtf_percent_txt"
+                                                            t-value="'%s' % igtf_percent_value"
+                                                        />
+                                                        <t
+                                                            t-set="igtf_percent"
+                                                            t-value="igtf_percent_txt.replace('.', ',') + '%'"
+                                                        />
+                                                        <tr>
                                                             <td
-                                                                class="text-end py-2 ps-2"
+                                                                class="text-end pe-2 py-2"
+                                                                style="border-bottom: 1px solid #6c757d;"
+                                                            >Subtotal:</td>
+                                                            <t
+                                                                t-if="show_company_currency"
+                                                            >
+                                                                <td
+                                                                    class="text-end py-2 ps-2"
+                                                                    style="border-bottom: 1px solid #6c757d;"
+                                                                >
+                                                                    <span
+                                                                        t-out="tax_totals.get('l10n_ve_subtotal_gross', tax_totals.get('base_amount', 0)) if tax_totals.get('l10n_ve_show_global_discount') else tax_totals.get('base_amount', 0)"
+                                                                        t-options='{"widget": "monetary", "display_currency": comp_currency}'
+                                                                    />
+                                                                </td>
+                                                            </t>
+                                                            <td
+                                                                class="text-end py-2"
                                                                 style="border-bottom: 1px solid #6c757d;"
                                                             >
                                                                 <span
-                                                                    t-out="tax_totals.get('l10n_ve_subtotal_gross', tax_totals.get('base_amount', 0)) if tax_totals.get('l10n_ve_show_global_discount') else tax_totals.get('base_amount', 0)"
-                                                                    t-options='{"widget": "monetary", "display_currency": comp_currency}'
+                                                                    t-out="tax_totals.get('l10n_ve_subtotal_gross_currency', tax_totals.get('base_amount_currency', 0)) if tax_totals.get('l10n_ve_show_global_discount') else tax_totals.get('base_amount_currency', 0)"
+                                                                    t-options='{"widget": "monetary", "display_currency": doc_currency}'
                                                                 />
                                                             </td>
-                                                        </t>
-                                                        <td
-                                                            class="text-end py-2"
-                                                            style="border-bottom: 1px solid #6c757d;"
+                                                        </tr>
+                                                        <tr
+                                                            t-if="tax_totals.get('l10n_ve_show_global_discount')"
                                                         >
-                                                            <span
-                                                                t-out="tax_totals.get('l10n_ve_subtotal_gross_currency', tax_totals.get('base_amount_currency', 0)) if tax_totals.get('l10n_ve_show_global_discount') else tax_totals.get('base_amount_currency', 0)"
-                                                                t-options='{"widget": "monetary", "display_currency": doc_currency}'
-                                                            />
-                                                        </td>
-                                                    </tr>
-                                                    <tr t-if="tax_totals.get('l10n_ve_show_global_discount')">
-                                                        <td
-                                                            class="text-end pe-2 py-1"
-                                                            style="border-bottom: 1px solid #6c757d;"
-                                                        >
+                                                            <td
+                                                                class="text-end pe-2 py-1"
+                                                                style="border-bottom: 1px solid #6c757d;"
+                                                            >
                                                             Descuento
                                                             <t
                                                                 t-if="tax_totals.get('l10n_ve_global_discount_percentage')"
                                                             >
                                                                 (<t
-                                                                    t-out="'%.2f' % (tax_totals.get('l10n_ve_global_discount_percentage') * 100.0)"
-                                                                />%):
+                                                                t-out="'%.2f' % (tax_totals.get('l10n_ve_global_discount_percentage') * 100.0)"
+                                                            />%):
                                                             </t>
                                                             <t t-else="">:</t>
                                                         </td>
-                                                        <t t-if="show_company_currency">
+                                                            <t
+                                                                t-if="show_company_currency"
+                                                            >
+                                                                <td
+                                                                    class="text-end py-1 ps-2"
+                                                                    style="border-bottom: 1px solid #6c757d;"
+                                                                >
+                                                                    <span
+                                                                        t-out="-tax_totals.get('l10n_ve_global_discount_amount', 0.0)"
+                                                                        t-options='{"widget": "monetary", "display_currency": comp_currency}'
+                                                                    />
+                                                                </td>
+                                                            </t>
                                                             <td
-                                                                class="text-end py-1 ps-2"
+                                                                class="text-end py-1"
                                                                 style="border-bottom: 1px solid #6c757d;"
                                                             >
                                                                 <span
-                                                                    t-out="-tax_totals.get('l10n_ve_global_discount_amount', 0.0)"
-                                                                    t-options='{"widget": "monetary", "display_currency": comp_currency}'
+                                                                    t-out="-tax_totals.get('l10n_ve_global_discount_amount_currency', 0.0)"
+                                                                    t-options='{"widget": "monetary", "display_currency": doc_currency}'
                                                                 />
                                                             </td>
-                                                        </t>
-                                                        <td
-                                                            class="text-end py-1"
-                                                            style="border-bottom: 1px solid #6c757d;"
+                                                        </tr>
+                                                        <tr>
+                                                            <td
+                                                                class="text-end pe-2 py-1"
+                                                            >B.I <t
+                                                                t-out="vat_percent"
+                                                            />:</td>
+                                                            <t
+                                                                t-if="show_company_currency"
+                                                            >
+                                                                <td
+                                                                    class="text-end py-1 ps-2"
+                                                                >
+                                                                    <span
+                                                                        t-out="vat_group.get('display_base_amount', vat_group.get('base_amount', 0))"
+                                                                        t-options='{"widget": "monetary", "display_currency": comp_currency}'
+                                                                    />
+                                                                </td>
+                                                            </t>
+                                                            <td class="text-end py-1">
+                                                                <span
+                                                                    t-out="vat_group.get('display_base_amount_currency', vat_group.get('base_amount_currency', 0))"
+                                                                    t-options='{"widget": "monetary", "display_currency": doc_currency}'
+                                                                />
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td
+                                                                class="text-end pe-2 py-1"
+                                                            ><t
+                                                                t-out="vat_percent"
+                                                            />:</td>
+                                                            <t
+                                                                t-if="show_company_currency"
+                                                            >
+                                                                <td
+                                                                    class="text-end py-1 ps-2"
+                                                                >
+                                                                    <span
+                                                                        t-out="vat_group.get('tax_amount', 0)"
+                                                                        t-options='{"widget": "monetary", "display_currency": comp_currency}'
+                                                                    />
+                                                                </td>
+                                                            </t>
+                                                            <td class="text-end py-1">
+                                                                <span
+                                                                    t-out="vat_group.get('tax_amount_currency', 0)"
+                                                                    t-options='{"widget": "monetary", "display_currency": doc_currency}'
+                                                                />
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <!-- Providencia SNAT/2022/000013: desglose IGTF en pagos en divisas. -->
+                                                            <td
+                                                                class="text-end pe-2 py-1"
+                                                            >Base Imponible IGTF:</td>
+                                                            <t
+                                                                t-if="show_company_currency"
+                                                            >
+                                                                <td
+                                                                    class="text-end py-1 ps-2"
+                                                                >
+                                                                    <span
+                                                                        t-out="igtf_group.get('display_base_amount', igtf_group.get('base_amount', 0))"
+                                                                        t-options='{"widget": "monetary", "display_currency": comp_currency}'
+                                                                    />
+                                                                </td>
+                                                            </t>
+                                                            <td class="text-end py-1">
+                                                                <span
+                                                                    t-out="igtf_group.get('display_base_amount_currency', igtf_group.get('base_amount_currency', 0))"
+                                                                    t-options='{"widget": "monetary", "display_currency": doc_currency}'
+                                                                />
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td
+                                                                class="text-end pe-2 py-1"
+                                                            >IGTF <t
+                                                                t-out="igtf_percent"
+                                                            />:</td>
+                                                            <t
+                                                                t-if="show_company_currency"
+                                                            >
+                                                                <td
+                                                                    class="text-end py-1 ps-2"
+                                                                >
+                                                                    <span
+                                                                        t-out="igtf_group.get('tax_amount', 0)"
+                                                                        t-options='{"widget": "monetary", "display_currency": comp_currency}'
+                                                                    />
+                                                                </td>
+                                                            </t>
+                                                            <td class="text-end py-1">
+                                                                <span
+                                                                    t-out="igtf_group.get('tax_amount_currency', 0)"
+                                                                    t-options='{"widget": "monetary", "display_currency": doc_currency}'
+                                                                />
+                                                            </td>
+                                                        </tr>
+                                                        <tr
+                                                            class="border-top border-2 fw-bold fs-5"
                                                         >
-                                                            <span
-                                                                t-out="-tax_totals.get('l10n_ve_global_discount_amount_currency', 0.0)"
-                                                                t-options='{"widget": "monetary", "display_currency": doc_currency}'
-                                                            />
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td class="text-end pe-2 py-1">B.I <t t-out="vat_percent" />:</td>
-                                                        <t t-if="show_company_currency">
-                                                            <td class="text-end py-1 ps-2">
+                                                            <td
+                                                                class="text-end pe-2 py-1"
+                                                            >Total a Pagar</td>
+                                                            <t
+                                                                t-if="show_company_currency"
+                                                            >
+                                                                <td
+                                                                    class="text-end py-1 ps-2"
+                                                                >
+                                                                    <span
+                                                                        t-out="tax_totals.get('total_amount', 0)"
+                                                                        t-options='{"widget": "monetary", "display_currency": comp_currency}'
+                                                                    />
+                                                                </td>
+                                                            </t>
+                                                            <td class="text-end py-1">
                                                                 <span
-                                                                    t-out="vat_group.get('display_base_amount', vat_group.get('base_amount', 0))"
-                                                                    t-options='{"widget": "monetary", "display_currency": comp_currency}'
+                                                                    t-out="tax_totals.get('total_amount_currency', 0)"
+                                                                    t-options='{"widget": "monetary", "display_currency": doc_currency}'
                                                                 />
                                                             </td>
-                                                        </t>
-                                                        <td class="text-end py-1">
-                                                            <span
-                                                                t-out="vat_group.get('display_base_amount_currency', vat_group.get('base_amount_currency', 0))"
-                                                                t-options='{"widget": "monetary", "display_currency": doc_currency}'
-                                                            />
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td class="text-end pe-2 py-1"><t t-out="vat_percent" />:</td>
-                                                        <t t-if="show_company_currency">
-                                                            <td class="text-end py-1 ps-2">
-                                                                <span
-                                                                    t-out="vat_group.get('tax_amount', 0)"
-                                                                    t-options='{"widget": "monetary", "display_currency": comp_currency}'
-                                                                />
-                                                            </td>
-                                                        </t>
-                                                        <td class="text-end py-1">
-                                                            <span
-                                                                t-out="vat_group.get('tax_amount_currency', 0)"
-                                                                t-options='{"widget": "monetary", "display_currency": doc_currency}'
-                                                            />
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <!-- Providencia SNAT/2022/000013: desglose IGTF en pagos en divisas. -->
-                                                        <td class="text-end pe-2 py-1">Base Imponible IGTF:</td>
-                                                        <t t-if="show_company_currency">
-                                                            <td class="text-end py-1 ps-2">
-                                                                <span
-                                                                    t-out="igtf_group.get('display_base_amount', igtf_group.get('base_amount', 0))"
-                                                                    t-options='{"widget": "monetary", "display_currency": comp_currency}'
-                                                                />
-                                                            </td>
-                                                        </t>
-                                                        <td class="text-end py-1">
-                                                            <span
-                                                                t-out="igtf_group.get('display_base_amount_currency', igtf_group.get('base_amount_currency', 0))"
-                                                                t-options='{"widget": "monetary", "display_currency": doc_currency}'
-                                                            />
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td class="text-end pe-2 py-1">IGTF <t t-out="igtf_percent" />:</td>
-                                                        <t t-if="show_company_currency">
-                                                            <td class="text-end py-1 ps-2">
-                                                                <span
-                                                                    t-out="igtf_group.get('tax_amount', 0)"
-                                                                    t-options='{"widget": "monetary", "display_currency": comp_currency}'
-                                                                />
-                                                            </td>
-                                                        </t>
-                                                        <td class="text-end py-1">
-                                                            <span
-                                                                t-out="igtf_group.get('tax_amount_currency', 0)"
-                                                                t-options='{"widget": "monetary", "display_currency": doc_currency}'
-                                                            />
-                                                        </td>
-                                                    </tr>
-                                                    <tr class="border-top border-2 fw-bold fs-5">
-                                                        <td class="text-end pe-2 py-1">Total a Pagar</td>
-                                                        <t t-if="show_company_currency">
-                                                            <td class="text-end py-1 ps-2">
-                                                                <span
-                                                                    t-out="tax_totals.get('total_amount', 0)"
-                                                                    t-options='{"widget": "monetary", "display_currency": comp_currency}'
-                                                                />
-                                                            </td>
-                                                        </t>
-                                                        <td class="text-end py-1">
-                                                            <span
-                                                                t-out="tax_totals.get('total_amount_currency', 0)"
-                                                                t-options='{"widget": "monetary", "display_currency": doc_currency}'
-                                                            />
-                                                        </td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="mb-2">
-                                        <p
-                                            class="text-end lh-sm"
-                                            t-if="o.company_id.display_invoice_amount_total_words"
-                                        >
+                                        <div class="mb-2">
+                                            <p
+                                                class="text-end lh-sm"
+                                                t-if="o.company_id.display_invoice_amount_total_words"
+                                            >
                                             Total amount in words: <br />
                                         <small class="text-muted lh-sm">
-                                            <span
-                                                t-field="o.amount_total_words"
-                                            >Thirty one dollar and Five cents</span>
-                                        </small>
+                                                <span
+                                                    t-field="o.amount_total_words"
+                                                >Thirty one dollar and Five cents</span>
+                                            </small>
                                     </p>
+                                        </div>
+                                    </div>
+                                    <div id="payment_term" class="clearfix mt-3">
+                                        <!-- Leyendas IGTF y tipo de cambio (_compute_seniat_invoice_tag). -->
+                                        <div class="justify-text">
+                                            <span t-field="o.narration" />
+                                            <span t-field="o.seniat_invoice_tag" />
+                                        </div>
                                     </div>
                                 </div>
-                                <div id="payment_term" class="clearfix mt-3">
-                                    <!-- Leyendas IGTF y tipo de cambio (_compute_seniat_invoice_tag). -->
-                                    <div class="justify-text">
-                                        <span t-field="o.narration" />
-                                        <span t-field="o.seniat_invoice_tag" />
-                                    </div>
-                                </div>
-                            </div>
                             </t>
                         </div>
                     </div>
@@ -645,12 +692,18 @@
                         t-set="vat_groups"
                         t-value="[group for group in all_tax_groups if group.get('id') != -1]"
                     />
-                    <t t-set="vat_group" t-value="vat_groups[0] if vat_groups else {}" />
+                    <t
+                        t-set="vat_group"
+                        t-value="vat_groups[0] if vat_groups else {}"
+                    />
                     <t
                         t-set="igtf_groups"
                         t-value="[group for group in all_tax_groups if group.get('id') == -1]"
                     />
-                    <t t-set="igtf_group" t-value="igtf_groups[0] if igtf_groups else {}" />
+                    <t
+                        t-set="igtf_group"
+                        t-value="igtf_groups[0] if igtf_groups else {}"
+                    />
                     <t
                         t-set="vat_percent_tokens"
                         t-value="[token for token in vat_group.get('group_name', '').replace(':', ' ').split() if '%' in token]"
@@ -659,9 +712,15 @@
                         t-set="vat_percent"
                         t-value="vat_percent_tokens[0] if vat_percent_tokens else '16%'"
                     />
-                    <t t-set="igtf_percent_value" t-value="o.l10n_ve_report_igtf_percent()" />
+                    <t
+                        t-set="igtf_percent_value"
+                        t-value="o.l10n_ve_report_igtf_percent()"
+                    />
                     <t t-set="igtf_percent_txt" t-value="'%s' % igtf_percent_value" />
-                    <t t-set="igtf_percent" t-value="igtf_percent_txt.replace('.', ',') + '%'" />
+                    <t
+                        t-set="igtf_percent"
+                        t-value="igtf_percent_txt.replace('.', ',') + '%'"
+                    />
                     <div class="row">
                         <div class="col-6">
                             <table class="table table-sm table-borderless mb-0 w-100">
@@ -677,25 +736,37 @@
                                         />:</td>
                                     </tr>
                                     <tr>
-                                        <td class="text-end py-1 pe-1"><t t-out="vat_percent" />:</td>
+                                        <td class="text-end py-1 pe-1"><t
+                                            t-out="vat_percent"
+                                        />:</td>
                                     </tr>
                                     <tr>
-                                        <td class="text-end py-1 pe-1">Base Imponible IGTF:</td>
+                                        <td
+                                            class="text-end py-1 pe-1"
+                                        >Base Imponible IGTF:</td>
                                     </tr>
                                     <tr>
-                                        <td class="text-end py-1 pe-1">IGTF <t t-out="igtf_percent" />:</td>
+                                        <td class="text-end py-1 pe-1">IGTF <t
+                                            t-out="igtf_percent"
+                                        />:</td>
                                     </tr>
                                     <tr class="border-top border-2 fw-bold fs-6">
-                                        <td class="text-end py-1 pe-1">Total a Pagar</td>
+                                        <td
+                                            class="text-end py-1 pe-1"
+                                        >Total a Pagar</td>
                                     </tr>
                                 </tbody>
                             </table>
                         </div>
                         <div class="col-6">
-                            <table class="table table-sm table-borderless tax-totals-table mb-0 w-100">
+                            <table
+                                class="table table-sm table-borderless tax-totals-table mb-0 w-100"
+                            >
                                 <tbody>
                                     <tr>
-                                        <td class="text-end py-2 border-bottom border-secondary">
+                                        <td
+                                            class="text-end py-2 border-bottom border-secondary"
+                                        >
                                             <span
                                                 t-out="tax_totals.get('base_amount_currency', 0)"
                                                 t-options='{"widget": "monetary", "display_currency": doc_currency}'
@@ -755,8 +826,8 @@
                 >
                     Total amount in words: <br />
                     <small class="text-muted lh-sm">
-                        <span t-field="o.amount_total_words" />
-                    </small>
+                    <span t-field="o.amount_total_words" />
+                </small>
                 </p>
             </div>
         </div>

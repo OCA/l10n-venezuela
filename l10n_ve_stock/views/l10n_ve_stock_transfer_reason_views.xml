@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <odoo>
     <record id="view_l10n_ve_stock_transfer_reason_tree" model="ir.ui.view">
         <field name="name">l10n_ve.stock.transfer.reason.list</field>
@@ -6,7 +6,11 @@
         <field name="arch" type="xml">
             <list editable="bottom">
                 <field name="name" />
-                <field name="company_id" groups="base.group_multi_company" optional="show" />
+                <field
+                    name="company_id"
+                    groups="base.group_multi_company"
+                    optional="show"
+                />
             </list>
         </field>
     </record>

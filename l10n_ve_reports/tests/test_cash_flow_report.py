@@ -79,7 +79,7 @@ class TestCashFlowReport(TestAccountReportsCommon):
         ).reconcile()
 
     def test_growth_comparison(self):
-        """Enables period comparison and tests the growth comparison column; in order to ensure this feature works on reports with dynamic lines."""
+        """Enables period comparison and tests the growth comparison column; in order to ensure this feature works on reports with dynamic lines."""  # noqa: E501
         self.report.filter_period_comparison = True
         options = self._generate_options(
             self.report,
@@ -349,7 +349,8 @@ class TestCashFlowReport(TestAccountReportsCommon):
                 ],
             }
         )
-        # Default journal account that hasn't "Bank and Cash" or "Credit Card" type should not appear
+        # Default journal account that hasn't "Bank and Cash" or "Credit Card" type
+        # should not appear
         self.misc_journal.default_account_id = self.account_no_tag
         receivable_move.action_post()
 
@@ -977,7 +978,8 @@ class TestCashFlowReport(TestAccountReportsCommon):
             options,
         )
 
-        # Second payment (also 20% but will produce two partials, one on each receivable line).
+        # Second payment (also 20% but will produce two partials, one on each receivable
+        # line).
         payment_2 = self.env["account.move"].create(
             {
                 "move_type": "entry",
@@ -1608,8 +1610,10 @@ class TestCashFlowReport(TestAccountReportsCommon):
         )
 
     def test_cash_flow_tricky_case_4(self):
-        """The difficulty of this case is the liquidity move will pay the misc move at 1000 / 3000 = 1/3.
-        However, you must take care of the sign because the 3000 in credit must become 1000 in debit.
+        """The difficulty of this case is the liquidity move will pay the misc move at
+        1000 / 3000 = 1/3.
+        However, you must take care of the sign because the 3000 in credit must become
+        1000 in debit.
         """
         options = self._generate_options(
             self.report,
@@ -1836,7 +1840,7 @@ class TestCashFlowReport(TestAccountReportsCommon):
         )
 
     def test_cash_flow_tricky_case_6(self):
-        """Test the additional lines on liquidity moves (e.g. bank fees) are well reported."""
+        """Test the additional lines on liquidity moves (e.g. bank fees) are well reported."""  # noqa: E501
         options = self._generate_options(
             self.report,
             fields.Date.from_string("2016-01-01"),
@@ -2035,7 +2039,8 @@ class TestCashFlowReport(TestAccountReportsCommon):
         )
 
     def test_cash_flow_tricky_case_7(self):
-        """Test cross reconciliation between liquidity moves with additional lines when the liquidity account
+        """Test cross reconciliation between liquidity moves with additional lines when
+        the liquidity account
         is reconcile.
         """
         options = self._generate_options(
@@ -2422,7 +2427,8 @@ class TestCashFlowReport(TestAccountReportsCommon):
     def test_cash_flow_handle_multiple_tags(self):
         """Ensure that the balances are correct in the following situations:
         - when several non-cash-flow-report account tags are set
-        - when a mix of several non-cash-flow-report tags and one cash-flow report tag are set.
+        - when a mix of several non-cash-flow-report tags and one cash-flow report tag
+        are set.
         """
 
         options = self._generate_options(
@@ -2445,7 +2451,8 @@ class TestCashFlowReport(TestAccountReportsCommon):
         )
 
         # account_no_tag will now have 2 tags unrelated to the Cash Flow Report.
-        # account_financing will now have the `account.account_tag_financing` tag, plus the two unrelated tags.
+        # account_financing will now have the `account.account_tag_financing` tag, plus
+        # the two unrelated tags.
         (self.account_no_tag + self.account_financing).write(
             {
                 "tag_ids": [
@@ -2520,7 +2527,7 @@ class TestCashFlowReport(TestAccountReportsCommon):
         )
 
     def test_cash_flow_hierarchy(self):
-        """Test the 'hierarchy' option. I.e. we want to ensure that each section of the report (e.g. "Cash and cash equivalents, beginning of period" and "Cash and cash equivalents, closing balance") has its own dedicated hierarchy and they are not mixed up together."""
+        """Test the 'hierarchy' option. I.e. we want to ensure that each section of the report (e.g. "Cash and cash equivalents, beginning of period" and "Cash and cash equivalents, closing balance") has its own dedicated hierarchy and they are not mixed up together."""  # noqa: E501
         options = self._generate_options(self.report, "2016-01-01", "2016-12-31")
         # Create the account groups for the bank and cash accounts
         self.env["account.group"].create(
@@ -2671,7 +2678,8 @@ class TestCashFlowReport(TestAccountReportsCommon):
                 "book_value": "$\xa0150.00",
             },
         ]
-        # assertEqual is used and not assertLinesValues because we want to check the 'level'
+        # assertEqual is used and not assertLinesValues because we want to check the
+        # 'level'
         self.assertEqual(len(lines_wo_hierarchy), len(expected_values_wo_hierarchy))
         self.assertEqual(lines_wo_hierarchy, expected_values_wo_hierarchy)
 
@@ -2783,6 +2791,7 @@ class TestCashFlowReport(TestAccountReportsCommon):
                 "book_value": "$\xa0150.00",
             },
         ]
-        # assertEqual is used and not assertLinesValues because we want to check the 'level'
+        # assertEqual is used and not assertLinesValues because we want to check the
+        # 'level'
         self.assertEqual(len(lines), len(expected_values))
         self.assertEqual(lines, expected_values)

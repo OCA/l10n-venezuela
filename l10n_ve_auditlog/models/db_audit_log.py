@@ -40,13 +40,11 @@ class L10nVeDbAuditLog(models.Model):
     def _build_changed_values(self, old_values, new_values, operation):
         if operation == "insert" and new_values:
             return {
-                key: {"old": None, "new": value}
-                for key, value in new_values.items()
+                key: {"old": None, "new": value} for key, value in new_values.items()
             }
         if operation == "delete" and old_values:
             return {
-                key: {"old": value, "new": None}
-                for key, value in old_values.items()
+                key: {"old": value, "new": None} for key, value in old_values.items()
             }
         if operation != "update" or not old_values or not new_values:
             return {}
@@ -72,17 +70,13 @@ class L10nVeDbAuditLog(models.Model):
                 for field_name in sorted(changed):
                     values = changed[field_name]
                     if not isinstance(values, dict):
-                        lines.append("%s: %s" % (field_name, values))
+                        lines.append(f"{field_name}: {values}")
                         continue
                     old_value = values.get("old")
                     new_value = values.get("new")
                     lines.append(
-                        "%s: %s -> %s"
-                        % (
-                            field_name,
-                            record._format_audit_value(old_value),
-                            record._format_audit_value(new_value),
-                        )
+                        f"{field_name}: {record._format_audit_value(old_value)} "
+                        f"-> {record._format_audit_value(new_value)}"
                     )
             record.changed_fields_text = "\n".join(lines)
 
@@ -90,7 +84,7 @@ class L10nVeDbAuditLog(models.Model):
     def _format_audit_value(self, value):
         if value in (None, False):
             return ""
-        if isinstance(value, (dict, list)):
+        if isinstance(value, dict | list):
             return json.dumps(value, ensure_ascii=False, sort_keys=True)
         return str(value)
 

@@ -1,9 +1,9 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
-from odoo import api, fields, models, _
+from odoo import _, api, fields, models
 from odoo.exceptions import UserError
 
-from odoo.addons.l10n_ve_auditlog.hooks import (
+from ..hooks import (
     _table_exists,
     _validate_table_name,
     install_db_audit_triggers,
@@ -67,9 +67,7 @@ class L10nVeDbAuditTable(models.Model):
             )
             if existing:
                 write_vals = {
-                    key: value
-                    for key, value in vals.items()
-                    if key != "table_name"
+                    key: value for key, value in vals.items() if key != "table_name"
                 }
                 if write_vals:
                     existing.write(write_vals)
@@ -80,15 +78,16 @@ class L10nVeDbAuditTable(models.Model):
                 ordered_ids.append(None)
         created = super().create(to_create) if to_create else self.browse()
         created_ids = list(created.ids)
-        for slot, created_id in zip(create_slots, created_ids):
+        for slot, created_id in zip(create_slots, created_ids, strict=False):
             ordered_ids[slot] = created_id
         return self.browse(ordered_ids)
 
     @api.model
     def init(self):
-        super().init()
+        res = super().init()
         if self.search_count([]):
             install_db_audit_triggers(self.env)
+        return res
 
     def action_install_triggers(self):
         install_db_audit_triggers(self.env)

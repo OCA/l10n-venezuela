@@ -12,7 +12,7 @@ class CustomerStatementCustomHandler(models.AbstractModel):
         return display_config
 
     def _custom_options_initializer(self, report, options, previous_options):
-        super()._custom_options_initializer(report, options, previous_options)
+        result = super()._custom_options_initializer(report, options, previous_options)
 
         options["buttons"].append(
             {
@@ -22,3 +22,4 @@ class CustomerStatementCustomHandler(models.AbstractModel):
                 "always_show": True,
             }
         )
+        return result

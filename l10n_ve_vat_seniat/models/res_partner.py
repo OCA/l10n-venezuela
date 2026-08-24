@@ -19,10 +19,10 @@ class ResPartner(models.Model):
     _inherit = "res.partner"
 
     taxpayer_type = fields.Selection(
-        inverse="_l10n_ve_vat_seniat_inverse_taxpayer_type",
+        inverse="_inverse_l10n_ve_vat_seniat_taxpayer_type",
     )
 
-    def _l10n_ve_vat_seniat_inverse_taxpayer_type(self):
+    def _inverse_l10n_ve_vat_seniat_taxpayer_type(self):
         return
 
     @api.model
@@ -52,7 +52,9 @@ class ResPartner(models.Model):
                 continue
             if partner.country_id.code != VE_CODE or not partner.vat:
                 continue
-            tid = partner._l10n_ve_vat_seniat_default_type_person_id_for_vat(partner.vat)
+            tid = partner._l10n_ve_vat_seniat_default_type_person_id_for_vat(
+                partner.vat
+            )
             if tid:
                 super(ResPartner, partner).write({"type_person_id": tid})
         return res
@@ -97,7 +99,9 @@ class ResPartner(models.Model):
     def action_l10n_ve_vat_seniat_open_portal(self):
         self.ensure_one()
         if self.country_id and self.country_id.code != "VE":
-            raise UserError(_("El enlace al SENIAT solo aplica a contactos de Venezuela."))
+            raise UserError(
+                _("El enlace al SENIAT solo aplica a contactos de Venezuela.")
+            )
         rif = self._l10n_ve_vat_seniat_rif_from_vat()
         url = (
             "http://contribuyente.seniat.gob.ve/BuscaRif/BuscaRif.jsp"
@@ -112,7 +116,9 @@ class ResPartner(models.Model):
     def action_l10n_ve_vat_seniat_query(self):
         self.ensure_one()
         if self.country_id and self.country_id.code != "VE":
-            raise UserError(_("La consulta automática SENIAT solo aplica a contactos de Venezuela."))
+            raise UserError(
+                _("La consulta automática SENIAT solo aplica a contactos de Venezuela.")
+            )
         rif = self._l10n_ve_vat_seniat_rif_from_vat()
         _logger.info(
             "l10n_ve_vat_seniat botón consulta partner_id=%s rif=%s",
@@ -133,8 +139,8 @@ class ResPartner(models.Model):
             reason = result.get("reason", "")
             if reason == "captcha_exhausted":
                 _logger.warning(
-                    "l10n_ve_vat_seniat captcha agotado partner_id=%s rif=%s detalle=%r "
-                    "codes_tried=%s",
+                    "l10n_ve_vat_seniat captcha agotado partner_id=%s "
+                    "rif=%s detalle=%r codes_tried=%s",
                     self.id,
                     rif,
                     result.get("detail"),
@@ -143,12 +149,16 @@ class ResPartner(models.Model):
                 raise UserError(
                     _(
                         "No se pudo validar el captcha tras varios intentos. "
-                        "Compruebe que Tesseract esté instalado y que el servicio del SENIAT responda."
+                        "Compruebe que Tesseract esté instalado y que el "
+                        "servicio del SENIAT responda."
                     )
                 )
             if reason == "unexpected_html":
                 raise UserError(
-                    _("La respuesta del SENIAT no se pudo interpretar (formato inesperado).")
+                    _(
+                        "La respuesta del SENIAT no se pudo interpretar "
+                        "(formato inesperado)."
+                    )
                 )
             raise UserError(_("Consulta no completada: %s") % (reason,))
 
@@ -167,7 +177,8 @@ class ResPartner(models.Model):
 
         payload = {k: v for k, v in result.items() if k != "ok"}
         _logger.info(
-            "SENIAT RIF lookup OK partner_id=%s commercial_partner_id=%s rif=%s data=%s",
+            "SENIAT RIF lookup OK partner_id=%s commercial_partner_id=%s "
+            "rif=%s data=%s",
             self.id,
             self.commercial_partner_id.id,
             rif,
@@ -187,9 +198,7 @@ class ResPartner(models.Model):
         )
         nombre_txt = nombre_seniat or commercial.name or commercial.display_name or ""
 
-        tt_label = self._l10n_ve_vat_seniat_selection_label(
-            commercial, "taxpayer_type"
-        )
+        tt_label = self._l10n_ve_vat_seniat_selection_label(commercial, "taxpayer_type")
         if not tt_label and result.get("seniat_tipo_contribuyente_label"):
             tt_label = result["seniat_tipo_contribuyente_label"].strip()
         if not tt_label:

@@ -12,9 +12,7 @@ class TestTourAccountReports(AccountTestInvoicingHttpCommon):
         super().setUpClass()
 
         today = fields.Date.today()
-        previous_year = fields.Date.from_string(
-            "%s-%s-01" % (today.year - 1, today.month)
-        )
+        previous_year = fields.Date.from_string(f"{today.year - 1}-{today.month}-01")
 
         cls.out_invoice_current_year = cls.env["account.move"].create(
             {

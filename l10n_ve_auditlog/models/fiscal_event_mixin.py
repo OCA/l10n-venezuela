@@ -9,6 +9,4 @@ class L10nVeFiscalEventMixin(models.AbstractModel):
 
     def _l10n_ve_audit_log_fiscal_event(self, event_type, description):
         self.ensure_one()
-        return self.env["auditlog.log"].log_fiscal_event(
-            self, event_type, description
-        )
+        return self.env["auditlog.log"].log_fiscal_event(self, event_type, description)

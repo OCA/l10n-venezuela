@@ -515,7 +515,9 @@ class TestAccountReportsJournalFilter(AccountTestInvoicingCommon):
                 (
                     g2,
                     False,
-                ),  # g2 should be displayed because it has journals that are allowed in the report
+                    # g2 is shown because it has journals allowed in the
+                    # report
+                ),
                 {"id": "divider"},
                 (bnk, True),
                 (caba, True),
@@ -726,7 +728,8 @@ class TestAccountReportsJournalFilter(AccountTestInvoicingCommon):
         )
 
     def test_journal_filter_with_groups_no_company_multi_company(self):
-        """Test the journals filter with a group where no company is set, therefore implying that all companies can
+        """Test the journals filter with a group where no company is set, therefore
+        implying that all companies can
         visualize the filter in their accounting reports"""
         j1 = self._quick_create_journal("j1", self.vanilla_company1)
         j2 = self._quick_create_journal("j2", self.vanilla_company1)
@@ -737,7 +740,8 @@ class TestAccountReportsJournalFilter(AccountTestInvoicingCommon):
         # g1 has journals of company 1 and 2, even though visible only for company 1
         g1 = self._quick_create_journal_group("g1", self.vanilla_company1, j1 + j4)
 
-        # g2 has no company set, therefore implying that this multi-ledger is visible for all companies
+        # g2 has no company set, therefore implying that this multi-ledger is visible
+        # for all companies
         g2 = self._quick_create_journal_group("g2", False, j2 + j5)
 
         # only select company 2
@@ -818,7 +822,8 @@ class TestAccountReportsJournalFilter(AccountTestInvoicingCommon):
             }
         )
 
-        # The company is changed -> reset the journals filter and select the first available group
+        # The company is changed -> reset the journals filter and select the first
+        # available group
         options = self.report.get_options({"is_opening_report": True})
         self._assert_filter_journal(
             options,
@@ -851,7 +856,8 @@ class TestAccountReportsJournalFilter(AccountTestInvoicingCommon):
             ],
         )
 
-        # Check that changing the sequence of journal groups changes the order in the filter, and therefore the default selected group
+        # Check that changing the sequence of journal groups changes the order in the
+        # filter, and therefore the default selected group
         g2.sequence = g1.sequence - 1
         options = self.report.get_options({"is_opening_report": True})
         self._assert_filter_journal(
@@ -869,7 +875,7 @@ class TestAccountReportsJournalFilter(AccountTestInvoicingCommon):
         )
 
     def test_filter_journal_visible_items(self):
-        """Test the unfolded and visible attributes of the dropdown items of the journals filter"""
+        """Test the unfolded and visible attributes of the dropdown items of the journals filter"""  # noqa: E501
         j1 = self._quick_create_journal("j1", self.vanilla_company1)
         j2 = self._quick_create_journal("j5", self.vanilla_company2)
         g1 = self._quick_create_journal_group("g1", False, j1)
@@ -897,7 +903,8 @@ class TestAccountReportsJournalFilter(AccountTestInvoicingCommon):
             (None, False),
             (False, None),
         ]
-        # Ensure that when opening the report for the first time, all companies are folded
+        # Ensure that when opening the report for the first time, all companies are
+        # folded
         self._assert_filter_journal_visible_unfolded(
             options, expected_values_at_opening
         )

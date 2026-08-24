@@ -9,10 +9,7 @@
                 expr="//block[@name='fiscal_localization_setting_container']"
                 position="after"
             >
-                <block
-                    name="l10n_ve_seniat_block"
-                    title="Venezuela"
-                >
+                <block name="l10n_ve_seniat_block" title="Venezuela">
                     <div
                         id="l10n_ve_seniat_div_emission_medium"
                         class="col-12 o_setting_box"
@@ -154,7 +151,9 @@
                         class="col-12 col-lg-6 o_setting_box"
                     >
                         <div class="o_setting_left_pane">
-                            <field name="l10n_ve_reception_date_payment_term_customer" />
+                            <field
+                                name="l10n_ve_reception_date_payment_term_customer"
+                            />
                         </div>
                         <div class="o_setting_right_pane">
                             <label for="l10n_ve_reception_date_payment_term_customer" />

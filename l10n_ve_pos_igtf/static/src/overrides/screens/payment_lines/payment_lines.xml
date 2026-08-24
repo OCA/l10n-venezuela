@@ -1,85 +1,147 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <templates id="template" xml:space="preserve">
-    <t t-name="l10n_ve_pos_igtf.PaymentScreenPaymentLines" t-inherit="point_of_sale.PaymentScreenPaymentLines" t-inherit-mode="extension">
-        <xpath expr="//t[@t-foreach='props.paymentLines']/t[@t-if='line.isSelected()']/div[1]" position="replace">
-            <div t-attf-class="paymentline selected d-flex flex-column {{ this.ui.isSmall ? 'bg-100' : 'bg-200'}} border rounded-3"
-                t-att-class="selectedLineClass(line)">
+    <t
+        t-name="l10n_ve_pos_igtf.PaymentScreenPaymentLines"
+        t-inherit="point_of_sale.PaymentScreenPaymentLines"
+        t-inherit-mode="extension"
+    >
+        <xpath
+            expr="//t[@t-foreach='props.paymentLines']/t[@t-if='line.isSelected()']/div[1]"
+            position="replace"
+        >
+            <div
+                t-attf-class="paymentline selected d-flex flex-column {{ this.ui.isSmall ? 'bg-100' : 'bg-200'}} border rounded-3"
+                t-att-class="selectedLineClass(line)"
+            >
                 <div class="d-flex align-items-center w-100">
-                    <div class="payment-infos d-flex align-items-center justify-content-between flex-grow-1 px-3 py-3 text-truncate cursor-pointer fs-2" t-on-click="() => this.selectLine(line)">
-                        <span class="payment-name"><t t-esc="line.payment_method_id.name"/></span>
+                    <div
+                        class="payment-infos d-flex align-items-center justify-content-between flex-grow-1 px-3 py-3 text-truncate cursor-pointer fs-2"
+                        t-on-click="() => this.selectLine(line)"
+                    >
+                        <span class="payment-name">
+                            <t t-esc="line.payment_method_id.name" />
+                        </span>
                         <div class="payment-amount px-3 text-end">
-                            <t t-if="line.isForeignCurrencyPayment and line.isForeignCurrencyPayment()">
+                            <t
+                                t-if="line.isForeignCurrencyPayment and line.isForeignCurrencyPayment()"
+                            >
                                 <div class="lh-sm">
-                                    <t t-esc="getPaymentLineForeignAmountDisplay(line)"/>
+                                    <t
+                                        t-esc="getPaymentLineForeignAmountDisplay(line)"
+                                    />
                                 </div>
                                 <div class="small text-muted lh-sm">
-                                    <t t-esc="getPaymentLineOrderAmountDisplay(line)"/>
+                                    <t t-esc="getPaymentLineOrderAmountDisplay(line)" />
                                 </div>
                             </t>
                             <t t-else="">
-                                <t t-esc="getPaymentLineOrderAmountDisplay(line)"/>
+                                <t t-esc="getPaymentLineOrderAmountDisplay(line)" />
                             </t>
                         </div>
                     </div>
-                    <t t-if="!line.payment_status or !['done', 'reversed', 'waitingCard', 'waitingCapture'].includes(line.payment_status)">
-                        <button class="delete-button btn btn-link mx-2 px-3"
+                    <t
+                        t-if="!line.payment_status or !['done', 'reversed', 'waitingCard', 'waitingCapture'].includes(line.payment_status)"
+                    >
+                        <button
+                            class="delete-button btn btn-link mx-2 px-3"
                             t-on-click="() => this.props.deleteLine(line.uuid)"
-                            aria-label="Delete" title="Delete">
+                            aria-label="Delete"
+                            title="Delete"
+                        >
                             <i class="oi oi-close text-danger" />
                         </button>
                     </t>
-                    <t t-elif="line.payment_status and ['waitingCard', 'waitingCapture'].includes(line.payment_status)">
+                    <t
+                        t-elif="line.payment_status and ['waitingCard', 'waitingCapture'].includes(line.payment_status)"
+                    >
                         <div class="mx-2 px-3">
                             <i class="fa fa-circle-o-notch fa-spin" role="img" />
                         </div>
                     </t>
                 </div>
-                <div t-if="line.include_igtf and line.igtf_amount" class="d-flex align-items-center w-100">
-                    <div class="d-flex justify-content-between flex-grow-1 px-3 pb-2 pt-1 fs-5 text-muted">
-                        <span t-esc="l10nVePosIgtfLineLabel(line)"/>
-                        <span class="px-3" t-esc="l10nVePosFormatIgtfLine(line)"/>
+                <div
+                    t-if="line.include_igtf and line.igtf_amount"
+                    class="d-flex align-items-center w-100"
+                >
+                    <div
+                        class="d-flex justify-content-between flex-grow-1 px-3 pb-2 pt-1 fs-5 text-muted"
+                    >
+                        <span t-esc="l10nVePosIgtfLineLabel(line)" />
+                        <span class="px-3" t-esc="l10nVePosFormatIgtfLine(line)" />
                     </div>
-                    <div class="mx-2 px-3" style="visibility: hidden;" aria-hidden="true">
-                        <i class="oi oi-close"/>
+                    <div
+                        class="mx-2 px-3"
+                        style="visibility: hidden;"
+                        aria-hidden="true"
+                    >
+                        <i class="oi oi-close" />
                     </div>
                 </div>
             </div>
         </xpath>
-        <xpath expr="//t[@t-foreach='props.paymentLines']/t[@t-else='']/div[1]" position="replace">
-            <div class="paymentline d-flex flex-column bg-view border rounded-3"
-                t-att-class="unselectedLineClass(line)">
+        <xpath
+            expr="//t[@t-foreach='props.paymentLines']/t[@t-else='']/div[1]"
+            position="replace"
+        >
+            <div
+                class="paymentline d-flex flex-column bg-view border rounded-3"
+                t-att-class="unselectedLineClass(line)"
+            >
                 <div class="d-flex align-items-center w-100">
-                    <div class="payment-infos d-flex align-items-center justify-content-between flex-grow-1 px-3 py-3 text-truncate cursor-pointer fs-2" t-on-click="() => this.selectLine(line)">
-                        <span class="payment-name"><t t-esc="line.payment_method_id.name"/></span>
+                    <div
+                        class="payment-infos d-flex align-items-center justify-content-between flex-grow-1 px-3 py-3 text-truncate cursor-pointer fs-2"
+                        t-on-click="() => this.selectLine(line)"
+                    >
+                        <span class="payment-name">
+                            <t t-esc="line.payment_method_id.name" />
+                        </span>
                         <div class="payment-amount px-3 text-end">
-                            <t t-if="line.isForeignCurrencyPayment and line.isForeignCurrencyPayment()">
+                            <t
+                                t-if="line.isForeignCurrencyPayment and line.isForeignCurrencyPayment()"
+                            >
                                 <div class="lh-sm">
-                                    <t t-esc="getPaymentLineForeignAmountDisplay(line)"/>
+                                    <t
+                                        t-esc="getPaymentLineForeignAmountDisplay(line)"
+                                    />
                                 </div>
                                 <div class="small text-muted lh-sm">
-                                    <t t-esc="getPaymentLineOrderAmountDisplay(line)"/>
+                                    <t t-esc="getPaymentLineOrderAmountDisplay(line)" />
                                 </div>
                             </t>
                             <t t-else="">
-                                <t t-esc="getPaymentLineOrderAmountDisplay(line)"/>
+                                <t t-esc="getPaymentLineOrderAmountDisplay(line)" />
                             </t>
                         </div>
                     </div>
-                    <t t-if="!line.payment_status or !['done', 'reversed'].includes(line.payment_status)">
-                        <div class="delete-button delete-button btn btn-link mx-2 px-3"
+                    <t
+                        t-if="!line.payment_status or !['done', 'reversed'].includes(line.payment_status)"
+                    >
+                        <div
+                            class="delete-button delete-button btn btn-link mx-2 px-3"
                             t-on-click="() => this.props.deleteLine(line.uuid)"
-                            aria-label="Delete" title="Delete">
+                            aria-label="Delete"
+                            title="Delete"
+                        >
                             <i class="oi oi-close text-danger" />
                         </div>
                     </t>
                 </div>
-                <div t-if="line.include_igtf and line.igtf_amount" class="d-flex align-items-center w-100">
-                    <div class="d-flex justify-content-between flex-grow-1 px-3 pb-2 pt-1 fs-5 text-muted">
-                        <span t-esc="l10nVePosIgtfLineLabel(line)"/>
-                        <span class="px-3" t-esc="l10nVePosFormatIgtfLine(line)"/>
+                <div
+                    t-if="line.include_igtf and line.igtf_amount"
+                    class="d-flex align-items-center w-100"
+                >
+                    <div
+                        class="d-flex justify-content-between flex-grow-1 px-3 pb-2 pt-1 fs-5 text-muted"
+                    >
+                        <span t-esc="l10nVePosIgtfLineLabel(line)" />
+                        <span class="px-3" t-esc="l10nVePosFormatIgtfLine(line)" />
                     </div>
-                    <div class="mx-2 px-3" style="visibility: hidden;" aria-hidden="true">
-                        <i class="oi oi-close"/>
+                    <div
+                        class="mx-2 px-3"
+                        style="visibility: hidden;"
+                        aria-hidden="true"
+                    >
+                        <i class="oi oi-close" />
                     </div>
                 </div>
             </div>

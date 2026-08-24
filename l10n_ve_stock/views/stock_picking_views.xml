@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <odoo>
     <record id="view_picking_form_inherit_l10n_ve" model="ir.ui.view">
         <field name="name">stock.picking.form.inherit.l10n.ve</field>
@@ -19,10 +19,7 @@
                     required="l10n_ve_dispatch_guide_enabled and l10n_ve_is_ve_country and state != 'draft' and not return_id and (picking_type_code == 'internal' or (picking_type_code == 'outgoing' and not sale_id))"
                 />
             </xpath>
-            <xpath
-                expr="//field[@name='partner_id'][@nolabel='1']"
-                position="after"
-            >
+            <xpath expr="//field[@name='partner_id'][@nolabel='1']" position="after">
                 <field
                     name="l10n_ve_partner_contact_phone_display"
                     readonly="1"
@@ -48,10 +45,7 @@
                 expr="//div[hasclass('o_td_label')][label[@for='partner_id']]"
                 position="before"
             >
-                <div
-                    class="o_td_label"
-                    invisible="not l10n_ve_show_control_number_ui"
-                >
+                <div class="o_td_label" invisible="not l10n_ve_show_control_number_ui">
                     <label
                         for="l10n_ve_control_number"
                         class="text-danger"

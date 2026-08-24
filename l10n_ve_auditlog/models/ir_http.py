@@ -24,12 +24,8 @@ class IrHttp(models.AbstractModel):
                 AccessDenied,
             ):
                 params = getattr(request, "params", None) or {}
-                rpc_model = (
-                    params.get("model") if isinstance(params, dict) else False
-                )
-                rpc_method = (
-                    params.get("method") if isinstance(params, dict) else False
-                )
+                rpc_model = params.get("model") if isinstance(params, dict) else False
+                rpc_method = params.get("method") if isinstance(params, dict) else False
                 path = ""
                 if getattr(request, "httprequest", None):
                     path = request.httprequest.path or ""
@@ -42,18 +38,13 @@ class IrHttp(models.AbstractModel):
                     "rpc_model": rpc_model or False,
                     "rpc_method": rpc_method or False,
                 }
-                cr = None
                 try:
                     registry = Registry(request.db)
-                    cr = registry.cursor()
-                    env = api.Environment(cr, SUPERUSER_ID, {})
-                    env["auditlog.validation.exception"]._create_log_in_env(vals)
-                    cr.commit()
+                    with registry.cursor() as cr:
+                        env = api.Environment(cr, SUPERUSER_ID, {})
+                        env["auditlog.validation.exception"]._create_log_in_env(vals)
                 except Exception:
                     _logger.exception(
                         "Failed to persist auditlog.validation.exception",
                     )
-                finally:
-                    if cr is not None:
-                        cr.close()
         return super()._handle_error(exception)

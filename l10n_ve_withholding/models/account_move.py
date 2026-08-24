@@ -57,7 +57,7 @@ class AccountMoveRetention(models.Model):
             "title": _("Missing IVA withholding percentage"),
             "message": _(
                 'The contact "%(partner)s" has no IVA withholding percentage '
-                "configured. Set the field \"Withholding Type\" on the partner "
+                'configured. Set the field "Withholding Type" on the partner '
                 "before confirming this operation.",
                 partner=partner.display_name,
             ),
@@ -135,9 +135,7 @@ class AccountMoveRetention(models.Model):
     def action_open_iva_retention(self):
         self.ensure_one()
         if not self.iva_retention_id:
-            raise UserError(
-                _("No IVA retention document linked to this vendor bill.")
-            )
+            raise UserError(_("No IVA retention document linked to this vendor bill."))
         return {
             "type": "ir.actions.act_window",
             "name": self.iva_retention_id.display_name,
@@ -158,9 +156,7 @@ class AccountMoveRetention(models.Model):
     def action_open_islr_retention(self):
         self.ensure_one()
         if not self.islr_retention_id:
-            raise UserError(
-                _("No ISLR retention document linked to this vendor bill.")
-            )
+            raise UserError(_("No ISLR retention document linked to this vendor bill."))
         return {
             "type": "ir.actions.act_window",
             "name": self.islr_retention_id.display_name,
@@ -181,17 +177,13 @@ class AccountMoveRetention(models.Model):
     def action_print_iva_retention(self):
         self.ensure_one()
         if not self.iva_retention_id:
-            raise UserError(
-                _("No IVA retention document linked to this vendor bill.")
-            )
+            raise UserError(_("No IVA retention document linked to this vendor bill."))
         return self.iva_retention_id.action_print_retention_voucher()
 
     def action_print_islr_retention(self):
         self.ensure_one()
         if not self.islr_retention_id:
-            raise UserError(
-                _("No ISLR retention document linked to this vendor bill.")
-            )
+            raise UserError(_("No ISLR retention document linked to this vendor bill."))
         return self.islr_retention_id.action_print_retention_voucher()
 
     def action_post(self):
@@ -229,7 +221,6 @@ class AccountMoveRetention(models.Model):
         )
         for move in move_retention:
             move._set_retention_name()
-
 
     def _set_retention_name(self):
         self.ensure_one()
@@ -289,7 +280,7 @@ class AccountMoveRetention(models.Model):
             raise UserError(
                 _(
                     'The contact "%(partner)s" has no IVA withholding percentage '
-                    "configured. Set the field \"Withholding Type\" on the partner "
+                    'configured. Set the field "Withholding Type" on the partner '
                     "before confirming this operation.",
                     partner=withholding_partner.display_name,
                 )
@@ -334,7 +325,10 @@ class AccountMoveRetention(models.Model):
         """
         self.ensure_one()
         withholding_partner = self._l10n_ve_withholding_partner()
-        if type_retention == "iva" and not withholding_partner._l10n_ve_get_withholding_type():
+        if (
+            type_retention == "iva"
+            and not withholding_partner._l10n_ve_get_withholding_type()
+        ):
             raise UserError(_("The partner has no withholding type."))
 
         retention = self.env["account.retention"]

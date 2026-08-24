@@ -36,7 +36,8 @@ class FeesRetention(models.Model):
     def _compute_display_name(self):
         for record in self:
             if record.amount_subtract:
-                record.display_name = f"{record.name} - ({record.currency_id.format(record.amount_subtract)})"
+                formatted = record.currency_id.format(record.amount_subtract)
+                record.display_name = f"{record.name} - ({formatted})"
                 continue
 
             record.display_name = record.name

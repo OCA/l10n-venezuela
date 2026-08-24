@@ -6,4 +6,3 @@ class PosOrder(models.Model):
 
     igtf_amount = fields.Float(string="IGTF")
     bi_igtf = fields.Float(string="Base IGTF")
-

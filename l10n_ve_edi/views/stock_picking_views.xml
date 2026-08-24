@@ -1,12 +1,12 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <odoo>
     <record id="view_picking_form_l10n_ve_edi" model="ir.ui.view">
         <field name="name">stock.picking.form.l10n.ve.edi</field>
         <field name="model">stock.picking</field>
-        <field name="inherit_id" ref="stock.view_picking_form"/>
+        <field name="inherit_id" ref="stock.view_picking_form" />
         <field name="arch" type="xml">
             <xpath expr="//header/button[@name='action_assign']" position="before">
-                <field name="l10n_ve_edi_show_sent_document_actions" invisible="1"/>
+                <field name="l10n_ve_edi_show_sent_document_actions" invisible="1" />
                 <button
                     name="action_l10n_ve_edi_send"
                     type="object"
@@ -39,43 +39,85 @@
                 >not l10n_ve_is_ve_country or picking_type_code != 'outgoing' or state != 'done' or l10n_ve_edi_show_sent_document_actions or (l10n_ve_edi_show_tab and l10n_ve_edi_send_state in ('not_sent', 'queued'))</attribute>
             </xpath>
             <xpath expr="//sheet" position="before">
-                <field name="l10n_ve_edi_show_tab" invisible="1"/>
-                <field name="l10n_ve_edi_send_state" invisible="1"/>
-                <div class="alert alert-warning" role="alert"
-                    invisible="state != 'done' or picking_type_code != 'outgoing' or not l10n_ve_edi_show_tab or l10n_ve_edi_send_state != 'not_sent'">
-                    <span>Esta guia de despacho aun no se ha enviado a facturacion digital. Pulse </span>
-                    <button name="action_l10n_ve_edi_send" type="object" string="Enviar facturacion digital" icon="fa-upload" class="oe_link p-0 align-baseline"/>
+                <field name="l10n_ve_edi_show_tab" invisible="1" />
+                <field name="l10n_ve_edi_send_state" invisible="1" />
+                <div
+                    class="alert alert-warning"
+                    role="alert"
+                    invisible="state != 'done' or picking_type_code != 'outgoing' or not l10n_ve_edi_show_tab or l10n_ve_edi_send_state != 'not_sent'"
+                >
+                    <span
+                    >Esta guia de despacho aun no se ha enviado a facturacion digital. Pulse </span>
+                    <button
+                        name="action_l10n_ve_edi_send"
+                        type="object"
+                        string="Enviar facturacion digital"
+                        icon="fa-upload"
+                        class="oe_link p-0 align-baseline"
+                    />
                     <span> cuando corresponda.</span>
                 </div>
-                <div class="alert alert-info" role="alert"
-                    invisible="state != 'done' or picking_type_code != 'outgoing' or not l10n_ve_edi_show_tab or l10n_ve_edi_send_state != 'queued'">
-                    <span>El envio a facturacion digital esta en cola; espere a que finalice el trabajo.</span>
+                <div
+                    class="alert alert-info"
+                    role="alert"
+                    invisible="state != 'done' or picking_type_code != 'outgoing' or not l10n_ve_edi_show_tab or l10n_ve_edi_send_state != 'queued'"
+                >
+                    <span
+                    >El envio a facturacion digital esta en cola; espere a que finalice el trabajo.</span>
                 </div>
-                <div class="alert alert-danger" role="alert"
-                    invisible="state != 'done' or picking_type_code != 'outgoing' or not l10n_ve_edi_show_tab or l10n_ve_edi_send_state != 'failed'">
+                <div
+                    class="alert alert-danger"
+                    role="alert"
+                    invisible="state != 'done' or picking_type_code != 'outgoing' or not l10n_ve_edi_show_tab or l10n_ve_edi_send_state != 'failed'"
+                >
                     <span>Fallo el envio a facturacion digital: </span>
-                    <field name="l10n_ve_edi_last_error" readonly="1" nolabel="1" class="oe_inline"/>
+                    <field
+                        name="l10n_ve_edi_last_error"
+                        readonly="1"
+                        nolabel="1"
+                        class="oe_inline"
+                    />
                     <span> - </span>
-                    <button name="action_l10n_ve_edi_retry_send" type="object" string="Reintentar envio" class="oe_link"/>
+                    <button
+                        name="action_l10n_ve_edi_retry_send"
+                        type="object"
+                        string="Reintentar envio"
+                        class="oe_link"
+                    />
                 </div>
             </xpath>
             <xpath expr="//notebook" position="inside">
-                <page string="Facturacion digital (EDI)" name="l10n_ve_edi_tab" invisible="picking_type_code != 'outgoing' or not l10n_ve_edi_show_tab">
+                <page
+                    string="Facturacion digital (EDI)"
+                    name="l10n_ve_edi_tab"
+                    invisible="picking_type_code != 'outgoing' or not l10n_ve_edi_show_tab"
+                >
                     <group>
                         <group>
-                            <field name="l10n_ve_edi_send_state" readonly="1"/>
-                            <field name="l10n_ve_edi_sent_at" readonly="1"/>
+                            <field name="l10n_ve_edi_send_state" readonly="1" />
+                            <field name="l10n_ve_edi_sent_at" readonly="1" />
                         </group>
                         <group>
-                            <field name="l10n_ve_edi_payload_attachment_id" readonly="1"/>
+                            <field
+                                name="l10n_ve_edi_payload_attachment_id"
+                                readonly="1"
+                            />
                         </group>
                     </group>
                     <group>
-                        <field name="l10n_ve_edi_last_error" readonly="1"/>
-                        <field name="l10n_ve_edi_response_json" readonly="1" widget="text"/>
+                        <field name="l10n_ve_edi_last_error" readonly="1" />
+                        <field
+                            name="l10n_ve_edi_response_json"
+                            readonly="1"
+                            widget="text"
+                        />
                     </group>
                     <group groups="base.group_no_one">
-                        <field name="l10n_ve_edi_payload_debug_json" readonly="1" widget="text"/>
+                        <field
+                            name="l10n_ve_edi_payload_debug_json"
+                            readonly="1"
+                            widget="text"
+                        />
                     </group>
                 </page>
             </xpath>

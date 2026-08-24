@@ -34,14 +34,8 @@
                     name="l10n_ve_igtf_included"
                     invisible="not l10n_ve_apply_igtf or not l10n_ve_show_apply_igtf"
                 />
-                <field
-                    name="l10n_ve_ves_show_bolivar_split"
-                    invisible="1"
-                />
-                <div
-                    class="text-muted"
-                    invisible="not l10n_ve_ves_show_bolivar_split"
-                >
+                <field name="l10n_ve_ves_show_bolivar_split" invisible="1" />
+                <div class="text-muted" invisible="not l10n_ve_ves_show_bolivar_split">
                     <div>
                         <span>Tope de pago de Bs: </span>
                         <field
@@ -53,7 +47,8 @@
                         />
                     </div>
                     <div>
-                        <span>Abono permitido en Bs (base documento, según reglas de cupo): </span>
+                        <span
+                        >Abono permitido en Bs (base documento, según reglas de cupo): </span>
                         <field
                             name="l10n_ve_ves_suggested_base"
                             widget="monetary"

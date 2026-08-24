@@ -35,9 +35,7 @@ class TestL10nVeStockProductFiscalLocks(L10nVeSeniatCommon):
                     "name": "Dos impuestos",
                     "is_storable": True,
                     "company_id": self.env.company.id,
-                    "taxes_id": [
-                        Command.set((self.tax_sale_a + self.tax_sale_b).ids)
-                    ],
+                    "taxes_id": [Command.set((self.tax_sale_a + self.tax_sale_b).ids)],
                 }
             )
         tmpl = ProductTemplate.create(

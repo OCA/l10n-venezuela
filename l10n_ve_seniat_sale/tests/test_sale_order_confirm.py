@@ -14,7 +14,9 @@ class TestSaleOrderConfirm(L10nVeSeniatCommon):
         cls.journal = cls.company_data["default_journal_sale"]
         cls._l10n_ve_configure_journal_digital(cls.journal)
 
-    def _create_ve_product(self, name="Producto confirmación", price=100.0, service=False):
+    def _create_ve_product(
+        self, name="Producto confirmación", price=100.0, service=False
+    ):
         vals = {
             "name": name,
             "company_id": self.env.company.id,

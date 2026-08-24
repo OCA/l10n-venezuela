@@ -7,7 +7,9 @@
         <xpath expr="//div[@id='filter_date']" position="after">
             <t t-if="'warehouse_ids' in controller.options">
                 <div id="filter_warehouse">
-                    <t t-call="l10n_ve_reports_stock.InventoryBookReportFilterWarehouse" />
+                    <t
+                        t-call="l10n_ve_reports_stock.InventoryBookReportFilterWarehouse"
+                    />
                 </div>
             </t>
         </xpath>

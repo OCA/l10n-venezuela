@@ -35,7 +35,9 @@ class TestVendorCreditDebit(L10nVeSeniatCommon):
                             "name": "Compra prueba",
                             "quantity": 1.0,
                             "price_unit": price_unit,
-                            "account_id": self.company_data["default_account_expense"].id,
+                            "account_id": self.company_data[
+                                "default_account_expense"
+                            ].id,
                             "tax_ids": [
                                 Command.set(
                                     [self.company_data["default_tax_purchase"].id]

@@ -10,5 +10,7 @@ class L10nVeLoyaltyCommon(L10nVeSeniatCommon):
     def setUpClass(cls):
         super().setUpClass()
         cls.env.user.groups_id = [
-            Command.link(cls.env.ref("l10n_ve_loyalty.group_l10n_ve_global_discount").id)
+            Command.link(
+                cls.env.ref("l10n_ve_loyalty.group_l10n_ve_global_discount").id
+            )
         ]

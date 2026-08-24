@@ -4,7 +4,9 @@ from odoo import _, api, fields, models
 from odoo.exceptions import ValidationError
 from odoo.tools import float_compare
 
-from odoo.addons.l10n_ve_loyalty.models import l10n_ve_global_discount as l10n_ve_discount_logic
+from odoo.addons.l10n_ve_loyalty.models import (
+    l10n_ve_global_discount as l10n_ve_discount_logic,
+)
 
 
 class SaleOrderDiscount(models.TransientModel):
@@ -48,11 +50,14 @@ class SaleOrderDiscount(models.TransientModel):
         self.ensure_one()
         order = self.sale_order_id
         if self.l10n_ve_discount_mode == "amount":
-            if float_compare(
-                self.discount_amount,
-                0.0,
-                precision_digits=order.currency_id.decimal_places,
-            ) <= 0:
+            if (
+                float_compare(
+                    self.discount_amount,
+                    0.0,
+                    precision_digits=order.currency_id.decimal_places,
+                )
+                <= 0
+            ):
                 return 0.0
             return l10n_ve_discount_logic.l10n_ve_fixed_discount_to_untaxed(
                 order,
@@ -72,7 +77,11 @@ class SaleOrderDiscount(models.TransientModel):
                 continue
             taxes = line.tax_id.flatten_taxes_hierarchy()
             taxes -= taxes.filtered(lambda tax: tax.amount_type == "fixed")
-            line_base = line.price_unit * (1 - (line.discount or 0.0) / 100) * line.product_uom_qty
+            line_base = (
+                line.price_unit
+                * (1 - (line.discount or 0.0) / 100)
+                * line.product_uom_qty
+            )
             total_discount += line_base * discount_percentage
         return total_discount
 
@@ -81,9 +90,12 @@ class SaleOrderDiscount(models.TransientModel):
         self = self.with_company(self.company_id)
         order = self.sale_order_id
         amount = self._l10n_ve_compute_global_discount_amount()
-        if float_compare(
-            amount, 0.0, precision_digits=order.currency_id.decimal_places
-        ) <= 0:
+        if (
+            float_compare(
+                amount, 0.0, precision_digits=order.currency_id.decimal_places
+            )
+            <= 0
+        ):
             return
         self.env["l10n.ve.sale.order.discount"].create(
             {
@@ -109,49 +121,77 @@ class SaleOrderDiscount(models.TransientModel):
             if not self.l10n_ve_discount_reason_id:
                 raise ValidationError(_("Seleccione la razón del descuento."))
             if self.l10n_ve_discount_mode == "percentage":
-                if float_compare(self.discount_percentage, 0.0, precision_digits=10) <= 0:
+                if (
+                    float_compare(self.discount_percentage, 0.0, precision_digits=10)
+                    <= 0
+                ):
                     raise ValidationError(_("Indique el porcentaje del descuento."))
-                if float_compare(self.discount_percentage, 1.0, precision_digits=10) >= 0:
+                if (
+                    float_compare(self.discount_percentage, 1.0, precision_digits=10)
+                    >= 0
+                ):
                     raise ValidationError(
                         _("No se permite un descuento global del 100%% en el pedido.")
                     )
                 if order.l10n_ve_global_discount_ids.filtered(
                     lambda discount: discount.discount_type == "percentage"
                 ):
-                    raise ValidationError(_("Solo puede existir un descuento global por porcentaje."))
+                    raise ValidationError(
+                        _("Solo puede existir un descuento global por porcentaje.")
+                    )
             else:
-                if float_compare(
-                    self.discount_amount,
-                    0.0,
-                    precision_digits=self.currency_id.decimal_places,
-                ) <= 0:
+                if (
+                    float_compare(
+                        self.discount_amount,
+                        0.0,
+                        precision_digits=self.currency_id.decimal_places,
+                    )
+                    <= 0
+                ):
                     raise ValidationError(_("Indique el monto del descuento."))
                 amount_base = self.l10n_ve_amount_base or "untaxed"
                 if amount_base == "total":
-                    available = l10n_ve_discount_logic.l10n_ve_available_total_for_discount(
-                        order
+                    available = (
+                        l10n_ve_discount_logic.l10n_ve_available_total_for_discount(
+                            order
+                        )
                     )
-                    if float_compare(
-                        self.discount_amount,
-                        available,
-                        precision_digits=self.currency_id.decimal_places,
-                    ) >= 0:
+                    if (
+                        float_compare(
+                            self.discount_amount,
+                            available,
+                            precision_digits=self.currency_id.decimal_places,
+                        )
+                        >= 0
+                    ):
                         raise ValidationError(
-                            _("No se permite un descuento del 100%% del importe del pedido.")
+                            _(
+                                "No se permite un descuento del 100%% "
+                                "del importe del pedido."
+                            )
                         )
                 else:
                     so_amount = order.amount_untaxed
                     remaining = dict(
-                        l10n_ve_discount_logic.l10n_ve_remaining_subtotal_by_taxes(order)
+                        l10n_ve_discount_logic.l10n_ve_remaining_subtotal_by_taxes(
+                            order
+                        )
                     )
                     so_amount = sum(remaining.values()) or so_amount
-                    if so_amount and float_compare(
-                        self.discount_amount,
-                        so_amount,
-                        precision_digits=self.currency_id.decimal_places,
-                    ) >= 0:
+                    if (
+                        so_amount
+                        and float_compare(
+                            self.discount_amount,
+                            so_amount,
+                            precision_digits=self.currency_id.decimal_places,
+                        )
+                        >= 0
+                    ):
                         raise ValidationError(
-                            _("No se permite un descuento del 100%% del importe del pedido.")
+                            _(
+                                "No se permite un descuento del 100%% "
+                                "del importe del pedido."
+                            )
                         )
             self._l10n_ve_apply_ve_global_discount()
             return

@@ -20,17 +20,21 @@ class TestAllReportsGeneration(AccountTestInvoicingCommon):
             cls.env["account.report"].with_context(active_test=False).search([])
         )
 
-        # Make the reports always available, so that they don't clash with the comany's country
+        # Make the reports always available, so that they don't clash with the comany's
+        # country
         cls.reports.availability_condition = "always"
-        # We keep the country set on each of these reports, so that we can load the proper test data when testing exports
+        # We keep the country set on each of these reports, so that we can load the
+        # proper test data when testing exports
 
     def test_open_all_reports(self):
-        # 'unfold_all' is forced on all reports (even if they don't support it), so that we really open it entirely
+        # 'unfold_all' is forced on all reports (even if they don't support it), so that
+        # we really open it entirely
         self.reports.filter_unfold_all = True
 
         for report in self.reports:
             with self.subTest(report=report.name, country=report.country_id.name):
-                # 'report_id' key is forced so that we don't open a variant when calling a root report
+                # 'report_id' key is forced so that we don't open a variant when calling
+                # a root report
                 options = report.get_options(
                     {"selected_variant_id": report.id, "unfold_all": True}
                 )
@@ -48,7 +52,8 @@ class TestAllReportsGeneration(AccountTestInvoicingCommon):
                     report.get_report_information(options)
 
     def test_generate_all_export_files(self):
-        # Test values for the fields that become mandatory when doing exports on the reports, depending on the country
+        # Test values for the fields that become mandatory when doing exports on the
+        # reports, depending on the country
         l10n_pl_reports_tax_office = self.env.ref(
             "l10n_pl.pl_tax_office_0215", raise_if_not_found=False
         )
@@ -114,8 +119,10 @@ class TestAllReportsGeneration(AccountTestInvoicingCommon):
             },
         }
 
-        # Some root reports are made for just one country and require test fields to be set the right way to generate their exports properly.
-        # Since they are root reports and are always available, they normally have no country set; we assign one here (only for the ones requiring it)
+        # Some root reports are made for just one country and require test fields to be
+        # set the right way to generate their exports properly.
+        # Since they are root reports and are always available, they normally have no
+        # country set; we assign one here (only for the ones requiring it)
         reports_forced_countries = [
             ("AU", "l10n_au_reports.tpar_report"),
         ]
@@ -130,7 +137,8 @@ class TestAllReportsGeneration(AccountTestInvoicingCommon):
         # Check buttons of every report
         for report in self.reports:
             with self.subTest(report=report.name, country=report.country_id.name):
-                # Setup some generic data on the company that could be needed for some file export
+                # Setup some generic data on the company that could be needed for some
+                # file export
                 self.env.company.write(
                     {
                         "vat": "VAT123456789",
@@ -162,15 +170,18 @@ class TestAllReportsGeneration(AccountTestInvoicingCommon):
                         "Download Excel",
                     ):  # keep "Copy to Documents" and other actions
                         # TODO remove me
-                        # This test seems to have some trouble on runbot. It is running for way longer than
+                        # This test seems to have some trouble on runbot. It is running
+                        # for way longer than
                         # locally. Freeze is coming, explanation are missing... Sorry 😟
                         continue
                     if (
                         report.custom_handler_model_name == "l10n_fr.report.handler"
                         and option_button["name"] == "EDI VAT"
                     ):
-                        # This button requires a tax closing entry to be called. It doesn't make sense to test this button
-                        # without a tax closing entry, so we will exclude it from testing here.
+                        # This button requires a tax closing entry to be called. It
+                        # doesn't make sense to test this button
+                        # without a tax closing entry, so we will exclude it from
+                        # testing here.
                         continue
                     with self.subTest(button=option_button["name"]):
                         with patch.object(
@@ -198,10 +209,11 @@ class TestAllReportsGeneration(AccountTestInvoicingCommon):
                                     self.assertEqual(
                                         set(file_gen_res.keys()),
                                         {"file_name", "file_content", "file_type"},
-                                        "File generator's result should always contain the same 3 keys.",
+                                        "File generator's result should always contain the same 3 keys.",  # noqa: E501
                                     )
 
-            # Unset the test values, in case they are used in conditions to define custom behaviors
+            # Unset the test values, in case they are used in conditions to define
+            # custom behaviors
             self.env.company.write(
                 {
                     field_name: None
@@ -254,7 +266,8 @@ class TestAllReportsGeneration(AccountTestInvoicingCommon):
             with self.subTest(report=report.name):
                 options = report.get_options({})
 
-                # Remove aggregations from those report lines, so that we still can set a groupby on the line
+                # Remove aggregations from those report lines, so that we still can set
+                # a groupby on the line
                 (
                     expressions.report_line_id.expression_ids.filtered(
                         lambda x: x.engine == "aggregation"
@@ -268,4 +281,5 @@ class TestAllReportsGeneration(AccountTestInvoicingCommon):
                 report._compute_expression_totals_for_each_column_group(
                     expressions, options, groupby_to_expand="account_code"
                 )
-                # This computation fill fail if the custom engine forgot to handle such groupby, typically via a call to _field_to_sql
+                # This computation fill fail if the custom engine forgot to handle such
+                # groupby, typically via a call to _field_to_sql

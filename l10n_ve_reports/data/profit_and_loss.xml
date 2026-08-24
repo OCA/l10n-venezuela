@@ -197,4 +197,14 @@
             </record>
         </field>
     </record>
+
+    <record id="action_account_report_pl" model="ir.actions.client">
+        <field name="name">🇻🇪 Profit and Loss</field>
+        <field name="tag">account_report_oca</field>
+        <field name="path">profit-and-loss-ve</field>
+        <field
+            name="context"
+            eval="{'report_id': ref('l10n_ve_reports.profit_and_loss')}"
+        />
+    </record>
 </odoo>

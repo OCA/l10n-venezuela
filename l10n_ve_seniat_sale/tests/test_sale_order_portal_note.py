@@ -24,9 +24,9 @@ class TestSaleOrderPortalNoteVe(L10nVeSeniatCommon):
                     }
                 )
             company_vals["l10n_ve_igtf_account_id"] = igtf_account.id
-        self.env.company.with_context(
-            l10n_ve_skip_igtf_account_check=True
-        ).write(company_vals)
+        self.env.company.with_context(l10n_ve_skip_igtf_account_check=True).write(
+            company_vals
+        )
         self.assertEqual(self.env.company.taxpayer_type, "special")
         self.assertTrue(self.env.company._l10n_ve_invoice_tag_include_igtf_notice())
         partner = self.env["res.partner"].create(
@@ -64,9 +64,9 @@ class TestSaleOrderPortalNoteVe(L10nVeSeniatCommon):
         self.assertIn("IGTF", order.l10n_ve_seniat_note)
 
     def test_l10n_ve_seniat_note_false_when_ordinary_taxpayer_only_igtf_branch(self):
-        self.env.company.with_context(
-            l10n_ve_skip_igtf_account_check=True
-        ).write({"taxpayer_type": "ordinary"})
+        self.env.company.with_context(l10n_ve_skip_igtf_account_check=True).write(
+            {"taxpayer_type": "ordinary"}
+        )
         self.assertEqual(self.env.company.taxpayer_type, "ordinary")
         self.assertFalse(self.env.company._l10n_ve_invoice_tag_include_igtf_notice())
         partner = self.env["res.partner"].create(

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <odoo>
     <record id="view_company_form" model="ir.ui.view">
         <field name="name">l10n.ve.payment.extensionres.company.form</field>
@@ -15,7 +15,11 @@
                             <field name="condition_withholding_id" />
                         </group>
                         <group>
-                            <field name="tax_authorities_logo" widget="image" class="oe_avatar" />
+                            <field
+                                name="tax_authorities_logo"
+                                widget="image"
+                                class="oe_avatar"
+                            />
                         </group>
                     </group>
                 </page>

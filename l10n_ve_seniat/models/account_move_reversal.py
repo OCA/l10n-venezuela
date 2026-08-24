@@ -35,9 +35,7 @@ class AccountMoveReversal(models.TransientModel):
                 and self.env.context.get("active_model") == "account.move"
                 and self.env.context.get("active_ids")
             ):
-                moves = self.env["account.move"].browse(
-                    self.env.context["active_ids"]
-                )
+                moves = self.env["account.move"].browse(self.env.context["active_ids"])
                 vals["move_ids"] = [(6, 0, moves.ids)]
             company = None
             if vals.get("company_id"):
@@ -61,8 +59,9 @@ class AccountMoveReversal(models.TransientModel):
                 if rec.company_id.account_fiscal_country_id.code == "VE":
                     raise UserError(
                         _(
-                            "No puede modificar el diario ni la fecha de reversión "
-                            "en notas de crédito para empresas con fiscalidad venezolana."
+                            "No puede modificar el diario ni la fecha de "
+                            "reversión en notas de crédito para empresas con "
+                            "fiscalidad venezolana."
                         )
                     )
         return super().write(vals)

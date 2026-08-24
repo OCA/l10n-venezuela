@@ -8,6 +8,7 @@ VE_JOURNAL_EMISSION_TO_COMPANY_CODE = {
 }
 
 
+# pylint: disable=consider-merging-classes-inherited
 class AccountJournal(models.Model):
     _inherit = "account.journal"
 
@@ -43,9 +44,10 @@ class AccountJournal(models.Model):
         default="pdf",
         copy=False,
         help=(
-            "Solo aplica con medio de emisión «Forma libre». PDF usa el informe estándar. "
-            "Papel continuo requiere el módulo «l10n_ve_invoice_escp» e imprime la factura "
-            "en formato ESC/P Epson por WebUSB."
+            "Solo aplica con medio de emisión «Forma libre». PDF usa el "
+            "informe estándar. Papel continuo requiere el módulo "
+            "«l10n_ve_invoice_escp» e imprime la factura en formato ESC/P "
+            "Epson por WebUSB."
         ),
     )
 
@@ -100,7 +102,10 @@ class AccountJournal(models.Model):
     l10n_ve_max_invoice_lines = fields.Integer(
         string="Máximo de líneas por factura (diario)",
         copy=False,
-        help="Número máximo de líneas de producto por factura cuando el límite está activo.",
+        help=(
+            "Número máximo de líneas de producto por factura cuando el "
+            "límite está activo."
+        ),
     )
     l10n_ve_limit_picking_lines = fields.Boolean(
         string="Limitar líneas por guía de despacho",
@@ -154,8 +159,8 @@ class AccountJournal(models.Model):
             if len(raw) != 2 or not raw.isdigit():
                 raise ValidationError(
                     _(
-                        "El código forma de pago fiscal del diario “%(journal)s” debe ser "
-                        "dos dígitos (ej.: 01)."
+                        "El código forma de pago fiscal del diario "
+                        "“%(journal)s” debe ser dos dígitos (ej.: 01)."
                     )
                     % {"journal": journal.display_name}
                 )
@@ -163,8 +168,8 @@ class AccountJournal(models.Model):
             if value < 1 or value > 24:
                 raise ValidationError(
                     _(
-                        "El código forma de pago fiscal del diario “%(journal)s” debe estar "
-                        "entre 01 y 24."
+                        "El código forma de pago fiscal del diario "
+                        "“%(journal)s” debe estar entre 01 y 24."
                     )
                     % {"journal": journal.display_name}
                 )
@@ -178,8 +183,9 @@ class AccountJournal(models.Model):
             ):
                 raise ValidationError(
                     _(
-                        "El formato «Papel continuo» solo está permitido cuando el medio de "
-                        "emisión del diario «%(journal)s» es «Forma libre»."
+                        "El formato «Papel continuo» solo está permitido cuando "
+                        "el medio de emisión del diario «%(journal)s» es "
+                        "«Forma libre»."
                     )
                     % {"journal": journal.display_name}
                 )
@@ -192,12 +198,9 @@ class AccountJournal(models.Model):
     )
     def _check_l10n_ve_journal_max_lines(self):
         for journal in self:
-            if (
-                journal.l10n_ve_limit_invoice_lines
-                and (
-                    not journal.l10n_ve_max_invoice_lines
-                    or journal.l10n_ve_max_invoice_lines < 1
-                )
+            if journal.l10n_ve_limit_invoice_lines and (
+                not journal.l10n_ve_max_invoice_lines
+                or journal.l10n_ve_max_invoice_lines < 1
             ):
                 raise ValidationError(
                     _(
@@ -206,12 +209,9 @@ class AccountJournal(models.Model):
                     )
                     % {"journal": journal.display_name}
                 )
-            if (
-                journal.l10n_ve_limit_picking_lines
-                and (
-                    not journal.l10n_ve_max_picking_lines
-                    or journal.l10n_ve_max_picking_lines < 1
-                )
+            if journal.l10n_ve_limit_picking_lines and (
+                not journal.l10n_ve_max_picking_lines
+                or journal.l10n_ve_max_picking_lines < 1
             ):
                 raise ValidationError(
                     _(

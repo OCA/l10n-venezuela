@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <templates>
     <t t-inherit="account.TaxTotalsField" t-inherit-mode="extension">
-        <xpath
-            expr="//tr[.//span[@name='amount_total']]"
-            position="replace"
-        >
+        <!-- Necessary: replace the total row so IGTF can show Total
+             and Total con IGTF. Hiding the original would leave a
+             duplicate amount_total span. -->
+        <xpath expr="//tr[.//span[@name='amount_total']]" position="replace">
             <t t-if="'l10n_ve_igtf_total_without_igtf_currency' in totals">
                 <tr>
                     <td class="o_td_label">

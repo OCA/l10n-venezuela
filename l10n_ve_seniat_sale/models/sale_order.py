@@ -109,10 +109,11 @@ class SaleOrder(models.Model):
     @api.depends("company_id")
     def _compute_journal_id(self):
         non_ve = self.filtered(lambda o: o.country_code != "VE")
-        super(SaleOrder, non_ve)._compute_journal_id()
+        res = super(SaleOrder, non_ve)._compute_journal_id()
         for order in self - non_ve:
             if not order.journal_id:
                 order.journal_id = order._l10n_ve_default_sale_journal()
+        return res
 
     def _l10n_ve_default_sale_journal(self):
         self.ensure_one()
@@ -191,7 +192,9 @@ class SaleOrder(models.Model):
             base_line for base_line in product_lines if not base_line.get("tax_details")
         ]
         if lines_needing_details:
-            AccountTax._add_tax_details_in_base_lines(lines_needing_details, self.company_id)
+            AccountTax._add_tax_details_in_base_lines(
+                lines_needing_details, self.company_id
+            )
         totals = defaultdict(float)
         for base_line in product_lines:
             taxes = base_line["tax_ids"].filtered(
@@ -215,9 +218,7 @@ class SaleOrder(models.Model):
 
     def _l10n_ve_product_base_lines_for_discount(self, base_lines):
         return [
-            base_line
-            for base_line in base_lines
-            if not base_line.get("special_type")
+            base_line for base_line in base_lines if not base_line.get("special_type")
         ]
 
     def _l10n_ve_non_product_base_lines(self, base_lines):
@@ -358,7 +359,8 @@ class SaleOrder(models.Model):
         max_lines = self._l10n_ve_get_max_invoice_lines_from_book()
         if (
             max_lines <= 0
-            or self._l10n_ve_product_line_count_invoiceable(invoiceable_lines) <= max_lines
+            or self._l10n_ve_product_line_count_invoiceable(invoiceable_lines)
+            <= max_lines
         ):
             return [(invoiceable_lines, {})]
         disc_lines = self._l10n_ve_global_discount_lines(invoiceable_lines)
@@ -444,7 +446,8 @@ class SaleOrder(models.Model):
                 "params": {
                     "title": _("Sin cambios"),
                     "message": _(
-                        "Ningún pedido requirió corrección de redondeo en líneas de descuento."
+                        "Ningún pedido requirió corrección de redondeo "
+                        "en líneas de descuento."
                     ),
                     "type": "warning",
                     "sticky": False,
@@ -456,7 +459,8 @@ class SaleOrder(models.Model):
             "params": {
                 "title": _("Corrección aplicada"),
                 "message": _(
-                    "Se corrigieron %(lines)s línea(s) de descuento en %(orders)s pedido(s): %(names)s",
+                    "Se corrigieron %(lines)s línea(s) de descuento "
+                    "en %(orders)s pedido(s): %(names)s",
                     lines=len(fixed_lines),
                     orders=len(fixed_orders),
                     names=", ".join(fixed_orders.mapped("name")),
@@ -497,7 +501,9 @@ class SaleOrder(models.Model):
             else:
                 for chunk, discount_alloc in chunk_specs:
                     ctx = {"l10n_ve_invoiceable_line_ids": tuple(chunk.ids)}
-                    if order._l10n_ve_should_use_discount_line_allocation(discount_alloc):
+                    if order._l10n_ve_should_use_discount_line_allocation(
+                        discount_alloc
+                    ):
                         ctx["l10n_ve_discount_amount_allocation"] = discount_alloc
                     chunk_moves = super(
                         SaleOrder,
@@ -517,8 +523,9 @@ class SaleOrder(models.Model):
         if not journal.l10n_ve_invoice_section_id:
             raise UserError(
                 _(
-                    "No se puede confirmar el pedido: el diario de ventas «%(journal)s» "
-                    "está en «forma libre» (correlativo de talonario) y debe tener "
+                    "No se puede confirmar el pedido: el diario de "
+                    "ventas «%(journal)s» está en «forma libre» "
+                    "(correlativo de talonario) y debe tener "
                     "configurado el tramo SENIAT de facturas de cliente."
                 )
                 % {"journal": journal.display_name}
@@ -551,13 +558,18 @@ class SaleOrder(models.Model):
     def action_confirm(self):
         precision = self.env["decimal.precision"].precision_get("Product Price")
         for order in self:
-            if float_is_zero(order.amount_total, precision_digits=order.currency_id.decimal_places):
+            if float_is_zero(
+                order.amount_total, precision_digits=order.currency_id.decimal_places
+            ):
                 raise UserError(
-                    "No se puede confirmar el pedido con un total de 0. "
-                    "Agregue productos con precio o corrija los importes."
+                    _(
+                        "No se puede confirmar el pedido con un total de 0. "
+                        "Agregue productos con precio o corrija los importes."
+                    )
                 )
             invalid_lines = order.order_line.filtered(
-                lambda line: not line.display_type and float_is_zero(line.price_unit, precision_digits=precision)
+                lambda line: not line.display_type
+                and float_is_zero(line.price_unit, precision_digits=precision)
             )
             if invalid_lines:
                 products = [
@@ -565,9 +577,12 @@ class SaleOrder(models.Model):
                     for line in invalid_lines
                 ]
                 raise UserError(
-                    "No se puede confirmar el pedido con líneas en precio 0. "
-                    "Corrija los precios de los siguientes productos: %s"
-                    % ", ".join(products)
+                    _(
+                        "No se puede confirmar el pedido con líneas en "
+                        "precio 0. Corrija los precios de los siguientes "
+                        "productos: %(products)s"
+                    )
+                    % {"products": ", ".join(products)}
                 )
             invalid_qty_lines = order.order_line.filtered(
                 lambda line: (
@@ -588,45 +603,60 @@ class SaleOrder(models.Model):
                 ]
                 raise UserError(
                     _(
-                        "No se puede confirmar el pedido con líneas en cantidad 0 o negativa. "
-                        "Corrija las cantidades de los siguientes productos: %s"
+                        "No se puede confirmar el pedido con líneas en "
+                        "cantidad 0 o negativa. Corrija las cantidades "
+                        "de los siguientes productos: %(products)s"
                     )
-                    % ", ".join(products)
+                    % {"products": ", ".join(products)}
                 )
             if order.country_code == "VE":
                 if not order.journal_id:
                     raise UserError(
-                        _("Debe indicar el diario de ventas antes de confirmar el pedido.")
+                        _(
+                            "Debe indicar el diario de ventas antes de "
+                            "confirmar el pedido."
+                        )
                     )
                 order._l10n_ve_check_free_emission_correlatives()
                 default_tax = order.company_id.account_sale_tax_id
-                for line in order.order_line.filtered(lambda line: not line.display_type):
+                for line in order.order_line.filtered(
+                    lambda line: not line.display_type
+                ):
                     if len(line.tax_id) == 0:
                         if default_tax:
                             line.tax_id = [Command.link(default_tax.id)]
                             order.message_post(
-                                body=_("Se agregó el impuesto por defecto a la línea: %s.")
-                                % (line.name or _("Sin nombre"))
+                                body=_(
+                                    "Se agregó el impuesto por defecto a "
+                                    "la línea: %(line)s."
+                                )
+                                % {"line": line.name or _("Sin nombre")}
                             )
                         else:
                             raise UserError(
                                 _(
-                                    "La línea '%s' no tiene impuesto asignado. "
-                                    "Asigne un impuesto o configure el impuesto de venta por defecto en la compañía."
+                                    "La línea '%(line)s' no tiene impuesto "
+                                    "asignado. Asigne un impuesto o configure "
+                                    "el impuesto de venta por defecto en la "
+                                    "compañía."
                                 )
-                                % (line.name or _("Sin nombre"))
+                                % {"line": line.name or _("Sin nombre")}
                             )
                 lines_with_multi_tax = []
-                for line in order.order_line.filtered(lambda line: not line.display_type):
+                for line in order.order_line.filtered(
+                    lambda line: not line.display_type
+                ):
                     if len(line.tax_id) > 1:
                         tax_mapped = ", ".join(line.tax_id.mapped("name"))
-                        lines_with_multi_tax.append(" - %s: %s" % (line.name or _("Sin nombre"), tax_mapped))
+                        line_name = line.name or _("Sin nombre")
+                        lines_with_multi_tax.append(f" - {line_name}: {tax_mapped}")
                 if lines_with_multi_tax:
                     raise UserError(
                         _(
-                            "No se puede asignar más de un impuesto a una sola línea de pedido. "
-                            "Cree líneas separadas para cada impuesto.\n%s"
+                            "No se puede asignar más de un impuesto a una "
+                            "sola línea de pedido. Cree líneas separadas "
+                            "para cada impuesto.\n%(lines)s"
                         )
-                        % "\n".join(lines_with_multi_tax)
+                        % {"lines": "\n".join(lines_with_multi_tax)}
                     )
         return super().action_confirm()

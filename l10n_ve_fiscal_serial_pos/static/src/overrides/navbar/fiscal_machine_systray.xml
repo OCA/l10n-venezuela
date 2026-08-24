@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <templates id="template" xml:space="preserve">
     <t t-name="l10n_ve_fiscal_serial_pos.PosFiscalMachineSystray">
         <Dropdown onOpened.bind="onDropdownOpened">
@@ -7,9 +7,13 @@
                 type="button"
                 title="Estado de la máquina fiscal"
             >
-                <i class="fa fa-fw fa-lg fa-print" role="img" aria-label="Máquina fiscal"/>
-                <span t-att-class="statusClass"/>
-                <span class="d-none d-xl-inline small" t-esc="statusLabel"/>
+                <i
+                    class="fa fa-fw fa-lg fa-print"
+                    role="img"
+                    aria-label="Máquina fiscal"
+                />
+                <span t-att-class="statusClass" />
+                <span class="d-none d-xl-inline small" t-esc="statusLabel" />
             </button>
             <t t-set-slot="content">
                 <div class="o_l10n_ve_fiscal_systray_panel p-3">
@@ -30,15 +34,18 @@
                         <div class="small mb-2">
                             <div t-if="invoiceJournalLabel">
                                 <span class="text-muted">Diario:</span>
-                                <span class="ms-1" t-esc="invoiceJournalLabel"/>
+                                <span class="ms-1" t-esc="invoiceJournalLabel" />
                             </div>
                             <div>
                                 <span class="text-muted">Equipo:</span>
-                                <span class="ms-1" t-esc="state.machine.name"/>
+                                <span class="ms-1" t-esc="state.machine.name" />
                             </div>
                             <div t-if="state.machine.registered_serial">
                                 <span class="text-muted">Serial:</span>
-                                <span class="ms-1" t-esc="state.machine.registered_serial"/>
+                                <span
+                                    class="ms-1"
+                                    t-esc="state.machine.registered_serial"
+                                />
                             </div>
                             <div>
                                 <span class="text-muted">Estado del puerto:</span>
@@ -61,23 +68,28 @@
                             </div>
                             <div t-if="state.enqStatusLabel">
                                 <span class="text-muted">Estado ENQ:</span>
-                                <span class="ms-1" t-esc="state.enqStatusLabel"/>
+                                <span class="ms-1" t-esc="state.enqStatusLabel" />
                             </div>
                             <div t-if="state.enqErrorLabel">
                                 <span class="text-muted">Error ENQ:</span>
-                                <span class="ms-1" t-esc="state.enqErrorLabel"/>
+                                <span class="ms-1" t-esc="state.enqErrorLabel" />
                             </div>
                             <div t-if="state.machine.last_connection">
-                                <span class="text-muted">Última conexión registrada:</span>
-                                <span class="ms-1" t-esc="state.machine.last_connection"/>
+                                <span
+                                    class="text-muted"
+                                >Última conexión registrada:</span>
+                                <span
+                                    class="ms-1"
+                                    t-esc="state.machine.last_connection"
+                                />
                             </div>
                             <div class="text-muted mt-1">
                                 Última comprobación:
-                                <span t-esc="lastCheckLabel"/>
+                                <span t-esc="lastCheckLabel" />
                             </div>
                             <div t-if="state.portOpen" class="text-muted mt-1">
                                 Vigilancia ENQ:
-                                <span t-esc="state.heartbeatCount"/>
+                                <span t-esc="state.heartbeatCount" />
                                 ciclos
                             </div>
                         </div>
@@ -123,7 +135,11 @@
         </Dropdown>
     </t>
 
-    <t t-name="l10n_ve_fiscal_serial_pos.Navbar" t-inherit="point_of_sale.Navbar" t-inherit-mode="extension">
+    <t
+        t-name="l10n_ve_fiscal_serial_pos.Navbar"
+        t-inherit="point_of_sale.Navbar"
+        t-inherit-mode="extension"
+    >
         <xpath expr="//button[.//i[contains(@class,'fa-barcode')]]" position="after">
             <PosFiscalMachineSystray
                 t-if="showFiscalMachineSystray"

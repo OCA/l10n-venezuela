@@ -31,7 +31,8 @@ class TypeWithholding(models.Model):
     @api.model
     def _l10n_ve_table_exists(self):
         self.env.cr.execute(
-            "SELECT EXISTS (SELECT FROM information_schema.tables WHERE table_name = %s)",
+            "SELECT EXISTS (SELECT FROM information_schema.tables "
+            "WHERE table_name = %s)",
             [self._table],
         )
         return bool(self.env.cr.fetchone()[0])

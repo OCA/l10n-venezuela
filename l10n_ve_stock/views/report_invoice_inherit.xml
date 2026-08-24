@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <odoo>
     <template
         id="report_invoice_document_inherit_l10n_ve_stock_dispatch"
@@ -9,10 +9,7 @@
                 t-if="o.l10n_ve_invoice_dispatch_guides and o.move_type in ('out_invoice', 'out_refund')"
                 class="d-block text-uppercase"
             >
-                <t
-                    t-set="dg_full"
-                    t-value="o.l10n_ve_invoice_dispatch_guides"
-                />
+                <t t-set="dg_full" t-value="o.l10n_ve_invoice_dispatch_guides" />
                 <t
                     t-set="dg_nums"
                     t-value="dg_full.split(':', 1)[1].strip() if ':' in dg_full else dg_full"

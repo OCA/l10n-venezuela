@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <odoo>
     <template
         id="portal_invoice_page_inherit_l10n_ve_edi"
@@ -14,7 +14,11 @@
                 role="button"
                 title="Abrir en imprenta digital"
             >
-                <i class="fa fa-external-link" title="Abrir en imprenta digital" role="img"/>
+                <i
+                class="fa fa-external-link"
+                title="Abrir en imprenta digital"
+                role="img"
+            />
                 Abrir en imprenta
             </a>
         </xpath>

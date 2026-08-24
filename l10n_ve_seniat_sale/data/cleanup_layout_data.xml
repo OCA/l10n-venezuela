@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <odoo>
     <delete model="report.layout" id="report_layout_l10n_ve_presupuesto" />
     <delete model="ir.ui.view" id="external_layout_l10n_ve_presupuesto" />

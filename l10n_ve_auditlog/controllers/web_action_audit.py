@@ -11,7 +11,7 @@ class L10nVeAuditWebActionController(Action):
     def load(self, action_id, context=None):
         result = super().load(action_id, context=context)
         if isinstance(result, dict) and result.get("id"):
-            request.env["auditlog.account.report.access"].sudo()._try_log_ir_action_access(
-                result
-            )
+            request.env[
+                "auditlog.account.report.access"
+            ].sudo()._try_log_ir_action_access(result)
         return result

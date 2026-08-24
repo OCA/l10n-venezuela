@@ -1,12 +1,13 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
-from collections import defaultdict
 
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError
 from odoo.tools import float_is_zero
 
-from odoo.addons.l10n_ve_loyalty.models import l10n_ve_global_discount as l10n_ve_discount_logic
+from odoo.addons.l10n_ve_loyalty.models import (
+    l10n_ve_global_discount as l10n_ve_discount_logic,
+)
 
 
 class SaleOrder(models.Model):
@@ -95,13 +96,14 @@ class SaleOrder(models.Model):
         discount_base_lines = []
         sequence = 0
         running = dict(subtotal_by_taxes)
-        for discount, discount_amount in self._l10n_ve_sequential_global_discount_amounts(
-            subtotal_by_taxes
-        ):
+        for (
+            discount,
+            discount_amount,
+        ) in self._l10n_ve_sequential_global_discount_amounts(subtotal_by_taxes):
             tax_groups = list(running.keys())
             weights = [running[taxes] for taxes in tax_groups]
             parts = self._l10n_ve_split_amount_by_weights(discount_amount, weights)
-            for taxes, part in zip(tax_groups, parts):
+            for taxes, part in zip(tax_groups, parts, strict=False):
                 if float_is_zero(part, precision_rounding=line_currency.rounding):
                     continue
                 sequence += 1
@@ -249,10 +251,8 @@ class SaleOrder(models.Model):
         disc_lines = self._l10n_ve_global_discount_lines(invoiceable_lines)
         lines_wo_disc = invoiceable_lines - disc_lines
         max_lines = self._l10n_ve_get_max_invoice_lines_from_book()
-        if (
-            max_lines <= 0
-            or self._l10n_ve_product_line_count_invoiceable(lines_wo_disc) <= max_lines
-        ):
+        product_line_count = self._l10n_ve_product_line_count_invoiceable(lines_wo_disc)
+        if max_lines <= 0 or product_line_count <= max_lines:
             discount_amounts = self._l10n_ve_discount_amounts_for_invoiceable(
                 lines_wo_disc
             )
@@ -312,7 +312,8 @@ class SaleOrder(models.Model):
                 "views": [
                     (
                         self.env.ref(
-                            "l10n_ve_sale_loyalty.l10n_ve_sale_order_discount_wizard_view_form"
+                            "l10n_ve_sale_loyalty."
+                            "l10n_ve_sale_order_discount_wizard_view_form"
                         ).id,
                         "form",
                     )
@@ -330,9 +331,10 @@ class SaleOrder(models.Model):
     )
     def _compute_amounts(self):
         ve_with_discount = self.filtered(
-            lambda order: order.country_code == "VE" and order.l10n_ve_global_discount_ids
+            lambda order: order.country_code == "VE"
+            and order.l10n_ve_global_discount_ids
         )
-        super(SaleOrder, self - ve_with_discount)._compute_amounts()
+        res = super(SaleOrder, self - ve_with_discount)._compute_amounts()
         AccountTax = self.env["account.tax"]
         for order in ve_with_discount:
             base_lines = order._l10n_ve_get_computation_base_lines()
@@ -344,6 +346,7 @@ class SaleOrder(models.Model):
             order.amount_untaxed = tax_totals["base_amount_currency"]
             order.amount_tax = tax_totals["tax_amount_currency"]
             order.amount_total = tax_totals["total_amount_currency"]
+        return res
 
     @api.depends_context("lang")
     @api.depends(
@@ -358,9 +361,10 @@ class SaleOrder(models.Model):
     def _compute_tax_totals(self):
         AccountTax = self.env["account.tax"]
         ve_with_discount = self.filtered(
-            lambda order: order.country_code == "VE" and order.l10n_ve_global_discount_ids
+            lambda order: order.country_code == "VE"
+            and order.l10n_ve_global_discount_ids
         )
-        super(SaleOrder, self - ve_with_discount)._compute_tax_totals()
+        res = super(SaleOrder, self - ve_with_discount)._compute_tax_totals()
         for order in ve_with_discount:
             base_lines = order._l10n_ve_get_computation_base_lines()
             order.tax_totals = AccountTax._get_tax_totals_summary(
@@ -390,3 +394,4 @@ class SaleOrder(models.Model):
                             "base_amount", 0.0
                         )
             order.tax_totals = totals
+        return res

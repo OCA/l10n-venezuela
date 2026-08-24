@@ -10,9 +10,7 @@ class TestCurrencyTable(TestAccountReportsCommon):
     def setUpClass(cls):
         super().setUpClass()
 
-        cls.company_data["company"].write(
-            {"name": "USD Company 1", "sequence": 1}
-        )
+        cls.company_data["company"].write({"name": "USD Company 1", "sequence": 1})
         cls.company_usd_data = cls.company_data
         # Create additional companies (also adding them to env.companies)
         cls.company_usd_data_2 = cls.setup_other_company(
@@ -66,7 +64,7 @@ class TestCurrencyTable(TestAccountReportsCommon):
                                     {
                                         "label": "balance",
                                         "engine": "domain",
-                                        "formula": "[('account_id.internal_group', '=', 'asset')]",
+                                        "formula": "[('account_id.internal_group', '=', 'asset')]",  # noqa: E501
                                         "subformula": "sum",
                                     }
                                 ),
@@ -82,7 +80,7 @@ class TestCurrencyTable(TestAccountReportsCommon):
                                     {
                                         "label": "balance",
                                         "engine": "domain",
-                                        "formula": "[('account_id.internal_group', '=', 'income')]",
+                                        "formula": "[('account_id.internal_group', '=', 'income')]",  # noqa: E501
                                         "subformula": "sum",
                                     }
                                 ),
@@ -98,7 +96,7 @@ class TestCurrencyTable(TestAccountReportsCommon):
                                     {
                                         "label": "balance",
                                         "engine": "domain",
-                                        "formula": "[('account_id.internal_group', '=', 'equity')]",
+                                        "formula": "[('account_id.internal_group', '=', 'equity')]",  # noqa: E501
                                         "subformula": "sum",
                                     }
                                 ),
@@ -305,10 +303,12 @@ class TestCurrencyTable(TestAccountReportsCommon):
                 ("Income", -203.15),
                 ("USD Company 1", -10.00),
                 ("USD Company 2", -25.00),
-                # EUR average rate = (1/11 * 10 + 1/2 * 71 + 1/5 * 18 + 1/20 * 2 + 1/4 * 275) / 376 = 0.289518859
+                # EUR average rate = (1/11 * 10 + 1/2 * 71 + 1/5 * 18 + 1/20 * 2 + 1/4 *
+                # 275) / 376 = 0.289518859
                 ("EUR Company 1", -62.83),  # (-30 -23 - 64 - 100) * 0.289518859
                 ("EUR Company 2", -40.82),  # (-10 -54 - 77) * 0.289518859
-                # CHF average rate = (1/3 * 99 + 1/7 * 41 + 1/8 * 229 + 1/2 * 7) / 376 = 0.188782295
+                # CHF average rate = (1/3 * 99 + 1/7 * 41 + 1/8 * 229 + 1/2 * 7) / 376 =
+                # 0.188782295
                 ("CHF Company", -43.23),  # (-50 -58 - 99 -22) * 0.188782295
                 # MXN average rate = (1 * 140 + 1/2 * 236) / 376 = 0.686170213
                 ("MXN Company", -21.27),  # (-10 - 21) * 0.686170213
@@ -347,10 +347,12 @@ class TestCurrencyTable(TestAccountReportsCommon):
                 ("Income", -203.92),
                 ("USD Company 1", -10.00),
                 ("USD Company 2", -25.00),
-                # EUR average rate = (1/2 * 71 + 1/5 * 18 + 1/20 * 2 + 1/4 * 275) / 366 = 0.294945355
+                # EUR average rate = (1/2 * 71 + 1/5 * 18 + 1/20 * 2 + 1/4 * 275) / 366
+                # = 0.294945355
                 ("EUR Company 1", -64.00),  # (-30 -23 - 64 - 100) * 0.294945355
                 ("EUR Company 2", -41.59),  # (-10 -54 - 77) * 0.294945355
-                # CHF average rate = (1/3 * 89 + 1/7 * 41 + 1/8 * 229 + 1/2 * 7) / 366 = 0.184832813
+                # CHF average rate = (1/3 * 89 + 1/7 * 41 + 1/8 * 229 + 1/2 * 7) / 366 =
+                # 0.184832813
                 ("CHF Company", -42.33),  # (-50 -58 - 99 -22) * 0.184832813
                 # MXN average rate = (1 * 130 + 1/2 * 236) / 366 = 0.677595628
                 ("MXN Company", -21.01),  # (-10 - 21) * 0.677595628
@@ -622,7 +624,8 @@ class TestCurrencyTable(TestAccountReportsCommon):
                 ("Income", -60.35),
                 ("USD Branch", -20.00),
                 ("USD Company 1", -10.00),
-                # EUR average rate = (1/4 * 60 + 1/2 * 275 + 1/5 * 31) / 366 = 0.433606557
+                # EUR average rate = (1/4 * 60 + 1/2 * 275 + 1/5 * 31) / 366 =
+                # 0.433606557
                 ("EUR Branch", -17.34),
                 ("EUR Company 1", -13.01),
                 ("Equity", 185.00),
@@ -705,7 +708,8 @@ class TestCurrencyTable(TestAccountReportsCommon):
                 ("EUR Company 1", 3.00),
                 ("Income", -16.50),
                 ("USD Company 1", -10.00),
-                # EUR average rate = (0.5/4 * 60 + 0.5/2 * 275 + 0.5/5 * 31) / 366 = 0.216803279
+                # EUR average rate = (0.5/4 * 60 + 0.5/2 * 275 + 0.5/5 * 31) / 366 =
+                # 0.216803279
                 ("EUR Company 1", -6.50),
                 ("Equity", 30.00),
                 ("USD Company 1", 20.00),
@@ -765,7 +769,8 @@ class TestCurrencyTable(TestAccountReportsCommon):
                     "date_from": "2020-05-03",
                     "date_to": "2020-12-31",
                 },
-                # Create a bunch of fiscal years on other companies as well to make sure they do not interfere
+                # Create a bunch of fiscal years on other companies as well to make sure
+                # they do not interfere
                 {
                     "name": "EUR year 1",
                     "date_from": "2018-05-09",

@@ -15,10 +15,30 @@ class TestResCurrencyRate(L10nVeSeniatCommon):
         cls.usd = cls.env.ref("base.USD")
         cls.today = fields.Date.today()
 
+    def _foreign_currency(self):
+        if self.usd != self.env.company.currency_id:
+            self.usd.active = True
+            return self.usd
+        euro = self.env.ref("base.EUR")
+        euro.active = True
+        return euro
+
     def _create_usd_rate(self, inverse_company_rate=40.0):
+        currency = self._foreign_currency()
+        existing = self.env["res.currency.rate"].search(
+            [
+                ("currency_id", "=", currency.id),
+                ("company_id", "=", self.env.company.id),
+                ("name", "=", self.today),
+            ],
+            limit=1,
+        )
+        if existing:
+            existing.inverse_company_rate = inverse_company_rate
+            return existing
         return self.env["res.currency.rate"].create(
             {
-                "currency_id": self.usd.id,
+                "currency_id": currency.id,
                 "company_id": self.env.company.id,
                 "name": self.today,
                 "inverse_company_rate": inverse_company_rate,
@@ -32,7 +52,7 @@ class TestResCurrencyRate(L10nVeSeniatCommon):
             invoice_date=self.today,
             amounts=[100.0],
             taxes=self.company_data["default_tax_purchase"],
-            currency=self.usd,
+            currency=self._foreign_currency(),
             post=post,
         )
 
@@ -66,7 +86,9 @@ class TestResCurrencyRate(L10nVeSeniatCommon):
         rate = self._create_usd_rate()
         with self.assertRaises(UserError) as error:
             rate.unlink()
-        self.assertIn("no se pueden eliminar tasas de cambio", str(error.exception).lower())
+        self.assertIn(
+            "no se pueden eliminar tasas de cambio", str(error.exception).lower()
+        )
 
     def test_draft_invoice_currency_rate_outdated_alert(self):
         rate = self._create_usd_rate(inverse_company_rate=40.0)

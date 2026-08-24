@@ -1,3 +1,5 @@
+"""Tests that configured balance sheet reports remain balanced."""
+
 # pylint: disable=C0326
 import contextlib
 import itertools
@@ -12,55 +14,47 @@ syscohada_coas = [country_code.lower() for country_code in SYSCOHADA_LIST]
 syscebnl_coas = [f"{country_code.lower}_syscebnl" for country_code in SYSCOHADA_LIST]
 
 
-# === Set this variable to something truthy if you want the test to identify any incorrectly-referenced accounts for you. === #
+# === Set this variable to something truthy if you want the test to identify any
+# incorrectly-referenced accounts for you. === #
 IDENTIFY_INCORRECT_ACCOUNTS = False
-# === Set this to True (if the above is set to True) if you want the test to show you journal entries for reproducing the imbalance === #
+# === Set this to True (if the above is set to True) if you want the test to show you
+# journal entries for reproducing the imbalance === #
 EXTRA_DETAIL = False
 
-# === When creating a new Balance Sheet, please add its config here. === #
-""" Example config:
-REPORT_CONFIG = {
-    <Balance Sheet report xmlid> : {
-        'asset_line_ref': <Total Assets line xmlid>
-        'liability_line_ref': <Total Liabilities line xmlid>
-        'equity_line_ref': (optional) <Total Equity line xmlid> (if not included in Liabilities)
-        'balance_col_label': (optional) <expression_label of the report column containing the totals> (if different from 'balance')
-        'chart_template_refs': (optional) <list of CoAs for which the report should be tested (by default any CoA on which the report is available)>
-    },
-} """
+# When creating a new Balance Sheet, please add its config here.
 
 REPORT_CONFIG = {
     "account_reports.balance_sheet": {
         "asset_line_ref": "account_reports.account_financial_report_total_assets0",
-        "liability_line_ref": "account_reports.account_financial_report_liabilities_and_equity_view0",
+        "liability_line_ref": "account_reports.account_financial_report_liabilities_and_equity_view0",  # noqa: E501
     },
     "l10n_at_reports.account_financial_report_l10n_at_paragraph_224_ugb": {
-        "asset_line_ref": "l10n_at_reports.account_financial_report_l10n_at_paragraph_224_ugb_line_activa",
-        "liability_line_ref": "l10n_at_reports.account_financial_report_l10n_at_paragraph_224_ugb_line_passiva",
+        "asset_line_ref": "l10n_at_reports.account_financial_report_l10n_at_paragraph_224_ugb_line_activa",  # noqa: E501
+        "liability_line_ref": "l10n_at_reports.account_financial_report_l10n_at_paragraph_224_ugb_line_passiva",  # noqa: E501
     },
     "l10n_be_reports.account_financial_report_bs_asso_a": {
         "asset_line_ref": "l10n_be_reports.account_financial_report_bs_asso_a_a_tot",
-        "liability_line_ref": "l10n_be_reports.account_financial_report_bs_asso_a_el_tot",
+        "liability_line_ref": "l10n_be_reports.account_financial_report_bs_asso_a_el_tot",  # noqa: E501
     },
     "l10n_be_reports.account_financial_report_bs_asso_f": {
         "asset_line_ref": "l10n_be_reports.account_financial_report_bs_asso_f_a_tot",
-        "liability_line_ref": "l10n_be_reports.account_financial_report_bs_asso_f_el_tot",
+        "liability_line_ref": "l10n_be_reports.account_financial_report_bs_asso_f_el_tot",  # noqa: E501
     },
     "l10n_be_reports.account_financial_report_bs_comp_acap": {
         "asset_line_ref": "l10n_be_reports.account_financial_report_bs_comp_acap_a_tot",
-        "liability_line_ref": "l10n_be_reports.account_financial_report_bs_comp_acap_el_tot",
+        "liability_line_ref": "l10n_be_reports.account_financial_report_bs_comp_acap_el_tot",  # noqa: E501
     },
     "l10n_be_reports.account_financial_report_bs_comp_acon": {
         "asset_line_ref": "l10n_be_reports.account_financial_report_bs_comp_acon_a_tot",
-        "liability_line_ref": "l10n_be_reports.account_financial_report_bs_comp_acon_el_tot",
+        "liability_line_ref": "l10n_be_reports.account_financial_report_bs_comp_acon_el_tot",  # noqa: E501
     },
     "l10n_be_reports.account_financial_report_bs_comp_fcap": {
         "asset_line_ref": "l10n_be_reports.account_financial_report_bs_comp_fcap_a_tot",
-        "liability_line_ref": "l10n_be_reports.account_financial_report_bs_comp_fcap_el_tot",
+        "liability_line_ref": "l10n_be_reports.account_financial_report_bs_comp_fcap_el_tot",  # noqa: E501
     },
     "l10n_be_reports.account_financial_report_bs_comp_fcon": {
         "asset_line_ref": "l10n_be_reports.account_financial_report_bs_comp_fcon_a_tot",
-        "liability_line_ref": "l10n_be_reports.account_financial_report_bs_comp_fcon_el_tot",
+        "liability_line_ref": "l10n_be_reports.account_financial_report_bs_comp_fcon_el_tot",  # noqa: E501
     },
     "l10n_bg_reports.l10n_bg_bs": {
         "asset_line_ref": "l10n_bg_reports.l10n_bg_bs_assets",
@@ -72,7 +66,7 @@ REPORT_CONFIG = {
     },
     "l10n_br_reports.account_financial_report_br_balancesheet0": {
         "asset_line_ref": "l10n_br_reports.account_financial_report_total_assets0",
-        "liability_line_ref": "l10n_br_reports.account_financial_report_liabilities_view0",
+        "liability_line_ref": "l10n_br_reports.account_financial_report_liabilities_view0",  # noqa: E501
     },
     "l10n_ca_reports.l10n_ca_balance_sheet": {
         "asset_line_ref": "l10n_ca_reports.l10n_ca_bs_assets",
@@ -95,7 +89,7 @@ REPORT_CONFIG = {
     },
     "l10n_cy_reports.l10n_cy_balance_sheet": {
         "asset_line_ref": "l10n_cy_reports.account_financial_report_cy_active_line",
-        "liability_line_ref": "l10n_cy_reports.account_financial_report_cy_passive_line",
+        "liability_line_ref": "l10n_cy_reports.account_financial_report_cy_passive_line",  # noqa: E501
     },
     "l10n_cz_reports.balance_sheet_l10n_cz_reports": {
         "asset_line_ref": "l10n_cz_reports.l10n_cz_reports_bs_aktiva",
@@ -111,8 +105,8 @@ REPORT_CONFIG = {
         "liability_line_ref": "l10n_dk_reports.account_balance_report_l10n_dk_passiv",
     },
     "l10n_dk_reports.account_balance_report_l10n_dk_balance_minimal": {
-        "asset_line_ref": "l10n_dk_reports.account_balance_report_minimal_l10n_dk_active",
-        "liability_line_ref": "l10n_dk_reports.account_balance_report_minimal_l10n_dk_passive",
+        "asset_line_ref": "l10n_dk_reports.account_balance_report_minimal_l10n_dk_active",  # noqa: E501
+        "liability_line_ref": "l10n_dk_reports.account_balance_report_minimal_l10n_dk_passive",  # noqa: E501
     },
     "l10n_do_reports.l10n_do_bs": {
         "asset_line_ref": "l10n_do_reports.l10n_do_bs_assets",
@@ -125,11 +119,11 @@ REPORT_CONFIG = {
     },
     "l10n_ec_reports.l10n_ec_balance_sheet": {
         "asset_line_ref": "l10n_ec_reports.l10n_ec_balance_sheet_assets",
-        "liability_line_ref": "l10n_ec_reports.l10n_ec_balance_sheet_liabilities_and_equity",
+        "liability_line_ref": "l10n_ec_reports.l10n_ec_balance_sheet_liabilities_and_equity",  # noqa: E501
     },
     "l10n_ee_reports.account_financial_report_bs": {
         "asset_line_ref": "l10n_ee_reports.account_financial_report_bs_assets",
-        "liability_line_ref": "l10n_ee_reports.account_financial_report_bs_liabilities_equity",
+        "liability_line_ref": "l10n_ee_reports.account_financial_report_bs_liabilities_equity",  # noqa: E501
     },
     "l10n_es_reports.financial_report_balance_sheet_assoc": {
         "asset_line_ref": "l10n_es_reports.balance_assoc_line_10000",
@@ -145,25 +139,25 @@ REPORT_CONFIG = {
     },
     "l10n_fi_reports.account_financial_report_l10n_fi_bs": {
         "asset_line_ref": "l10n_fi_reports.account_financial_report_l10n_fi_bs_line_1",
-        "liability_line_ref": "l10n_fi_reports.account_financial_report_l10n_fi_bs_line_2",
+        "liability_line_ref": "l10n_fi_reports.account_financial_report_l10n_fi_bs_line_2",  # noqa: E501
     },
     "l10n_fr_reports.account_financial_report_l10n_fr_bilan": {
-        "asset_line_ref": "l10n_fr_reports.account_financial_report_fr_bilan_actif_total",
-        "liability_line_ref": "l10n_fr_reports.account_financial_report_fr_bilan_passif_total",
+        "asset_line_ref": "l10n_fr_reports.account_financial_report_fr_bilan_actif_total",  # noqa: E501
+        "liability_line_ref": "l10n_fr_reports.account_financial_report_fr_bilan_passif_total",  # noqa: E501
         "balance_col_label": "net",
     },
     "l10n_fr_reports.account_financial_report_l10n_fr_bilan_2024": {
-        "asset_line_ref": "l10n_fr_reports.account_financial_report_fr_bilan_actif_total_2024",
-        "liability_line_ref": "l10n_fr_reports.account_financial_report_fr_bilan_passif_total_2024",
+        "asset_line_ref": "l10n_fr_reports.account_financial_report_fr_bilan_actif_total_2024",  # noqa: E501
+        "liability_line_ref": "l10n_fr_reports.account_financial_report_fr_bilan_passif_total_2024",  # noqa: E501
         "balance_col_label": "net",
     },
     "l10n_gr_reports.l10n_gr_bs_accounting_report": {
         "asset_line_ref": "l10n_gr_reports.l10n_gr_bs_assets",
-        "liability_line_ref": "l10n_gr_reports.l10n_gr_bs_equity_provisions_liabilities",
+        "liability_line_ref": "l10n_gr_reports.l10n_gr_bs_equity_provisions_liabilities",  # noqa: E501
     },
     "l10n_hr_reports.l10n_hr_balance_sheet": {
         "asset_line_ref": "l10n_hr_reports.account_financial_report_hr_active_title0",
-        "liability_line_ref": "l10n_hr_reports.account_financial_report_hr_passif_title0",
+        "liability_line_ref": "l10n_hr_reports.account_financial_report_hr_passif_title0",  # noqa: E501
         "chart_template_refs": ["hr"],  # don't test the hr_kuna CoA anymore (obsolete)
     },
     "l10n_hu_reports.l10n_hu_balance_sheet": {
@@ -175,12 +169,12 @@ REPORT_CONFIG = {
         "liability_line_ref": "l10n_ie_reports.l10n_ie_bs_liabilities_total",
     },
     "l10n_it_reports.account_financial_report_it_sp": {
-        "asset_line_ref": "l10n_it_reports.account_financial_report_line_it_sp_assets_total",
-        "liability_line_ref": "l10n_it_reports.account_financial_report_line_it_sp_passif_total",
+        "asset_line_ref": "l10n_it_reports.account_financial_report_line_it_sp_assets_total",  # noqa: E501
+        "liability_line_ref": "l10n_it_reports.account_financial_report_line_it_sp_passif_total",  # noqa: E501
     },
     "l10n_it_reports.account_financial_report_it_sp_reduce": {
-        "asset_line_ref": "l10n_it_reports.account_financial_report_line_it_sp_reduce_assets_total",
-        "liability_line_ref": "l10n_it_reports.account_financial_report_line_it_sp_reduce_passif_total",
+        "asset_line_ref": "l10n_it_reports.account_financial_report_line_it_sp_reduce_assets_total",  # noqa: E501
+        "liability_line_ref": "l10n_it_reports.account_financial_report_line_it_sp_reduce_passif_total",  # noqa: E501
     },
     "l10n_ke_reports.account_financial_report_ke_bs": {
         "asset_line_ref": "l10n_ke_reports.account_financial_report_ke_bs_A",
@@ -191,20 +185,20 @@ REPORT_CONFIG = {
         "liability_line_ref": "l10n_kz_reports.l10n_kz_bl_equity_liabilities",
     },
     "l10n_lt_reports.account_financial_report_balancesheet_lt": {
-        "asset_line_ref": "l10n_lt_reports.account_financial_html_report_line_bs_lt_debit",
-        "liability_line_ref": "l10n_lt_reports.account_financial_html_report_line_bs_lt_credit",
+        "asset_line_ref": "l10n_lt_reports.account_financial_html_report_line_bs_lt_debit",  # noqa: E501
+        "liability_line_ref": "l10n_lt_reports.account_financial_html_report_line_bs_lt_credit",  # noqa: E501
     },
     "l10n_lu_reports.account_financial_report_l10n_lu_bs_abr": {
-        "asset_line_ref": "l10n_lu_reports.account_financial_report_l10n_lu_bs_abr_line_1_6",
-        "liability_line_ref": "l10n_lu_reports.account_financial_report_l10n_lu_bs_abr_line_2_5",
+        "asset_line_ref": "l10n_lu_reports.account_financial_report_l10n_lu_bs_abr_line_1_6",  # noqa: E501
+        "liability_line_ref": "l10n_lu_reports.account_financial_report_l10n_lu_bs_abr_line_2_5",  # noqa: E501
     },
     "l10n_lu_reports.account_financial_report_l10n_lu_bs": {
-        "asset_line_ref": "l10n_lu_reports.account_financial_report_l10n_lu_bs_line_1_6",
-        "liability_line_ref": "l10n_lu_reports.account_financial_report_l10n_lu_bs_line_2_5",
+        "asset_line_ref": "l10n_lu_reports.account_financial_report_l10n_lu_bs_line_1_6",  # noqa: E501
+        "liability_line_ref": "l10n_lu_reports.account_financial_report_l10n_lu_bs_line_2_5",  # noqa: E501
     },
     "l10n_lv_reports.l10n_lv_balance_sheet": {
         "asset_line_ref": "l10n_lv_reports.account_financial_report_lv_active_title",
-        "liability_line_ref": "l10n_lv_reports.account_financial_report_lv_passif_title",
+        "liability_line_ref": "l10n_lv_reports.account_financial_report_lv_passif_title",  # noqa: E501
     },
     "l10n_ma_reports.account_financial_report_bs": {
         "asset_line_ref": "l10n_ma_reports.account_financial_report_bs_a_total",
@@ -217,7 +211,7 @@ REPORT_CONFIG = {
     },
     "l10n_mt_reports.l10n_mt_balance_sheet": {
         "asset_line_ref": "l10n_mt_reports.account_financial_report_mt_active_title",
-        "liability_line_ref": "l10n_mt_reports.account_financial_report_mt_passif_title",
+        "liability_line_ref": "l10n_mt_reports.account_financial_report_mt_passif_title",  # noqa: E501
     },
     "l10n_mz_reports.l10_mz_bs": {
         "asset_line_ref": "l10n_mz_reports.l10n_mz_bs_line_1",
@@ -241,7 +235,7 @@ REPORT_CONFIG = {
     },
     "l10n_pk_reports.account_financial_report_pk_balancesheet0": {
         "asset_line_ref": "l10n_pk_reports.account_balance_report_pk_asset",
-        "liability_line_ref": "l10n_pk_reports.account_balance_report_pk_equity_plus_liabilities",
+        "liability_line_ref": "l10n_pk_reports.account_balance_report_pk_equity_plus_liabilities",  # noqa: E501
     },
     "l10n_pl_reports.l10n_pl_micro_bs": {
         "asset_line_ref": "l10n_pl_reports.l10n_pl_micro_bs_assets",
@@ -252,20 +246,20 @@ REPORT_CONFIG = {
         "liability_line_ref": "l10n_pl_reports.l10n_pl_small_bs_passives",
     },
     "l10n_pt_reports.account_financial_report_line_pt_balanco": {
-        "asset_line_ref": "l10n_pt_reports.account_financial_report_line_pt_balanco_total_do_ativo",
-        "liability_line_ref": "l10n_pt_reports.account_financial_report_line_pt_balanco_total_do_capital_proprio_e_do_passivo",
+        "asset_line_ref": "l10n_pt_reports.account_financial_report_line_pt_balanco_total_do_ativo",  # noqa: E501
+        "liability_line_ref": "l10n_pt_reports.account_financial_report_line_pt_balanco_total_do_capital_proprio_e_do_passivo",  # noqa: E501
     },
     "l10n_ro_reports.account_financial_report_ro_bs_smle": {
-        "asset_line_ref": "l10n_ro_reports.account_financial_report_ro_bs_smle_total_assets",
-        "liability_line_ref": "l10n_ro_reports.account_financial_report_ro_bs_smle_total_liabilities",
+        "asset_line_ref": "l10n_ro_reports.account_financial_report_ro_bs_smle_total_assets",  # noqa: E501
+        "liability_line_ref": "l10n_ro_reports.account_financial_report_ro_bs_smle_total_liabilities",  # noqa: E501
     },
     "l10n_ro_reports.account_financial_report_ro_bs_large": {
-        "asset_line_ref": "l10n_ro_reports.account_financial_report_ro_bs_large_total_assets",
-        "liability_line_ref": "l10n_ro_reports.account_financial_report_ro_bs_large_total_liabilities",
+        "asset_line_ref": "l10n_ro_reports.account_financial_report_ro_bs_large_total_assets",  # noqa: E501
+        "liability_line_ref": "l10n_ro_reports.account_financial_report_ro_bs_large_total_liabilities",  # noqa: E501
     },
     "l10n_rs_reports.account_financial_report_rs_BS": {
         "asset_line_ref": "l10n_rs_reports.account_financial_report_rs_BS_assets",
-        "liability_line_ref": "l10n_rs_reports.account_financial_report_rs_BS_equity_liabilities",
+        "liability_line_ref": "l10n_rs_reports.account_financial_report_rs_BS_equity_liabilities",  # noqa: E501
     },
     "l10n_rw_reports.l10n_rw_balance_sheet": {
         "asset_line_ref": "l10n_rw_reports.account_financial_report_rw_active",
@@ -280,13 +274,13 @@ REPORT_CONFIG = {
         "liability_line_ref": "l10n_si_reports.l10n_si_balance_sheet_liabilities",
     },
     "l10n_syscohada_reports.account_financial_report_syscohada_bilan": {
-        "asset_line_ref": "l10n_syscohada_reports.account_financial_report_line_03_3_11_syscohada_bilan_actif",
-        "liability_line_ref": "l10n_syscohada_reports.account_financial_report_line_03_3_11_syscohada_bilan_passif",
+        "asset_line_ref": "l10n_syscohada_reports.account_financial_report_line_03_3_11_syscohada_bilan_actif",  # noqa: E501
+        "liability_line_ref": "l10n_syscohada_reports.account_financial_report_line_03_3_11_syscohada_bilan_passif",  # noqa: E501
         "chart_template_refs": syscohada_coas,
     },
     "l10n_syscohada_reports.account_financial_report_syscebnl_bilan_assoc": {
-        "asset_line_ref": "l10n_syscohada_reports.account_financial_report_syscohada_bilan_actif_total",
-        "liability_line_ref": "l10n_syscohada_reports.account_financial_report_syscohada_bilan_passif_total",
+        "asset_line_ref": "l10n_syscohada_reports.account_financial_report_syscohada_bilan_actif_total",  # noqa: E501
+        "liability_line_ref": "l10n_syscohada_reports.account_financial_report_syscohada_bilan_passif_total",  # noqa: E501
         "chart_template_refs": syscebnl_coas,
     },
     "l10n_tn_reports.l10n_tn_bs_account_report": {
@@ -298,8 +292,8 @@ REPORT_CONFIG = {
         "liability_line_ref": "l10n_tr_reports.account_report_line_trbs_pasive",
     },
     "l10n_tw_reports.balance_sheet_l10n_tw": {
-        "asset_line_ref": "l10n_tw_reports.account_financial_report_total_assets0_l10n_tw",
-        "liability_line_ref": "l10n_tw_reports.account_financial_report_libailities_and_equity",
+        "asset_line_ref": "l10n_tw_reports.account_financial_report_total_assets0_l10n_tw",  # noqa: E501
+        "liability_line_ref": "l10n_tw_reports.account_financial_report_libailities_and_equity",  # noqa: E501
     },
     "l10n_tz_reports.l10n_tz_balance_sheet": {
         "asset_line_ref": "l10n_tz_reports.account_financial_report_tz_active",
@@ -307,7 +301,7 @@ REPORT_CONFIG = {
     },
     "l10n_zm_reports.balance_sheet_zm": {
         "asset_line_ref": "l10n_zm_reports.balance_sheet_zm_assets",
-        "liability_line_ref": "l10n_zm_reports.balance_sheet_zm_liabilities_and_equities",
+        "liability_line_ref": "l10n_zm_reports.balance_sheet_zm_liabilities_and_equities",  # noqa: E501
     },
     "l10n_kr_reports.l10_kr_bs": {
         "asset_line_ref": "l10n_kr_reports.l10n_kr_bs_ta",
@@ -326,15 +320,15 @@ REPORT_CONFIG = {
 # === If some accounts should be excluded from the testing, specify them here === #
 # Accounts starting with 99 are excluded anyway: users should change their codes
 # to something sensible in order for them to be taken into account in the Balance Sheet.
-"""
-NON_TESTED_ACCOUNTS = {
-    <chart template ref>: [account_code_1, account_code_2, ...]
-}
-"""
+# NON_TESTED_ACCOUNTS example:
+# {<chart template ref>: [account_code_1, account_code_2, ...]}
 NON_TESTED_ACCOUNTS = {
     "all": [
-        "99",  # 99 account codes are placeholders and should normally be changed by the user.
-        "123456",  # hr.payroll creates an account 123456 Account Payslip Houserental for demo companies; don't test it
+        # 99 account codes are placeholders and should normally be changed by the user.
+        "99",
+        # hr.payroll creates an account 123456 Account Payslip Houserental for demo
+        # companies; don't test it
+        "123456",
     ],
     **{coa: ["13"] for coa in syscohada_coas},
     "at": ["98"],
@@ -392,7 +386,7 @@ class TestBalanceSheetBalanced(TestAccountReportsCommon):
         pass
 
     def test_balance_sheet_balanced(self):
-        """The main test function: check whether every installed balance sheet is balanced."""
+        """The main test function: check whether every installed balance sheet is balanced."""  # noqa: E501
         installed_modules = self.env["ir.module.module"].search(
             [("state", "=", "installed")]
         )
@@ -429,7 +423,8 @@ class TestBalanceSheetBalanced(TestAccountReportsCommon):
                         # === 2. Set-up report === #
                         report_setup_data = self._set_up_report(report)
 
-                        # === 3. Test that the report is balanced with both the debits journal entry and the credits journal entry. === #
+                        # === 3. Test that the report is balanced with both the debits
+                        # journal entry and the credits journal entry. === #
                         if not IDENTIFY_INCORRECT_ACCOUNTS:
                             self._check_balance_sheet_balanced(
                                 report_setup_data, aml_pairs
@@ -468,7 +463,8 @@ class TestBalanceSheetBalanced(TestAccountReportsCommon):
             * aml_pairs is a list of (aml_id, counterpart_aml_id) that were generated
             * accounts_by_aml is a map {aml_id: account_id} for the generated AMLs
         """
-        # Always reset company, as the one used in the previous subtest might not exist anymore
+        # Always reset company, as the one used in the previous subtest might not exist
+        # anymore
         self.env.company = self.existing_companies[0]
 
         coa_setup_data = {}
@@ -523,7 +519,8 @@ class TestBalanceSheetBalanced(TestAccountReportsCommon):
         ]
         available_reports = self.env["account.report"].browse(available_report_ids)
 
-        # Don't test Balance Sheets for which the REPORT_CONFIG specifies a chart_template_refs that differs from this CoA.
+        # Don't test Balance Sheets for which the REPORT_CONFIG specifies a
+        # chart_template_refs that differs from this CoA.
         available_report_refs = available_reports.get_external_id()
         report_ids_to_skip = [
             id_
@@ -534,9 +531,12 @@ class TestBalanceSheetBalanced(TestAccountReportsCommon):
         available_reports -= self.env["account.report"].browse(report_ids_to_skip)
         available_reports = available_reports.with_company(self.env.company)
 
-        # Choose an account to be a counterpart account. Every AML we generate will have a counterpart in this account.
-        # We use the Accounts Receivable account (which in general should be well-configured.)
-        # However, if the Balance Sheet is incorrect for the counterpart account, the test will give weird results.
+        # Choose an account to be a counterpart account. Every AML we generate will have
+        # a counterpart in this account.
+        # We use the Accounts Receivable account (which in general should be
+        # well-configured.)
+        # However, if the Balance Sheet is incorrect for the counterpart account, the
+        # test will give weird results.
         tested_accounts_domain = [
             ("company_ids", "=", self.env.company.id),
             ("internal_group", "!=", "off_balance"),
@@ -548,7 +548,8 @@ class TestBalanceSheetBalanced(TestAccountReportsCommon):
             tested_accounts - coa_setup_data["counterpart_account"]
         )
 
-        # Create two test journal entries: one with debits in each account (other than the counterpart account), the other with credits.
+        # Create two test journal entries: one with debits in each account (other than
+        # the counterpart account), the other with credits.
         debit_move_aml_pairs, debit_accounts_by_aml = (
             self._create_balance_sheet_test_move(coa_setup_data)
         )
@@ -580,9 +581,11 @@ class TestBalanceSheetBalanced(TestAccountReportsCommon):
         report_ref = report.get_external_id()[report.id]
         if report_ref not in REPORT_CONFIG:
             self.fail(f"""
-                The following Balance Sheet report is installed but is not configured to be tested:
+                The following Balance Sheet report is installed but is not configured to
+                be tested:
                 {report_ref}
-                Please add it to the REPORT_CONFIG global at the beginning of this file.""")
+                Please add it to the REPORT_CONFIG global at the beginning of this
+                file.""")
         report_config = REPORT_CONFIG[report_ref]
 
         report_setup_data["report_ref"] = report_ref
@@ -602,7 +605,7 @@ class TestBalanceSheetBalanced(TestAccountReportsCommon):
         else:
             self.fail(
                 f"Could not identify totals column for report {report_ref} "
-                "- please add its expression_label in the REPORT_CONFIG global at the top of this file."
+                "- please add its expression_label in the REPORT_CONFIG global at the top of this file."  # noqa: E501
             )
 
         report_setup_data["asset_line"] = self.env.ref(report_config["asset_line_ref"])
@@ -619,15 +622,20 @@ class TestBalanceSheetBalanced(TestAccountReportsCommon):
 
     def _create_balance_sheet_test_move(self, coa_setup_data, create_credits=False):
         """Create a journal entry that will be the basis for testing the Balance Sheet.
-        The created journal entry will have one AML in each account in coa_setup_data['tested_accounts'],
+        The created journal entry will have one AML in each account in
+        coa_setup_data['tested_accounts'],
         and corresponding counterpart AMLs in coa_setup_data['counterpart_account'].
-        We create it in SQL to improve performance (since this gets run a lot on runbot).
+        We create it in SQL to improve performance (since this gets run a lot on
+        runbot).
 
-        :param bool create_credits: If true, the AMLs will be created with credits (instead of debits)
-                                    and the counterpart AMLs will be created with debits.
+        :param bool create_credits: If true, the AMLs will be created with credits
+        (instead of debits)
+                                    and the counterpart AMLs will be created with
+                                    debits.
 
         :return: (aml_pairs, accounts_by_aml), where:
-           - aml_pairs is a list of tuples (aml_id, counterpart_aml_id) containing the AMLs of the journal entry that was created.
+           - aml_pairs is a list of tuples (aml_id, counterpart_aml_id) containing the
+           AMLs of the journal entry that was created.
            - accounts_by_aml is a map of AML id to account id.
         """
 
@@ -656,7 +664,8 @@ class TestBalanceSheetBalanced(TestAccountReportsCommon):
         )
 
         # For each account, we create 2 AMLs:
-        # - one AML in that account (either a debit or a credit, depending on the create_credits param)
+        # - one AML in that account (either a debit or a credit, depending on the
+        # create_credits param)
         # - one counterpart AML in the counterpart account
         amls_vals = []
         for i, account in enumerate(coa_setup_data["tested_accounts"]):
@@ -679,7 +688,8 @@ class TestBalanceSheetBalanced(TestAccountReportsCommon):
             }
         )
 
-        # Additionally, in one Income/Expense account, create an AML in the previous fiscal year
+        # Additionally, in one Income/Expense account, create an AML in the previous
+        # fiscal year
         # in order to test the unaffected earnings
         amls_vals += [
             get_move_line_sql_create_vals(
@@ -697,19 +707,20 @@ class TestBalanceSheetBalanced(TestAccountReportsCommon):
 
         self.env["account.move.line"].invalidate_model()
         self.env.cr.execute(
-            f'INSERT INTO "account_move_line" ({query_columns}) VALUES {query_placeholder} RETURNING "id"',
+            f'INSERT INTO "account_move_line" ({query_columns}) VALUES {query_placeholder} RETURNING "id"',  # noqa: E501
             query_params,
         )
         aml_ids = [aml_id for (aml_id,) in self.env.cr.fetchall()]
 
-        # Create a map of AMLs to accounts, to avoid having to fetch this info from the DB
+        # Create a map of AMLs to accounts, to avoid having to fetch this info from the
+        # DB
         accounts_by_aml = {
             aml_ids[i]: aml_vals["account_id"] for i, aml_vals in enumerate(amls_vals)
         }
 
         # Group AMLs in account/counterpart pairs
         aml_pairs = []
-        for i, account in enumerate(coa_setup_data["tested_accounts"]):
+        for _i, _account in enumerate(coa_setup_data["tested_accounts"]):
             aml_id = aml_ids[2 * i]
             counterpart_aml_id = aml_ids[2 * i + 1]
             aml_pairs.append((aml_id, counterpart_aml_id))
@@ -718,15 +729,19 @@ class TestBalanceSheetBalanced(TestAccountReportsCommon):
 
     def _check_balance_sheet_balanced(self, report_setup_data, aml_pairs):
         """Check whether the Balance Sheet is balanced."""
-        # Set 'parent_state' to 'posted' on the AMLs of the debits journal entry, and to 'draft' on all other AMLs.
+        # Set 'parent_state' to 'posted' on the AMLs of the debits journal entry, and to
+        # 'draft' on all other AMLs.
         with self._activate_lines(aml_pairs):
             totals = self._get_report_totals(report_setup_data)
             if not totals["is_balanced"]:
                 self.fail(f"""
-                    The balance sheet {report_setup_data['report_ref']} is not balanced.
-                    Total Assets: {totals['total_asset']}; Total Liabilities + Equity: {totals['total_liability']}.
-                    This test can also find out for you which accounts are incorrectly used in the Balance Sheet.
-                    To do this, set the IDENTIFY_INCORRECT_ACCOUNTS variable at the top of this file to something truthy.
+                    The balance sheet {report_setup_data["report_ref"]} is not balanced.
+                    Total Assets: {totals["total_asset"]}; Total Liabilities + Equity:
+                    {totals["total_liability"]}.
+                    This test can also find out for you which accounts are incorrectly
+                    used in the Balance Sheet.
+                    To do this, set the IDENTIFY_INCORRECT_ACCOUNTS variable at the top
+                    of this file to something truthy.
                 """)
 
     @contextlib.contextmanager
@@ -734,7 +749,8 @@ class TestBalanceSheetBalanced(TestAccountReportsCommon):
         """On entry: set the 'parent_state' of the specified AMLs to 'posted'.
         On exit: set the 'parent_state' of these AMLs to 'draft'.
 
-        :param aml_pairs: list of tuples (aml_id, counterpart_aml_id) whose parent_state should be set to 'posted'.
+        :param aml_pairs: list of tuples (aml_id, counterpart_aml_id) whose parent_state
+        should be set to 'posted'.
         """
         aml_ids = tuple(itertools.chain(*aml_pairs))
         self.env["account.move.line"].browse(aml_ids).invalidate_recordset()
@@ -773,7 +789,7 @@ class TestBalanceSheetBalanced(TestAccountReportsCommon):
             balance = line["columns"][balance_column_idx]["no_format"]
             self.assertIsNotNone(
                 balance,
-                f'Report line "{report_line.name}" does not set a value in the column which should contain the balance.',
+                f'Report line "{report_line.name}" does not set a value in the column which should contain the balance.',  # noqa: E501
             )
             return balance
 
@@ -806,21 +822,27 @@ class TestBalanceSheetBalanced(TestAccountReportsCommon):
     def _identify_incorrect_accounts(
         self, report_setup_data, aml_pairs, accounts_by_aml, bad_account_ids, logging_fn
     ):
-        """Identify accounts that are incorrectly used in the Balance Sheet, using a binary search.
+        """Identify accounts that are incorrectly used in the Balance Sheet, using a
+        binary search.
         This is a recursive function.
 
         :param report_setup_data: The report configuration to test
         :param aml_pairs: a list of tuples (aml_id, counterpart_aml_id)
-                          account.move.lines which cause the Balance Sheet to be unbalanced.
+                          account.move.lines which cause the Balance Sheet to be
+                          unbalanced.
         :param accounts_by_aml: a map {aml_id: account_id} of the AMLs to test
-        :param bad_account_ids: a set of account ids that are determined to be badly referenced,
+        :param bad_account_ids: a set of account ids that are determined to be badly
+        referenced,
                                 can be used to avoid testing a bad account twice
-        :param logging_fn: a function to call when an account causing an unbalance is found. This should take
+        :param logging_fn: a function to call when an account causing an unbalance is
+        found. This should take
                            as first argument a pair (aml_id, counterpart_aml_id) and
-                           as second argument a dict containing information about the report totals
+                           as second argument a dict containing information about the
+                           report totals
         """
 
-        # No need to further test AMLs in accounts already determined to be badly referenced.
+        # No need to further test AMLs in accounts already determined to be badly
+        # referenced.
         aml_pairs = [
             (aml_id, counterpart_aml_id)
             for aml_id, counterpart_aml_id in aml_pairs
@@ -832,7 +854,8 @@ class TestBalanceSheetBalanced(TestAccountReportsCommon):
             totals = self._get_report_totals()
 
         if totals["is_balanced"]:
-            # Valid subtree case. There are no badly-referenced accounts in the subtree, just return (no need to search deeper)
+            # Valid subtree case. There are no badly-referenced accounts in the subtree,
+            # just return (no need to search deeper)
             return
         elif len(aml_pairs) == 1:
             # Leaf case. This account is badly-referenced: log and return.
@@ -844,7 +867,8 @@ class TestBalanceSheetBalanced(TestAccountReportsCommon):
             )
             bad_account_ids.add(accounts_by_aml[aml_pairs[0][0]])
         else:
-            # Non-leaf case. Some accounts in the subtree are badly-referenced: bisect it into two halves, and check each half.
+            # Non-leaf case. Some accounts in the subtree are badly-referenced: bisect
+            # it into two halves, and check each half.
             middle_index = len(aml_pairs) // 2
             aml_pairs_left = aml_pairs[:middle_index]
             aml_pairs_right = aml_pairs[middle_index:]

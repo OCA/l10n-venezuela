@@ -29,7 +29,9 @@ class ProductTemplate(models.Model):
         if not products:
             return False
         return bool(
-            self.env["loyalty.reward"].sudo().search_count(
+            self.env["loyalty.reward"]
+            .sudo()
+            .search_count(
                 [("discount_line_product_id", "in", products.ids)],
                 limit=1,
             )

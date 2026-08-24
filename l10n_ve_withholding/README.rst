@@ -28,13 +28,52 @@ Venezuela - Retenciones
 
 |badge1| |badge2| |badge3| |badge4| |badge5|
 
-Retenciones Este modulo esta basado en el repositorio de
-https://github.com/binaural-dev/odoo-venezuela
+Retenciones IVA, ISLR y municipales para Venezuela.
+
+Los comprobantes emitidos se pueden imprimir desde la factura o desde el
+formulario de la retención. Los listados y las líneas de retención
+muestran las facturas afectadas y permiten abrirlas mediante su
+referencia de proveedor.
+
+En el comprobante y el TXT de retención IVA, las notas de débito de
+proveedor (``in_invoice`` con ``debit_origin_id``) se reportan como tipo
+``02``, con el número de la ND en la columna correspondiente y la
+factura origen como documento afectado.
 
 **Table of contents**
 
 .. contents::
    :local:
+
+Usage
+=====
+
+Comprobante de retención IVA y notas de débito
+----------------------------------------------
+
+1. Publique una factura o nota de débito de proveedor con retención IVA.
+2. En el PDF del comprobante, la ND aparece en la columna **Nota de
+   Débito**, el tipo de transacción es ``02-REG`` y **Factura afectada**
+   muestra el número de la factura origen.
+3. El TXT SENIAT de IVA usa el mismo criterio (tipo de documento
+   ``02``).
+
+Impresión y consulta de facturas afectadas
+------------------------------------------
+
+1. Abra una factura de proveedor que tenga una retención IVA o ISLR
+   emitida.
+2. Use el icono de impresora junto al número de comprobante para
+   descargar el comprobante sin abrir primero la retención.
+3. También puede abrir una retención emitida y usar el botón
+   **Imprimir**.
+4. En el listado de retenciones consulte las facturas afectadas.
+5. En las líneas de la retención use el identificador mostrado y el
+   icono de enlace para abrir directamente la factura correspondiente.
+
+Las facturas afectadas se identifican priorizando el número de control,
+la referencia del proveedor o el número de factura fiscal, seguido por
+el número interno del asiento entre paréntesis.
 
 Bug Tracker
 ===========
@@ -54,6 +93,12 @@ Authors
 
 * BinauralDev
 * Anderson Armeya
+
+Contributors
+------------
+
+- Anderson Armeya
+- andyengit
 
 Maintainers
 -----------

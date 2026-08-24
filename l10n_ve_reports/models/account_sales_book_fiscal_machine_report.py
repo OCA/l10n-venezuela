@@ -90,7 +90,7 @@ class SalesBookFiscalMachineReportCustomHandler(models.AbstractModel):
         return ret_vals
 
     def _custom_options_initializer(self, report, options, previous_options):
-        super()._custom_options_initializer(
+        result = super()._custom_options_initializer(
             report, options, previous_options=previous_options
         )
         options["unfold_all"] = options.get("unfold_all", True)
@@ -100,6 +100,7 @@ class SalesBookFiscalMachineReportCustomHandler(models.AbstractModel):
             "sale",
             include_third_party=False,
         )
+        return result
 
     def _caret_options_initializer(self):
         return {
@@ -148,8 +149,10 @@ class SalesBookFiscalMachineReportCustomHandler(models.AbstractModel):
             _logger.warning("First move does not exist, returning close action")
             return {"type": "ir.actions.act_window_close"}
 
-        # Reconstruct the group by finding all moves with the same grouping characteristics
-        # Group is determined by: date (create_date or invoice_date in format "%d-%m-%Y"), serial_number, and report_z
+        # Reconstruct the group by finding all moves with the same grouping
+        # characteristics
+        # Group is determined by: date (create_date or invoice_date in format
+        # "%d-%m-%Y"), serial_number, and report_z
         serial_number = first_move.l10n_ve_serial_number or ""
         report_z = first_move.l10n_ve_report_z or ""
         _logger.info(
@@ -163,7 +166,7 @@ class SalesBookFiscalMachineReportCustomHandler(models.AbstractModel):
 
         # Get the date key in the same format as used in _dynamic_lines_generator
         if first_move.create_date:
-            date_key = first_move.create_date.strftime("%d-%m-%Y")
+            _date_key = first_move.create_date.strftime("%d-%m-%Y")
             # For create_date (datetime field), filter by date range for the same day
             date_start = first_move.create_date.replace(
                 hour=0, minute=0, second=0, microsecond=0
@@ -177,7 +180,7 @@ class SalesBookFiscalMachineReportCustomHandler(models.AbstractModel):
             ]
             _logger.info("Using create_date filter: %s to %s", date_start, date_end)
         elif first_move.invoice_date:
-            date_key = first_move.invoice_date.strftime("%d-%m-%Y")
+            _date_key = first_move.invoice_date.strftime("%d-%m-%Y")
             # For invoice_date (date field), filter by exact date
             date_domain = [("invoice_date", "=", first_move.invoice_date)]
             _logger.info("Using invoice_date filter: %s", first_move.invoice_date)
@@ -384,7 +387,7 @@ class SalesBookFiscalMachineReportCustomHandler(models.AbstractModel):
             return date_value
         return format_date(self.env, date_value, date_format="dd/MM/yyyy")
 
-    def _dynamic_lines_generator(
+    def _dynamic_lines_generator(  # noqa: C901
         self, report, options, all_column_groups_expression_totals, warnings=None
     ):
         lines = []
@@ -406,7 +409,7 @@ class SalesBookFiscalMachineReportCustomHandler(models.AbstractModel):
             else:
                 agrouped_by_date[key].append(move)
 
-        for date_key, date_moves in agrouped_by_date.items():
+        for _date_key, date_moves in agrouped_by_date.items():
             agrouped_by_report_z = {}
             for move in sorted(
                 date_moves,
@@ -424,7 +427,7 @@ class SalesBookFiscalMachineReportCustomHandler(models.AbstractModel):
                 else:
                     agrouped_by_report_z[key].append(move)
 
-            for report_key, report_moves in agrouped_by_report_z.items():
+            for _report_key, report_moves in agrouped_by_report_z.items():
                 range_start = 0
                 range_last = 0
                 cumulative = {
@@ -678,7 +681,7 @@ class SalesBookFiscalMachineReportCustomHandler(models.AbstractModel):
 
         return [(0, line) for line in lines]
 
-    def _build_line_dict(self, report, move, tax_values, options, index):
+    def _build_line_dict(self, report, move, tax_values, options, index):  # noqa: C901
         retention_values = self._get_retention_iva_values(move, options)
         line_columns = []
         for column in options["columns"]:
@@ -911,7 +914,7 @@ class SalesBookFiscalMachineReportCustomHandler(models.AbstractModel):
         }
         return line_dict
 
-    def _build_group_line_dict(
+    def _build_group_line_dict(  # noqa: C901
         self, report, data, cumulative, options, group_moves=None
     ):
         line_columns = []

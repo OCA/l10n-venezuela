@@ -1,6 +1,9 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <odoo>
-    <record id="action_l10n_ve_fiscal_machine_setup_wizard" model="ir.actions.act_window">
+    <record
+        id="action_l10n_ve_fiscal_machine_setup_wizard"
+        model="ir.actions.act_window"
+    >
         <field name="name">Configurar máquina fiscal</field>
         <field name="res_model">l10n.ve.fiscal.machine.setup.wizard</field>
         <field name="view_mode">form</field>
@@ -22,16 +25,16 @@
                         class="btn-primary"
                     />
                 </header>
-                <field name="name"/>
-                <field name="registered_serial"/>
-                <field name="serial_port"/>
-                <field name="printer_type"/>
-                <field name="printer_model_name"/>
-                <field name="baudrate"/>
-                <field name="parity"/>
-                <field name="last_connection"/>
-                <field name="company_id" groups="base.group_multi_company"/>
-                <field name="active" widget="boolean_toggle"/>
+                <field name="name" />
+                <field name="registered_serial" />
+                <field name="serial_port" />
+                <field name="printer_type" />
+                <field name="printer_model_name" />
+                <field name="baudrate" />
+                <field name="parity" />
+                <field name="last_connection" />
+                <field name="company_id" groups="base.group_multi_company" />
+                <field name="active" widget="boolean_toggle" />
             </list>
         </field>
     </record>
@@ -65,7 +68,11 @@
                             class="oe_stat_button"
                             icon="fa-history"
                         >
-                            <field name="audit_count" widget="statinfo" string="Auditoría"/>
+                            <field
+                                name="audit_count"
+                                widget="statinfo"
+                                string="Auditoría"
+                            />
                         </button>
                     </div>
                     <widget
@@ -76,31 +83,38 @@
                     />
                     <div class="oe_title">
                         <h1>
-                            <field name="name" placeholder="Nombre de la máquina"/>
+                            <field name="name" placeholder="Nombre de la máquina" />
                         </h1>
                     </div>
                     <group>
                         <group string="Máquina">
-                            <field name="registered_serial" string="Serial"/>
-                            <field name="fiscal_rif" string="RIF"/>
-                            <field name="printer_model_name" readonly="1" string="Modelo"/>
-                            <field name="company_id" groups="base.group_multi_company"/>
-                            <field name="active"/>
+                            <field name="registered_serial" string="Serial" />
+                            <field name="fiscal_rif" string="RIF" />
+                            <field
+                                name="printer_model_name"
+                                readonly="1"
+                                string="Modelo"
+                            />
+                            <field
+                                name="company_id"
+                                groups="base.group_multi_company"
+                            />
+                            <field name="active" />
                         </group>
                         <group string="Contadores fiscales">
-                            <field name="last_invoice_number" readonly="1"/>
-                            <field name="last_credit_note_number" readonly="1"/>
-                            <field name="last_debit_note_number" readonly="1"/>
-                            <field name="daily_closure_counter" readonly="1"/>
+                            <field name="last_invoice_number" readonly="1" />
+                            <field name="last_credit_note_number" readonly="1" />
+                            <field name="last_debit_note_number" readonly="1" />
+                            <field name="daily_closure_counter" readonly="1" />
                         </group>
                     </group>
                     <notebook>
                         <page string="Configuración" name="configuration">
                             <group>
                                 <group string="Parámetros fiscales">
-                                    <field name="flag_21"/>
-                                    <field name="flag_50"/>
-                                    <field name="use_barcode"/>
+                                    <field name="flag_21" />
+                                    <field name="flag_50" />
+                                    <field name="use_barcode" />
                                 </group>
                                 <group string="Pie de página">
                                     <field
@@ -125,11 +139,19 @@
                                         domain="[('company_id', '=', company_id)]"
                                     />
                                 </group>
-                                <field name="fiscal_payment_method_ids" nolabel="1" colspan="2">
-                                    <list editable="bottom" create="false" delete="false">
-                                        <field name="code" readonly="1" width="80px"/>
-                                        <field name="name"/>
-                                        <field name="company_id" column_invisible="1"/>
+                                <field
+                                    name="fiscal_payment_method_ids"
+                                    nolabel="1"
+                                    colspan="2"
+                                >
+                                    <list
+                                        editable="bottom"
+                                        create="false"
+                                        delete="false"
+                                    >
+                                        <field name="code" readonly="1" width="80px" />
+                                        <field name="name" />
+                                        <field name="company_id" column_invisible="1" />
                                     </list>
                                 </field>
                                 <div class="text-muted" colspan="2">
@@ -143,42 +165,64 @@
                         <page string="Conexión" name="connection">
                             <group>
                                 <group string="Puerto">
-                                    <field name="connection_type" readonly="1"/>
-                                    <field name="serial_port" readonly="1"/>
-                                    <widget name="fiscal_machine_port_update"/>
-                                    <field name="baudrate"/>
-                                    <field name="parity"/>
-                                    <field name="data_bits"/>
-                                    <field name="stop_bits"/>
-                                    <field name="last_connection" readonly="1"/>
+                                    <field name="connection_type" readonly="1" />
+                                    <field name="serial_port" readonly="1" />
+                                    <widget name="fiscal_machine_port_update" />
+                                    <field name="baudrate" />
+                                    <field name="parity" />
+                                    <field name="data_bits" />
+                                    <field name="stop_bits" />
+                                    <field name="last_connection" readonly="1" />
                                 </group>
                                 <group string="Parámetros">
-                                    <field name="use_emulator"/>
-                                    <field name="send_default_code_in_name"/>
-                                    <field name="printer_type" readonly="1"/>
-                                    <field name="printer_model_code" readonly="1"/>
-                                    <field name="country_code" readonly="1"/>
-                                    <field name="webserial_usb_vendor_id" readonly="1"/>
-                                    <field name="webserial_usb_product_id" readonly="1"/>
-                                    <field name="webserial_usb_serial_number" readonly="1"/>
+                                    <field name="use_emulator" />
+                                    <field name="send_default_code_in_name" />
+                                    <field name="printer_type" readonly="1" />
+                                    <field name="printer_model_code" readonly="1" />
+                                    <field name="country_code" readonly="1" />
+                                    <field
+                                        name="webserial_usb_vendor_id"
+                                        readonly="1"
+                                    />
+                                    <field
+                                        name="webserial_usb_product_id"
+                                        readonly="1"
+                                    />
+                                    <field
+                                        name="webserial_usb_serial_number"
+                                        readonly="1"
+                                    />
                                 </group>
                             </group>
                             <group string="Estado ENQ">
                                 <group>
-                                    <field name="enq_status_label" readonly="1"/>
-                                    <field name="enq_error_label" readonly="1"/>
+                                    <field name="enq_status_label" readonly="1" />
+                                    <field name="enq_error_label" readonly="1" />
                                 </group>
                                 <group groups="base.group_no_one">
-                                    <field name="enq_status" readonly="1"/>
-                                    <field name="enq_error" readonly="1"/>
+                                    <field name="enq_status" readonly="1" />
+                                    <field name="enq_error" readonly="1" />
                                 </group>
                             </group>
                         </page>
                         <page string="Consola de depuración" name="debug_console">
-                            <widget name="fiscal_machine_debug_console"/>
-                            <group string="Respuestas crudas" groups="base.group_no_one">
-                                <field name="s1_raw" readonly="1" nolabel="1" colspan="2"/>
-                                <field name="sv_raw" readonly="1" nolabel="1" colspan="2"/>
+                            <widget name="fiscal_machine_debug_console" />
+                            <group
+                                string="Respuestas crudas"
+                                groups="base.group_no_one"
+                            >
+                                <field
+                                    name="s1_raw"
+                                    readonly="1"
+                                    nolabel="1"
+                                    colspan="2"
+                                />
+                                <field
+                                    name="sv_raw"
+                                    readonly="1"
+                                    nolabel="1"
+                                    colspan="2"
+                                />
                             </group>
                         </page>
                     </notebook>
@@ -192,15 +236,31 @@
         <field name="model">l10n.ve.fiscal.machine</field>
         <field name="arch" type="xml">
             <search string="Máquinas Fiscales">
-                <field name="name"/>
-                <field name="registered_serial"/>
-                <field name="serial_port"/>
-                <field name="printer_model_name"/>
-                <filter string="Activas" name="active" domain="[('active', '=', True)]"/>
-                <filter string="Archivadas" name="inactive" domain="[('active', '=', False)]"/>
+                <field name="name" />
+                <field name="registered_serial" />
+                <field name="serial_port" />
+                <field name="printer_model_name" />
+                <filter
+                    string="Activas"
+                    name="active"
+                    domain="[('active', '=', True)]"
+                />
+                <filter
+                    string="Archivadas"
+                    name="inactive"
+                    domain="[('active', '=', False)]"
+                />
                 <group expand="0" string="Agrupar por">
-                    <filter string="Compañía" name="group_company" context="{'group_by': 'company_id'}"/>
-                    <filter string="Tipo" name="group_printer_type" context="{'group_by': 'printer_type'}"/>
+                    <filter
+                        string="Compañía"
+                        name="group_company"
+                        context="{'group_by': 'company_id'}"
+                    />
+                    <filter
+                        string="Tipo"
+                        name="group_printer_type"
+                        context="{'group_by': 'printer_type'}"
+                    />
                 </group>
             </search>
         </field>
@@ -210,14 +270,15 @@
         <field name="name">Máquinas Fiscales</field>
         <field name="res_model">l10n.ve.fiscal.machine</field>
         <field name="view_mode">list,form</field>
-        <field name="search_view_id" ref="l10n_ve_fiscal_machine_view_search"/>
+        <field name="search_view_id" ref="l10n_ve_fiscal_machine_view_search" />
         <field name="context">{'search_default_active': 1}</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
                 Configure su primera máquina fiscal TFHKA.
             </p>
             <p>
-                Pulse <strong>Nuevo</strong>, seleccione el puerto COM/Web Serial y el sistema
+                Pulse <strong
+            >Nuevo</strong>, seleccione el puerto COM/Web Serial y el sistema
                 detectará automáticamente el serial, modelo y parámetros de conexión.
             </p>
         </field>
@@ -229,55 +290,63 @@
         <field name="arch" type="xml">
             <form string="Configurar máquina fiscal">
                 <group>
-                    <field name="detect_state" invisible="1"/>
-                    <field name="detect_message" readonly="1" invisible="not detect_message"/>
-                    <field name="requires_manual_identification" invisible="1"/>
-                    <field name="webserial_usb_vendor_id" invisible="1"/>
-                    <field name="webserial_usb_product_id" invisible="1"/>
-                    <field name="webserial_usb_serial_number" invisible="1"/>
-                    <field name="enq_status" invisible="1"/>
-                    <field name="enq_error" invisible="1"/>
-                    <field name="s1_raw" invisible="1"/>
-                    <field name="sv_raw" invisible="1"/>
-                    <field name="company_id" groups="base.group_multi_company"/>
-                    <widget name="fiscal_machine_port_detect"/>
+                    <field name="detect_state" invisible="1" />
+                    <field
+                        name="detect_message"
+                        readonly="1"
+                        invisible="not detect_message"
+                    />
+                    <field name="requires_manual_identification" invisible="1" />
+                    <field name="webserial_usb_vendor_id" invisible="1" />
+                    <field name="webserial_usb_product_id" invisible="1" />
+                    <field name="webserial_usb_serial_number" invisible="1" />
+                    <field name="enq_status" invisible="1" />
+                    <field name="enq_error" invisible="1" />
+                    <field name="s1_raw" invisible="1" />
+                    <field name="sv_raw" invisible="1" />
+                    <field name="company_id" groups="base.group_multi_company" />
+                    <widget name="fiscal_machine_port_detect" />
                 </group>
                 <div
                     class="alert alert-warning mb-2"
                     role="alert"
                     invisible="not requires_manual_identification"
                 >
-                    La impresora está en <strong>modo entrenamiento</strong> y no devuelve
+                    La impresora está en <strong
+                >modo entrenamiento</strong> y no devuelve
                     el serial fiscal ni el RIF. Complételos manualmente antes de guardar.
                 </div>
                 <group invisible="detect_state != 'done'">
                     <group string="Detección">
-                        <field name="name"/>
-                        <field name="registered_serial" placeholder="Serial fiscal de la máquina"/>
-                        <field name="fiscal_rif" placeholder="RIF del contribuyente"/>
-                        <field name="printer_type" readonly="1"/>
-                        <field name="printer_model_name" readonly="1"/>
-                        <field name="printer_model_code" readonly="1"/>
-                        <field name="country_code" readonly="1"/>
+                        <field name="name" />
+                        <field
+                            name="registered_serial"
+                            placeholder="Serial fiscal de la máquina"
+                        />
+                        <field name="fiscal_rif" placeholder="RIF del contribuyente" />
+                        <field name="printer_type" readonly="1" />
+                        <field name="printer_model_name" readonly="1" />
+                        <field name="printer_model_code" readonly="1" />
+                        <field name="country_code" readonly="1" />
                     </group>
                     <group string="Conexión">
-                        <field name="connection_type" readonly="1"/>
-                        <field name="serial_port" readonly="1"/>
-                        <field name="baudrate"/>
-                        <field name="parity"/>
-                        <field name="data_bits"/>
-                        <field name="stop_bits"/>
-                        <field name="use_emulator"/>
-                        <field name="send_default_code_in_name"/>
+                        <field name="connection_type" readonly="1" />
+                        <field name="serial_port" readonly="1" />
+                        <field name="baudrate" />
+                        <field name="parity" />
+                        <field name="data_bits" />
+                        <field name="stop_bits" />
+                        <field name="use_emulator" />
+                        <field name="send_default_code_in_name" />
                     </group>
                 </group>
                 <group string="Estado ENQ" invisible="detect_state != 'done'">
-                    <field name="enq_status_label" readonly="1"/>
-                    <field name="enq_error_label" readonly="1"/>
-                    <field name="last_invoice_number" readonly="1"/>
-                    <field name="last_credit_note_number" readonly="1"/>
-                    <field name="last_debit_note_number" readonly="1"/>
-                    <field name="daily_closure_counter" readonly="1"/>
+                    <field name="enq_status_label" readonly="1" />
+                    <field name="enq_error_label" readonly="1" />
+                    <field name="last_invoice_number" readonly="1" />
+                    <field name="last_credit_note_number" readonly="1" />
+                    <field name="last_debit_note_number" readonly="1" />
+                    <field name="daily_closure_counter" readonly="1" />
                 </group>
                 <footer>
                     <button
@@ -287,7 +356,7 @@
                         class="btn-primary"
                         invisible="detect_state != 'done'"
                     />
-                    <button string="Cancelar" special="cancel" class="btn-secondary"/>
+                    <button string="Cancelar" special="cancel" class="btn-secondary" />
                 </footer>
             </form>
         </field>

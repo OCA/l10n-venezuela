@@ -4,20 +4,18 @@
     "icon": "/poweredbyandy_saas/static/description/icon.png",
     "summary": "View and create reports",
     "category": "Accounting/Accounting",
-    "author": "andyengit",
+    "author": "andyengit, Odoo Community Association (OCA)",
+    "website": "https://github.com/OCA/l10n-venezuela",
+    "version": "18.0.1.0.0",
     "maintainers": ["andyengit"],
-    "description": """
-Accounting Reports
-==================
-    """,
     "depends": ["account", "l10n_ve_seniat", "web"],
     "data": [
         "security/ir.model.access.csv",
         "data/pdf_export_templates.xml",
+        "data/profit_and_loss.xml",
         "data/balance_sheet.xml",
         "data/cash_flow_report.xml",
         "data/executive_summary.xml",
-        "data/profit_and_loss.xml",
         "data/bank_reconciliation_report.xml",
         "data/aged_partner_balance.xml",
         "data/general_ledger.xml",
@@ -55,7 +53,7 @@ Accounting Reports
         "views/account_tax_views.xml",
     ],
     "installable": True,
-    "license": "OEEL-1",
+    "license": "AGPL-3",
     "assets": {
         "l10n_ve_reports.assets_pdf_export": [
             ("include", "web._assets_helpers"),

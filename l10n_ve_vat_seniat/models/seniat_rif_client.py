@@ -9,12 +9,19 @@ import requests
 from lxml import html
 from PIL import Image, ImageFilter, ImageOps
 
-from .seniat_field_mapper import enrich_from_key_values, extract_table_key_values, rif_from_seniat_text
+from .seniat_field_mapper import (
+    enrich_from_key_values,
+    extract_table_key_values,
+    rif_from_seniat_text,
+)
 
 _logger = logging.getLogger(__name__)
 
 BASE = "http://contribuyente.seniat.gob.ve/BuscaRif/"
-USER_AGENT = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+USER_AGENT = (
+    "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
+    "(KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+)
 CAPTCHA_MISMATCH_MARKERS = (
     "no coincide con la imagen",
     "no coincide con la imagen.",
@@ -116,9 +123,7 @@ def _confidence_scored_reads(image_bytes):
     import pytesseract
     from pytesseract import Output
 
-    whitelist = (
-        "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
-    )
+    whitelist = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
     variants = dict(_iter_captcha_variants(image_bytes))
     preferred_order = (
         "autocontrast_x5",
@@ -135,10 +140,7 @@ def _confidence_scored_reads(image_bytes):
         if proc is None:
             continue
         for psm in (7, 8):
-            cfg = (
-                f"--oem 3 --psm {psm} "
-                f"-c tessedit_char_whitelist={whitelist}"
-            )
+            cfg = f"--oem 3 --psm {psm} " f"-c tessedit_char_whitelist={whitelist}"
             try:
                 data = pytesseract.image_to_data(
                     proc, config=cfg, output_type=Output.DICT
@@ -180,7 +182,9 @@ def _merge_confidence_and_strings(confidence_rows, string_candidates):
         ),
     )
     seen = set(ordered_by_conf)
-    rest = [s for s in string_candidates if s not in seen and _plausible_captcha_code(s)]
+    rest = [
+        s for s in string_candidates if s not in seen and _plausible_captcha_code(s)
+    ]
     rest.sort(key=lambda s: (-min(abs(len(s) - 6), 6), -len(s)))
     merged = ordered_by_conf + rest
     uniq = []
@@ -203,17 +207,21 @@ def _iter_captcha_variants(image_bytes):
     g4 = _scale_gray(im, 4)
     yield "rgb_L_x5", _scale_gray(im, 5)
     yield "autocontrast_x5", ImageOps.autocontrast(_scale_gray(im, 5))
-    yield "autocontrast_g4_x2", ImageOps.autocontrast(g4).resize(
-        (g4.size[0] * 2, g4.size[1] * 2),
-        Image.Resampling.LANCZOS,
+    yield (
+        "autocontrast_g4_x2",
+        ImageOps.autocontrast(g4).resize(
+            (g4.size[0] * 2, g4.size[1] * 2),
+            Image.Resampling.LANCZOS,
+        ),
     )
     yield "thresh110", g4.point(lambda p: 255 if p > 110 else 0)
     yield "thresh140", g4.point(lambda p: 255 if p > 140 else 0)
     mean = _gray_mean(im)
     if mean < 130:
         yield "invert_autocontrast_x5", ImageOps.invert(_scale_gray(im, 5))
-        yield "invert_autocontrast_x5_ops", ImageOps.autocontrast(
-            ImageOps.invert(_scale_gray(im, 5))
+        yield (
+            "invert_autocontrast_x5_ops",
+            ImageOps.autocontrast(ImageOps.invert(_scale_gray(im, 5))),
         )
     mild = g4.filter(ImageFilter.GaussianBlur(radius=1.2))
     yield "blur12_thresh125", mild.point(lambda p: 255 if p > 125 else 0)
@@ -253,9 +261,7 @@ def _collect_ocr_candidates(image_bytes):
     import pytesseract
 
     _require_tesseract()
-    whitelist = (
-        "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
-    )
+    whitelist = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
     candidates = []
     seen = set()
     calls = 0
@@ -311,9 +317,7 @@ def _ocr_ranked_codes(image_bytes):
     merged, conf_map = _merge_confidence_and_strings(conf_rows, string_fallback)
     if not merged:
         merged_fb = [
-            s
-            for s in _collect_ocr_candidates_fallback_loose(image_bytes)
-            if s
+            s for s in _collect_ocr_candidates_fallback_loose(image_bytes) if s
         ]
         merged = merged_fb
         conf_map = {}
@@ -324,8 +328,8 @@ def _ocr_ranked_codes(image_bytes):
         else:
             top_dbg.append(t)
     _logger.info(
-        "l10n_ve_vat_seniat OCR orden=%s (línea completa concatenada; max %s POST/imagen) "
-        "len_bytes=%s",
+        "l10n_ve_vat_seniat OCR orden=%s "
+        "(linea completa concatenada; max %s POST/imagen) len_bytes=%s",
         top_dbg,
         POST_TRIES_PER_IMAGE,
         len(image_bytes),
@@ -336,13 +340,11 @@ def _ocr_ranked_codes(image_bytes):
 def _collect_ocr_candidates_fallback_loose(image_bytes):
     import pytesseract
 
-    whitelist = (
-        "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
-    )
+    whitelist = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
     out = []
     seen = set()
     calls = 0
-    for tag, proc in _iter_captcha_variants(image_bytes):
+    for _tag, proc in _iter_captcha_variants(image_bytes):
         for psm in (7, 13):
             if calls >= 14 or len(seen) >= 6:
                 return out
@@ -365,7 +367,8 @@ def _require_tesseract():
     if not shutil.which("tesseract"):
         raise RuntimeError(
             "No se encontró el binario `tesseract` en el PATH. "
-            "Instale Tesseract OCR en el servidor (por ejemplo: apt install tesseract-ocr)."
+            "Instale Tesseract OCR en el servidor "
+            "(por ejemplo: apt install tesseract-ocr)."
         )
 
 
@@ -398,6 +401,83 @@ def _regex_label_value(plain, label_pattern):
     return re.sub(r"\s+", " ", m.group(1)).strip()
 
 
+def _parse_buscarif_identity(head, third, plain):
+    registro = "ACTIVO"
+    if "REGISTRO VENCIDO" in head.upper():
+        registro = "VENCIDO"
+        head = head.replace("REGISTRO VENCIDO", "")
+        head = re.sub(r"\s+", " ", head).strip()
+
+    rif_token = rif_from_seniat_text(head, third, plain)
+    if not rif_token and head:
+        head_token = head.split(" ", 1)[0].strip()
+        head_token = re.sub(r"[^JGPVE0-9]", "", head_token, flags=re.I)
+        if re.match(r"^[JGPVE]\d{9}$", head_token, re.I):
+            rif_token = head_token.upper()
+
+    nombre_full = head
+    if rif_token:
+        nombre_full = re.sub(re.escape(rif_token), "", nombre_full, count=1, flags=re.I)
+    nombre_full = re.sub(r"^[\s_\-]+", "", nombre_full)
+
+    siglas = ""
+    match = re.search(r"\(([^)]*)\)", head)
+    if match:
+        siglas = f"({match.group(1).strip()})"
+        nombre_full = re.sub(r"\([^)]*\)", "", nombre_full, count=1)
+        nombre_full = re.sub(r"\s+", " ", nombre_full).strip()
+    return registro, rif_token, nombre_full, siglas
+
+
+def _parse_buscarif_activity_parts(parts):
+    actividad = ""
+    condicion = ""
+    retencion = ""
+    if len(parts) > 2:
+        actividad = re.sub(
+            r"Condici[oó]n",
+            "",
+            parts[1],
+            flags=re.IGNORECASE,
+        ).strip()
+        condicion = parts[2].replace("?", "ó").strip()
+    if len(parts) > 3:
+        retencion = ":".join(parts[3:]).strip()
+    return actividad, condicion, retencion
+
+
+def _fill_buscarif_missing_labels(parsed, plain):
+    if not parsed.get("seniat_tipo_contribuyente_label"):
+        value = _regex_label_value(
+            plain,
+            r"Tipo\s+de\s+Contribuyente\s*:?\s*([^.;\n|]+?)"
+            r"(?=\s+Tipo\s+de\s+Persona|\s+%|\Z)",
+        )
+        if value:
+            parsed["seniat_tipo_contribuyente_label"] = value
+    if not parsed.get("seniat_tipo_persona_label"):
+        value = _regex_label_value(
+            plain,
+            r"Tipo\s+de\s+Persona\s*:?\s*([^.;\n|]+?)"
+            r"(?=\s+Tipo\s+de\s+Contribuyente|\s+%|\Z)",
+        )
+        if value:
+            parsed["seniat_tipo_persona_label"] = value
+    if not parsed.get("seniat_retencion_pct_label"):
+        value = _regex_label_value(
+            plain,
+            r"(?:%|\s)de\s+Retenci[oó]n\s*:?\s*([^.;\n|]+)",
+        )
+        if not value:
+            value = _regex_label_value(
+                plain,
+                r"Retenci[oó]n\s*(?:IVA)?\s*:?\s*" r"([^.;\n|]*?\d+\s*%[^.;|\n]*)",
+            )
+        if value:
+            parsed["seniat_retencion_pct_label"] = value
+    return parsed
+
+
 def parse_buscarif_page(html_text):
     tree = html.fromstring(html_text)
     texts = _table_texts(tree)
@@ -418,50 +498,10 @@ def parse_buscarif_page(html_text):
     third = texts[2] if len(texts) > 2 else ""
     parts = [p.strip() for p in third.split(":")] if third else []
     plain = _html_plain_compact(tree)
-
-    registro = "ACTIVO"
-    head = second
-    if "REGISTRO VENCIDO" in head.upper():
-        registro = "VENCIDO"
-        head = head.replace("REGISTRO VENCIDO", "")
-        head = re.sub(r"\s+", " ", head).strip()
-
-    rif_token = rif_from_seniat_text(head, third, plain)
-    if not rif_token and head:
-        head_token = head.split(" ", 1)[0].strip()
-        head_token = re.sub(r"[^JGPVE0-9]", "", head_token, flags=re.I)
-        if re.match(r"^[JGPVE]\d{9}$", head_token, re.I):
-            rif_token = head_token.upper()
-
-    nombre_full = head
-    if rif_token:
-        nombre_full = re.sub(
-            re.escape(rif_token), "", nombre_full, count=1, flags=re.I
-        )
-    nombre_full = re.sub(r"^[\s_\-]+", "", nombre_full)
-
-    siglas = ""
-    m = re.search(r"\(([^)]*)\)", head)
-    if m:
-        siglas = f"({m.group(1).strip()})"
-        nombre_full = re.sub(r"\([^)]*\)", "", nombre_full, count=1)
-        nombre_full = re.sub(r"\s+", " ", nombre_full).strip()
-
-    actividad = ""
-    condicion = ""
-    retencion = ""
-    if len(parts) > 2:
-        actividad = re.sub(
-            r"Condici[oó]n",
-            "",
-            parts[1],
-            flags=re.IGNORECASE,
-        ).strip()
-    if len(parts) > 2:
-        condicion = parts[2].replace("?", "ó").strip()
-    if len(parts) > 3:
-        retencion = ":".join(parts[3:]).strip()
-
+    registro, rif_token, nombre_full, siglas = _parse_buscarif_identity(
+        second, third, plain
+    )
+    actividad, condicion, retencion = _parse_buscarif_activity_parts(parts)
     parsed = {
         "ok": True,
         "contribuyente": True,
@@ -474,45 +514,16 @@ def parse_buscarif_page(html_text):
         "retencion": retencion,
         "raw_table3": third,
     }
-
-    kv = extract_table_key_values(tree)
-    parsed = enrich_from_key_values(parsed, kv)
-
-    if not parsed.get("seniat_tipo_contribuyente_label"):
-        v = _regex_label_value(
-            plain,
-            r"Tipo\s+de\s+Contribuyente\s*:?\s*([^.;\n|]+?)(?=\s+Tipo\s+de\s+Persona|\s+%|\Z)",
-        )
-        if v:
-            parsed["seniat_tipo_contribuyente_label"] = v
-    if not parsed.get("seniat_tipo_persona_label"):
-        v = _regex_label_value(
-            plain,
-            r"Tipo\s+de\s+Persona\s*:?\s*([^.;\n|]+?)(?=\s+Tipo\s+de\s+Contribuyente|\s+%|\Z)",
-        )
-        if v:
-            parsed["seniat_tipo_persona_label"] = v
-    if not parsed.get("seniat_retencion_pct_label"):
-        v = _regex_label_value(
-            plain,
-            r"(?:%|\s)de\s+Retenci[oó]n\s*:?\s*([^.;\n|]+)",
-        )
-        if not v:
-            v = _regex_label_value(
-                plain,
-                r"Retenci[oó]n\s*(?:IVA)?\s*:?\s*([^.;\n|]*?\d+\s*%[^.;|\n]*)",
-            )
-        if v:
-            parsed["seniat_retencion_pct_label"] = v
-
+    parsed = enrich_from_key_values(parsed, extract_table_key_values(tree))
+    parsed = _fill_buscarif_missing_labels(parsed, plain)
     _logger.info(
-        "l10n_ve_vat_seniat parse etiquetas tipo_contrib=%r tipo_persona=%r retencion_txt=%r kv_keys=%s",
+        "l10n_ve_vat_seniat parse etiquetas tipo_contrib=%r "
+        "tipo_persona=%r retencion_txt=%r kv_keys=%s",
         parsed.get("seniat_tipo_contribuyente_label"),
         parsed.get("seniat_tipo_persona_label"),
         parsed.get("seniat_retencion_pct_label"),
         list((parsed.get("seniat_table_kv") or {}).keys()),
     )
-
     return parsed
 
 
@@ -544,7 +555,8 @@ def query_rif(rif, max_attempts=QUERY_RIF_MAX_CAPTCHA_ROUNDS, timeout=(15, 90)):
             )
             raise
         _logger.info(
-            "l10n_ve_vat_seniat intento %s/%s GET Captcha.jpg status=%s bytes=%s cookies=%s",
+            "l10n_ve_vat_seniat intento %s/%s GET Captcha.jpg "
+            "status=%s bytes=%s cookies=%s",
             attempt + 1,
             max_attempts,
             cap.status_code,
@@ -564,7 +576,8 @@ def query_rif(rif, max_attempts=QUERY_RIF_MAX_CAPTCHA_ROUNDS, timeout=(15, 90)):
             last_detail = "ocr_vacio"
             codes_tried.append("")
             _logger.warning(
-                "l10n_ve_vat_seniat intento %s OCR sin ningún candidato (revisar imagen/tesseract)",
+                "l10n_ve_vat_seniat intento %s OCR sin ningun candidato "
+                "(revisar imagen/tesseract)",
                 attempt + 1,
             )
             continue
@@ -606,7 +619,8 @@ def query_rif(rif, max_attempts=QUERY_RIF_MAX_CAPTCHA_ROUNDS, timeout=(15, 90)):
                 last_detail = parsed.get("detail", "")
                 captcha_still_wrong = True
                 _logger.info(
-                    "l10n_ve_vat_seniat intento %s.%s captcha rechazado codigo=%r tabla2=%r",
+                    "l10n_ve_vat_seniat intento %s.%s captcha rechazado "
+                    "codigo=%r tabla2=%r",
                     attempt + 1,
                     sub_i + 1,
                     codigo,
@@ -615,7 +629,8 @@ def query_rif(rif, max_attempts=QUERY_RIF_MAX_CAPTCHA_ROUNDS, timeout=(15, 90)):
                 continue
             if not parsed.get("ok"):
                 _logger.warning(
-                    "l10n_ve_vat_seniat intento %s.%s parse no ok reason=%s tables=%s html_snippet=%r",
+                    "l10n_ve_vat_seniat intento %s.%s parse no ok "
+                    "reason=%s tables=%s html_snippet=%r",
                     attempt + 1,
                     sub_i + 1,
                     parsed.get("reason"),
@@ -624,7 +639,8 @@ def query_rif(rif, max_attempts=QUERY_RIF_MAX_CAPTCHA_ROUNDS, timeout=(15, 90)):
                 )
                 return parsed
             _logger.info(
-                "l10n_ve_vat_seniat intento %s.%s consulta parseada ok contribuyente=%s",
+                "l10n_ve_vat_seniat intento %s.%s consulta parseada ok "
+                "contribuyente=%s",
                 attempt + 1,
                 sub_i + 1,
                 parsed.get("contribuyente"),

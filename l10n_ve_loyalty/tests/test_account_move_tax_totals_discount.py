@@ -91,10 +91,14 @@ class TestAccountMoveTaxTotalsGlobalDiscount(L10nVeLoyaltyCommon):
             discount_percentage=0.5,
         )
         self._add_global_discount(move, "Descuento fijo", 10.0)
-        self.assertAlmostEqual(move.amount_untaxed, subtotal - (subtotal * 0.5) - 10.0, places=2)
+        self.assertAlmostEqual(
+            move.amount_untaxed, subtotal - (subtotal * 0.5) - 10.0, places=2
+        )
         tax_totals = move.tax_totals
         self.assertAlmostEqual(
-            tax_totals["l10n_ve_global_discount_amount_currency"], (subtotal * 0.5) + 10.0, places=2
+            tax_totals["l10n_ve_global_discount_amount_currency"],
+            (subtotal * 0.5) + 10.0,
+            places=2,
         )
         lines = tax_totals["l10n_ve_global_discount_lines"]
         self.assertEqual(lines[0]["discount_type"], "percentage")
@@ -173,7 +177,9 @@ class TestAccountMoveTaxTotalsGlobalDiscount(L10nVeLoyaltyCommon):
         move.invoice_line_ids[0].write({"price_unit": 2000.0})
         new_subtotal = self._invoice_subtotal(move)
         self.assertAlmostEqual(discount.amount, new_subtotal * 0.5, places=2)
-        self.assertAlmostEqual(move.amount_untaxed, new_subtotal - discount.amount, places=2)
+        self.assertAlmostEqual(
+            move.amount_untaxed, new_subtotal - discount.amount, places=2
+        )
 
     def test_tax_totals_shows_grouped_global_discount(self):
         move = self._create_invoice()
@@ -181,7 +187,9 @@ class TestAccountMoveTaxTotalsGlobalDiscount(L10nVeLoyaltyCommon):
         tax_totals = move.tax_totals
 
         self.assertTrue(tax_totals["l10n_ve_show_global_discount"])
-        self.assertAlmostEqual(tax_totals["l10n_ve_global_discount_amount_currency"], 10.0)
+        self.assertAlmostEqual(
+            tax_totals["l10n_ve_global_discount_amount_currency"], 10.0
+        )
         self.assertAlmostEqual(
             tax_totals["l10n_ve_subtotal_gross_currency"]
             - tax_totals["l10n_ve_global_discount_amount_currency"],
@@ -217,7 +225,9 @@ class TestAccountMoveTaxTotalsGlobalDiscount(L10nVeLoyaltyCommon):
         tax_totals = move.tax_totals
 
         self.assertTrue(tax_totals["l10n_ve_show_global_discount"])
-        self.assertAlmostEqual(tax_totals["l10n_ve_global_discount_amount_currency"], 30.0)
+        self.assertAlmostEqual(
+            tax_totals["l10n_ve_global_discount_amount_currency"], 30.0
+        )
         self.assertEqual(len(tax_totals["l10n_ve_global_discount_lines"]), 2)
         self.assertAlmostEqual(
             move.amount_untaxed, tax_totals["base_amount_currency"], places=2
@@ -611,7 +621,9 @@ class TestAccountMoveGlobalDiscountJournalLines(L10nVeLoyaltyCommon):
         duplicate = move.copy()
 
         self.assertEqual(len(duplicate.l10n_ve_global_discount_ids), 1)
-        self.assertAlmostEqual(duplicate.l10n_ve_global_discount_ids.amount, 10.0, places=2)
+        self.assertAlmostEqual(
+            duplicate.l10n_ve_global_discount_ids.amount, 10.0, places=2
+        )
         self.assertAlmostEqual(
             duplicate.tax_totals["l10n_ve_global_discount_amount_currency"],
             10.0,

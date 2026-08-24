@@ -1,39 +1,56 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <templates id="template" xml:space="preserve">
-    <t t-name="l10n_ve_pos.PaymentScreenButtons" t-inherit="point_of_sale.PaymentScreenButtons" t-inherit-mode="extension">
+    <t
+        t-name="l10n_ve_pos.PaymentScreenButtons"
+        t-inherit="point_of_sale.PaymentScreenButtons"
+        t-inherit-mode="extension"
+    >
         <xpath expr="//button[hasclass('js_invoice')]" position="replace">
-            <button t-if="!isVenezuelaPos"
+            <button
+                t-if="!isVenezuelaPos"
                 class="button js_invoice btn btn-light btn-lg d-flex justify-content-between align-items-baseline w-100 w-md-50 lh-lg"
                 t-att-class="{ 'highlight active': currentOrder.is_to_invoice() }"
-                t-on-click="toggleIsToInvoice">
+                t-on-click="toggleIsToInvoice"
+            >
                 <span><i class="fa fa-file-text-o me-2" />Invoice</span>
-                <i class="fa me-2" t-attf-class="{{ currentOrder.is_to_invoice() ? 'fa-check-square text-action' : 'fa-square-o' }}" />
+                <i
+                    class="fa me-2"
+                    t-attf-class="{{ currentOrder.is_to_invoice() ? 'fa-check-square text-action' : 'fa-square-o' }}"
+                />
             </button>
-            <button t-if="isVenezuelaPos"
+            <button
+                t-if="isVenezuelaPos"
                 class="button js_invoice_journal btn btn-light btn-lg d-flex align-items-center text-start w-100 w-md-50 lh-lg"
                 t-att-class="{ 'highlight active': true, disabled: !canChangeInvoiceJournal }"
                 t-att-disabled="!canChangeInvoiceJournal"
-                t-on-click="clickInvoiceJournal">
+                t-on-click="clickInvoiceJournal"
+            >
                 <i class="fa fa-book me-2" />
                 <span class="text-truncate">
-                    <t t-esc="l10nVeInvoiceJournalDisplayName"/>
+                    <t t-esc="l10nVeInvoiceJournalDisplayName" />
                 </span>
             </button>
         </xpath>
     </t>
 
     <t t-name="l10n_ve_pos.PaymentScreenVeEmissionPreview">
-        <div t-if="l10nVeShowPaymentEmissionPanel" class="l10n-ve-payment-emission border rounded bg-view px-3 py-2 small mx-lg-0 flex-shrink-0">
+        <div
+            t-if="l10nVeShowPaymentEmissionPanel"
+            class="l10n-ve-payment-emission border rounded bg-view px-3 py-2 small mx-lg-0 flex-shrink-0"
+        >
             <div t-if="l10nVeJournalEmissionMedium === 'free'">
                 <div>
-                    <span class="text-muted" t-esc="l10nVeLabelNextControl"/>
+                    <span class="text-muted" t-esc="l10nVeLabelNextControl" />
                     <t t-esc="' '" />
-                    <span class="text-danger fw-semibold" t-esc="l10nVeNextFreeControlNumberDisplay"/>
+                    <span
+                        class="text-danger fw-semibold"
+                        t-esc="l10nVeNextFreeControlNumberDisplay"
+                    />
                 </div>
             </div>
             <div t-elif="l10nVeJournalEmissionMedium === 'fiscal_machine'">
                 <div>
-                    <span class="text-muted" t-esc="l10nVeLabelFiscalInvoiceNo"/>
+                    <span class="text-muted" t-esc="l10nVeLabelFiscalInvoiceNo" />
                     <t t-esc="' '" />
                     <span
                         class="text-danger fw-semibold fst-italic"
@@ -41,7 +58,7 @@
                     />
                 </div>
                 <div>
-                    <span class="text-muted" t-esc="l10nVeLabelFiscalSerial"/>
+                    <span class="text-muted" t-esc="l10nVeLabelFiscalSerial" />
                     <t t-esc="' '" />
                     <span
                         class="text-danger fw-semibold fst-italic"
@@ -49,7 +66,7 @@
                     />
                 </div>
                 <div>
-                    <span class="text-muted" t-esc="l10nVeLabelFiscalZ"/>
+                    <span class="text-muted" t-esc="l10nVeLabelFiscalZ" />
                     <t t-esc="' '" />
                     <span
                         class="text-danger fw-semibold fst-italic"
@@ -59,28 +76,42 @@
             </div>
             <div t-elif="l10nVeJournalEmissionMedium === 'digital'">
                 <div>
-                    <span class="text-muted" t-esc="l10nVeLabelControlNumber"/>
+                    <span class="text-muted" t-esc="l10nVeLabelControlNumber" />
                     <t t-esc="' '" />
-                    <span class="text-danger fw-semibold" t-esc="l10nVeDash"/>
+                    <span class="text-danger fw-semibold" t-esc="l10nVeDash" />
                 </div>
             </div>
         </div>
     </t>
 
-    <t t-name="l10n_ve_pos.PaymentScreenDue" t-inherit="point_of_sale.PaymentScreenDue" t-inherit-mode="extension">
+    <t
+        t-name="l10n_ve_pos.PaymentScreenDue"
+        t-inherit="point_of_sale.PaymentScreenDue"
+        t-inherit-mode="extension"
+    >
         <xpath expr="//div[hasclass('total')]" position="after">
             <div t-if="isVenezuelaPos" class="text-center pb-2 small text-muted">
-                <span t-esc="l10nVeLabelAmountWithoutTaxes"/>:
-                <strong class="ms-1" t-esc="l10nVeAmountWithoutTaxesDisplay"/>
+                <span t-esc="l10nVeLabelAmountWithoutTaxes" />:
+                <strong class="ms-1" t-esc="l10nVeAmountWithoutTaxesDisplay" />
             </div>
         </xpath>
     </t>
-    <t t-name="l10n_ve_pos.PaymentScreen" t-inherit="point_of_sale.PaymentScreen" t-inherit-mode="extension">
-        <xpath expr="//div[hasclass('center-content')]/t[@t-call='point_of_sale.PaymentScreenDue']" position="after">
-            <t t-call="l10n_ve_pos.PaymentScreenVeEmissionPreview"/>
+    <t
+        t-name="l10n_ve_pos.PaymentScreen"
+        t-inherit="point_of_sale.PaymentScreen"
+        t-inherit-mode="extension"
+    >
+        <xpath
+            expr="//div[hasclass('center-content')]/t[@t-call='point_of_sale.PaymentScreenDue']"
+            position="after"
+        >
+            <t t-call="l10n_ve_pos.PaymentScreenVeEmissionPreview" />
         </xpath>
-        <xpath expr="//div[hasclass('payment-screen')][hasclass('bg-200')]/t[@t-call='point_of_sale.PaymentScreenDue']" position="after">
-            <t t-call="l10n_ve_pos.PaymentScreenVeEmissionPreview"/>
+        <xpath
+            expr="//div[hasclass('payment-screen')][hasclass('bg-200')]/t[@t-call='point_of_sale.PaymentScreenDue']"
+            position="after"
+        >
+            <t t-call="l10n_ve_pos.PaymentScreenVeEmissionPreview" />
         </xpath>
     </t>
 </templates>

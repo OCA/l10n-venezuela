@@ -40,7 +40,12 @@
                         <group>
                             <field name="company_currency_id" invisible="1" />
                             <field name="allowed_lines_move_ids" invisible="1" />
-                            <field name="type_retention" force_save="1" select="2" invisible="1" />
+                            <field
+                                name="type_retention"
+                                force_save="1"
+                                select="2"
+                                invisible="1"
+                            />
                             <field name="type" force_save="1" select="2" />
                             <field
                                 name="partner_id"
@@ -69,7 +74,10 @@
                                 readonly="state in ['emitted', 'cancel']"
                                 required="1"
                             />
-                            <field name="date" readonly="state in ['emitted', 'cancel']" />
+                            <field
+                                name="date"
+                                readonly="state in ['emitted', 'cancel']"
+                            />
                         </group>
                     </group>
                     <group>

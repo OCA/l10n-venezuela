@@ -4,7 +4,7 @@ from odoo import _, api, fields, models
 from odoo.exceptions import UserError, ValidationError
 from odoo.tools import float_compare
 
-from odoo.addons.l10n_ve_loyalty.models import l10n_ve_global_discount as l10n_ve_discount_logic
+from ..models import l10n_ve_global_discount as l10n_ve_discount_logic
 
 
 class L10nVeAccountMoveDiscountWizard(models.TransientModel):
@@ -113,14 +113,16 @@ class L10nVeAccountMoveDiscountWizard(models.TransientModel):
         move = self.env["account.move"]
         if res.get("move_id"):
             move = self.env["account.move"].browse(res["move_id"])
-        elif self.env.context.get("active_model") == "account.move" and self.env.context.get(
-            "active_id"
-        ):
+        elif self.env.context.get(
+            "active_model"
+        ) == "account.move" and self.env.context.get("active_id"):
             move = self.env["account.move"].browse(self.env.context["active_id"])
             res["move_id"] = move.id
         if move:
             if "reason_id" in fields_list and not res.get("reason_id"):
-                default_reason = self.env["l10n.ve.discount.reason"]._l10n_ve_get_default()
+                default_reason = self.env[
+                    "l10n.ve.discount.reason"
+                ]._l10n_ve_get_default()
                 if default_reason:
                     res["reason_id"] = default_reason.id
             if "discount_currency_id" in fields_list and not res.get(
@@ -211,16 +213,19 @@ class L10nVeAccountMoveDiscountWizard(models.TransientModel):
             if move.state != "posted" and move.l10n_ve_global_discount_ids.filtered(
                 lambda discount: discount.discount_type == "percentage"
             ):
-                raise ValidationError(_("Solo puede existir un descuento global por porcentaje."))
+                raise ValidationError(
+                    _("Solo puede existir un descuento global por porcentaje.")
+                )
             amount = self._l10n_ve_compute_percentage_discount_amount(remaining)
             amount_base = "untaxed"
         else:
             if not self.amount:
                 raise UserError(_("Indique el monto del descuento."))
             amount = self._l10n_ve_compute_fixed_untaxed_amount(remaining)
-        if float_compare(
-            amount, 0.0, precision_digits=move.currency_id.decimal_places
-        ) <= 0:
+        if (
+            float_compare(amount, 0.0, precision_digits=move.currency_id.decimal_places)
+            <= 0
+        ):
             raise UserError(_("El monto del descuento debe ser mayor que cero."))
         remaining_untaxed = sum(remaining.values())
         cmp_remaining = float_compare(

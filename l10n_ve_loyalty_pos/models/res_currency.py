@@ -26,7 +26,9 @@ class ResCurrency(models.Model):
 
         currency_ids = set(program_currency_ids)
         if "payment_currency_id" in config.payment_method_ids._fields:
-            currency_ids.update(config.payment_method_ids.mapped("payment_currency_id").ids)
+            currency_ids.update(
+                config.payment_method_ids.mapped("payment_currency_id").ids
+            )
         if company.currency_id:
             currency_ids.add(company.currency_id.id)
         if config.currency_id:

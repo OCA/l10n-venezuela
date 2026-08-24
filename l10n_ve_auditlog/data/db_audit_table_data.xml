@@ -1,49 +1,47 @@
-<?xml version="1.0" encoding="utf-8"?>
-<odoo>
-    <data noupdate="1">
-        <record id="db_audit_table_account_move" model="l10n.ve.db.audit.table">
-            <field name="table_name">account_move</field>
-            <field name="model_id" ref="account.model_account_move" />
-        </record>
-        <record id="db_audit_table_account_account" model="l10n.ve.db.audit.table">
-            <field name="table_name">account_account</field>
-            <field name="model_id" ref="account.model_account_account" />
-        </record>
-        <record id="db_audit_table_account_journal" model="l10n.ve.db.audit.table">
-            <field name="table_name">account_journal</field>
-            <field name="model_id" ref="account.model_account_journal" />
-        </record>
-        <record id="db_audit_table_account_tax" model="l10n.ve.db.audit.table">
-            <field name="table_name">account_tax</field>
-            <field name="model_id" ref="account.model_account_tax" />
-        </record>
-        <record id="db_audit_table_res_currency_rate" model="l10n.ve.db.audit.table">
-            <field name="table_name">res_currency_rate</field>
-            <field name="model_id" ref="base.model_res_currency_rate" />
-        </record>
-        <record id="db_audit_table_ir_sequence" model="l10n.ve.db.audit.table">
-            <field name="table_name">ir_sequence</field>
-            <field name="model_id" ref="base.model_ir_sequence" />
-        </record>
-        <record id="db_audit_table_tax_unit" model="l10n.ve.db.audit.table">
-            <field name="table_name">tax_unit</field>
-            <field name="model_id" ref="l10n_ve_withholding.model_tax_unit" />
-        </record>
-        <record id="db_audit_table_res_company" model="l10n.ve.db.audit.table">
-            <field name="table_name">res_company</field>
-            <field name="model_id" ref="base.model_res_company" />
-        </record>
-        <record id="db_audit_table_account_payment" model="l10n.ve.db.audit.table">
-            <field name="table_name">account_payment</field>
-            <field name="model_id" ref="account.model_account_payment" />
-        </record>
-        <record id="db_audit_table_account_retention" model="l10n.ve.db.audit.table">
-            <field name="table_name">account_retention</field>
-            <field name="model_id" ref="l10n_ve_withholding.model_account_retention" />
-        </record>
-        <record id="db_audit_table_account_retention_line" model="l10n.ve.db.audit.table">
-            <field name="table_name">account_retention_line</field>
-            <field name="model_id" ref="l10n_ve_withholding.model_account_retention_line" />
-        </record>
-    </data>
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo noupdate="1">
+    <record id="db_audit_table_account_move" model="l10n.ve.db.audit.table">
+        <field name="table_name">account_move</field>
+        <field name="model_id" ref="account.model_account_move" />
+    </record>
+    <record id="db_audit_table_account_account" model="l10n.ve.db.audit.table">
+        <field name="table_name">account_account</field>
+        <field name="model_id" ref="account.model_account_account" />
+    </record>
+    <record id="db_audit_table_account_journal" model="l10n.ve.db.audit.table">
+        <field name="table_name">account_journal</field>
+        <field name="model_id" ref="account.model_account_journal" />
+    </record>
+    <record id="db_audit_table_account_tax" model="l10n.ve.db.audit.table">
+        <field name="table_name">account_tax</field>
+        <field name="model_id" ref="account.model_account_tax" />
+    </record>
+    <record id="db_audit_table_res_currency_rate" model="l10n.ve.db.audit.table">
+        <field name="table_name">res_currency_rate</field>
+        <field name="model_id" ref="base.model_res_currency_rate" />
+    </record>
+    <record id="db_audit_table_ir_sequence" model="l10n.ve.db.audit.table">
+        <field name="table_name">ir_sequence</field>
+        <field name="model_id" ref="base.model_ir_sequence" />
+    </record>
+    <record id="db_audit_table_tax_unit" model="l10n.ve.db.audit.table">
+        <field name="table_name">tax_unit</field>
+        <field name="model_id" ref="l10n_ve_withholding.model_tax_unit" />
+    </record>
+    <record id="db_audit_table_res_company" model="l10n.ve.db.audit.table">
+        <field name="table_name">res_company</field>
+        <field name="model_id" ref="base.model_res_company" />
+    </record>
+    <record id="db_audit_table_account_payment" model="l10n.ve.db.audit.table">
+        <field name="table_name">account_payment</field>
+        <field name="model_id" ref="account.model_account_payment" />
+    </record>
+    <record id="db_audit_table_account_retention" model="l10n.ve.db.audit.table">
+        <field name="table_name">account_retention</field>
+        <field name="model_id" ref="l10n_ve_withholding.model_account_retention" />
+    </record>
+    <record id="db_audit_table_account_retention_line" model="l10n.ve.db.audit.table">
+        <field name="table_name">account_retention_line</field>
+        <field name="model_id" ref="l10n_ve_withholding.model_account_retention_line" />
+    </record>
 </odoo>

@@ -3,7 +3,7 @@
     "summary": "Encola envios EDI Venezuela con queue_job",
     "version": "18.0.1.0.0",
     "category": "Accounting/Localizations",
-    "author": "andyengit",
+    "author": "andyengit, Odoo Community Association (OCA)",
     "maintainer": "andyengit",
     "website": "https://github.com/OCA/l10n-venezuela",
     "license": "LGPL-3",

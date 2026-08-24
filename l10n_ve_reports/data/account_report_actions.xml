@@ -1,272 +1,223 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <odoo>
-    <data>
-        <record id="action_account_report_cs" model="ir.actions.client">
-            <field name="name">🇻🇪 Cash Flow Statement</field>
-            <field name="tag">account_report_oca</field>
-            <field
-                name="context"
-                eval="{'report_id': ref('l10n_ve_reports.cash_flow_report')}"
-            />
-        </record>
+    <record id="action_account_report_cs" model="ir.actions.client">
+        <field name="name">🇻🇪 Cash Flow Statement</field>
+        <field name="tag">account_report_oca</field>
+        <field
+            name="context"
+            eval="{'report_id': ref('l10n_ve_reports.cash_flow_report')}"
+        />
+    </record>
 
-        <record id="action_account_report_bs" model="ir.actions.client">
-            <field name="name">🇻🇪 Balance Sheet</field>
-            <field name="tag">account_report_oca</field>
-            <field name="path">balance-sheet-ve</field>
-            <field
-                name="context"
-                eval="{'report_id': ref('l10n_ve_reports.balance_sheet')}"
-            />
-        </record>
+    <record id="action_account_report_exec_summary" model="ir.actions.client">
+        <field name="name">🇻🇪 Executive Summary</field>
+        <field name="tag">account_report_oca</field>
+        <field name="path">executive-summary-ve</field>
+        <field
+            name="context"
+            eval="{'report_id': ref('l10n_ve_reports.executive_summary')}"
+        />
+    </record>
 
-        <record id="action_account_report_exec_summary" model="ir.actions.client">
-            <field name="name">🇻🇪 Executive Summary</field>
-            <field name="tag">account_report_oca</field>
-            <field name="path">executive-summary-ve</field>
-            <field
-                name="context"
-                eval="{'report_id': ref('l10n_ve_reports.executive_summary')}"
-            />
-        </record>
+    <record id="action_account_report_ja" model="ir.actions.client">
+        <field name="name">🇻🇪 Journal Audit</field>
+        <field name="tag">account_report_oca</field>
+        <field name="path">journal-report-ve</field>
+        <field
+            name="context"
+            eval="{'report_id': ref('l10n_ve_reports.journal_report')}"
+        />
+    </record>
 
-        <record id="action_account_report_pl" model="ir.actions.client">
-            <field name="name">🇻🇪 Profit and Loss</field>
-            <field name="tag">account_report_oca</field>
-            <field name="path">profit-and-loss-ve</field>
-            <field
-                name="context"
-                eval="{'report_id': ref('l10n_ve_reports.profit_and_loss')}"
-            />
-        </record>
+    <record id="action_account_report_general_ledger" model="ir.actions.client">
+        <field name="name">🇻🇪 General Ledger</field>
+        <field name="tag">account_report_oca</field>
+        <field name="path">general-ledger-ve</field>
+        <field
+            name="context"
+            eval="{'report_id': ref('l10n_ve_reports.general_ledger_report')}"
+        />
+    </record>
 
-        <record id="action_account_report_ja" model="ir.actions.client">
-            <field name="name">🇻🇪 Journal Audit</field>
-            <field name="tag">account_report_oca</field>
-            <field name="path">journal-report-ve</field>
-            <field
-                name="context"
-                eval="{'report_id': ref('l10n_ve_reports.journal_report')}"
-            />
-        </record>
+    <record id="action_account_report_diary_book" model="ir.actions.client">
+        <field name="name">🇻🇪 Libro Diario</field>
+        <field name="tag">account_report_oca</field>
+        <field name="path">diary-book-ve</field>
+        <field
+            name="context"
+            eval="{'report_id': ref('l10n_ve_reports.diary_book_report')}"
+        />
+    </record>
 
-        <record id="action_account_report_general_ledger" model="ir.actions.client">
-            <field name="name">🇻🇪 General Ledger</field>
-            <field name="tag">account_report_oca</field>
-            <field name="path">general-ledger-ve</field>
-            <field
-                name="context"
-                eval="{'report_id': ref('l10n_ve_reports.general_ledger_report')}"
-            />
-        </record>
+    <record id="action_account_report_bank_book" model="ir.actions.client">
+        <field name="name">🇻🇪 Libro de Banco</field>
+        <field name="tag">account_report_oca</field>
+        <field name="path">bank-book-ve</field>
+        <field
+            name="context"
+            eval="{'report_id': ref('l10n_ve_reports.bank_book_report')}"
+        />
+    </record>
 
-        <record id="action_account_report_diary_book" model="ir.actions.client">
-            <field name="name">🇻🇪 Libro Diario</field>
-            <field name="tag">account_report_oca</field>
-            <field name="path">diary-book-ve</field>
-            <field
-                name="context"
-                eval="{'report_id': ref('l10n_ve_reports.diary_book_report')}"
-            />
-        </record>
+    <record id="action_account_report_cash_book" model="ir.actions.client">
+        <field name="name">🇻🇪 Libro de Caja</field>
+        <field name="tag">account_report_oca</field>
+        <field name="path">cash-book-ve</field>
+        <field
+            name="context"
+            eval="{'report_id': ref('l10n_ve_reports.cash_book_report')}"
+        />
+    </record>
 
-        <record id="action_account_report_bank_book" model="ir.actions.client">
-            <field name="name">🇻🇪 Libro de Banco</field>
-            <field name="tag">account_report_oca</field>
-            <field name="path">bank-book-ve</field>
-            <field
-                name="context"
-                eval="{'report_id': ref('l10n_ve_reports.bank_book_report')}"
-            />
-        </record>
+    <record id="action_account_report_daily_payments" model="ir.actions.client">
+        <field name="name">🇻🇪 Pagos por diario</field>
+        <field name="tag">account_report_oca</field>
+        <field name="path">daily-payments-ve</field>
+        <field
+            name="context"
+            eval="{'report_id': ref('l10n_ve_reports.daily_payments_report')}"
+        />
+    </record>
 
-        <record id="action_account_report_cash_book" model="ir.actions.client">
-            <field name="name">🇻🇪 Libro de Caja</field>
-            <field name="tag">account_report_oca</field>
-            <field name="path">cash-book-ve</field>
-            <field
-                name="context"
-                eval="{'report_id': ref('l10n_ve_reports.cash_book_report')}"
-            />
-        </record>
+    <record id="action_account_report_ve_report_x" model="ir.actions.client">
+        <field name="name">🇻🇪 Reporte X</field>
+        <field name="tag">account_report_oca</field>
+        <field name="path">report-x-ve</field>
+        <field
+            name="context"
+            eval="{'report_id': ref('l10n_ve_reports.ve_report_x')}"
+        />
+    </record>
 
-        <record id="action_account_report_daily_payments" model="ir.actions.client">
-            <field name="name">🇻🇪 Pagos por diario</field>
-            <field name="tag">account_report_oca</field>
-            <field name="path">daily-payments-ve</field>
-            <field
-                name="context"
-                eval="{'report_id': ref('l10n_ve_reports.daily_payments_report')}"
-            />
-        </record>
+    <record id="action_account_report_sales_book" model="ir.actions.client">
+        <field name="name">🇻🇪 Libro de Ventas</field>
+        <field name="tag">account_report_oca</field>
+        <field name="path">sales-book-ve</field>
+        <field
+            name="context"
+            eval="{'report_id': ref('l10n_ve_reports.sales_book_report')}"
+        />
+    </record>
+    <record
+        id="action_account_report_sales_book_fiscal_machine"
+        model="ir.actions.client"
+    >
+        <field name="name">🇻🇪 Libro de Ventas Maquina Fiscal</field>
+        <field name="tag">account_report_oca</field>
+        <field name="path">sales-book-fiscal-machine-ve</field>
+        <field
+            name="context"
+            eval="{'report_id': ref('l10n_ve_reports.sales_book_fiscal_machine_report')}"
+        />
+    </record>
+    <record id="action_account_report_purchases_book" model="ir.actions.client">
+        <field name="name">🇻🇪 Libro de Compras</field>
+        <field name="tag">account_report_oca</field>
+        <field name="path">purchases-book-ve</field>
+        <field
+            name="context"
+            eval="{'report_id': ref('l10n_ve_reports.purchases_book_report')}"
+        />
+    </record>
 
-        <record id="action_account_report_ve_report_x" model="ir.actions.client">
-            <field name="name">🇻🇪 Reporte X</field>
-            <field name="tag">account_report_oca</field>
-            <field name="path">report-x-ve</field>
-            <field
-                name="context"
-                eval="{'report_id': ref('l10n_ve_reports.ve_report_x')}"
-            />
-        </record>
+    <record id="action_account_report_ar" model="ir.actions.client">
+        <field name="name">🇻🇪 Aged Receivable</field>
+        <field name="tag">account_report_oca</field>
+        <field name="path">aged-receivable-ve</field>
+        <field
+            name="context"
+            eval="{'report_id': ref('l10n_ve_reports.aged_receivable_report')}"
+        />
+    </record>
 
-        <record id="action_account_report_sales_book" model="ir.actions.client">
-            <field name="name">🇻🇪 Libro de Ventas</field>
-            <field name="tag">account_report_oca</field>
-            <field name="path">sales-book-ve</field>
-            <field
-                name="context"
-                eval="{'report_id': ref('l10n_ve_reports.sales_book_report')}"
-            />
-        </record>
-        <record
-            id="action_account_report_sales_book_fiscal_machine"
-            model="ir.actions.client"
-        >
-            <field name="name">🇻🇪 Libro de Ventas Maquina Fiscal</field>
-            <field name="tag">account_report_oca</field>
-            <field name="path">sales-book-fiscal-machine-ve</field>
-            <field
-                name="context"
-                eval="{'report_id': ref('l10n_ve_reports.sales_book_fiscal_machine_report')}"
-            />
-        </record>
-        <record id="action_account_report_purchases_book" model="ir.actions.client">
-            <field name="name">🇻🇪 Libro de Compras</field>
-            <field name="tag">account_report_oca</field>
-            <field name="path">purchases-book-ve</field>
-            <field
-                name="context"
-                eval="{'report_id': ref('l10n_ve_reports.purchases_book_report')}"
-            />
-        </record>
+    <record id="action_account_report_ap" model="ir.actions.client">
+        <field name="name">🇻🇪 Aged Payable</field>
+        <field name="tag">account_report_oca</field>
+        <field name="path">aged-payable-ve</field>
+        <field
+            name="context"
+            eval="{'report_id': ref('l10n_ve_reports.aged_payable_report')}"
+        />
+    </record>
 
-        <record id="action_account_report_ar" model="ir.actions.client">
-            <field name="name">🇻🇪 Aged Receivable</field>
-            <field name="tag">account_report_oca</field>
-            <field name="path">aged-receivable-ve</field>
-            <field
-                name="context"
-                eval="{'report_id': ref('l10n_ve_reports.aged_receivable_report')}"
-            />
-        </record>
+    <record id="action_account_report_coa" model="ir.actions.client">
+        <field name="name">🇻🇪 Trial Balance</field>
+        <field name="tag">account_report_oca</field>
+        <field name="path">trial-balance-ve</field>
+        <field
+            name="context"
+            eval="{'report_id': ref('l10n_ve_reports.trial_balance_report')}"
+        />
+    </record>
 
-        <record id="action_account_report_ap" model="ir.actions.client">
-            <field name="name">🇻🇪 Aged Payable</field>
-            <field name="tag">account_report_oca</field>
-            <field name="path">aged-payable-ve</field>
-            <field
-                name="context"
-                eval="{'report_id': ref('l10n_ve_reports.aged_payable_report')}"
-            />
-        </record>
+    <record id="action_account_report_partner_ledger" model="ir.actions.client">
+        <field name="name">🇻🇪 Partner Ledger</field>
+        <field name="tag">account_report_oca</field>
+        <field name="path">partner-ledger-ve</field>
+        <field
+            name="context"
+            eval="{'report_id': ref('l10n_ve_reports.partner_ledger_report')}"
+        />
+    </record>
 
-        <record id="action_account_report_coa" model="ir.actions.client">
-            <field name="name">🇻🇪 Trial Balance</field>
-            <field name="tag">account_report_oca</field>
-            <field name="path">trial-balance-ve</field>
-            <field
-                name="context"
-                eval="{'report_id': ref('l10n_ve_reports.trial_balance_report')}"
-            />
-        </record>
+    <record id="action_account_report_customer_statement" model="ir.actions.client">
+        <field name="name">🇻🇪 Customer Statement</field>
+        <field name="tag">account_report_oca</field>
+        <field
+            name="context"
+            eval="{'report_id': ref('l10n_ve_reports.customer_statement_report')}"
+        />
+    </record>
 
-        <record id="action_account_report_partner_ledger" model="ir.actions.client">
-            <field name="name">🇻🇪 Partner Ledger</field>
-            <field name="tag">account_report_oca</field>
-            <field name="path">partner-ledger-ve</field>
-            <field
-                name="context"
-                eval="{'report_id': ref('l10n_ve_reports.partner_ledger_report')}"
-            />
-        </record>
+    <record id="action_account_report_sales" model="ir.actions.client">
+        <field name="name">🇻🇪 EC Sales List</field>
+        <field name="tag">account_report_oca</field>
+        <field
+            name="context"
+            eval="{'report_id': ref('l10n_ve_reports.generic_ec_sales_report')}"
+        />
+    </record>
 
-        <record id="action_account_report_customer_statement" model="ir.actions.client">
-            <field name="name">🇻🇪 Customer Statement</field>
-            <field name="tag">account_report_oca</field>
-            <field
-                name="context"
-                eval="{'report_id': ref('l10n_ve_reports.customer_statement_report')}"
-            />
-        </record>
-
-        <record id="action_account_report_sales" model="ir.actions.client">
-            <field name="name">🇻🇪 EC Sales List</field>
-            <field name="tag">account_report_oca</field>
-            <field
-                name="context"
-                eval="{'report_id': ref('l10n_ve_reports.generic_ec_sales_report')}"
-            />
-        </record>
-
-        <record
-            id="account_financial_current_year_earnings0"
-            model="account.report.line"
-        >
-            <field name="action_id" ref="action_account_report_pl" />
-        </record>
-
-        <record
-            id="account_financial_report_executivesummary_profitability0"
-            model="account.report.line"
-        >
-            <field name="action_id" ref="action_account_report_pl" />
-        </record>
-
-        <record
-            id="account_financial_report_executivesummary_balancesheet0"
-            model="account.report.line"
-        >
-            <field name="action_id" ref="action_account_report_bs" />
-        </record>
-
-        <record id="action_create_report_menu" model="ir.actions.server">
-            <field name="name">Create Menu Item</field>
-            <field name="model_id" ref="account.model_account_report" />
-            <field name="binding_model_id" ref="account.model_account_report" />
-            <field name="state">code</field>
-            <field name="binding_view_types">form</field>
-            <field name="code">
+    <record id="action_create_report_menu" model="ir.actions.server">
+        <field name="name">Create Menu Item</field>
+        <field name="model_id" ref="account.model_account_report" />
+        <field name="binding_model_id" ref="account.model_account_report" />
+        <field name="state">code</field>
+        <field name="binding_view_types">form</field>
+        <field name="code">
 if records:
     action = records._create_menu_item_for_report()
             </field>
-        </record>
+    </record>
 
-        <record id="action_account_report_tree" model="ir.actions.act_window">
-            <field name="name">🇻🇪 Accounting Reports</field>
-            <field name="res_model">account.report</field>
-            <field name="view_mode">list,form</field>
-            <field name="view_id" ref="account_report_tree" />
-            <field name="search_view_id" ref="view_account_report_search" />
-        </record>
+    <record id="action_account_report_tree" model="ir.actions.act_window">
+        <field name="name">🇻🇪 Accounting Reports</field>
+        <field name="res_model">account.report</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_id" ref="account_report_tree" />
+        <field name="search_view_id" ref="view_account_report_search" />
+    </record>
 
-        <record
-            id="action_account_report_horizontal_groups"
-            model="ir.actions.act_window"
-        >
-            <field name="name">🇻🇪 Horizontal Groups</field>
-            <field name="res_model">account.report.horizontal.group.oca</field>
-            <field name="view_mode">list,form</field>
-            <field name="view_id" ref="account_report_horizontal_group_tree" />
-        </record>
+    <record id="action_account_report_horizontal_groups" model="ir.actions.act_window">
+        <field name="name">🇻🇪 Horizontal Groups</field>
+        <field name="res_model">account.report.horizontal.group.oca</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_id" ref="account_report_horizontal_group_tree" />
+    </record>
 
-        <record
-            id="action_account_report_bank_reconciliation"
-            model="ir.actions.client"
-        >
-            <field name="name">🇻🇪 Bank Reconciliation</field>
-            <field name="tag">account_report_oca</field>
-            <field
-                name="context"
-                eval="{'report_id': ref('l10n_ve_reports.bank_reconciliation_report')}"
-            />
-        </record>
+    <record id="action_account_report_bank_reconciliation" model="ir.actions.client">
+        <field name="name">🇻🇪 Bank Reconciliation</field>
+        <field name="tag">account_report_oca</field>
+        <field
+            name="context"
+            eval="{'report_id': ref('l10n_ve_reports.bank_reconciliation_report')}"
+        />
+    </record>
 
-        <record id="action_account_report_budget_tree" model="ir.actions.act_window">
-            <field name="name">🇻🇪 Financial Budgets</field>
-            <field name="res_model">account.report.budget.oca</field>
-            <field name="view_mode">list,form</field>
-            <field name="view_id" ref="account_report_budget_tree" />
-        </record>
-    </data>
+    <record id="action_account_report_budget_tree" model="ir.actions.act_window">
+        <field name="name">🇻🇪 Financial Budgets</field>
+        <field name="res_model">account.report.budget.oca</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_id" ref="account_report_budget_tree" />
+    </record>
 </odoo>

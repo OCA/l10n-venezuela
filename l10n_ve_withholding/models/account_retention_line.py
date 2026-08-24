@@ -131,9 +131,7 @@ class AccountRetentionLine(models.Model):
         for line in self:
             move = line.move_id
             identifier = (
-                move.l10n_ve_control_number
-                or move.ref
-                or move.l10n_ve_invoice_number
+                move.l10n_ve_control_number or move.ref or move.l10n_ve_invoice_number
             )
             if identifier and move.name and identifier != move.name:
                 line.affected_invoice_display_name = f"{identifier} ({move.name})"

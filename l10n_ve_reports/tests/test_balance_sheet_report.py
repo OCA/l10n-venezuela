@@ -14,7 +14,7 @@ class TestBalanceSheetReport(TestAccountReportsCommon):
         cls.report = cls.env.ref("account_reports.balance_sheet")
 
     def test_report_lines_ordering(self):
-        """Check that the report lines are correctly ordered with nested account groups"""
+        """Check that the report lines are correctly ordered with nested account groups"""  # noqa: E501
         self.env["account.group"].create(
             [
                 {
@@ -107,8 +107,8 @@ class TestBalanceSheetReport(TestAccountReportsCommon):
                 {
                     "move_type": "out_invoice",
                     "partner_id": self.partner_a.id,
-                    "date": "2020-0%s-15" % i,
-                    "invoice_date": "2020-0%s-15" % i,
+                    "date": f"2020-0{i}-15",
+                    "invoice_date": f"2020-0{i}-15",
                     "invoice_line_ids": [
                         (
                             0,
@@ -165,8 +165,11 @@ class TestBalanceSheetReport(TestAccountReportsCommon):
         )
 
     def test_unfold_all_and_total_lines(self):
-        """Check that exactly the total lines we want exist when we use the 'unfold_all' option. I.e. empty sections should not have total lines (since there are not lines to total).
-        This test only tests the function '_get_lines'. It does not test that the total lines are always handled correctly for manual unfolds in the web UI."""
+        """Check that exactly the total lines we want exist when we use the 'unfold_all'
+        option. I.e. empty sections should not have total lines (since there are not
+        lines to total).
+        This test only tests the function '_get_lines'. It does not test that the total
+        lines are always handled correctly for manual unfolds in the web UI."""
 
         options = self._generate_options(
             self.report,
@@ -205,7 +208,8 @@ class TestBalanceSheetReport(TestAccountReportsCommon):
         ).action_post()
 
         # Note that assertLinesValues filters / ignores children lines of folded lines.
-        # The total lines for the 2 visible lines with groupbys already exist in 'folded_lines' but are filtered / ignored by assertLinesValues.
+        # The total lines for the 2 visible lines with groupbys already exist in
+        # 'folded_lines' but are filtered / ignored by assertLinesValues.
         # (Thus they do not appear in the expected result below either.)
         self.assertLinesValues(
             self.report._get_lines(options),

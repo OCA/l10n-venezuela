@@ -1,11 +1,14 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <odoo>
     <record id="view_pos_session_form_l10n_ve_fiscal_serial" model="ir.ui.view">
         <field name="name">pos.session.form.l10n.ve.fiscal.serial</field>
         <field name="model">pos.session</field>
         <field name="inherit_id" ref="point_of_sale.view_pos_session_form" />
         <field name="arch" type="xml">
-            <xpath expr="//header/button[@id='validate_closing_control']" position="after">
+            <xpath
+                expr="//header/button[@id='validate_closing_control']"
+                position="after"
+            >
                 <widget
                     name="l10n_ve_fiscal_serial_report_button"
                     action="report_z"

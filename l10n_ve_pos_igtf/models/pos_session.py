@@ -14,8 +14,10 @@ class PosSession(models.Model):
             ):
                 raise ValidationError(
                     _(
-                        "El IGTF está activo para esta compañía: configure la cuenta IGTF "
-                        "en Ajustes / Venezuela antes de abrir la sesión del TPV."
+                        "El IGTF está activo para esta compañía: "
+                        "configure la cuenta IGTF "
+                        "en Ajustes / Venezuela antes de abrir la "
+                        "sesión del TPV."
                     )
                 )
         return super().action_pos_session_open()

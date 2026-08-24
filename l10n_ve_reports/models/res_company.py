@@ -49,13 +49,19 @@ class ResCompany(models.Model):
     def _get_and_update_tax_closing_moves(
         self, in_period_date, report, fiscal_positions=None, include_domestic=False
     ):
-        """Searches for tax closing moves. If some are missing for the provided parameters,
-        they are created in draft state. Also, existing moves get updated in case of configuration changes
-        (closing journal or periodicity, for example). Note the content of these moves stays untouched.
+        """Searches for tax closing moves. If some are missing for the provided
+        parameters,
+        they are created in draft state. Also, existing moves get updated in case of
+        configuration changes
+        (closing journal or periodicity, for example). Note the content of these moves
+        stays untouched.
 
-        :param in_period_date: A date within the tax closing period we want the closing for.
-        :param fiscal_positions: The fiscal positions we want to generate the closing for (as a recordset).
-        :param include_domestic: Whether or not the domestic closing (i.e. the one without any fiscal_position_id) must be included
+        :param in_period_date: A date within the tax closing period we want the closing
+        for.
+        :param fiscal_positions: The fiscal positions we want to generate the closing
+        for (as a recordset).
+        :param include_domestic: Whether or not the domestic closing (i.e. the one
+        without any fiscal_position_id) must be included
 
         :return: The closing moves, as a recordset.
         """
@@ -91,7 +97,7 @@ class ResCompany(models.Model):
             if len(tax_closing_move) > 1:
                 if fpos:
                     error = _(
-                        "Multiple draft tax closing entries exist for fiscal position %(position)s after %(period_start)s. There should be at most one. \n %(closing_entries)s",
+                        "Multiple draft tax closing entries exist for fiscal position %(position)s after %(period_start)s. There should be at most one. \n %(closing_entries)s",  # noqa: E501
                         position=fpos.name,
                         period_start=period_start,
                         closing_entries=tax_closing_move.mapped("display_name"),
@@ -99,7 +105,7 @@ class ResCompany(models.Model):
 
                 else:
                     error = _(
-                        "Multiple draft tax closing entries exist for your domestic region after %(period_start)s. There should be at most one. \n %(closing_entries)s",
+                        "Multiple draft tax closing entries exist for your domestic region after %(period_start)s. There should be at most one. \n %(closing_entries)s",  # noqa: E501
                         period_start=period_start,
                         closing_entries=tax_closing_move.mapped("display_name"),
                     )
@@ -117,13 +123,16 @@ class ResCompany(models.Model):
 
             # Values for update/creation of closing move
             closing_vals = {
-                "company_id": self.id,  # Important to specify together with the journal, for branches
+                # Important to specify together with the journal, for branches
+                "company_id": self.id,
                 "journal_id": tax_closing_journal.id,
                 "date": period_end,
                 "tax_closing_report_id": report.id,
                 "fiscal_position_id": fpos_id,
                 "ref": ref,
-                "name": "/",  # Explicitly set a void name so that we don't set the sequence for the journal and don't consume a sequence number
+                # Explicitly set a void name so that we don't set the sequence for the
+                # journal and don't consume a sequence number
+                "name": "/",
             }
 
             if tax_closing_move:
@@ -167,7 +176,8 @@ class ResCompany(models.Model):
         self, report, date_in_period=None, fiscal_position=None
     ):
         """
-        Create a reminder on the current tax_closing_journal for a certain report with a fiscal_position or not if None.
+        Create a reminder on the current tax_closing_journal for a certain report with a
+        fiscal_position or not if None.
         The reminder will target the period from which the date sits in
         """
         self.ensure_one()
@@ -277,7 +287,8 @@ class ResCompany(models.Model):
                 # On domestic country
                 country_code = self.account_fiscal_country_id.code
 
-                # Only consider the state in case there are foreign VAT fpos on states in this country
+                # Only consider the state in case there are foreign VAT fpos on states
+                # in this country
                 vat_fpos_with_state_count = self.env[
                     "account.fiscal.position"
                 ].search_count(
@@ -295,56 +306,67 @@ class ResCompany(models.Model):
                 )
 
             if state_codes:
-                region_string = " (%s - %s)" % (country_code, ", ".join(state_codes))
+                region_string = " ({} - {})".format(
+                    country_code, ", ".join(state_codes)
+                )
             else:
-                region_string = " (%s)" % country_code
+                region_string = f" ({country_code})"
         else:
             # Don't add region information in case there is no foreign VAT fpos
             region_string = ""
 
-        # Shift back to normal dates if we are using a start date so periods aren't broken
+        # Shift back to normal dates if we are using a start date so periods aren't
+        # broken
         start_day, start_month = self._get_tax_closing_start_date_attributes(report)
         if start_day != 1 or start_month != 1:
-            return f"{format_date(self.env, period_start)} - {format_date(self.env, period_end)}{region_string}"
+            return f"{format_date(self.env, period_start)} - {format_date(self.env, period_end)}{region_string}"  # noqa: E501
 
         if periodicity == "year":
             return f"{period_start.year}{region_string}"
         elif periodicity == "trimester":
-            return f"{format_date(self.env, period_start, date_format='qqq yyyy')}{region_string}"
+            return f"{format_date(self.env, period_start, date_format='qqq yyyy')}{region_string}"  # noqa: E501
         elif periodicity == "monthly":
-            return f"{format_date(self.env, period_start, date_format='LLLL yyyy')}{region_string}"
+            return f"{format_date(self.env, period_start, date_format='LLLL yyyy')}{region_string}"  # noqa: E501
         else:
-            return f"{format_date(self.env, period_start)} - {format_date(self.env, period_end)}{region_string}"
+            return f"{format_date(self.env, period_start)} - {format_date(self.env, period_end)}{region_string}"  # noqa: E501
 
     def _get_tax_closing_period_boundaries(self, date, report):
         """Returns the boundaries of the tax period containing the provided date
         for this company, as a tuple (start, end).
 
-        This function needs to stay consitent with the one inside Javascript in the filters for the tax report
+        This function needs to stay consitent with the one inside Javascript in the
+        filters for the tax report
         """
         self.ensure_one()
         period_months = self._get_tax_periodicity_months_delay(report)
         start_day, start_month = self._get_tax_closing_start_date_attributes(report)
         aligned_date = (
             date + relativedelta(days=-(start_day - 1))
-        )  # we offset the date back from start_day amount of day - 1 so we can compute months periods aligned to the start and end of months
+            # we offset the date back from start_day amount of day - 1 so we can compute
+            # months periods aligned to the start and end of months
+        )
         year = aligned_date.year
         month_offset = aligned_date.month - start_month
         period_number = (month_offset // period_months) + 1
 
-        # If the date is before the start date and start month of this year, this mean we are in the previous period
-        # So the initial_date should be one year before and the period_number should be computed in reverse because month_offset is negative
+        # If the date is before the start date and start month of this year, this mean
+        # we are in the previous period
+        # So the initial_date should be one year before and the period_number should be
+        # computed in reverse because month_offset is negative
         if date < datetime.date(date.year, start_month, start_day):
             year -= 1
             period_number = ((12 + month_offset) // period_months) + 1
 
         month_delta = period_number * period_months
 
-        # We need to work with offsets because it handle automatically the end of months (28, 29, 30, 31)
+        # We need to work with offsets because it handle automatically the end of months
+        # (28, 29, 30, 31)
         end_date = (
             datetime.date(year, start_month, 1)
             + relativedelta(months=month_delta, days=start_day - 2)
-        )  # -1 because the first days is aldready counted and -1 because the first day of the next period must not be in this range
+            # -1 first day already counted and -1 first day of
+            # the next period must not be in this range
+        )
         start_date = datetime.date(year, start_month, 1) + relativedelta(
             months=month_delta - period_months, day=start_day
         )
@@ -355,7 +377,8 @@ class ResCompany(models.Model):
         """
         Must ensures that report has a country_id to search for a tax unit
 
-        :return: A recordset of available tax units for this report country_id and this company
+        :return: A recordset of available tax units for this report country_id and this
+        company
         """
         self.ensure_one()
         return self.env["account.tax.unit"].search(
@@ -384,7 +407,7 @@ class ResCompany(models.Model):
         return start_date.day, start_date.month
 
     def _get_tax_periodicity_months_delay(self, report):
-        """Returns the number of months separating two tax returns with the provided periodicity"""
+        """Returns the number of months separating two tax returns with the provided periodicity"""  # noqa: E501
         self.ensure_one()
         periodicities = {
             "year": 12,
@@ -397,10 +420,13 @@ class ResCompany(models.Model):
         return periodicities[self._get_tax_periodicity(report)]
 
     def _get_branches_with_same_vat(self, accessible_only=False):
-        """Returns all companies among self and its branch hierachy (considering children and parents) that share the same VAT number
-        as self. An empty VAT number is considered as being the same as the one of the closest parent with a VAT number.
+        """Returns all companies among self and its branch hierachy (considering
+        children and parents) that share the same VAT number
+        as self. An empty VAT number is considered as being the same as the one of the
+        closest parent with a VAT number.
 
-        self is always returned as the first element of the resulting recordset (so that this can safely be used to restore the active company).
+        self is always returned as the first element of the resulting recordset (so that
+        this can safely be used to restore the active company).
 
         Example:
         - main company ; vat = 123
@@ -418,7 +444,8 @@ class ResCompany(models.Model):
         - branch 2_1: 789
         - branch 2_2: 456
 
-        :param accessible_only: whether the returned companies should exclude companies that are not in self.env.companies
+        :param accessible_only: whether the returned companies should exclude companies
+        that are not in self.env.companies
         """
         self.ensure_one()
 
@@ -440,7 +467,8 @@ class ResCompany(models.Model):
                 filter(None, (branch.parent_ids - current_strict_parents).mapped("vat"))
             )
             if parents_vat_set == current_vat_check_set:
-                # If all the branches between the active company and branch (both included) share the same VAT number as the active company,
+                # If all the branches between the active company and branch (both
+                # included) share the same VAT number as the active company,
                 # we want to add the branch to the selection.
                 same_vat_branch_ids.append(branch.id)
 

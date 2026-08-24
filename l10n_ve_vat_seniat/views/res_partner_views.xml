@@ -6,7 +6,9 @@
         <field name="inherit_id" ref="l10n_ve_seniat.view_partner_form" />
         <field name="arch" type="xml">
             <xpath expr="//h1[field[@name='vat']]" position="attributes">
-                <attribute name="class">d-flex flex-wrap align-items-baseline gap-2</attribute>
+                <attribute
+                    name="class"
+                >d-flex flex-wrap align-items-baseline gap-2</attribute>
             </xpath>
             <xpath expr="//h1/field[@name='vat']" position="before">
                 <span

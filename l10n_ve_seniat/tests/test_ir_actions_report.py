@@ -98,10 +98,14 @@ class TestIrActionsReport(L10nVeSeniatCommon):
 
         report = self.env.ref("account.account_invoices", raise_if_not_found=False)
         if report:
-            report = report.with_context(l10n_ve_book_paperformat_id=book.paperformat_id.id)
+            report = report.with_context(
+                l10n_ve_book_paperformat_id=book.paperformat_id.id
+            )
             self.assertEqual(report.get_paperformat(), book.paperformat_id)
 
-    def test_get_valid_action_reports_keeps_alternate_reports_without_original_print(self):
+    def test_get_valid_action_reports_keeps_alternate_reports_without_original_print(
+        self,
+    ):
         report = self.env.ref(
             "account.account_invoices_without_payment", raise_if_not_found=False
         )
@@ -145,7 +149,9 @@ class TestIrActionsReport(L10nVeSeniatCommon):
         self.assertIn(report.id, valid_ids)
 
     def test_get_valid_action_reports_hides_original_invoice_pdf_until_allowed(self):
-        original_report = self.env.ref("account.account_invoices", raise_if_not_found=False)
+        original_report = self.env.ref(
+            "account.account_invoices", raise_if_not_found=False
+        )
         alternate_report = self.env.ref(
             "account.account_invoices_without_payment", raise_if_not_found=False
         )
@@ -206,7 +212,9 @@ class TestIrActionsReport(L10nVeSeniatCommon):
         self.assertIn(original_report.id, valid_ids)
 
     def test_get_valid_action_reports_allows_native_without_emission_medium(self):
-        original_report = self.env.ref("account.account_invoices", raise_if_not_found=False)
+        original_report = self.env.ref(
+            "account.account_invoices", raise_if_not_found=False
+        )
         if not original_report:
             return
         journal = self.company_data["default_journal_sale"]

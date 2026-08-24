@@ -18,7 +18,8 @@ class TestReconciliationReport(TestAccountReportsCommon):
 
     def test_reconciliation_report_single_currency(self):
         """
-        Tests the impact of positive/negative payments/statements on the reconciliation report in a single-currency
+        Tests the impact of positive/negative payments/statements on the reconciliation
+        report in a single-currency
         environment.
         """
         bank_journal = self.env["account.journal"].create(
@@ -283,7 +284,8 @@ class TestReconciliationReport(TestAccountReportsCommon):
             }
         )
 
-        # Partially reconcile the suspense amount associated with each bank statement line
+        # Partially reconcile the suspense amount associated with each bank statement
+        # line
         suspense_account = bank_journal.suspense_account_id
         other_account = (
             bank_journal.company_id.default_cash_difference_income_account_id
@@ -292,7 +294,7 @@ class TestReconciliationReport(TestAccountReportsCommon):
         # the first is in company currency
         bank_move_1 = bank_statement.line_ids[0].move_id
         bank_move_1_suspense_line = bank_move_1.line_ids.filtered(
-            lambda l: l.account_id == suspense_account
+            lambda l: l.account_id == suspense_account  # noqa: E741
         )
         bank_move_1.button_draft()
         bank_move_1.write(
@@ -308,7 +310,7 @@ class TestReconciliationReport(TestAccountReportsCommon):
         # the second is in neither company nor journal currency
         bank_move_2 = bank_statement.line_ids[1].move_id
         bank_move_2_suspense_line = bank_move_2.line_ids.filtered(
-            lambda l: l.account_id == suspense_account
+            lambda l: l.account_id == suspense_account  # noqa: E741
         )
         bank_move_2.button_draft()
         bank_move_2.write(
@@ -389,7 +391,8 @@ class TestReconciliationReport(TestAccountReportsCommon):
 
             self.assertLinesValues(
                 lines,
-                #   Name                                                Date   Am. Cur.                  Cur.       Amount
+                # Name                                                Date   Am. Cur.
+                # Cur.       Amount
                 [0, 1, 3, 4, 5],
                 [
                     ("Balance of '101403 Bank'", "", "", "", 200.0),
@@ -443,7 +446,8 @@ class TestReconciliationReport(TestAccountReportsCommon):
 
     def test_reconciliation_change_date(self):
         """
-        Tests the impact of positive/negative payments/statements on the reconciliation report in a single-currency
+        Tests the impact of positive/negative payments/statements on the reconciliation
+        report in a single-currency
         environment.
         """
         bank_journal = self.company_data["default_journal_bank"]
@@ -546,11 +550,13 @@ class TestReconciliationReport(TestAccountReportsCommon):
         options["all_entries"] = True
         options["unfold_all"] = True
 
-        # The last statement is taken into account cause it has a line corresponding to the date of the report.
+        # The last statement is taken into account cause it has a line corresponding to
+        # the date of the report.
         lines = report._get_lines(options)
         self.assertLinesValues(
             lines,
-            #   Name                                                             Date            Amount
+            # Name                                                             Date
+            # Amount
             [0, 1, 3],
             [
                 ("Balance of '101401 Bank'", "", 140.0),
@@ -581,7 +587,8 @@ class TestReconciliationReport(TestAccountReportsCommon):
         lines = report._get_lines(options)
         self.assertLinesValues(
             lines,
-            #   Name                                                             Date            Amount
+            # Name                                                             Date
+            # Amount
             [0, 1, 3],
             [
                 ("Balance of '101401 Bank'", "", 140.0),
@@ -608,7 +615,8 @@ class TestReconciliationReport(TestAccountReportsCommon):
 
     def test_reconciliation_report_non_statement_payment(self):
         """
-        Test that moves not linked to a bank statement/payment but linked for example to expenses are all showing in the
+        Test that moves not linked to a bank statement/payment but linked for example to
+        expenses are all showing in the
         report
         """
         bank_journal = self.env["account.journal"].create(
@@ -648,7 +656,7 @@ class TestReconciliationReport(TestAccountReportsCommon):
                             "name": "Destination",
                             "debit": 0,
                             "credit": 800,
-                            "account_id": self.inbound_payment_method_line.payment_account_id.id,
+                            "account_id": self.inbound_payment_method_line.payment_account_id.id,  # noqa: E501
                         },
                     ),
                 ],
@@ -679,7 +687,7 @@ class TestReconciliationReport(TestAccountReportsCommon):
                             "name": "Destination",
                             "debit": 0,
                             "credit": 500,
-                            "account_id": self.inbound_payment_method_line.payment_account_id.id,
+                            "account_id": self.inbound_payment_method_line.payment_account_id.id,  # noqa: E501
                         },
                     ),
                 ],
@@ -698,7 +706,7 @@ class TestReconciliationReport(TestAccountReportsCommon):
 
         self.assertLinesValues(
             lines,
-            #   Name                                                  Date         Amount
+            # Name                                                  Date         Amount
             [0, 1, 3],
             [
                 ("Balance of '101403 Bank'", "", 0.0),
@@ -773,7 +781,7 @@ class TestReconciliationReport(TestAccountReportsCommon):
 
         self.assertLinesValues(
             lines,
-            #   Name                                                  Date         Amount
+            # Name                                                  Date         Amount
             [0, 1, 3],
             [
                 ("Balance of '101403 Bank'", "", 800.0),
@@ -793,14 +801,15 @@ class TestReconciliationReport(TestAccountReportsCommon):
             ignore_folded=False,
         )
 
-        # With the domain, since the date of the misc is not in the same year, the misc is not present
+        # With the domain, since the date of the misc is not in the same year, the misc
+        # is not present
         options = self._generate_options(report, "2014-01-02", "2014-01-02")
         options["unfold_all"] = True
         lines = report._get_lines(options)
 
         self.assertLinesValues(
             lines,
-            #   Name                                                  Date         Amount
+            # Name                                                  Date         Amount
             [0, 1, 3],
             [
                 ("Balance of '101403 Bank'", "", 0.0),
@@ -821,7 +830,7 @@ class TestReconciliationReport(TestAccountReportsCommon):
         )
 
     def test_reconciliation_report_delete_statement(self):
-        """This test will do a basic flow where we create a statement and then we delete it to see how the report react"""
+        """This test will do a basic flow where we create a statement and then we delete it to see how the report react"""  # noqa: E501
 
         bank_journal = self.company_data["default_journal_bank"]
 
@@ -911,7 +920,8 @@ class TestReconciliationReport(TestAccountReportsCommon):
         lines = report._get_lines(options)
         self.assertLinesValues(
             lines,
-            #   Name                                                             Date            Amount
+            # Name                                                             Date
+            # Amount
             [0, 1, 3],
             [
                 ("Balance of '101401 Bank'", "", 130.0),
@@ -950,7 +960,8 @@ class TestReconciliationReport(TestAccountReportsCommon):
         lines = report._get_lines(options)
         self.assertLinesValues(
             lines,
-            #   Name                                                             Date            Amount
+            # Name                                                             Date
+            # Amount
             [0, 1, 3],
             [
                 ("Balance of '101401 Bank'", "", 130.0),
@@ -978,7 +989,8 @@ class TestReconciliationReport(TestAccountReportsCommon):
 
     def test_reconciliation_report_transaction_without_statement(self):
         """
-        This test will ensure that the section transaction without statement section contains the reconcile entries.
+        This test will ensure that the section transaction without statement section
+        contains the reconcile entries.
         So the section should not always be the sum of his children.
         """
         bank_journal = self.company_data["default_journal_bank"]
@@ -1012,7 +1024,8 @@ class TestReconciliationReport(TestAccountReportsCommon):
         lines = report._get_lines(options)
         self.assertLinesValues(
             lines,
-            #   Name                                                             Date            Amount
+            # Name                                                             Date
+            # Amount
             [0, 1, 3],
             [
                 ("Balance of '101401 Bank'", "", 1100.0),
@@ -1064,7 +1077,8 @@ class TestReconciliationReport(TestAccountReportsCommon):
         lines = report._get_lines(options)
         self.assertLinesValues(
             lines,
-            #   Name                                                             Date            Amount
+            # Name                                                             Date
+            # Amount
             [0, 1, 3],
             [
                 ("Balance of '101401 Bank'", "", 1100.0),

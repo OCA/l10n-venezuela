@@ -64,8 +64,9 @@ class ProductTemplate(models.Model):
                     if tmpl._l10n_ve_has_done_stock_moves():
                         raise UserError(
                             _(
-                                "Cannot change sales taxes on product “%s” after it has "
-                                "completed stock moves. Ask a settings administrator."
+                                "Cannot change sales taxes on product “%s” "
+                                "after it has completed stock moves. Ask a "
+                                "settings administrator."
                             )
                             % (tmpl.display_name,)
                         )

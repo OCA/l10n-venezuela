@@ -9,7 +9,10 @@
 
         .btn:hover,
         .btn:focus {
-            background-color: var(--o-view-background-color, #{$o-view-background-color});
+            background-color: var(
+                --o-view-background-color,
+                #{$o-view-background-color}
+            );
         }
     }
 

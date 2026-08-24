@@ -87,7 +87,7 @@ class TestFollowupReport(TestAccountReportsCommon):
         return move
 
     def test_followup_report_unfold(self):
-        """Test unfolding a line when rendering the whole report, having overdue and due sections"""
+        """Test unfolding a line when rendering the whole report, having overdue and due sections"""  # noqa: E501
         options = self._generate_options(
             self.report,
             fields.Date.from_string("2025-01-01"),
@@ -110,7 +110,8 @@ class TestFollowupReport(TestAccountReportsCommon):
         ]
         self.assertLinesValues(
             self.report._get_lines(options),
-            #   Name                                    Due Date        Amount        Balance
+            # Name                                    Due Date        Amount
+            # Balance
             [0, 2, 3, 5],
             [
                 ("partner_a", "", 100.0, 100.0),
@@ -157,7 +158,8 @@ class TestFollowupReport(TestAccountReportsCommon):
 
         self.assertLinesValues(
             report_lines,
-            #   Name                                    Due Date        Amount       Balance
+            # Name                                    Due Date        Amount
+            # Balance
             [0, 2, 3, 5],
             [
                 ("partner_a", "", 300.0, 300.0),
@@ -188,7 +190,8 @@ class TestFollowupReport(TestAccountReportsCommon):
 
         self.assertLinesValues(
             load_more_1,
-            #   Name                                    Due Date        Amount          Balance
+            # Name                                    Due Date        Amount
+            # Balance
             [0, 2, 3, 5],
             [
                 ("RINV/2025/00001", "01/01/2025", -100.0, 100.0),
@@ -215,7 +218,8 @@ class TestFollowupReport(TestAccountReportsCommon):
 
         self.assertLinesValues(
             load_more_2,
-            #   Name                                    Due Date        Amount          Balance
+            # Name                                    Due Date        Amount
+            # Balance
             [0, 2, 3, 5],
             [
                 ("INV/2025/00006", self.formatted_today, 100.0, 300.0),

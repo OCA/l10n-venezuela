@@ -1,9 +1,10 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <odoo>
     <template
         id="report_saleorder_document_l10n_ve_no_fiscal"
         inherit_id="sale.report_saleorder_document"
         name="VE sale order native report: NO FISCAL markers"
+        priority="110"
     >
         <xpath expr="//t[@t-set='layout_document_title']" position="after">
             <t t-set="layout_document_title">
@@ -59,10 +60,7 @@
             <th name="th_default_code" class="text-start text-nowrap">CÓDIGO</th>
         </xpath>
         <xpath expr="//td[@name='td_name']" position="before">
-            <t
-                t-set="l10n_ve_line_number"
-                t-value="l10n_ve_line_number + 1"
-            />
+            <t t-set="l10n_ve_line_number" t-value="l10n_ve_line_number + 1" />
             <td name="td_line_number" class="text-end text-nowrap">
                 <span t-out="l10n_ve_line_number" />
             </td>
@@ -70,7 +68,10 @@
                 <span t-field="line.product_id.default_code" />
             </td>
         </xpath>
-        <xpath expr="//td[@name='td_name']/span[@t-field='line.name']" position="replace">
+        <xpath
+            expr="//td[@name='td_name']/span[@t-field='line.name']"
+            position="replace"
+        >
             <span t-if="line.product_id" t-field="line.product_id.name" />
             <span t-else="" t-field="line.name" />
         </xpath>
@@ -82,6 +83,7 @@
         id="report_saleorder_document_l10n_ve_totals"
         inherit_id="sale.report_saleorder_document"
         name="VE sale order native report: totals by state"
+        priority="110"
     >
         <xpath expr="//div[@name='so_total_summary']" position="replace">
             <div

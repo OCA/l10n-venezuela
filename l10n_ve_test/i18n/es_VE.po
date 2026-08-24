@@ -1,0 +1,27 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* l10n_ve_test
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-08-24 01:20+0000\n"
+"PO-Revision-Date: 2026-08-24 01:20+0000\n"
+"Last-Translator: andyengit\n"
+"Language-Team: Spanish (Venezuela)\n"
+"Language: es_VE\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+
+#. module: l10n_ve_test
+#: model:ir.module.module,shortdesc:l10n_ve_test.module_l10n_ve_test
+msgid "Venezuela Localization Integration Tests"
+msgstr "Pruebas de integracion de la localizacion Venezuela"
+
+#. module: l10n_ve_test
+#: model:ir.module.module,summary:l10n_ve_test.module_l10n_ve_test
+msgid "Installs all l10n_ve_* addons together and checks cross-module flows"
+msgstr "Instala todos los addons l10n_ve_* juntos y valida flujos cruzados"

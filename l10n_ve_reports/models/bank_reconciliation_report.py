@@ -14,11 +14,12 @@ class BankReconciliationReportCustomHandler(models.AbstractModel):
     # Options
     ######################
     def _custom_options_initializer(self, report, options, previous_options):
-        super()._custom_options_initializer(
+        result = super()._custom_options_initializer(
             report, options, previous_options=previous_options
         )
 
-        # Options is needed otherwise some elements added in the post processor go on the total line
+        # Options is needed otherwise some elements added in the post processor go on
+        # the total line
         options["ignore_totals_below_sections"] = True
         options["no_xlsx_currency_code_columns"] = True
         if (
@@ -49,9 +50,11 @@ class BankReconciliationReportCustomHandler(models.AbstractModel):
                 if column["expression_label"] not in ("amount_currency", "currency")
             ]
 
-    ######################
-    # Getter
-    ######################
+        ######################
+        # Getter
+        ######################
+        return result
+
     def _get_bank_journal_and_currencies(self, options):
         journal = self.env["account.journal"].browse(
             options.get("bank_reconciliation_report_journal_id")
@@ -276,7 +279,7 @@ class BankReconciliationReportCustomHandler(models.AbstractModel):
         if current_groupby:
             raise UserError(
                 _(
-                    "Custom engine _report_custom_engine_last_statement_balance_amount does not support groupby"
+                    "Custom engine _report_custom_engine_last_statement_balance_amount does not support groupby"  # noqa: E501
                 )
             )
 
@@ -317,14 +320,19 @@ class BankReconciliationReportCustomHandler(models.AbstractModel):
         Retrieve entries for bank reconciliation based on specified parameters.
         Parameters:
         - options (dict): A dictionary containing options of the report.
-        - internal_type (str): The internal type used for classification (e.g., receipt, payment). For the receipt
-                               we will query the entries with a positive amounts and for the payment
+        - internal_type (str): The internal type used for classification (e.g., receipt,
+        payment). For the receipt
+                               we will query the entries with a positive amounts and for
+                               the payment
                                the negative amounts.
-                               If the internal type is another thing that receipt or payment it will get all the
+                               If the internal type is another thing that receipt or
+                               payment it will get all the
                                entries position or negative
         - current_groupby (str): The current grouping criteria.
-        - last_statement (bool, optional): If True, query entries from the last bank statement.
-                                           Otherwise, query entries that are not part of the last bank
+        - last_statement (bool, optional): If True, query entries from the last bank
+        statement.
+                                           Otherwise, query entries that are not part of
+                                           the last bank
                                            statement.
         - unreconciled (bool, optional): If True, query the unreconciled entries only
 
@@ -339,7 +347,8 @@ class BankReconciliationReportCustomHandler(models.AbstractModel):
         report._check_groupby_fields([current_groupby] if current_groupby else [])
 
         def build_result_dict(query_res_lines):
-            # The query should find exactly one account move line per bank statement line
+            # The query should find exactly one account move line per bank statement
+            # line
             if current_groupby == "id":
                 res = query_res_lines[0]
                 foreign_currency = self.env["res.currency"].browse(
@@ -412,7 +421,8 @@ class BankReconciliationReportCustomHandler(models.AbstractModel):
                     "st_line.statement_id = %s", last_statement_id
                 )
             else:
-                # If there is no last statement, the last statement section must be empty and the other must have all
+                # If there is no last statement, the last statement section must be
+                # empty and the other must have all
                 # transaction
                 return self._compute_result([], current_groupby, build_result_dict)
         else:
@@ -447,7 +457,8 @@ class BankReconciliationReportCustomHandler(models.AbstractModel):
                   st_line.amount_currency,
                   st_line.foreign_currency_id
              FROM %(table_references)s
-             JOIN account_bank_statement_line st_line ON st_line.move_id = account_move_line.move_id
+             JOIN account_bank_statement_line st_line ON st_line.move_id =
+             account_move_line.move_id
              JOIN account_move move ON move.id = st_line.move_id
             WHERE %(search_condition)s
                   %(is_unreconciled)s
@@ -484,7 +495,8 @@ class BankReconciliationReportCustomHandler(models.AbstractModel):
         self, options, internal_type, current_groupby
     ):
         """
-        This engine retrieves the data of all recorded payments/receipts that have not been matched with a bank
+        This engine retrieves the data of all recorded payments/receipts that have not
+        been matched with a bank
         statement yet
         """
         journal, journal_currency, company_currency = (
@@ -600,7 +612,8 @@ class BankReconciliationReportCustomHandler(models.AbstractModel):
                   account.reconcile AS is_account_reconcile,
                   SUM(account_move_line.amount_residual) AS amount_residual,
                   SUM(account_move_line.balance) AS balance,
-                  SUM(account_move_line.amount_residual_currency) AS amount_residual_currency,
+                  SUM(account_move_line.amount_residual_currency) AS
+                  amount_residual_currency,
                   SUM(account_move_line.amount_currency) AS amount_currency
              FROM %(table_references)s
              JOIN account_account account ON account.id = account_move_line.account_id
@@ -738,7 +751,8 @@ class BankReconciliationReportCustomHandler(models.AbstractModel):
 
     def _compute_journal_balances(self, report, options, journal, journal_currency):
         """
-        This function compute all necessary information for the warning 'l10n_ve_reports.journal_balance'
+        This function compute all necessary information for the warning
+        'l10n_ve_reports.journal_balance'
         :param report:          The bank reconciliation report.
         :param options:         The report options.
         :param journal:         The journal used.
@@ -780,7 +794,8 @@ class BankReconciliationReportCustomHandler(models.AbstractModel):
 
     def _compute_balances(self, options, journal, balance_gl, report_currency):
         """
-        This function will compute the balance of the last statement and the unexplained difference.
+        This function will compute the balance of the last statement and the unexplained
+        difference.
         :param options:         The report options.
         :param journal:         The journal used.
         :param balance_gl:      The balance of the general ledger.
@@ -808,7 +823,8 @@ class BankReconciliationReportCustomHandler(models.AbstractModel):
         """
         Retrieve the last bank statement created using this journal.
         :param journal: The journal used.
-        :param domain:  An additional domain to be applied on the account.bank.statement model.
+        :param domain:  An additional domain to be applied on the account.bank.statement
+        model.
         :return:        An account.bank.statement record or an empty recordset.
         """
         report_date = fields.Date.from_string(options["date"]["date_to"])
@@ -824,7 +840,8 @@ class BankReconciliationReportCustomHandler(models.AbstractModel):
 
     def _get_inconsistent_statements(self, options, journal):
         """
-        Retrieve the account.bank.statements records on the range of the options date having different starting
+        Retrieve the account.bank.statements records on the range of the options date
+        having different starting
         balance regarding its previous statement.
         :param options: The report options.
         :param journal: The account.journal from which this report has been opened.
@@ -840,7 +857,8 @@ class BankReconciliationReportCustomHandler(models.AbstractModel):
 
     def _get_bank_miscellaneous_move_lines_domain(self, options, journal):
         """
-        Get the domain to be used to retrieve the journal items affecting the bank accounts but not linked to
+        Get the domain to be used to retrieve the journal items affecting the bank
+        accounts but not linked to
         a statement line. (Limited in a year)
         :param options: The report options.
         :param journal: The account.journal from which this report has been opened.
@@ -903,9 +921,11 @@ class BankReconciliationReportCustomHandler(models.AbstractModel):
 
     def action_redirect_to_bank_statement_widget(self, options):
         """
-        Redirect the user to the requested bank statement, if empty displays all bank transactions of the journal.
+        Redirect the user to the requested bank statement, if empty displays all bank
+        transactions of the journal.
         :param options:     The report options.
-        :param params:      The action params containing at least 'statement_id', can be false.
+        :param params:      The action params containing at least 'statement_id', can be
+        false.
         :return:            A dictionary representing an ir.actions.act_window.
         """
         journal = self.env["account.journal"].browse(
@@ -924,7 +944,8 @@ class BankReconciliationReportCustomHandler(models.AbstractModel):
 
     def open_bank_miscellaneous_move_lines(self, options):
         """
-        An action opening the account.move.line list view affecting the bank account balance but not linked to
+        An action opening the account.move.line list view affecting the bank account
+        balance but not linked to
         a bank statement line.
         :param options: The report options.
         :param params:  -Not used-.
@@ -951,7 +972,8 @@ class BankReconciliationReportCustomHandler(models.AbstractModel):
         self, options, params=None
     ):
         """
-        An action opening the account.bank.statement view (form or list) depending the 'inconsistent_statement_ids'
+        An action opening the account.bank.statement view (form or list) depending the
+        'inconsistent_statement_ids'
         key set on the options.
         :param options: The report options.
         :param params:  -Not used-.

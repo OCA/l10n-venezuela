@@ -63,7 +63,7 @@ class TestTaxReportCarryover(TestAccountReportsCommon):
                         {
                             "label": "balance_unbound",
                             "engine": "aggregation",
-                            "formula": "test_carryover.tag + test_carryover._applied_carryover_balance",
+                            "formula": "test_carryover.tag + test_carryover._applied_carryover_balance",  # noqa: E501
                         }
                     ),
                     Command.create(
@@ -290,7 +290,7 @@ class TestTaxReportCarryover(TestAccountReportsCommon):
         )
         self.assertTrue(
             all(closing.state == "posted" for closing in vat_closing_moves),
-            "Posting the main company's closing should post every other closing of this unit",
+            "Posting the main company's closing should post every other closing of this unit",  # noqa: E501
         )
 
         # There should be two external value for company_1: -1000.0 and 1000.0
@@ -326,8 +326,10 @@ class TestTaxReportCarryover(TestAccountReportsCommon):
         self.assertEqual(external_value_company_2, 0)
 
         # TAX UNIT REPORT (current period)
-        # ==============================================================================================================
-        # There should be a value of 1000.0 in the report since the sum of the balance of both companies is positive,
+        # ==============================================================================
+        # ================================
+        # There should be a value of 1000.0 in the report since the sum of the balance
+        # of both companies is positive,
         # there is no carryover
         options = self._generate_options(self.report, "2021-01-01", "2021-12-31")
 
@@ -346,7 +348,8 @@ class TestTaxReportCarryover(TestAccountReportsCommon):
         self.assertTrue("info_popup_data" not in lines_tax_unit[0]["columns"][0].keys())
 
         # COMPANY 1 REPORT (current period)
-        # ==============================================================================================================
+        # ==============================================================================
+        # ================================
         # There should be no value in the report since there is a carryover
         report_company_1 = self.report.with_context(
             allowed_company_ids=self.company_1.ids
@@ -371,7 +374,8 @@ class TestTaxReportCarryover(TestAccountReportsCommon):
         self.assertEqual(info_popup_data["carryover"], "-1,000.00")
 
         # COMPANY 2 REPORT (current period)
-        # ==============================================================================================================
+        # ==============================================================================
+        # ================================
         # There should be a value of 2000.0 in the report since there is no carryover
         report_company_2 = self.report.with_context(
             allowed_company_ids=self.company_2.ids
@@ -395,7 +399,8 @@ class TestTaxReportCarryover(TestAccountReportsCommon):
         )
 
         # TAX UNIT REPORT (next period)
-        # ==============================================================================================================
+        # ==============================================================================
+        # ================================
         options = self._generate_options(self.report, "2022-01-01", "2022-12-31")
 
         lines_tax_unit = self.report._get_lines(options)
@@ -413,7 +418,8 @@ class TestTaxReportCarryover(TestAccountReportsCommon):
         self.assertTrue("info_popup_data" not in lines_tax_unit[0]["columns"][0].keys())
 
         # COMPANY 1 REPORT (next period)
-        # ==============================================================================================================
+        # ==============================================================================
+        # ================================
         report_company_1 = self.report.with_context(
             allowed_company_ids=self.company_1.ids
         )
@@ -435,7 +441,8 @@ class TestTaxReportCarryover(TestAccountReportsCommon):
         )
 
         # COMPANY 2 REPORT (next period)
-        # ==============================================================================================================
+        # ==============================================================================
+        # ================================
         report_company_2 = self.report.with_context(
             allowed_company_ids=self.company_2.ids
         )

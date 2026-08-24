@@ -1,6 +1,6 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
-from odoo import api, fields, models
+from odoo import models
 
 
 class ResPartner(models.Model):
@@ -71,7 +71,8 @@ class ResPartner(models.Model):
                     "partner_ids": self.ids,
                     "unfold_all": True,
                     "unreconciled": True,
-                    # The following two options are Deprecated, will be removed in master
+                    # The following two options are Deprecated, will be removed in
+                    # master
                     "hide_account": True,
                     "hide_debit_credit": True,
                     "all_entries": False,

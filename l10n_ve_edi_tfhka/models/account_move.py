@@ -77,7 +77,10 @@ class AccountMove(models.Model):
             )
             move.l10n_ve_edi_tfhka_sent_pdf_url = False
             move.l10n_ve_edi_tfhka_sent_invoice_url = False
-            if move.journal_id.l10n_ve_edi_provider != "tfhka" or not move.l10n_ve_edi_response_json:
+            if (
+                move.journal_id.l10n_ve_edi_provider != "tfhka"
+                or not move.l10n_ve_edi_response_json
+            ):
                 continue
             pdf_u, doc_u = move._tfhka_extract_public_urls_from_stored_response()
             move.l10n_ve_edi_tfhka_sent_pdf_url = pdf_u
@@ -90,7 +93,11 @@ class AccountMove(models.Model):
             return url
         if self.journal_id.l10n_ve_edi_provider != "tfhka":
             return False
-        return self.l10n_ve_edi_tfhka_sent_invoice_url or self.l10n_ve_edi_tfhka_sent_pdf_url or False
+        return (
+            self.l10n_ve_edi_tfhka_sent_invoice_url
+            or self.l10n_ve_edi_tfhka_sent_pdf_url
+            or False
+        )
 
     def _tfhka_normalize_http_url(self, value):
         if not value or not isinstance(value, str):
@@ -143,10 +150,18 @@ class AccountMove(models.Model):
 
     def _tfhka_require_sent_tfhka_for_pdf_action(self):
         self.ensure_one()
-        if self.state != "posted" or self.move_type not in ("out_invoice", "out_refund"):
+        if self.state != "posted" or self.move_type not in (
+            "out_invoice",
+            "out_refund",
+        ):
             raise UserError(_("Solo aplica a facturas o notas de cliente confirmadas."))
         if self.l10n_ve_edi_send_state != "sent":
-            raise UserError(_("El documento debe estar enviado a facturacion digital (estado: enviado)."))
+            raise UserError(
+                _(
+                    "El documento debe estar enviado a facturacion digital "
+                    "(estado: enviado)."
+                )
+            )
         if self.journal_id.l10n_ve_edi_provider != "tfhka":
             raise UserError(_("El diario debe usar el proveedor TFHKA."))
 
@@ -325,7 +340,9 @@ class AccountMove(models.Model):
             self.id,
             list(resp.keys()) if isinstance(resp, dict) else type(resp),
         )
-        return None, _("La respuesta de DescargaArchivo no incluye un PDF en base64 reconocible.")
+        return None, _(
+            "La respuesta de DescargaArchivo no incluye un PDF en base64 reconocible."
+        )
 
     def _tfhka_return_pdf_attachment_download_action(self, pdf_bytes):
         self.ensure_one()
@@ -348,7 +365,7 @@ class AccountMove(models.Model):
             self.sudo().write({"l10n_ve_edi_tfhka_pdf_attachment_id": att.id})
         return {
             "type": "ir.actions.act_url",
-            "url": "/web/content/%s?download=true" % att.id,
+            "url": f"/web/content/{att.id}?download=true",
             "target": "self",
         }
 
@@ -378,7 +395,8 @@ class AccountMove(models.Model):
         if not doc_url:
             raise UserError(
                 _(
-                    "No hay URL de consulta del documento en la respuesta guardada de TFHKA. "
+                    "No hay URL de consulta del documento en la respuesta "
+                    "guardada de TFHKA. "
                     "Revise el JSON de respuesta."
                 )
             )
@@ -433,12 +451,16 @@ class AccountMove(models.Model):
 
     def _tfhka_get_issue_date(self):
         self.ensure_one()
-        return (self.invoice_date or fields.Date.context_today(self)).strftime("%d/%m/%Y")
+        return (self.invoice_date or fields.Date.context_today(self)).strftime(
+            "%d/%m/%Y"
+        )
 
     def _tfhka_get_due_date(self):
         self.ensure_one()
         return (
-            self.invoice_date_due or self.invoice_date or fields.Date.context_today(self)
+            self.invoice_date_due
+            or self.invoice_date
+            or fields.Date.context_today(self)
         ).strftime("%d/%m/%Y")
 
     def _tfhka_get_issue_hour(self):
@@ -473,13 +495,18 @@ class AccountMove(models.Model):
         self.ensure_one()
         ref_date = self.invoice_date or self.date
         env_digit = self.journal_id._tfhka_get_numero_documento_environment_digit()
-        return self.env["l10n_ve.edi.tfhka.document.mixin"]._tfhka_build_secuencia_yyyy_mm_seq(
+        return self.env[
+            "l10n_ve.edi.tfhka.document.mixin"
+        ]._tfhka_build_secuencia_yyyy_mm_seq(
             ref_date, self.name, self.id, environment_digit=env_digit
         )
 
     def _tfhka_get_document_number(self):
         self.ensure_one()
-        return f"{self._tfhka_get_document_type()}{self._tfhka_secuencia_for_numero_documento()}"
+        return (
+            f"{self._tfhka_get_document_type()}"
+            f"{self._tfhka_secuencia_for_numero_documento()}"
+        )
 
     def _tfhka_get_document_type(self):
         self.ensure_one()
@@ -518,10 +545,7 @@ class AccountMove(models.Model):
     def _tfhka_get_seller_name(self):
         self.ensure_one()
         raw_name = (
-            self.invoice_user_id.name
-            or self.user_id.name
-            or self.create_uid.name
-            or ""
+            self.invoice_user_id.name or self.user_id.name or self.create_uid.name or ""
         )
         normalized_name = re.sub(r"[^0-9A-Za-z ]", "", raw_name).strip()
         return normalized_name[:255]
@@ -530,25 +554,28 @@ class AccountMove(models.Model):
         self.ensure_one()
         document_type = self._tfhka_get_document_type()
         if len(document_type or "") != 2:
-            raise UserError("TipoDocumento debe tener exactamente 2 digitos.")
+            raise UserError(_("TipoDocumento debe tener exactamente 2 digitos."))
         number = self._tfhka_get_document_number()
         digits_only = re.sub(r"\D", "", number)
         if not digits_only or not digits_only.isdigit() or len(digits_only) > 19:
             raise UserError(
-                "NumeroDocumento debe tener entre 1 y 19 digitos (formato tipo+anio+correlativo)."
+                _(
+                    "NumeroDocumento debe tener entre 1 y 19 digitos "
+                    "(formato tipo+anio+correlativo)."
+                )
             )
         if len(self._tfhka_get_currency_code() or "") > 3:
-            raise UserError("Moneda debe tener maximo 3 caracteres alfanumericos.")
+            raise UserError(_("Moneda debe tener maximo 3 caracteres alfanumericos."))
         if len(self._tfhka_get_serie() or "") > 20:
-            raise UserError("Serie debe tener maximo 20 caracteres alfanumericos.")
+            raise UserError(_("Serie debe tener maximo 20 caracteres alfanumericos."))
         if len(self._tfhka_get_sucursal() or "") > 6:
-            raise UserError("Sucursal debe tener maximo 6 caracteres alfanumericos.")
+            raise UserError(_("Sucursal debe tener maximo 6 caracteres alfanumericos."))
 
     def _tfhka_format_amount_8_2(self, amount):
         value = f"{abs(amount or 0.0):.2f}"
         integer_part = value.split(".")[0]
         if len(integer_part) > 8:
-            raise UserError("MontoFacturaAfectada excede el formato 8.2.")
+            raise UserError(_("MontoFacturaAfectada excede el formato 8.2."))
         return value
 
     def _tfhka_format_tipo_cambio(self, rate):
@@ -582,7 +609,9 @@ class AccountMove(models.Model):
 
     def _tfhka_strip_none(self, obj):
         if isinstance(obj, dict):
-            return {k: self._tfhka_strip_none(v) for k, v in obj.items() if v is not None}
+            return {
+                k: self._tfhka_strip_none(v) for k, v in obj.items() if v is not None
+            }
         if isinstance(obj, list):
             return [self._tfhka_strip_none(i) for i in obj]
         return obj
@@ -601,18 +630,26 @@ class AccountMove(models.Model):
         affected_move = self._tfhka_get_affected_move()
         if not affected_move:
             raise UserError(
-                "La nota de credito/debito requiere una factura origen (factura afectada)."
+                _(
+                    "La nota de credito/debito requiere una factura origen "
+                    "(factura afectada)."
+                )
             )
         required_values = {
             "NumeroFacturaAfectada": self._tfhka_get_affected_invoice_number(),
             "FechaFacturaAfectada": self._tfhka_get_affected_invoice_date(),
             "MontoFacturaAfectada": self._tfhka_get_affected_invoice_amount(),
         }
-        missing = [field_name for field_name, value in required_values.items() if not value]
+        missing = [
+            field_name for field_name, value in required_values.items() if not value
+        ]
         if missing:
             raise UserError(
-                "Faltan datos obligatorios de la factura afectada para nota de credito/debito: "
-                + ", ".join(missing)
+                _(
+                    "Faltan datos obligatorios de la factura afectada para "
+                    "nota de credito/debito: %s"
+                )
+                % ", ".join(missing)
             )
 
     def _tfhka_get_affected_move(self):
@@ -681,7 +718,9 @@ class AccountMove(models.Model):
         return "G" if r > 0 else "E"
 
     def _tfhka_get_line_tax_code(self, line):
-        return self._tfhka_get_line_tax_code_for_rate(self._tfhka_get_line_tax_rate(line))
+        return self._tfhka_get_line_tax_code_for_rate(
+            self._tfhka_get_line_tax_rate(line)
+        )
 
     def _tfhka_get_line_iva_value(self, line):
         return line.price_total - line.price_subtotal
@@ -712,7 +751,9 @@ class AccountMove(models.Model):
         if "IGTF" in group_name:
             return True
         tids = tax_group_dict.get("involved_tax_ids") or []
-        return not tids and abs(float(tax_group_dict.get("tax_amount", 0.0) or 0.0)) > 0.0
+        return (
+            not tids and abs(float(tax_group_dict.get("tax_amount", 0.0) or 0.0)) > 0.0
+        )
 
     def _tfhka_line_discount_and_count(self):
         self.ensure_one()
@@ -734,7 +775,9 @@ class AccountMove(models.Model):
         sum_t = cur.round(sum(v.get("tax", 0.0) for v in buckets.values()))
         return sum_b, sum_t
 
-    def _tfhka_reconcile_buckets_to_targets(self, buckets, target_base, target_tax, cur):
+    def _tfhka_reconcile_buckets_to_targets(
+        self, buckets, target_base, target_tax, cur
+    ):
         self.ensure_one()
         if not buckets:
             return buckets
@@ -748,7 +791,8 @@ class AccountMove(models.Model):
         if cur.is_zero(db) and cur.is_zero(dt):
             return out
         _logger.info(
-            "l10n_ve_edi_tfhka: buckets reconciliados move_id=%s moneda=%s base_delta=%s tax_delta=%s",
+            "l10n_ve_edi_tfhka: buckets reconciliados move_id=%s moneda=%s "
+            "base_delta=%s tax_delta=%s",
             self.id,
             cur.name,
             db,
@@ -777,7 +821,9 @@ class AccountMove(models.Model):
             exento = cur.round(exento_raw)
         return gravado, exento
 
-    def _tfhka_log_totales_tfhka_debug(self, payload, igtf, monto_total_iva_oti, has_igtf):
+    def _tfhka_log_totales_tfhka_debug(
+        self, payload, igtf, monto_total_iva_oti, has_igtf
+    ):
         if not _logger.isEnabledFor(logging.DEBUG):
             return
         bs = payload["comp"]
@@ -789,16 +835,15 @@ class AccountMove(models.Model):
         sub_iva_comp = comp_cur.round(bs["subtotal"] + bs["total_iva"])
         sub_iva_inv = inv_cur.round(inv["subtotal"] + inv["total_iva"])
         ap_igtf_comp = (
-            comp_cur.round(bs["total_apagar"] - igtf["comp"])
-            if has_igtf
-            else None
+            comp_cur.round(bs["total_apagar"] - igtf["comp"]) if has_igtf else None
         )
         ap_igtf_inv = (
             inv_cur.round(inv["total_apagar"] - igtf["inv"]) if has_igtf else None
         )
         _logger.debug(
             "TFHKA totales move_id=%s name=%s comp subtotal+iva=%s buckets_b+t=%s "
-            "total_apagar-igtf=%s montoTotalIVAyOTI=%s | inv subtotal+iva=%s buckets_b+t=%s "
+            "total_apagar-igtf=%s montoTotalIVAyOTI=%s | inv "
+            "subtotal+iva=%s buckets_b+t=%s "
             "total_apagar-igtf=%s",
             self.id,
             self.name,
@@ -814,7 +859,7 @@ class AccountMove(models.Model):
     def _tfhka_parse_amount_string(self, value):
         if value is None:
             return 0.0
-        if isinstance(value, (int, float)):
+        if isinstance(value, int | float):
             return float(value)
         s = str(value).strip().replace(",", ".")
         try:
@@ -896,7 +941,6 @@ class AccountMove(models.Model):
             tot = enc.get("totales") or {}
             st = self._tfhka_parse_amount_string(tot.get("subtotal"))
             iv = self._tfhka_parse_amount_string(tot.get("totalIVA"))
-            mci = self._tfhka_parse_amount_string(tot.get("montoTotalConIVA"))
             mioti = self._tfhka_parse_amount_string(tot.get("montoTotalIVAyOTI"))
             sum_st_iv = st + iv
             gv = self._tfhka_parse_amount_string(tot.get("montoGravadoTotal"))
@@ -904,8 +948,9 @@ class AccountMove(models.Model):
             sum_grav_exc_iva = gv + exc + iv
             _logger.error(
                 "TFHKA totales encabezado subtotal=%s totalIVA=%s montoGravadoTotal=%s "
-                "montoExentoTotal=%s montoTotalConIVA=%s montoTotalIVAyOTI=%s totalAPagar=%s "
-                "totalIGTF=%s montoTotalOTI=%s | float subtotal+IVA=%.4f float grav+exc+IVA=%.4f "
+                "montoExentoTotal=%s montoTotalConIVA=%s montoTotalIVAyOTI=%s "
+                "totalAPagar=%s totalIGTF=%s montoTotalOTI=%s | float "
+                "subtotal+IVA=%.4f float grav+exc+IVA=%.4f "
                 "delta_montoTotalIVAyOTI_vs_grav_exc_iva=%.4f",
                 tot.get("subtotal"),
                 tot.get("totalIVA"),
@@ -920,7 +965,9 @@ class AccountMove(models.Model):
                 sum_grav_exc_iva,
                 mioti - sum_grav_exc_iva,
             )
-            self._tfhka_log_impuestos_subtotal_audit("compania_VES", tot.get("impuestosSubtotal") or [])
+            self._tfhka_log_impuestos_subtotal_audit(
+                "compania_VES", tot.get("impuestosSubtotal") or []
+            )
             imps = tot.get("impuestosSubtotal") or []
             if imps and tot.get("montoTotalIVAyOTI") is not None:
                 sb = sum(
@@ -951,7 +998,8 @@ class AccountMove(models.Model):
                 sum2 = st2 + iv2
                 _logger.error(
                     "TFHKA totalesOtraMoneda moneda=%s subtotal=%s totalIVA=%s "
-                    "montoTotalConIVA=%s montoTotalIVAyOTI=%s totalAPagar=%s | float_sub+IVA=%.4f "
+                    "montoTotalConIVA=%s montoTotalIVAyOTI=%s totalAPagar=%s | "
+                    "float_sub+IVA=%.4f "
                     "delta_montoTotalConIVA=%.4f delta_montoTotalIVAyOTI=%.4f",
                     otm.get("moneda"),
                     otm.get("subtotal"),
@@ -980,7 +1028,8 @@ class AccountMove(models.Model):
                     )
                     bt2 = sb2 + stx2
                     _logger.error(
-                        "TFHKA coherencia 1079 (otra moneda) suma_impuestosSubtotal=%.4f "
+                        "TFHKA coherencia 1079 (otra moneda) "
+                        "suma_impuestosSubtotal=%.4f "
                         "vs montoTotalIVAyOTI=%.4f diff=%.4f",
                         bt2,
                         mioti2,
@@ -991,8 +1040,14 @@ class AccountMove(models.Model):
             sum_lines = 0.0
             for it in items:
                 if isinstance(it, dict):
-                    sum_lines += self._tfhka_parse_amount_string(it.get("valorTotalItem"))
-            _logger.error("TFHKA detallesItems lineas=%s suma_valorTotalItem=%.4f", len(items), sum_lines)
+                    sum_lines += self._tfhka_parse_amount_string(
+                        it.get("valorTotalItem")
+                    )
+            _logger.error(
+                "TFHKA detallesItems lineas=%s suma_valorTotalItem=%.4f",
+                len(items),
+                sum_lines,
+            )
             if self._tfhka_get_document_type() in ("02", "03") and prepared:
                 _logger.error(
                     "TFHKA payload_API_Pascal=%s",
@@ -1005,8 +1060,9 @@ class AccountMove(models.Model):
         if isinstance(tt, dict):
             _logger.error(
                 "TFHKA tax_totals base_amount=%s tax_amount=%s total_amount=%s "
-                "base_amount_currency=%s tax_amount_currency=%s total_amount_currency=%s "
-                "l10n_ve_igtf_collected_amount=%s l10n_ve_igtf_collected_amount_currency=%s",
+                "base_amount_currency=%s tax_amount_currency=%s "
+                "total_amount_currency=%s l10n_ve_igtf_collected_amount=%s "
+                "l10n_ve_igtf_collected_amount_currency=%s",
                 tt.get("base_amount"),
                 tt.get("tax_amount"),
                 tt.get("total_amount"),
@@ -1024,14 +1080,17 @@ class AccountMove(models.Model):
             comp_cur = self.company_id.currency_id
             inv_cur = self.currency_id
             cb, ct = self._tfhka_sum_buckets_base_tax(bs.get("buckets") or {}, comp_cur)
-            ib, itx = self._tfhka_sum_buckets_base_tax(inv.get("buckets") or {}, inv_cur)
+            ib, itx = self._tfhka_sum_buckets_base_tax(
+                inv.get("buckets") or {}, inv_cur
+            )
             siva_c = comp_cur.round(bs["subtotal"] + bs["total_iva"])
             siva_i = inv_cur.round(inv["subtotal"] + inv["total_iva"])
             btc = comp_cur.round(cb + ct)
             bti = inv_cur.round(ib + itx)
             _logger.error(
                 "TFHKA agregado_interno comp subtotal=%s total_iva=%s subtotal+iva=%s "
-                "buckets_b=%s buckets_t=%s buckets_b+t=%s | inv subtotal+iva=%s buckets_b+t=%s",
+                "buckets_b=%s buckets_t=%s buckets_b+t=%s | inv "
+                "subtotal+iva=%s buckets_b+t=%s",
                 bs["subtotal"],
                 bs["total_iva"],
                 siva_c,
@@ -1042,7 +1101,8 @@ class AccountMove(models.Model):
                 bti,
             )
             _logger.error(
-                "TFHKA deltas_internos comp subtotal+iva_vs_buckets=%s | inv subtotal+iva_vs_buckets=%s",
+                "TFHKA deltas_internos comp subtotal+iva_vs_buckets=%s | "
+                "inv subtotal+iva_vs_buckets=%s",
                 comp_cur.round(siva_c - btc),
                 inv_cur.round(siva_i - bti),
             )
@@ -1277,11 +1337,19 @@ class AccountMove(models.Model):
             "urlPdf": "",
         }
         if is_adjustment_document:
-            data["serieFacturaAfectada"] = self._tfhka_get_affected_invoice_serie() or ""
-            data["numeroFacturaAfectada"] = self._tfhka_get_affected_invoice_number() or ""
+            data["serieFacturaAfectada"] = (
+                self._tfhka_get_affected_invoice_serie() or ""
+            )
+            data["numeroFacturaAfectada"] = (
+                self._tfhka_get_affected_invoice_number() or ""
+            )
             data["fechaFacturaAfectada"] = self._tfhka_get_affected_invoice_date() or ""
-            data["montoFacturaAfectada"] = self._tfhka_get_affected_invoice_amount() or ""
-            data["comentarioFacturaAfectada"] = self._tfhka_get_affected_invoice_comment() or ""
+            data["montoFacturaAfectada"] = (
+                self._tfhka_get_affected_invoice_amount() or ""
+            )
+            data["comentarioFacturaAfectada"] = (
+                self._tfhka_get_affected_invoice_comment() or ""
+            )
         return data
 
     def _tfhka_build_vendedor(self):
@@ -1319,7 +1387,11 @@ class AccountMove(models.Model):
         for picking in self._tfhka_get_dispatch_pickings_for_factura_guia()[:5]:
             if hasattr(picking, "_tfhka_get_document_number_for_reference"):
                 numero = picking._tfhka_get_document_number_for_reference()
-                serie = picking._tfhka_get_serie() if hasattr(picking, "_tfhka_get_serie") else ""
+                serie = (
+                    picking._tfhka_get_serie()
+                    if hasattr(picking, "_tfhka_get_serie")
+                    else ""
+                )
             elif hasattr(picking, "_tfhka_get_document_number"):
                 numero = picking._tfhka_get_document_number()
                 serie = picking._tfhka_get_serie() or ""
@@ -1346,8 +1418,10 @@ class AccountMove(models.Model):
         phone_list = [phone] if phone else []
         if email_list and not phone_list:
             raise UserError(
-                "La API TFHKA exige telefono en comprador cuando hay correo. "
-                "Indique telefono o movil del contacto."
+                _(
+                    "La API TFHKA exige telefono en comprador cuando hay "
+                    "correo. Indique telefono o movil del contacto."
+                )
             )
         notificar = "Si" if (buyer.email or phone) else "No"
         return {
@@ -1457,7 +1531,9 @@ class AccountMove(models.Model):
                     net_inv,
                     pay_cur,
                     self.company_id,
-                    payment.date or self.invoice_date or fields.Date.context_today(self),
+                    payment.date
+                    or self.invoice_date
+                    or fields.Date.context_today(self),
                 )
             )
 
@@ -1477,8 +1553,10 @@ class AccountMove(models.Model):
                 nets_pay = {}
                 for inv in reconciled:
                     n = inv._tfhka_net_reconciled_from_payment_invoice_currency(payment)
-                    nets_pay[inv] = inv._tfhka_convert_net_allocation_to_payment_currency(
-                        inv, payment, n
+                    nets_pay[inv] = (
+                        inv._tfhka_convert_net_allocation_to_payment_currency(
+                            inv, payment, n
+                        )
                     )
                 total_net_pay = pay_cur.round(sum(nets_pay.values()))
                 self_net_pay = nets_pay.get(self, 0.0)
@@ -1486,20 +1564,24 @@ class AccountMove(models.Model):
                     result = _net_as_payment_currency()
                 else:
                     igtf_amt = pay_cur.round(
-                        float(getattr(payment, "l10n_ve_igtf_amount_currency", 0.0) or 0.0)
+                        float(
+                            getattr(payment, "l10n_ve_igtf_amount_currency", 0.0) or 0.0
+                        )
                     )
                     if pay_cur.is_zero(igtf_amt):
                         remainder = pay_cur.round(payment.amount - total_net_pay)
                         if not pay_cur.is_zero(remainder):
                             igtf_amt = remainder
-                    igtf_share = pay_cur.round(igtf_amt * (self_net_pay / total_net_pay))
+                    igtf_share = pay_cur.round(
+                        igtf_amt * (self_net_pay / total_net_pay)
+                    )
                     result = pay_cur.round(self_net_pay + igtf_share)
 
         if getattr(payment, "is_retention", False):
             return result
-        if self._tfhka_is_single_customer_invoice_payment(payment) and not pay_cur.is_zero(
-            payment.amount
-        ):
+        if self._tfhka_is_single_customer_invoice_payment(
+            payment
+        ) and not pay_cur.is_zero(payment.amount):
             paid = pay_cur.round(payment.amount)
             if paid > result and not pay_cur.is_zero(paid - result):
                 if norm_opts is not None:
@@ -1542,14 +1624,20 @@ class AccountMove(models.Model):
         inv_cur = self.currency_id
         comp_cur = self.company_id.currency_id
         date = self.invoice_date or self.date or fields.Date.context_today(self)
-        inv = inv_cur.round(float(tt.get("l10n_ve_igtf_collected_amount_currency", 0.0) or 0.0))
-        comp = comp_cur.round(float(tt.get("l10n_ve_igtf_collected_amount", 0.0) or 0.0))
+        inv = inv_cur.round(
+            float(tt.get("l10n_ve_igtf_collected_amount_currency", 0.0) or 0.0)
+        )
+        comp = comp_cur.round(
+            float(tt.get("l10n_ve_igtf_collected_amount", 0.0) or 0.0)
+        )
         if inv_cur == comp_cur:
             return {"inv": inv, "comp": inv}
         if inv_cur.is_zero(inv) and not comp_cur.is_zero(comp):
             inv = inv_cur.round(comp_cur._convert(comp, inv_cur, self.company_id, date))
         if comp_cur.is_zero(comp) and not inv_cur.is_zero(inv):
-            comp = comp_cur.round(inv_cur._convert(inv, comp_cur, self.company_id, date))
+            comp = comp_cur.round(
+                inv_cur._convert(inv, comp_cur, self.company_id, date)
+            )
         return {"inv": inv, "comp": comp}
 
     def _tfhka_format_igtf_impuesto_row(self, base, tax_amount, percent):
@@ -1567,8 +1655,10 @@ class AccountMove(models.Model):
         self.ensure_one()
         rows = self._tfhka_build_impuestos_subtotal_from_buckets(buckets) or []
         cur = zero_currency or self.company_id.currency_id
-        if igtf_base is not None and igtf_tax is not None and (
-            not cur.is_zero(igtf_base) or not cur.is_zero(igtf_tax)
+        if (
+            igtf_base is not None
+            and igtf_tax is not None
+            and (not cur.is_zero(igtf_base) or not cur.is_zero(igtf_tax))
         ):
             pct = self.company_id.l10n_ve_igtf_percent or 0.0
             rows.append(self._tfhka_format_igtf_impuesto_row(igtf_base, igtf_tax, pct))
@@ -1623,7 +1713,9 @@ class AccountMove(models.Model):
         comp_cur = self.company_id.currency_id
         total = 0.0
         for line in lines:
-            total = comp_cur.round(total + self._tfhka_formas_pago_line_amount_company_currency(line))
+            total = comp_cur.round(
+                total + self._tfhka_formas_pago_line_amount_company_currency(line)
+            )
         return total
 
     def _tfhka_formas_pago_apply_delta_company_currency(self, lines, delta):
@@ -1635,7 +1727,9 @@ class AccountMove(models.Model):
             moneda = (line.get("moneda") or "VES")[:3]
             m = float(line.get("monto") or 0.0)
             if moneda in ("VES", "VEF", "BSD"):
-                lines[i]["monto"] = self._l10n_ve_edi_format_decimal(comp_cur.round(m + delta))
+                lines[i]["monto"] = self._l10n_ve_edi_format_decimal(
+                    comp_cur.round(m + delta)
+                )
                 return
         line0 = lines[0]
         m0 = float(line0.get("monto") or 0.0)
@@ -1645,11 +1739,17 @@ class AccountMove(models.Model):
         adj = (Decimal(str(delta)) / Decimal(str(rate))).quantize(
             Decimal("0.01"), rounding=ROUND_HALF_UP
         )
-        lines[0]["monto"] = self._l10n_ve_edi_format_decimal(float(Decimal(str(m0)) + adj))
+        lines[0]["monto"] = self._l10n_ve_edi_format_decimal(
+            float(Decimal(str(m0)) + adj)
+        )
 
     def _tfhka_build_formas_pago_line(self, payment, amount):
         self.ensure_one()
-        fecha = payment.date.strftime("%d/%m/%Y") if payment.date else self._tfhka_get_issue_date()
+        fecha = (
+            payment.date.strftime("%d/%m/%Y")
+            if payment.date
+            else self._tfhka_get_issue_date()
+        )
         desc = (payment.memo or payment.ref or payment.name or "Pago")[:120]
         cur = payment.currency_id
         cur_name = (cur.name or "VES")[:3]
@@ -1691,7 +1791,7 @@ class AccountMove(models.Model):
         comp_cur = self.company_id.currency_id
         target_bs, _target_inv = self._tfhka_total_apagar_for_payload(payload)
         skip_trim = bool(norm_opts and norm_opts.get("skip_trim_excess"))
-        for _ in range(12):
+        for _unused in range(12):
             sum_ves = self._tfhka_formas_pago_sum_company_currency(lines)
             delta = comp_cur.round(target_bs - sum_ves)
             if comp_cur.is_zero(delta):
@@ -1711,10 +1811,13 @@ class AccountMove(models.Model):
             delta = comp_cur.round(target_bs - sum_ves)
         if not comp_cur.is_zero(delta):
             raise UserError(
-                "La suma de las formas de pago (en moneda de la compania usando tipo de cambio "
-                "de cada linea) no coincide con el Total a Pagar fiscal. "
-                "Suma formas VES: %(sum)s, TotalAPagar: %(target)s, delta: %(d)s. "
-                "Revise conciliaciones, IGTF y moneda de los pagos."
+                _(
+                    "La suma de las formas de pago (en moneda de la compania "
+                    "usando tipo de cambio de cada linea) no coincide con el "
+                    "Total a Pagar fiscal. Suma formas VES: %(sum)s, "
+                    "TotalAPagar: %(target)s, delta: %(d)s. Revise "
+                    "conciliaciones, IGTF y moneda de los pagos."
+                )
                 % {"sum": sum_ves, "target": target_bs, "d": delta}
             )
         return lines
@@ -1729,12 +1832,15 @@ class AccountMove(models.Model):
         Payment = self.env["account.payment"]
         for pay_id in sorted(
             by_payment.keys(),
-            key=lambda pid: Payment.browse(pid).date or fields.Date.context_today(Payment.browse(pid)),
+            key=lambda pid: Payment.browse(pid).date
+            or fields.Date.context_today(Payment.browse(pid)),
         ):
             payment = Payment.browse(pay_id)
             if not payment.exists():
                 continue
-            amount = self._tfhka_forma_pago_amount_payment_currency(payment, norm_opts=norm_opts)
+            amount = self._tfhka_forma_pago_amount_payment_currency(
+                payment, norm_opts=norm_opts
+            )
             if payment.currency_id.is_zero(amount):
                 continue
             lines.append(self._tfhka_build_formas_pago_line(payment, amount))
@@ -1742,16 +1848,23 @@ class AccountMove(models.Model):
             lines = [self._tfhka_build_formas_pago_fallback(payload)]
         if len(lines) > 5:
             raise UserError(
-                "El maximo de formas de pago permitido es 5. Registre menos pagos o agrupe antes de enviar."
+                _(
+                    "El maximo de formas de pago permitido es 5. Registre "
+                    "menos pagos o agrupe antes de enviar."
+                )
             )
-        return self._tfhka_normalize_formas_pago_lines(lines, payload, norm_opts=norm_opts)
+        return self._tfhka_normalize_formas_pago_lines(
+            lines, payload, norm_opts=norm_opts
+        )
 
     def _tfhka_build_impuestos_subtotal_from_buckets(self, buckets):
         self.ensure_one()
         if not buckets:
             return None
         impuestos_subtotal = []
-        for (code, rate), vals in sorted(buckets.items(), key=lambda x: (x[0][0], x[0][1])):
+        for (code, rate), vals in sorted(
+            buckets.items(), key=lambda x: (x[0][0], x[0][1])
+        ):
             impuestos_subtotal.append(
                 {
                     "codigoTotalImp": code,
@@ -1867,7 +1980,9 @@ class AccountMove(models.Model):
             "totalRecargos": None,
             "subtotal": self._l10n_ve_edi_format_decimal(subtotal),
             "totalIVA": self._l10n_ve_edi_format_decimal(total_iva),
-            "montoTotalConIVA": self._l10n_ve_edi_format_decimal(monto_total_con_iva_bs),
+            "montoTotalConIVA": self._l10n_ve_edi_format_decimal(
+                monto_total_con_iva_bs
+            ),
             "totalAPagar": self._l10n_ve_edi_format_decimal(total_apagar),
             "montoEnLetras": self._tfhka_get_monto_en_letras() or None,
             "listaRecargo": None,
@@ -1879,7 +1994,9 @@ class AccountMove(models.Model):
             "montoTotalOTI": monto_total_oti_key,
             "montoTotalIVAyOTI": monto_total_ivayoti_key,
         }
-        self._tfhka_log_totales_tfhka_debug(payload, igtf, monto_total_ivayoti_key, has_igtf)
+        self._tfhka_log_totales_tfhka_debug(
+            payload, igtf, monto_total_ivayoti_key, has_igtf
+        )
         formas_pago = self._tfhka_build_formas_pago(payload)
         if formas_pago:
             data["formasPago"] = formas_pago
@@ -1891,7 +2008,9 @@ class AccountMove(models.Model):
             return 0.0
         amount_dec = Decimal(str(amount_bs or 0.0))
         rate_dec = Decimal(str(rate))
-        result = (amount_dec / rate_dec).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+        result = (amount_dec / rate_dec).quantize(
+            Decimal("0.01"), rounding=ROUND_HALF_UP
+        )
         return float(result)
 
     def _tfhka_build_totales_otra_moneda(self, payload=None):
@@ -1906,8 +2025,11 @@ class AccountMove(models.Model):
         rate = getattr(self, "l10n_ve_inverse_rate", 0.0) or 0.0
         if not rate:
             raise UserError(
-                "Para facturas en moneda extranjera debe existir tasa de cambio a bolivares "
-                "(fecha de factura y tasa de la moneda en la empresa)."
+                _(
+                    "Para facturas en moneda extranjera debe existir tasa de "
+                    "cambio a bolivares (fecha de factura y tasa de la moneda "
+                    "en la empresa)."
+                )
             )
         if payload is None:
             payload = self._tfhka_get_totals_for_payload()
@@ -1940,7 +2062,8 @@ class AccountMove(models.Model):
             monto_total_oti_key = None
             monto_total_ivayoti_key = None
             _logger.info(
-                "TFHKA totales otra moneda (IGTF) move_id=%s grav=%s exc=%s sub=%s iva=%s "
+                "TFHKA totales otra moneda (IGTF) move_id=%s grav=%s exc=%s "
+                "sub=%s iva=%s "
                 "montoTotalConIVA=%s igtf_row_base=%s igtf_row_tax=%s",
                 self.id,
                 gravado,
@@ -1952,7 +2075,9 @@ class AccountMove(models.Model):
                 igtf_tax_inv,
             )
         else:
-            imp_rows_inv = self._tfhka_build_impuestos_subtotal_from_buckets(inv["buckets"])
+            imp_rows_inv = self._tfhka_build_impuestos_subtotal_from_buckets(
+                inv["buckets"]
+            )
             total_igtf_key = self._l10n_ve_edi_format_decimal(igtf["inv"])
             total_igtf_ves_key = self._l10n_ve_edi_format_decimal(igtf["comp"])
             monto_total_oti_key = None
@@ -1970,7 +2095,9 @@ class AccountMove(models.Model):
             "totalRecargos": None,
             "subtotal": self._l10n_ve_edi_format_decimal(subtotal),
             "totalIVA": self._l10n_ve_edi_format_decimal(total_iva),
-            "montoTotalConIVA": self._l10n_ve_edi_format_decimal(monto_total_con_iva_inv),
+            "montoTotalConIVA": self._l10n_ve_edi_format_decimal(
+                monto_total_con_iva_inv
+            ),
             "totalAPagar": self._l10n_ve_edi_format_decimal(total_apagar),
             "montoEnLetras": None,
             "listaRecargo": None,
@@ -2004,7 +2131,9 @@ class AccountMove(models.Model):
             "numeroLinea": str(index),
             "codigoCIIU": "",
             "codigoPLU": plu,
-            "indicadorBienoServicio": "2" if product and product.type == "service" else "1",
+            "indicadorBienoServicio": "2"
+            if product and product.type == "service"
+            else "1",
             "descripcion": (line.name or product.display_name or "")[:500],
             "cantidad": self._l10n_ve_edi_format_decimal(qty),
             "unidadMedida": (line.product_uom_id.name or "UND")[:3],
@@ -2031,13 +2160,15 @@ class AccountMove(models.Model):
         line_items = self._tfhka_get_line_items()
         if not line_items:
             raise UserError(
-                "No se encontraron lineas facturables para generar DetallesItems."
+                _("No se encontraron lineas facturables para generar DetallesItems.")
             )
         for index, line in enumerate(line_items, start=1):
             tax_rate = self._tfhka_get_line_tax_rate(line)
             tax_code = self._tfhka_get_line_tax_code(line)
             line_iva = self._tfhka_get_line_iva_value(line)
-            details.append(self._tfhka_build_item_detail(index, line, tax_code, tax_rate, line_iva))
+            details.append(
+                self._tfhka_build_item_detail(index, line, tax_code, tax_rate, line_iva)
+            )
         return details
 
     def _l10n_ve_edi_dispatch_payload(self, payload):
@@ -2065,7 +2196,10 @@ class AccountMove(models.Model):
                     self.id,
                     self._tfhka_safe_json_for_log(auth, 4000),
                 )
-                return {"success": False, "error": "La API TFHKA no devolvio token JWT."}
+                return {
+                    "success": False,
+                    "error": "La API TFHKA no devolvio token JWT.",
+                }
             prepared = self._tfhka_prepare_api_payload(payload)
             response = client.issue_document(prepared, token)
             return {"success": True, "response": response}
@@ -2126,7 +2260,9 @@ class AccountMove(models.Model):
                 return False
         return True
 
-    def _tfhka_raise_duplicate_document_collision(self, prepared_payload, status_response):
+    def _tfhka_raise_duplicate_document_collision(
+        self, prepared_payload, status_response
+    ):
         self.ensure_one()
         ident = (
             (prepared_payload or {})
@@ -2143,7 +2279,8 @@ class AccountMove(models.Model):
                 "existe (numero de control %(ctrl)s, asignado el %(tfhka_fecha)s), "
                 "pero ese registro no corresponde a esta factura "
                 "(fecha de emision %(inv_fecha)s). Avance la secuencia del diario "
-                "a un correlativo cuyo numeroDocumento aun no este registrado en TFHKA, "
+                "a un correlativo cuyo numeroDocumento aun no este "
+                "registrado en TFHKA, "
                 "o configure en el diario un digito de ambiente TFHKA distinto al "
                 "actual (%(env)s) si emite en otro entorno HKA."
             )

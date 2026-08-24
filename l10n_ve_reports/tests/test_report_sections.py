@@ -233,7 +233,8 @@ class TestReportSections(AccountTestInvoicingHttpCommon):
         # Setup the reports
         generic_tax_report = self.env.ref("account.generic_tax_report")
         self.composite_report.root_report_id = generic_tax_report
-        self.section_1.root_report_id = generic_tax_report  # First section is a variant of the root report, to increase test coverage
+        # First section is a variant of the root report, to increase test coverage
+        self.section_1.root_report_id = generic_tax_report
         # Rewriting the root report recomputes filter_journal ; re-enable it
         self.section_1.filter_journals = True
 
@@ -255,7 +256,7 @@ class TestReportSections(AccountTestInvoicingHttpCommon):
         for i in range(1, 13):
             self.env["account.report"].create(
                 {
-                    "name": "Comprehensive Monthly Analysis Report Q%d" % i,
+                    "name": f"Comprehensive Monthly Analysis Report Q{i}",
                     "section_main_report_ids": [Command.set([composite_report.id])],
                 }
             )

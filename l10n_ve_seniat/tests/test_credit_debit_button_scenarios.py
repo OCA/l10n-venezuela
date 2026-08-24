@@ -265,7 +265,7 @@ class TestCreditDebitButtonScenarios(L10nVeSeniatCommon):
 
     def _post_partial_credit_note(self, invoice, ratio=0.5):
         line = invoice.invoice_line_ids.filtered(
-            lambda l: l.display_type in (False, "product")
+            lambda move_line: move_line.display_type in (False, "product")
         )[:1]
         credit = self.env["account.move"].create(
             {
@@ -313,7 +313,7 @@ class TestCreditDebitButtonScenarios(L10nVeSeniatCommon):
         debit.ensure_one()
         line_vals = []
         for line in invoice.invoice_line_ids.filtered(
-            lambda l: l.display_type in (False, "product")
+            lambda move_line: move_line.display_type in (False, "product")
         ):
             line_vals.append(
                 Command.create(

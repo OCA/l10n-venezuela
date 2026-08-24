@@ -73,9 +73,9 @@ class PosOrder(models.Model):
             sale_orders = order._l10n_ve_pos_linked_sale_orders().filtered(
                 lambda sale: sale.state in ("draft", "sent")
             )
-            sale_orders.filtered(lambda sale: sale.journal_id != journal).write(
-                {"journal_id": journal.id}
-            )
+            sale_orders.filtered(
+                lambda sale, invoice_journal=journal: sale.journal_id != invoice_journal
+            ).write({"journal_id": journal.id})
 
     def _process_saved_order(self, draft):
         if not draft:

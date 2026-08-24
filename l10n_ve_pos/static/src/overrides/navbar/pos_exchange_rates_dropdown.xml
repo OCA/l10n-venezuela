@@ -1,34 +1,55 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <templates id="template" xml:space="preserve">
     <t t-name="l10n_ve_pos.PosExchangeRatesDropdown">
         <Dropdown>
-            <button class="btn btn-light btn-lg lh-lg d-flex align-items-center" type="button">
-                <i class="fa fa-fw fa-lg fa-money" t-att-title="exchangeRatesTitle"/>
-                <span class="ms-1" t-esc="ratesColonLabel"/>
-                <span t-if="displayCurrencyName" class="ms-1 fw-bold" t-esc="displayCurrencyName"/>
-                <span t-if="displayCurrencyRate" class="ms-1" t-esc="displayCurrencyRate"/>
+            <button
+                class="btn btn-light btn-lg lh-lg d-flex align-items-center"
+                type="button"
+            >
+                <i class="fa fa-fw fa-lg fa-money" t-att-title="exchangeRatesTitle" />
+                <span class="ms-1" t-esc="ratesColonLabel" />
+                <span
+                    t-if="displayCurrencyName"
+                    class="ms-1 fw-bold"
+                    t-esc="displayCurrencyName"
+                />
+                <span
+                    t-if="displayCurrencyRate"
+                    class="ms-1"
+                    t-esc="displayCurrencyRate"
+                />
             </button>
             <t t-set-slot="content">
                 <div class="o_l10n_ve_pos_exchange_rates p-2" style="min-width: 250px;">
                     <t t-if="state.loading">
                         <DropdownItem>
-                            <span t-esc="loadingLabel"/>
+                            <span t-esc="loadingLabel" />
                         </DropdownItem>
                     </t>
                     <t t-elif="state.rates.length">
-                        <div class="fw-bold px-3 py-1" t-esc="dateLine"/>
-                        <div class="fw-bold px-3 py-1" t-esc="ratesRefLine"/>
+                        <div class="fw-bold px-3 py-1" t-esc="dateLine" />
+                        <div class="fw-bold px-3 py-1" t-esc="ratesRefLine" />
                         <div class="px-3">
                             <table class="table table-sm table-borderless m-0">
                                 <tbody>
-                                    <t t-foreach="state.rates" t-as="rate" t-key="rate_index">
+                                    <t
+                                        t-foreach="state.rates"
+                                        t-as="rate"
+                                        t-key="rate_index"
+                                    >
                                         <tr>
                                             <td class="p-1">
-                                                <t t-esc="rate.name"/> (<t t-esc="rate.symbol"/>)
+                                                <t t-esc="rate.name" /> (<t
+                                                t-esc="rate.symbol"
+                                            />)
                                             </td>
                                             <td class="p-1 text-end">
-                                                1 <t t-esc="rate.symbol"/>  ≈ <t t-esc="rate.rate"/>
-                                                <t t-esc="rate.company_currency_symbol"/>
+                                                1 <t t-esc="rate.symbol" />  ≈ <t
+                                                t-esc="rate.rate"
+                                            />
+                                                <t
+                                                t-esc="rate.company_currency_symbol"
+                                            />
                                             </td>
                                         </tr>
                                     </t>
@@ -38,7 +59,7 @@
                     </t>
                     <t t-else="">
                         <DropdownItem>
-                            <span t-esc="emptyLabel"/>
+                            <span t-esc="emptyLabel" />
                         </DropdownItem>
                     </t>
                 </div>

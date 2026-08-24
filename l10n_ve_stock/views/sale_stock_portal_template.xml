@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <odoo>
     <template
         id="sale_order_portal_content_l10n_ve_invoice_control"
@@ -15,9 +15,9 @@
             >
                 N° de control:
                 <span
-                    class="text-danger fw-bold"
-                    t-out="i.l10n_ve_portal_control_number_display()"
-                />
+                class="text-danger fw-bold"
+                t-out="i.l10n_ve_portal_control_number_display()"
+            />
             </div>
         </xpath>
     </template>
@@ -37,9 +37,9 @@
             >
                 N° de control:
                 <span
-                    class="text-danger fw-bold"
-                    t-out="picking.l10n_ve_portal_control_number_display()"
-                />
+                class="text-danger fw-bold"
+                t-out="picking.l10n_ve_portal_control_number_display()"
+            />
             </div>
         </xpath>
     </template>

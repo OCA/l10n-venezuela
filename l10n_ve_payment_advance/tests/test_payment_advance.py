@@ -64,9 +64,7 @@ class TestPaymentAdvanceFullLocalization(AccountTestInvoicingCommon):
             "liability_current",
         )
 
-        cls.company.partner_id.with_context(
-            l10n_ve_skip_igtf_account_check=True
-        ).write(
+        cls.company.partner_id.with_context(l10n_ve_skip_igtf_account_check=True).write(
             {
                 "country_id": cls.venezuela.id,
                 "vat": "J770023598",
@@ -87,9 +85,9 @@ class TestPaymentAdvanceFullLocalization(AccountTestInvoicingCommon):
         cls.env["account.tax.group"].search(
             [("company_id", "=", cls.company.id)]
         ).write({"country_id": cls.venezuela.id})
-        cls.env["account.tax"].search(
-            [("company_id", "=", cls.company.id)]
-        ).write({"country_id": cls.venezuela.id})
+        cls.env["account.tax"].search([("company_id", "=", cls.company.id)]).write(
+            {"country_id": cls.venezuela.id}
+        )
         cls.sale_tax = cls.company_data["default_tax_sale"]
         cls.sale_tax.write(
             {
@@ -118,18 +116,22 @@ class TestPaymentAdvanceFullLocalization(AccountTestInvoicingCommon):
         cls.outbound_payment_method = cls.bank_journal.outbound_payment_method_line_ids[
             :1
         ]
-        cls.partner = cls.env["res.partner"].with_company(cls.company).create(
-            {
-                "name": "Advance Integration Customer",
-                "country_id": cls.venezuela.id,
-                "vat": "V12345678",
-                "property_account_receivable_id": cls.company_data[
-                    "default_account_receivable"
-                ].id,
-                "property_account_payable_id": cls.company_data[
-                    "default_account_payable"
-                ].id,
-            }
+        cls.partner = (
+            cls.env["res.partner"]
+            .with_company(cls.company)
+            .create(
+                {
+                    "name": "Advance Integration Customer",
+                    "country_id": cls.venezuela.id,
+                    "vat": "V12345678",
+                    "property_account_receivable_id": cls.company_data[
+                        "default_account_receivable"
+                    ].id,
+                    "property_account_payable_id": cls.company_data[
+                        "default_account_payable"
+                    ].id,
+                }
+            )
         )
         cls.retention_journal = cls.env["account.journal"].create(
             {
@@ -158,9 +160,7 @@ class TestPaymentAdvanceFullLocalization(AccountTestInvoicingCommon):
             cls.supplier_retention_journal.inbound_payment_method_line_ids
             | cls.supplier_retention_journal.outbound_payment_method_line_ids
         ).write({"payment_account_id": cls.retention_payable_account.id})
-        cls.company.iva_supplier_retention_journal_id = (
-            cls.supplier_retention_journal
-        )
+        cls.company.iva_supplier_retention_journal_id = cls.supplier_retention_journal
         withholding_type = cls.env.ref(
             "l10n_ve_withholding.account_withholding_type_75",
             raise_if_not_found=False,
@@ -230,9 +230,7 @@ class TestPaymentAdvanceFullLocalization(AccountTestInvoicingCommon):
             else self.company_data["default_account_expense"]
         )
         journal = (
-            self.sale_journal
-            if move_type == "out_invoice"
-            else self.purchase_journal
+            self.sale_journal if move_type == "out_invoice" else self.purchase_journal
         )
         invoice = self.env["account.move"].create(
             {
@@ -386,9 +384,9 @@ class TestPaymentAdvanceFullLocalization(AccountTestInvoicingCommon):
 
     def test_partner_configuration_overrides_company_configuration(self):
         self._configure_company_advance_accounts()
-        self.partner.with_company(self.company).property_account_customer_advance_id = (
-            self.partner_customer_advance_account
-        )
+        self.partner.with_company(
+            self.company
+        ).property_account_customer_advance_id = self.partner_customer_advance_account
 
         payment = self._create_standalone_payment(100.0)
 

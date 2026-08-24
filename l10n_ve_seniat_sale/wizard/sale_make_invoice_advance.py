@@ -8,7 +8,9 @@ class SaleAdvancePaymentInv(models.TransientModel):
     _inherit = "sale.advance.payment.inv"
 
     def create_invoices(self):
-        ve_orders = self.sale_order_ids.filtered(lambda order: order.country_code == "VE")
+        ve_orders = self.sale_order_ids.filtered(
+            lambda order: order.country_code == "VE"
+        )
         if not ve_orders:
             return super().create_invoices()
         if ve_orders != self.sale_order_ids:

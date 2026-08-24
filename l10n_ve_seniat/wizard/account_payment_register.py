@@ -46,9 +46,7 @@ class AccountPaymentRegister(models.TransientModel):
             return False
         if any(move.currency_id == move.company_currency_id for move in moves):
             return False
-        if any(
-            (move.invoice_date or move.date) != self.payment_date for move in moves
-        ):
+        if any((move.invoice_date or move.date) != self.payment_date for move in moves):
             return False
         open_lines = moves.line_ids.filtered(
             lambda line: line.display_type == "payment_term" and not line.reconciled
@@ -84,9 +82,7 @@ class AccountPaymentRegister(models.TransientModel):
     def _l10n_ve_same_day_company_amount_from_residuals(self, installments):
         self.ensure_one()
         lines = self._l10n_ve_installment_lines(installments)
-        return self.company_currency_id.round(
-            abs(sum(lines.mapped("amount_residual")))
-        )
+        return self.company_currency_id.round(abs(sum(lines.mapped("amount_residual"))))
 
     def _convert_to_wizard_currency(self, installments):
         if self._l10n_ve_is_same_day_full_unpaid_company_payment(installments):

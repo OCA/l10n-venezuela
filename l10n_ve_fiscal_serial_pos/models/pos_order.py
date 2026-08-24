@@ -13,11 +13,17 @@ class PosOrder(models.Model):
         if not move:
             raise UserError(_("La orden POS no tiene una factura contable asociada."))
         if move.country_code != "VE":
-            raise UserError(_("La impresión fiscal POS solo aplica para documentos VE."))
+            raise UserError(
+                _("La impresión fiscal POS solo aplica para documentos VE.")
+            )
         if move.l10n_ve_journal_emission_medium != "fiscal_machine":
-            raise UserError(_("El diario del documento no está configurado como máquina fiscal."))
+            raise UserError(
+                _("El diario del documento no está configurado como máquina fiscal.")
+            )
 
-        fiscal_number = move.l10n_ve_invoice_number or self.l10n_ve_pos_fiscal_invoice_number
+        fiscal_number = (
+            move.l10n_ve_invoice_number or self.l10n_ve_pos_fiscal_invoice_number
+        )
         if fiscal_number:
             if move.l10n_ve_invoice_number:
                 data = move.check_reprint()
@@ -25,12 +31,16 @@ class PosOrder(models.Model):
                 move._l10n_ve_fiscal_serial_validate_print_base()
                 data = {
                     "type": move.move_type,
-                    "reprint_document_type": move._l10n_ve_fiscal_serial_reprint_document_type(),
+                    "reprint_document_type": (
+                        move._l10n_ve_fiscal_serial_reprint_document_type()
+                    ),
                     "mf_number": move._l10n_ve_fiscal_serial_normalize_reprint_number(
                         fiscal_number
                     ),
                     "move_id": move.id,
-                    "fiscal_machine": move._l10n_ve_fiscal_serial_journal_machine_payload(),
+                    "fiscal_machine": (
+                        move._l10n_ve_fiscal_serial_journal_machine_payload()
+                    ),
                 }
             data["l10n_ve_print_action"] = "reprint"
             return data
@@ -43,9 +53,13 @@ class PosOrder(models.Model):
         if not move:
             raise UserError(_("La orden POS no tiene una factura contable asociada."))
         if move.country_code != "VE":
-            raise UserError(_("La impresión fiscal POS solo aplica para documentos VE."))
+            raise UserError(
+                _("La impresión fiscal POS solo aplica para documentos VE.")
+            )
         if move.l10n_ve_journal_emission_medium != "fiscal_machine":
-            raise UserError(_("El diario del documento no está configurado como máquina fiscal."))
+            raise UserError(
+                _("El diario del documento no está configurado como máquina fiscal.")
+            )
         if move.l10n_ve_invoice_number:
             raise UserError(_("El documento ya tiene número fiscal registrado."))
 
@@ -59,13 +73,20 @@ class PosOrder(models.Model):
             return data
 
         raise UserError(
-            _("Tipo de documento %(move_type)s no soportado para impresión fiscal desde POS.")
+            _(
+                "Tipo de documento %(move_type)s no soportado para "
+                "impresión fiscal desde POS."
+            )
             % {"move_type": move.move_type or ""}
         )
 
     def l10n_ve_fiscal_serial_register_print_result(self, values):
         self.ensure_one()
-        data = values.get("data") if isinstance(values, dict) and values.get("data") else values
+        data = (
+            values.get("data")
+            if isinstance(values, dict) and values.get("data")
+            else values
+        )
         if not isinstance(data, dict):
             raise UserError(_("Respuesta fiscal inválida."))
 

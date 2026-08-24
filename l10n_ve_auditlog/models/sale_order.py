@@ -9,8 +9,10 @@ class SaleOrder(models.Model):
     def _create_invoices(self, grouped=False, final=False, date=None):
         moves = super()._create_invoices(grouped=grouped, final=final, date=date)
         for order in self.filtered(lambda record: record.country_code == "VE"):
+            order_name = order.name
             order_moves = moves.filtered(
-                lambda move: move.invoice_origin == order.name and move.state == "draft"
+                lambda move, origin=order_name: move.invoice_origin == origin
+                and move.state == "draft"
             )
             for move in order_moves:
                 move._l10n_ve_audit_log_fiscal_event(

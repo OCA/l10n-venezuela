@@ -28,62 +28,98 @@
                 <field name="expression_label">cost</field>
                 <field name="figure_type">monetary</field>
             </record>
-            <record id="inventory_book_report_inv_initial_qty" model="account.report.column">
+            <record
+                id="inventory_book_report_inv_initial_qty"
+                model="account.report.column"
+            >
                 <field name="name">Inv. Inicial (Ud)</field>
                 <field name="expression_label">inv_initial_qty</field>
                 <field name="figure_type">float</field>
             </record>
-            <record id="inventory_book_report_inv_initial_val" model="account.report.column">
+            <record
+                id="inventory_book_report_inv_initial_val"
+                model="account.report.column"
+            >
                 <field name="name">Inv. Inicial (Valor)</field>
                 <field name="expression_label">inv_initial_val</field>
                 <field name="figure_type">monetary</field>
             </record>
-            <record id="inventory_book_report_entradas_qty" model="account.report.column">
+            <record
+                id="inventory_book_report_entradas_qty"
+                model="account.report.column"
+            >
                 <field name="name">Entradas (Ud)</field>
                 <field name="expression_label">entradas_qty</field>
                 <field name="figure_type">float</field>
             </record>
-            <record id="inventory_book_report_entradas_val" model="account.report.column">
+            <record
+                id="inventory_book_report_entradas_val"
+                model="account.report.column"
+            >
                 <field name="name">Entradas (Valor)</field>
                 <field name="expression_label">entradas_val</field>
                 <field name="figure_type">monetary</field>
             </record>
-            <record id="inventory_book_report_salidas_qty" model="account.report.column">
+            <record
+                id="inventory_book_report_salidas_qty"
+                model="account.report.column"
+            >
                 <field name="name">Salidas (Ud)</field>
                 <field name="expression_label">salidas_qty</field>
                 <field name="figure_type">float</field>
             </record>
-            <record id="inventory_book_report_salidas_val" model="account.report.column">
+            <record
+                id="inventory_book_report_salidas_val"
+                model="account.report.column"
+            >
                 <field name="name">Salidas (Valor)</field>
                 <field name="expression_label">salidas_val</field>
                 <field name="figure_type">monetary</field>
             </record>
-            <record id="inventory_book_report_retiros_qty" model="account.report.column">
+            <record
+                id="inventory_book_report_retiros_qty"
+                model="account.report.column"
+            >
                 <field name="name">Retiros (Ud)</field>
                 <field name="expression_label">retiros_qty</field>
                 <field name="figure_type">float</field>
             </record>
-            <record id="inventory_book_report_retiros_val" model="account.report.column">
+            <record
+                id="inventory_book_report_retiros_val"
+                model="account.report.column"
+            >
                 <field name="name">Retiros (Valor)</field>
                 <field name="expression_label">retiros_val</field>
                 <field name="figure_type">monetary</field>
             </record>
-            <record id="inventory_book_report_autoconsumos_qty" model="account.report.column">
+            <record
+                id="inventory_book_report_autoconsumos_qty"
+                model="account.report.column"
+            >
                 <field name="name">Autoconsumos (Ud)</field>
                 <field name="expression_label">autoconsumos_qty</field>
                 <field name="figure_type">float</field>
             </record>
-            <record id="inventory_book_report_autoconsumos_val" model="account.report.column">
+            <record
+                id="inventory_book_report_autoconsumos_val"
+                model="account.report.column"
+            >
                 <field name="name">Autoconsumos (Valor)</field>
                 <field name="expression_label">autoconsumos_val</field>
                 <field name="figure_type">monetary</field>
             </record>
-            <record id="inventory_book_report_inv_final_qty" model="account.report.column">
+            <record
+                id="inventory_book_report_inv_final_qty"
+                model="account.report.column"
+            >
                 <field name="name">Inv. Final (Ud)</field>
                 <field name="expression_label">inv_final_qty</field>
                 <field name="figure_type">float</field>
             </record>
-            <record id="inventory_book_report_inv_final_val" model="account.report.column">
+            <record
+                id="inventory_book_report_inv_final_val"
+                model="account.report.column"
+            >
                 <field name="name">Inv. Final (Valor)</field>
                 <field name="expression_label">inv_final_val</field>
                 <field name="figure_type">monetary</field>

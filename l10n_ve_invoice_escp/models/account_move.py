@@ -41,9 +41,14 @@ class AccountMove(models.Model):
             raise UserError(_("Solo documentos confirmados pueden imprimirse por USB."))
         if not self._l10n_ve_escp_is_continuous_eligible():
             raise UserError(
-                _("Este documento no está en un diario con forma libre y papel continuo.")
+                _(
+                    "Este documento no está en un diario con forma "
+                    "libre y papel continuo."
+                )
             )
-        self.env["ir.actions.report"]._l10n_ve_check_block_invoice_pdf_before_digital_sent(
+        self.env[
+            "ir.actions.report"
+        ]._l10n_ve_check_block_invoice_pdf_before_digital_sent(
             "account.report_invoice_with_payments",
             self.ids,
             {},
@@ -58,7 +63,9 @@ class AccountMove(models.Model):
             raise UserError(_("Solo documentos confirmados."))
         if not self._l10n_ve_escp_is_continuous_eligible():
             raise UserError(_("Operación no aplicable a este documento."))
-        self.env["ir.actions.report"]._l10n_ve_check_block_invoice_pdf_before_digital_sent(
+        self.env[
+            "ir.actions.report"
+        ]._l10n_ve_check_block_invoice_pdf_before_digital_sent(
             "account.report_invoice_with_payments",
             self.ids,
             {},

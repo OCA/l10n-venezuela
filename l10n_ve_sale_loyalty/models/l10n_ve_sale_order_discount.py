@@ -2,9 +2,11 @@
 
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError, ValidationError
-from odoo.tools import float_compare, float_is_zero
+from odoo.tools import float_compare
 
-from odoo.addons.l10n_ve_loyalty.models import l10n_ve_global_discount as l10n_ve_discount_logic
+from odoo.addons.l10n_ve_loyalty.models import (
+    l10n_ve_global_discount as l10n_ve_discount_logic,
+)
 
 
 class L10nVeSaleOrderDiscount(models.Model):
@@ -29,7 +31,6 @@ class L10nVeSaleOrderDiscount(models.Model):
     )
     name = fields.Char(related="reason_id.name", store=True, readonly=True)
     amount = fields.Monetary(
-        string="Amount",
         required=True,
         currency_field="currency_id",
     )
@@ -71,19 +72,32 @@ class L10nVeSaleOrderDiscount(models.Model):
     @api.constrains("amount")
     def _check_amount_positive(self):
         for discount in self:
-            if float_compare(
-                discount.amount, 0.0, precision_digits=discount.currency_id.decimal_places
-            ) <= 0:
-                raise ValidationError(_("El monto del descuento debe ser mayor que cero."))
+            if (
+                float_compare(
+                    discount.amount,
+                    0.0,
+                    precision_digits=discount.currency_id.decimal_places,
+                )
+                <= 0
+            ):
+                raise ValidationError(
+                    _("El monto del descuento debe ser mayor que cero.")
+                )
 
     @api.constrains("discount_type", "sale_order_id")
     def _check_single_percentage_discount(self):
-        for discount in self.filtered(lambda record: record.discount_type == "percentage"):
+        for discount in self.filtered(
+            lambda record: record.discount_type == "percentage"
+        ):
             others = discount.sale_order_id.l10n_ve_global_discount_ids.filtered(
-                lambda record: record.discount_type == "percentage" and record.id != discount.id
+                lambda record, current=discount: (
+                    record.discount_type == "percentage" and record.id != current.id
+                )
             )
             if others:
-                raise ValidationError(_("Solo puede existir un descuento global por porcentaje."))
+                raise ValidationError(
+                    _("Solo puede existir un descuento global por porcentaje.")
+                )
 
     @api.model_create_multi
     def create(self, vals_list):
@@ -96,7 +110,9 @@ class L10nVeSaleOrderDiscount(models.Model):
             l10n_ve_discount_logic.l10n_ve_refresh_percentage_global_discount_amounts(
                 records.sale_order_id
             )
-            l10n_ve_discount_logic.l10n_ve_validate_global_discount_total(records.sale_order_id)
+            l10n_ve_discount_logic.l10n_ve_validate_global_discount_total(
+                records.sale_order_id
+            )
         return records
 
     def write(self, vals):
@@ -111,7 +127,9 @@ class L10nVeSaleOrderDiscount(models.Model):
             l10n_ve_discount_logic.l10n_ve_refresh_percentage_global_discount_amounts(
                 self.sale_order_id
             )
-            l10n_ve_discount_logic.l10n_ve_validate_global_discount_total(self.sale_order_id)
+            l10n_ve_discount_logic.l10n_ve_validate_global_discount_total(
+                self.sale_order_id
+            )
         return res
 
     def unlink(self):
@@ -130,11 +148,15 @@ class L10nVeSaleOrderDiscount(models.Model):
                     _("Los descuentos globales venezolanos solo aplican a pedidos VE.")
                 )
             if order.state == "cancel":
-                raise UserError(_("No puede modificar descuentos en pedidos cancelados."))
+                raise UserError(
+                    _("No puede modificar descuentos en pedidos cancelados.")
+                )
             if order.state == "sale" and discount.amount_invoiced:
                 raise UserError(
                     _(
-                        "No puede modificar un descuento global parcialmente facturado. "
-                        "Ajuste las facturas en borrador o cree un nuevo descuento."
+                        "No puede modificar un descuento global "
+                        "parcialmente facturado. "
+                        "Ajuste las facturas en borrador o cree un nuevo "
+                        "descuento."
                     )
                 )

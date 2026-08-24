@@ -83,8 +83,8 @@ class AccountDebitNote(models.TransientModel):
                 if rec.company_id.account_fiscal_country_id.code == "VE":
                     raise UserError(
                         _(
-                            "No puede modificar el diario ni la fecha de la nota de débito "
-                            "para empresas con fiscalidad venezolana."
+                            "No puede modificar el diario ni la fecha de la nota "
+                            "de débito para empresas con fiscalidad venezolana."
                         )
                     )
         return super().write(vals)

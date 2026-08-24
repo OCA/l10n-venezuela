@@ -28,12 +28,38 @@ Product Currency
 
 |badge1| |badge2| |badge3| |badge4| |badge5|
 
-Multimoneda para productos
+Allows selecting a currency on product templates for sales and cost
+amounts. When no product currency is selected, Odoo uses the product
+company currency.
 
 **Table of contents**
 
 .. contents::
    :local:
+
+Use Cases / Context
+===================
+
+In Venezuelan deployments, product prices are commonly managed in a
+currency different from the company currency. This module lets users
+define that currency per product while keeping the company currency as
+the fallback.
+
+Usage
+=====
+
+To configure the default product currency:
+
+1. Go to Settings > Product.
+2. In Default product currency, select the currency to use on new
+   products.
+3. Leave the field empty to use the company currency.
+
+To set a currency on a product:
+
+1. Go to Products and open a product.
+2. In Product Currency, select the currency to use for that product.
+3. Leave Product Currency empty to use the product company currency.
 
 Bug Tracker
 ===========
@@ -52,6 +78,11 @@ Authors
 -------
 
 * Andyengit
+
+Contributors
+------------
+
+- andyengit
 
 Maintainers
 -----------

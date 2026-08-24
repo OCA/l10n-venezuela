@@ -150,7 +150,7 @@ $$ LANGUAGE plpgsql;
 
 def _validate_table_name(table_name):
     if not table_name or not TABLE_NAME_RE.match(table_name):
-        raise ValueError("Invalid PostgreSQL table name: %s" % table_name)
+        raise ValueError(f"Invalid PostgreSQL table name: {table_name}")
 
 
 def _table_exists(cr, table_name):
@@ -177,7 +177,7 @@ def _install_trigger_on_table(cr, table_name):
             "Skipping DB audit trigger: table %s does not exist", table_name
         )
         return False
-    trigger_name = "l10n_ve_db_audit_%s" % table_name
+    trigger_name = f"l10n_ve_db_audit_{table_name}"
     cr.execute(
         sql.SQL(
             """
@@ -201,7 +201,7 @@ def _drop_trigger_on_table(cr, table_name):
     _validate_table_name(table_name)
     if not _table_exists(cr, table_name):
         return
-    trigger_name = "l10n_ve_db_audit_%s" % table_name
+    trigger_name = f"l10n_ve_db_audit_{table_name}"
     cr.execute(
         sql.SQL("DROP TRIGGER IF EXISTS {trigger} ON {table}").format(
             trigger=sql.Identifier(trigger_name),
@@ -214,9 +214,11 @@ def install_db_audit_triggers(env, table_names=None):
     cr = env.cr
     cr.execute(AUDIT_TRIGGER_FUNCTION_SQL)
     if table_names is None:
-        table_names = env["l10n.ve.db.audit.table"].search(
-            [("active", "=", True)]
-        ).mapped("table_name")
+        table_names = (
+            env["l10n.ve.db.audit.table"]
+            .search([("active", "=", True)])
+            .mapped("table_name")
+        )
     installed = []
     for table_name in table_names:
         if _install_trigger_on_table(cr, table_name):
@@ -238,9 +240,7 @@ def uninstall_db_audit_triggers(env):
             function=sql.Identifier(TRIGGER_FUNCTION)
         )
     )
-    env["l10n.ve.db.audit.table"].sudo().search([]).write(
-        {"trigger_installed": False}
-    )
+    env["l10n.ve.db.audit.table"].sudo().search([]).write({"trigger_installed": False})
 
 
 DB_AUDIT_TABLE_XMLIDS = {

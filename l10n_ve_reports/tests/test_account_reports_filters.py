@@ -15,14 +15,14 @@ from .common import TestAccountReportsCommon
 @tagged("post_install", "-at_install")
 class TestAccountReportsFilters(TestAccountReportsCommon, odoo.tests.HttpCase):
     def _assert_filter_date(self, report, previous_options, expected_date_values):
-        """Initializes and checks the 'date' option computed for the provided report and previous_options"""
+        """Initializes and checks the 'date' option computed for the provided report and previous_options"""  # noqa: E501
         options = report.get_options(previous_options)
         self.assertDictEqual(options["date"], expected_date_values)
 
     def _assert_filter_comparison(
         self, report, previous_options, expected_period_values
     ):
-        """Initializes and checks the 'comparison' option computed for the provided report and previous_options"""
+        """Initializes and checks the 'comparison' option computed for the provided report and previous_options"""  # noqa: E501
         options = report.get_options(previous_options)
 
         self.assertEqual(
@@ -299,7 +299,7 @@ class TestAccountReportsFilters(TestAccountReportsCommon, odoo.tests.HttpCase):
 
     @freeze_time("2017-12-31")
     def test_filter_date_fiscalyear_range_full_year(self):
-        """Test the filter_date with 'this_year'/'last_year' in 'range' mode when the fiscal year ends the 12-31."""
+        """Test the filter_date with 'this_year'/'last_year' in 'range' mode when the fiscal year ends the 12-31."""  # noqa: E501
         self._assert_filter_date(
             self.date_range_report,
             {"date": {"filter": "this_year", "mode": "range"}},
@@ -420,7 +420,7 @@ class TestAccountReportsFilters(TestAccountReportsCommon, odoo.tests.HttpCase):
 
     @freeze_time("2017-12-31")
     def test_filter_date_fiscalyear_range_overlap_years(self):
-        """Test the filter_date with 'this_year'/'last_year' in 'range' mode when the fiscal year overlaps 2 years."""
+        """Test the filter_date with 'this_year'/'last_year' in 'range' mode when the fiscal year overlaps 2 years."""  # noqa: E501
         self.env.company.fiscalyear_last_day = 30
         self.env.company.fiscalyear_last_month = "6"
 
@@ -544,7 +544,7 @@ class TestAccountReportsFilters(TestAccountReportsCommon, odoo.tests.HttpCase):
 
     @freeze_time("2017-12-31")
     def test_filter_date_fiscalyear_range_custom_years(self):
-        """Test the filter_date with 'this_year'/'last_year' in 'range' mode with custom account.fiscal.year records."""
+        """Test the filter_date with 'this_year'/'last_year' in 'range' mode with custom account.fiscal.year records."""  # noqa: E501
         # Create a custom fiscal year for the nine previous quarters.
         today = fields.Date.from_string("2017-12-31")
         for i in range(9):
@@ -553,7 +553,7 @@ class TestAccountReportsFilters(TestAccountReportsCommon, odoo.tests.HttpCase):
             )
             self.env["account.fiscal.year"].create(
                 {
-                    "name": "custom %s" % i,
+                    "name": f"custom {i}",
                     "date_from": fields.Date.to_string(quarter_df),
                     "date_to": fields.Date.to_string(quarter_dt),
                     "company_id": self.env.company.id,
@@ -702,8 +702,7 @@ class TestAccountReportsFilters(TestAccountReportsCommon, odoo.tests.HttpCase):
                 }
             },
             {
-                "string": "From %s\nto  %s"
-                % (
+                "string": "From {}\nto  {}".format(
                     format_date(self.env, "2017-01-01"),
                     format_date(self.env, "2017-01-15"),
                 ),
@@ -760,8 +759,7 @@ class TestAccountReportsFilters(TestAccountReportsCommon, odoo.tests.HttpCase):
             },
             [
                 {
-                    "string": "From %s\nto  %s"
-                    % (
+                    "string": "From {}\nto  {}".format(
                         format_date(self.env, "2016-01-01"),
                         format_date(self.env, "2016-01-15"),
                     ),
@@ -772,8 +770,7 @@ class TestAccountReportsFilters(TestAccountReportsCommon, odoo.tests.HttpCase):
                     "currency_table_period_key": "2016-01-01_2016-01-15",
                 },
                 {
-                    "string": "From %s\nto  %s"
-                    % (
+                    "string": "From {}\nto  {}".format(
                         format_date(self.env, "2015-01-01"),
                         format_date(self.env, "2015-01-15"),
                     ),
@@ -789,7 +786,8 @@ class TestAccountReportsFilters(TestAccountReportsCommon, odoo.tests.HttpCase):
     @freeze_time("2017-12-31")
     def test_filter_date_custom_range_recognition(self):
         """Test the period is well recognized when dealing with custom dates range.
-        It means date_from = '2018-01-01', date_to = '2018-12-31' must be considered as a full year.
+        It means date_from = '2018-01-01', date_to = '2018-12-31' must be considered as
+        a full year.
         """
         self._assert_filter_date(
             self.date_range_report,
@@ -917,7 +915,7 @@ class TestAccountReportsFilters(TestAccountReportsCommon, odoo.tests.HttpCase):
             self.single_date_report,
             {"date": {"filter": "today", "mode": "single"}},
             {
-                "string": "As of %s" % format_date(self.env, "2017-12-30"),
+                "string": "As of {}".format(format_date(self.env, "2017-12-30")),
                 "period_type": "today",
                 "mode": "single",
                 "filter": "today",
@@ -935,7 +933,7 @@ class TestAccountReportsFilters(TestAccountReportsCommon, odoo.tests.HttpCase):
             },
             [
                 {
-                    "string": "As of %s" % format_date(self.env, "2016-12-31"),
+                    "string": "As of {}".format(format_date(self.env, "2016-12-31")),
                     "period_type": "fiscalyear",
                     "mode": "single",
                     "date_from": "2016-01-01",
@@ -943,7 +941,7 @@ class TestAccountReportsFilters(TestAccountReportsCommon, odoo.tests.HttpCase):
                     "currency_table_period_key": "None_2016-12-31",
                 },
                 {
-                    "string": "As of %s" % format_date(self.env, "2015-12-31"),
+                    "string": "As of {}".format(format_date(self.env, "2015-12-31")),
                     "period_type": "fiscalyear",
                     "mode": "single",
                     "date_from": "2015-01-01",
@@ -961,7 +959,7 @@ class TestAccountReportsFilters(TestAccountReportsCommon, odoo.tests.HttpCase):
             },
             [
                 {
-                    "string": "As of %s" % format_date(self.env, "2016-12-30"),
+                    "string": "As of {}".format(format_date(self.env, "2016-12-30")),
                     "period_type": "today",
                     "mode": "single",
                     "date_from": "2016-01-01",
@@ -969,7 +967,7 @@ class TestAccountReportsFilters(TestAccountReportsCommon, odoo.tests.HttpCase):
                     "currency_table_period_key": "None_2016-12-30",
                 },
                 {
-                    "string": "As of %s" % format_date(self.env, "2015-12-30"),
+                    "string": "As of {}".format(format_date(self.env, "2015-12-30")),
                     "period_type": "today",
                     "mode": "single",
                     "date_from": "2015-01-01",
@@ -987,7 +985,7 @@ class TestAccountReportsFilters(TestAccountReportsCommon, odoo.tests.HttpCase):
             },
             [
                 {
-                    "string": "As of %s" % format_date(self.env, "2016-12-31"),
+                    "string": "As of {}".format(format_date(self.env, "2016-12-31")),
                     "period_type": "custom",
                     "mode": "single",
                     "date_from": False,
@@ -1004,7 +1002,7 @@ class TestAccountReportsFilters(TestAccountReportsCommon, odoo.tests.HttpCase):
             self.single_date_report,
             {"date": {"filter": "this_month", "mode": "single"}},
             {
-                "string": "As of %s" % format_date(self.env, "2017-12-31"),
+                "string": "As of {}".format(format_date(self.env, "2017-12-31")),
                 "period_type": "month",
                 "mode": "single",
                 "filter": "this_month",
@@ -1022,7 +1020,7 @@ class TestAccountReportsFilters(TestAccountReportsCommon, odoo.tests.HttpCase):
             },
             [
                 {
-                    "string": "As of %s" % format_date(self.env, "2017-11-30"),
+                    "string": "As of {}".format(format_date(self.env, "2017-11-30")),
                     "period_type": "month",
                     "mode": "single",
                     "date_from": "2017-11-01",
@@ -1030,7 +1028,7 @@ class TestAccountReportsFilters(TestAccountReportsCommon, odoo.tests.HttpCase):
                     "currency_table_period_key": "None_2017-11-30",
                 },
                 {
-                    "string": "As of %s" % format_date(self.env, "2017-10-31"),
+                    "string": "As of {}".format(format_date(self.env, "2017-10-31")),
                     "period_type": "month",
                     "mode": "single",
                     "date_from": "2017-10-01",
@@ -1048,7 +1046,7 @@ class TestAccountReportsFilters(TestAccountReportsCommon, odoo.tests.HttpCase):
             },
             [
                 {
-                    "string": "As of %s" % format_date(self.env, "2016-12-31"),
+                    "string": "As of {}".format(format_date(self.env, "2016-12-31")),
                     "period_type": "month",
                     "mode": "single",
                     "date_from": "2016-12-01",
@@ -1056,7 +1054,7 @@ class TestAccountReportsFilters(TestAccountReportsCommon, odoo.tests.HttpCase):
                     "currency_table_period_key": "None_2016-12-31",
                 },
                 {
-                    "string": "As of %s" % format_date(self.env, "2015-12-31"),
+                    "string": "As of {}".format(format_date(self.env, "2015-12-31")),
                     "period_type": "month",
                     "mode": "single",
                     "date_from": "2015-12-01",
@@ -1073,7 +1071,7 @@ class TestAccountReportsFilters(TestAccountReportsCommon, odoo.tests.HttpCase):
             self.single_date_report,
             {"date": {"filter": "this_quarter", "mode": "single"}},
             {
-                "string": "As of %s" % format_date(self.env, "2017-12-31"),
+                "string": "As of {}".format(format_date(self.env, "2017-12-31")),
                 "period_type": "quarter",
                 "mode": "single",
                 "filter": "this_quarter",
@@ -1091,7 +1089,7 @@ class TestAccountReportsFilters(TestAccountReportsCommon, odoo.tests.HttpCase):
             },
             [
                 {
-                    "string": "As of %s" % format_date(self.env, "2017-09-30"),
+                    "string": "As of {}".format(format_date(self.env, "2017-09-30")),
                     "period_type": "quarter",
                     "mode": "single",
                     "date_from": "2017-07-01",
@@ -1099,7 +1097,7 @@ class TestAccountReportsFilters(TestAccountReportsCommon, odoo.tests.HttpCase):
                     "currency_table_period_key": "None_2017-09-30",
                 },
                 {
-                    "string": "As of %s" % format_date(self.env, "2017-06-30"),
+                    "string": "As of {}".format(format_date(self.env, "2017-06-30")),
                     "period_type": "quarter",
                     "mode": "single",
                     "date_from": "2017-04-01",
@@ -1117,7 +1115,7 @@ class TestAccountReportsFilters(TestAccountReportsCommon, odoo.tests.HttpCase):
             },
             [
                 {
-                    "string": "As of %s" % format_date(self.env, "2016-12-31"),
+                    "string": "As of {}".format(format_date(self.env, "2016-12-31")),
                     "period_type": "quarter",
                     "mode": "single",
                     "date_from": "2016-10-01",
@@ -1125,7 +1123,7 @@ class TestAccountReportsFilters(TestAccountReportsCommon, odoo.tests.HttpCase):
                     "currency_table_period_key": "None_2016-12-31",
                 },
                 {
-                    "string": "As of %s" % format_date(self.env, "2015-12-31"),
+                    "string": "As of {}".format(format_date(self.env, "2015-12-31")),
                     "period_type": "quarter",
                     "mode": "single",
                     "date_from": "2015-10-01",
@@ -1137,12 +1135,12 @@ class TestAccountReportsFilters(TestAccountReportsCommon, odoo.tests.HttpCase):
 
     @freeze_time("2017-12-31")
     def test_filter_date_fiscalyear_single_full_year(self):
-        """Test the filter_date with 'this_year'/'last_year' in 'single' mode when the fiscal year ends the 12-31."""
+        """Test the filter_date with 'this_year'/'last_year' in 'single' mode when the fiscal year ends the 12-31."""  # noqa: E501
         self._assert_filter_date(
             self.single_date_report,
             {"date": {"filter": "this_year", "mode": "single"}},
             {
-                "string": "As of %s" % format_date(self.env, "2017-12-31"),
+                "string": "As of {}".format(format_date(self.env, "2017-12-31")),
                 "period_type": "fiscalyear",
                 "mode": "single",
                 "filter": "this_year",
@@ -1160,7 +1158,7 @@ class TestAccountReportsFilters(TestAccountReportsCommon, odoo.tests.HttpCase):
             },
             [
                 {
-                    "string": "As of %s" % format_date(self.env, "2016-12-31"),
+                    "string": "As of {}".format(format_date(self.env, "2016-12-31")),
                     "period_type": "fiscalyear",
                     "mode": "single",
                     "date_from": "2016-01-01",
@@ -1168,7 +1166,7 @@ class TestAccountReportsFilters(TestAccountReportsCommon, odoo.tests.HttpCase):
                     "currency_table_period_key": "None_2016-12-31",
                 },
                 {
-                    "string": "As of %s" % format_date(self.env, "2015-12-31"),
+                    "string": "As of {}".format(format_date(self.env, "2015-12-31")),
                     "period_type": "fiscalyear",
                     "mode": "single",
                     "date_from": "2015-01-01",
@@ -1186,7 +1184,7 @@ class TestAccountReportsFilters(TestAccountReportsCommon, odoo.tests.HttpCase):
             },
             [
                 {
-                    "string": "As of %s" % format_date(self.env, "2016-12-31"),
+                    "string": "As of {}".format(format_date(self.env, "2016-12-31")),
                     "period_type": "fiscalyear",
                     "mode": "single",
                     "date_from": "2016-01-01",
@@ -1194,7 +1192,7 @@ class TestAccountReportsFilters(TestAccountReportsCommon, odoo.tests.HttpCase):
                     "currency_table_period_key": "None_2016-12-31",
                 },
                 {
-                    "string": "As of %s" % format_date(self.env, "2015-12-31"),
+                    "string": "As of {}".format(format_date(self.env, "2015-12-31")),
                     "period_type": "fiscalyear",
                     "mode": "single",
                     "date_from": "2015-01-01",
@@ -1206,7 +1204,7 @@ class TestAccountReportsFilters(TestAccountReportsCommon, odoo.tests.HttpCase):
 
     @freeze_time("2017-12-31")
     def test_filter_date_fiscalyear_single_overlap_years(self):
-        """Test the filter_date with 'this_year'/'last_year' in 'single' mode when the fiscal year overlaps 2 years."""
+        """Test the filter_date with 'this_year'/'last_year' in 'single' mode when the fiscal year overlaps 2 years."""  # noqa: E501
         self.env.company.fiscalyear_last_day = 30
         self.env.company.fiscalyear_last_month = "6"
 
@@ -1214,7 +1212,7 @@ class TestAccountReportsFilters(TestAccountReportsCommon, odoo.tests.HttpCase):
             self.single_date_report,
             {"date": {"filter": "this_year", "mode": "single"}},
             {
-                "string": "As of %s" % format_date(self.env, "2018-06-30"),
+                "string": "As of {}".format(format_date(self.env, "2018-06-30")),
                 "period_type": "fiscalyear",
                 "mode": "single",
                 "filter": "this_year",
@@ -1232,7 +1230,7 @@ class TestAccountReportsFilters(TestAccountReportsCommon, odoo.tests.HttpCase):
             },
             [
                 {
-                    "string": "As of %s" % format_date(self.env, "2017-06-30"),
+                    "string": "As of {}".format(format_date(self.env, "2017-06-30")),
                     "period_type": "fiscalyear",
                     "mode": "single",
                     "date_from": "2016-07-01",
@@ -1240,7 +1238,7 @@ class TestAccountReportsFilters(TestAccountReportsCommon, odoo.tests.HttpCase):
                     "currency_table_period_key": "None_2017-06-30",
                 },
                 {
-                    "string": "As of %s" % format_date(self.env, "2016-06-30"),
+                    "string": "As of {}".format(format_date(self.env, "2016-06-30")),
                     "period_type": "fiscalyear",
                     "mode": "single",
                     "date_from": "2015-07-01",
@@ -1258,7 +1256,7 @@ class TestAccountReportsFilters(TestAccountReportsCommon, odoo.tests.HttpCase):
             },
             [
                 {
-                    "string": "As of %s" % format_date(self.env, "2017-06-30"),
+                    "string": "As of {}".format(format_date(self.env, "2017-06-30")),
                     "period_type": "fiscalyear",
                     "mode": "single",
                     "date_from": "2016-07-01",
@@ -1266,7 +1264,7 @@ class TestAccountReportsFilters(TestAccountReportsCommon, odoo.tests.HttpCase):
                     "currency_table_period_key": "None_2017-06-30",
                 },
                 {
-                    "string": "As of %s" % format_date(self.env, "2016-06-30"),
+                    "string": "As of {}".format(format_date(self.env, "2016-06-30")),
                     "period_type": "fiscalyear",
                     "mode": "single",
                     "date_from": "2015-07-01",
@@ -1278,7 +1276,7 @@ class TestAccountReportsFilters(TestAccountReportsCommon, odoo.tests.HttpCase):
 
     @freeze_time("2017-12-31")
     def test_filter_date_fiscalyear_single_custom_years(self):
-        """Test the filter_date with 'this_year'/'last_year' in 'single' mode with custom account.fiscal.year records."""
+        """Test the filter_date with 'this_year'/'last_year' in 'single' mode with custom account.fiscal.year records."""  # noqa: E501
         # Create a custom fiscal year for the nine previous quarters.
         today = fields.Date.from_string("2017-12-31")
         for i in range(9):
@@ -1287,7 +1285,7 @@ class TestAccountReportsFilters(TestAccountReportsCommon, odoo.tests.HttpCase):
             )
             self.env["account.fiscal.year"].create(
                 {
-                    "name": "custom %s" % i,
+                    "name": f"custom {i}",
                     "date_from": fields.Date.to_string(quarter_df),
                     "date_to": fields.Date.to_string(quarter_dt),
                     "company_id": self.env.company.id,
@@ -1367,7 +1365,7 @@ class TestAccountReportsFilters(TestAccountReportsCommon, odoo.tests.HttpCase):
             self.single_date_report,
             {"date": {"filter": "custom", "mode": "single", "date_to": "2018-01-15"}},
             {
-                "string": "As of %s" % format_date(self.env, "2018-01-15"),
+                "string": "As of {}".format(format_date(self.env, "2018-01-15")),
                 "period_type": "custom",
                 "mode": "single",
                 "filter": "custom",
@@ -1385,7 +1383,7 @@ class TestAccountReportsFilters(TestAccountReportsCommon, odoo.tests.HttpCase):
             },
             [
                 {
-                    "string": "As of %s" % format_date(self.env, "2017-12-31"),
+                    "string": "As of {}".format(format_date(self.env, "2017-12-31")),
                     "period_type": "month",
                     "mode": "single",
                     "date_from": "2017-12-01",
@@ -1393,7 +1391,7 @@ class TestAccountReportsFilters(TestAccountReportsCommon, odoo.tests.HttpCase):
                     "currency_table_period_key": "None_2017-12-31",
                 },
                 {
-                    "string": "As of %s" % format_date(self.env, "2017-11-30"),
+                    "string": "As of {}".format(format_date(self.env, "2017-11-30")),
                     "period_type": "month",
                     "mode": "single",
                     "date_from": "2017-11-01",
@@ -1411,7 +1409,7 @@ class TestAccountReportsFilters(TestAccountReportsCommon, odoo.tests.HttpCase):
             },
             [
                 {
-                    "string": "As of %s" % format_date(self.env, "2017-01-15"),
+                    "string": "As of {}".format(format_date(self.env, "2017-01-15")),
                     "period_type": "custom",
                     "mode": "single",
                     "date_from": "2017-01-01",
@@ -1419,7 +1417,7 @@ class TestAccountReportsFilters(TestAccountReportsCommon, odoo.tests.HttpCase):
                     "currency_table_period_key": "None_2017-01-15",
                 },
                 {
-                    "string": "As of %s" % format_date(self.env, "2016-01-15"),
+                    "string": "As of {}".format(format_date(self.env, "2016-01-15")),
                     "period_type": "custom",
                     "mode": "single",
                     "date_from": "2016-01-01",
@@ -1445,7 +1443,7 @@ class TestAccountReportsFilters(TestAccountReportsCommon, odoo.tests.HttpCase):
                 }
             },
             {
-                "string": "As of %s" % format_date(self.env, "2019-07-18"),
+                "string": "As of {}".format(format_date(self.env, "2019-07-18")),
                 "period_type": "custom",
                 "mode": "single",
                 "filter": "custom",
@@ -1463,7 +1461,7 @@ class TestAccountReportsFilters(TestAccountReportsCommon, odoo.tests.HttpCase):
             },
             [
                 {
-                    "string": "As of %s" % format_date(self.env, "2019-06-30"),
+                    "string": "As of {}".format(format_date(self.env, "2019-06-30")),
                     "period_type": "month",
                     "mode": "single",
                     "date_from": "2019-06-01",
@@ -1471,7 +1469,7 @@ class TestAccountReportsFilters(TestAccountReportsCommon, odoo.tests.HttpCase):
                     "currency_table_period_key": "None_2019-06-30",
                 },
                 {
-                    "string": "As of %s" % format_date(self.env, "2019-05-31"),
+                    "string": "As of {}".format(format_date(self.env, "2019-05-31")),
                     "period_type": "month",
                     "mode": "single",
                     "date_from": "2019-05-01",
@@ -1520,7 +1518,7 @@ class TestAccountReportsFilters(TestAccountReportsCommon, odoo.tests.HttpCase):
                                     {
                                         "label": "balance",
                                         "engine": "domain",
-                                        "formula": '[("account_id.account_type", "=", "income")]',
+                                        "formula": '[("account_id.account_type", "=", "income")]',  # noqa: E501
                                         "subformula": "-sum",
                                     }
                                 ),
@@ -1546,7 +1544,8 @@ class TestAccountReportsFilters(TestAccountReportsCommon, odoo.tests.HttpCase):
                 opt["selected"] = True
                 break
 
-        # Ensure that only the move with the 'checked' at false attribute is included in the report
+        # Ensure that only the move with the 'checked' at false attribute is included in
+        # the report
         self.assertLinesValues(
             report._get_lines(options),
             #      Name   Balance
@@ -1563,8 +1562,8 @@ class TestAccountReportsFilters(TestAccountReportsCommon, odoo.tests.HttpCase):
                 {
                     "move_type": "out_invoice",
                     "partner_id": self.partner_a.id,
-                    "date": "2020-0%s-15" % i,
-                    "invoice_date": "2020-0%s-15" % i,
+                    "date": f"2020-0{i}-15",
+                    "invoice_date": f"2020-0{i}-15",
                     "invoice_line_ids": [
                         (
                             0,
@@ -1678,7 +1677,8 @@ class TestAccountReportsFilters(TestAccountReportsCommon, odoo.tests.HttpCase):
         )
         other_company = self.env["res.company"].create({"name": "Other company"})
 
-        # Test 'disabled' filter, as well as 'tax_units' when no tax unit is defined and VAT is shared (they should behave in the same way)
+        # Test 'disabled' filter, as well as 'tax_units' when no tax unit is defined and
+        # VAT is shared (they should behave in the same way)
         for company_filter in ("disabled", "tax_units"):
             self.single_date_report.filter_multi_company = company_filter
 
@@ -1707,12 +1707,12 @@ class TestAccountReportsFilters(TestAccountReportsCommon, odoo.tests.HttpCase):
                 + branch_2_1
                 + other_company,
                 branch_1 + branch_1_1 + branch_1_2,
-                "When the active company is a branch of another active company, it should only be selected with its sub-branches.",
+                "When the active company is a branch of another active company, it should only be selected with its sub-branches.",  # noqa: E501
             )
             _check_company_filter(
                 main_company + branch_1 + branch_1_2 + branch_2_1 + other_company,
                 main_company + branch_1 + branch_1_2 + branch_2_1,
-                "Choosing a subset of branches in the company selector should keep that selection in the report.",
+                "Choosing a subset of branches in the company selector should keep that selection in the report.",  # noqa: E501
             )
 
         # Test 'selector' filter
@@ -1772,7 +1772,7 @@ class TestAccountReportsFilters(TestAccountReportsCommon, odoo.tests.HttpCase):
             + branch_2_1
             + other_company,
             main_company + branch_1_2,
-            "Only the current company and its sub-branches sharing its vat number should be selected.",
+            "Only the current company and its sub-branches sharing its vat number should be selected.",  # noqa: E501
         )
 
         _check_company_filter(
@@ -1783,7 +1783,7 @@ class TestAccountReportsFilters(TestAccountReportsCommon, odoo.tests.HttpCase):
             + branch_2_1
             + other_company,
             branch_2 + branch_2_1,
-            "Only the current company and its sub-branches sharing its vat number should be selected.",
+            "Only the current company and its sub-branches sharing its vat number should be selected.",  # noqa: E501
         )
 
         # Test 'tax_units' filter, with an existing tax unit object
@@ -1805,25 +1805,26 @@ class TestAccountReportsFilters(TestAccountReportsCommon, odoo.tests.HttpCase):
         _check_company_filter(
             other_company + main_company + branch_1_1 + branch_1_2 + branch_2,
             other_company + main_company + branch_1_1 + branch_1_2 + branch_2,
-            "Opening the report with a company selector matching the content of the tax unit should select this tax unit, keeping the companies.",
+            "Opening the report with a company selector matching the content of the tax unit should select this tax unit, keeping the companies.",  # noqa: E501
             match_active=False,
         )
 
         _check_company_filter(
             tax_unit.company_ids + branch_2_1,
             main_company + branch_1_2,
-            "Opening the report with a company selector matching more than the content of the tax unit should not select the tax unit, "
-            "but take the accessible branches with the same VAT number as the active company.",
+            "Opening the report with a company selector matching more than the content of the tax unit should not select the tax unit, "  # noqa: E501
+            "but take the accessible branches with the same VAT number as the active company.",  # noqa: E501
         )
 
         _check_company_filter(
             main_company + branch_1_1 + branch_1_2 + branch_2,
             main_company + branch_1_2,
-            "Opening the report with a company selector matching less than the content of the tax unit should select the active sub-branches "
+            "Opening the report with a company selector matching less than the content of the tax unit should select the active sub-branches "  # noqa: E501
             "with the same VAT as the active company.",
         )
 
-        # Test 'tax_units' filter, with no tax unit, and no VAT number on branches (only one on main company)
+        # Test 'tax_units' filter, with no tax unit, and no VAT number on branches (only
+        # one on main company)
         branch_1.vat = None
         branch_1_1.vat = None
         branch_1_2.vat = None
@@ -1832,13 +1833,13 @@ class TestAccountReportsFilters(TestAccountReportsCommon, odoo.tests.HttpCase):
         _check_company_filter(
             branch_2 + branch_2_1,
             branch_2 + branch_2_1,
-            "When no VAT exists in the hierarchy; all companies should be considered as sharing the same VAT, and active companies should be kept.",
+            "When no VAT exists in the hierarchy; all companies should be considered as sharing the same VAT, and active companies should be kept.",  # noqa: E501
         )
 
         _check_company_filter(
             branch_2_1 + branch_2,
             branch_2_1 + branch_2,
-            "When no VAT exists in the hierarchy; all companies should be considered as sharing the same VAT, and active companies should be kept.",
+            "When no VAT exists in the hierarchy; all companies should be considered as sharing the same VAT, and active companies should be kept.",  # noqa: E501
         )
 
     @freeze_time("2017-12-31")

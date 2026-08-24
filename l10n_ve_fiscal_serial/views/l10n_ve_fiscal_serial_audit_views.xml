@@ -1,25 +1,34 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <odoo>
     <record id="l10n_ve_fiscal_serial_audit_view_list" model="ir.ui.view">
         <field name="name">l10n.ve.fiscal.serial.audit.view.list</field>
         <field name="model">l10n.ve.fiscal.serial.audit</field>
         <field name="arch" type="xml">
-            <list string="Auditoría fiscal serial" create="false" edit="false" delete="false">
-                <field name="event_date"/>
-                <field name="event_type"/>
-                <field name="source"/>
-                <field name="user_id"/>
-                <field name="machine_id" optional="show"/>
-                <field name="move_id" optional="hide"/>
-                <field name="serial_port" optional="show"/>
-                <field name="close_reason" optional="hide"/>
-                <field name="command_step" optional="show"/>
-                <field name="command_payload" string="Comando enviado"/>
-                <field name="response_payload" string="Respuesta recibida"/>
-                <field name="response_summary" optional="hide"/>
-                <field name="success" widget="boolean_toggle"/>
-                <field name="session_id" optional="hide"/>
-                <field name="company_id" groups="base.group_multi_company" optional="hide"/>
+            <list
+                string="Auditoría fiscal serial"
+                create="false"
+                edit="false"
+                delete="false"
+            >
+                <field name="event_date" />
+                <field name="event_type" />
+                <field name="source" />
+                <field name="user_id" />
+                <field name="machine_id" optional="show" />
+                <field name="move_id" optional="hide" />
+                <field name="serial_port" optional="show" />
+                <field name="close_reason" optional="hide" />
+                <field name="command_step" optional="show" />
+                <field name="command_payload" string="Comando enviado" />
+                <field name="response_payload" string="Respuesta recibida" />
+                <field name="response_summary" optional="hide" />
+                <field name="success" widget="boolean_toggle" />
+                <field name="session_id" optional="hide" />
+                <field
+                    name="company_id"
+                    groups="base.group_multi_company"
+                    optional="hide"
+                />
             </list>
         </field>
     </record>
@@ -28,45 +37,53 @@
         <field name="name">l10n.ve.fiscal.serial.audit.view.form</field>
         <field name="model">l10n.ve.fiscal.serial.audit</field>
         <field name="arch" type="xml">
-            <form string="Evento de auditoría" create="false" edit="false" delete="false">
+            <form
+                string="Evento de auditoría"
+                create="false"
+                edit="false"
+                delete="false"
+            >
                 <sheet>
                     <group>
                         <group string="Evento">
-                            <field name="event_date"/>
-                            <field name="event_type"/>
-                            <field name="source"/>
-                            <field name="user_id"/>
-                            <field name="session_id"/>
-                            <field name="success"/>
-                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="event_date" />
+                            <field name="event_type" />
+                            <field name="source" />
+                            <field name="user_id" />
+                            <field name="session_id" />
+                            <field name="success" />
+                            <field
+                                name="company_id"
+                                groups="base.group_multi_company"
+                            />
                         </group>
                         <group string="Contexto">
-                            <field name="machine_id"/>
-                            <field name="move_id"/>
-                            <field name="duration_ms"/>
-                            <field name="close_reason"/>
-                            <field name="close_reason_detail"/>
-                            <field name="error_message"/>
+                            <field name="machine_id" />
+                            <field name="move_id" />
+                            <field name="duration_ms" />
+                            <field name="close_reason" />
+                            <field name="close_reason_detail" />
+                            <field name="error_message" />
                         </group>
                     </group>
                     <group string="Puerto">
                         <group>
-                            <field name="serial_port"/>
-                            <field name="baudrate"/>
-                            <field name="parity"/>
+                            <field name="serial_port" />
+                            <field name="baudrate" />
+                            <field name="parity" />
                         </group>
                         <group>
-                            <field name="webserial_usb_vendor_id"/>
-                            <field name="webserial_usb_product_id"/>
-                            <field name="webserial_usb_serial_number"/>
+                            <field name="webserial_usb_vendor_id" />
+                            <field name="webserial_usb_product_id" />
+                            <field name="webserial_usb_serial_number" />
                         </group>
                     </group>
                     <group string="Comando" invisible="event_type != 'command'">
-                        <field name="command_step"/>
-                        <field name="command_type"/>
-                        <field name="response_summary"/>
-                        <field name="command_payload"/>
-                        <field name="response_payload"/>
+                        <field name="command_step" />
+                        <field name="command_type" />
+                        <field name="response_summary" />
+                        <field name="command_payload" />
+                        <field name="response_payload" />
                     </group>
                 </sheet>
             </form>
@@ -78,25 +95,65 @@
         <field name="model">l10n.ve.fiscal.serial.audit</field>
         <field name="arch" type="xml">
             <search string="Auditoría fiscal serial">
-                <field name="session_id"/>
-                <field name="serial_port"/>
-                <field name="user_id"/>
-                <field name="machine_id"/>
-                <field name="move_id"/>
-                <field name="command_step"/>
-                <field name="response_summary"/>
-                <filter string="Aperturas" name="port_open" domain="[('event_type', '=', 'port_open')]"/>
-                <filter string="Cierres" name="port_close" domain="[('event_type', '=', 'port_close')]"/>
-                <filter string="Comandos" name="command" domain="[('event_type', '=', 'command')]"/>
-                <filter string="Con error" name="failed" domain="[('success', '=', False)]"/>
-                <separator/>
-                <filter string="Hoy" name="today" domain="[('event_date', '&gt;=', context_today().strftime('%Y-%m-%d 00:00:00'))]"/>
+                <field name="session_id" />
+                <field name="serial_port" />
+                <field name="user_id" />
+                <field name="machine_id" />
+                <field name="move_id" />
+                <field name="command_step" />
+                <field name="response_summary" />
+                <filter
+                    string="Aperturas"
+                    name="port_open"
+                    domain="[('event_type', '=', 'port_open')]"
+                />
+                <filter
+                    string="Cierres"
+                    name="port_close"
+                    domain="[('event_type', '=', 'port_close')]"
+                />
+                <filter
+                    string="Comandos"
+                    name="command"
+                    domain="[('event_type', '=', 'command')]"
+                />
+                <filter
+                    string="Con error"
+                    name="failed"
+                    domain="[('success', '=', False)]"
+                />
+                <separator />
+                <filter
+                    string="Hoy"
+                    name="today"
+                    domain="[('event_date', '&gt;=', context_today().strftime('%Y-%m-%d 00:00:00'))]"
+                />
                 <group expand="0" string="Agrupar por">
-                    <filter string="Tipo de evento" name="group_event_type" context="{'group_by': 'event_type'}"/>
-                    <filter string="Origen" name="group_source" context="{'group_by': 'source'}"/>
-                    <filter string="Usuario" name="group_user" context="{'group_by': 'user_id'}"/>
-                    <filter string="Sesión" name="group_session" context="{'group_by': 'session_id'}"/>
-                    <filter string="Máquina" name="group_machine" context="{'group_by': 'machine_id'}"/>
+                    <filter
+                        string="Tipo de evento"
+                        name="group_event_type"
+                        context="{'group_by': 'event_type'}"
+                    />
+                    <filter
+                        string="Origen"
+                        name="group_source"
+                        context="{'group_by': 'source'}"
+                    />
+                    <filter
+                        string="Usuario"
+                        name="group_user"
+                        context="{'group_by': 'user_id'}"
+                    />
+                    <filter
+                        string="Sesión"
+                        name="group_session"
+                        context="{'group_by': 'session_id'}"
+                    />
+                    <filter
+                        string="Máquina"
+                        name="group_machine"
+                        context="{'group_by': 'machine_id'}"
+                    />
                 </group>
             </search>
         </field>
@@ -106,7 +163,7 @@
         <field name="name">Auditoría fiscal serial</field>
         <field name="res_model">l10n.ve.fiscal.serial.audit</field>
         <field name="view_mode">list,form</field>
-        <field name="search_view_id" ref="l10n_ve_fiscal_serial_audit_view_search"/>
+        <field name="search_view_id" ref="l10n_ve_fiscal_serial_audit_view_search" />
         <field name="context">{'search_default_today': 1}</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_empty_folder">

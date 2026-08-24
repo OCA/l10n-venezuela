@@ -1,8 +1,9 @@
 from odoo import _, fields, models
-from odoo.fields import Command
 from odoo.exceptions import ValidationError
+from odoo.fields import Command
 
 
+# pylint: disable=consider-merging-classes-inherited
 class AccountMove(models.Model):
     _inherit = "account.move"
 
@@ -34,10 +35,7 @@ class AccountMove(models.Model):
             ):
                 continue
             origin = move.reversed_entry_id
-            if (
-                not origin
-                or origin.currency_id == origin.company_currency_id
-            ):
+            if not origin or origin.currency_id == origin.company_currency_id:
                 continue
             if (
                 hasattr(move, "_l10n_ve_is_post_discount_credit_note")
@@ -47,10 +45,10 @@ class AccountMove(models.Model):
                 continue
             cc = move.company_currency_id
             orig_lines = origin.invoice_line_ids.sorted(
-                lambda l: (l.sequence, l.id)
+                lambda line: (line.sequence, line.id)
             )
             cred_lines = move.invoice_line_ids.sorted(
-                lambda l: (l.sequence, l.id)
+                lambda line: (line.sequence, line.id)
             )
             if len(orig_lines) != len(cred_lines):
                 raise ValidationError(
@@ -65,7 +63,7 @@ class AccountMove(models.Model):
                     }
                 )
             line_cmds = []
-            for ol, cl in zip(orig_lines, cred_lines):
+            for ol, cl in zip(orig_lines, cred_lines, strict=False):
                 if ol.display_type != cl.display_type:
                     raise ValidationError(
                         _(
@@ -78,8 +76,10 @@ class AccountMove(models.Model):
                         Command.update(
                             cl.id,
                             {
-                                "price_unit": move._l10n_ve_company_price_unit_from_origin_line(
-                                    ol
+                                "price_unit": (
+                                    move._l10n_ve_company_price_unit_from_origin_line(
+                                        ol
+                                    )
                                 ),
                             },
                         )
@@ -111,9 +111,7 @@ class AccountMove(models.Model):
                     price_unit = 0.0
                 else:
                     price_unit = abs(line.balance) / quantity / discount_factor
-                line_cmds.append(
-                    Command.update(line.id, {"price_unit": price_unit})
-                )
+                line_cmds.append(Command.update(line.id, {"price_unit": price_unit}))
             elif line.display_type == "rounding":
                 line_cmds.append(
                     Command.update(

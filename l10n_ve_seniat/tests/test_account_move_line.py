@@ -321,8 +321,12 @@ class TestAccountMoveLine(L10nVeSeniatCommon):
                             "name": "Descuento",
                             "quantity": 1.0,
                             "price_unit": -10.0,
-                            "account_id": self.company_data["default_account_revenue"].id,
-                            "tax_ids": [(6, 0, [self.company_data["default_tax_sale"].id])],
+                            "account_id": self.company_data[
+                                "default_account_revenue"
+                            ].id,
+                            "tax_ids": [
+                                (6, 0, [self.company_data["default_tax_sale"].id])
+                            ],
                             "sequence": 5,
                         }
                     ),
@@ -331,8 +335,12 @@ class TestAccountMoveLine(L10nVeSeniatCommon):
                             "name": "Producto",
                             "quantity": 1.0,
                             "price_unit": 100.0,
-                            "account_id": self.company_data["default_account_revenue"].id,
-                            "tax_ids": [(6, 0, [self.company_data["default_tax_sale"].id])],
+                            "account_id": self.company_data[
+                                "default_account_revenue"
+                            ].id,
+                            "tax_ids": [
+                                (6, 0, [self.company_data["default_tax_sale"].id])
+                            ],
                             "sequence": 10,
                         }
                     ),
@@ -376,8 +384,6 @@ class TestAccountMoveLine(L10nVeSeniatCommon):
                 ],
             }
         )
-        line = move.invoice_line_ids.filtered(
-            lambda aml: aml.display_type == "product"
-        )
+        line = move.invoice_line_ids.filtered(lambda aml: aml.display_type == "product")
         line.ensure_one()
         self.assertEqual(line.l10n_ve_report_line_description(), "Producto exento (E)")

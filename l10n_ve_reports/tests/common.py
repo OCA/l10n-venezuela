@@ -11,7 +11,7 @@ try:
 except ImportError:
     load_workbook = None
 
-from odoo import Command, fields
+from odoo import Command, _, fields
 from odoo.exceptions import UserError
 from odoo.tools import DEFAULT_SERVER_DATE_FORMAT
 from odoo.tools.misc import file_open, formatLang
@@ -32,7 +32,8 @@ class TestAccountReportsCommon(AccountTestInvoicingCommon):
     def _generate_options(cls, report, date_from, date_to, default_options=None):
         """Create new options at a certain date.
         :param report:          The report.
-        :param date_from:       A datetime object, str representation of a date or False.
+        :param date_from:       A datetime object, str representation of a date or
+        False.
         :param date_to:         A datetime object or str representation of a date.
         :return:                The newly created options.
         """
@@ -76,7 +77,8 @@ class TestAccountReportsCommon(AccountTestInvoicingCommon):
         """Modify the existing options to set a new filter_comparison.
         :param options:         The report options.
         :param report:          The report.
-        :param comparison_type: One of the following values: ('no_comparison', 'custom', 'previous_period', 'previous_year').
+        :param comparison_type: One of the following values: ('no_comparison', 'custom',
+        'previous_period', 'previous_year').
         :param number_period:   The number of period to compare.
         :param date_from:       A datetime object for the 'custom' comparison_type.
         :param date_to:         A datetime object the 'custom' comparison_type.
@@ -127,13 +129,14 @@ class TestAccountReportsCommon(AccountTestInvoicingCommon):
 
         # Check number of lines.
         self.assertEqual(len(filtered_lines), len(expected_values))
-        for line_dict_list, expected_values in zip(
+        for line_dict_list, expected_values in zip(  # noqa: B020
             filtered_lines, expected_values, strict=False
         ):
             column_values = [
                 column["no_format"] for column in line_dict_list["columns"]
             ]
-            # Compare the Total column, Total column is there only under certain condition
+            # Compare the Total column, Total column is there only under certain
+            # condition
             if line_dict_list.get("horizontal_group_total_data"):
                 self.assertEqual(
                     len(line_dict_list["columns"]) + 1, len(expected_values[1:])
@@ -197,13 +200,13 @@ class TestAccountReportsCommon(AccountTestInvoicingCommon):
             )
 
         if not reports:
-            raise UserError("There are no reports to compare.")
+            raise UserError(_("There are no reports to compare."))
         visited_line_codes = set()
         for line in reports.line_ids:
             if not line.code or line.code in visited_line_codes:
                 continue
             identical_lines = reports.line_ids.filtered(
-                lambda l: l != line and l.code == line.code
+                lambda l: l != line and l.code == line.code  # noqa: E741, B023
             )
             if not identical_lines:
                 continue
@@ -215,13 +218,13 @@ class TestAccountReportsCommon(AccountTestInvoicingCommon):
                             expression_to_comparable_values
                         ),
                         (
-                            f'The line with code {line.code} from reports "{line.report_id.name}" and '
-                            f'"{tested_line.report_id.name}" has different expression values in both reports.'
+                            f'The line with code {line.code} from reports "{line.report_id.name}" and '  # noqa: E501
+                            f'"{tested_line.report_id.name}" has different expression values in both reports.'  # noqa: E501
                         ),
                     )
             visited_line_codes.add(line.code)
 
-    def assertLinesValues(
+    def assertLinesValues(  # noqa: C901
         self,
         lines,
         columns,
@@ -231,14 +234,17 @@ class TestAccountReportsCommon(AccountTestInvoicingCommon):
         ignore_folded=True,
     ):
         """Helper to compare the lines returned by the _get_lines method
-        with some expected results and ensuring the 'id' key of each line holds a unique value.
+        with some expected results and ensuring the 'id' key of each line holds a unique
+        value.
         :param lines:               See _get_lines.
         :param columns:             The columns index.
         :param expected_values:     A list of iterables.
         :param options:             The options from the current report.
-        :param currency_map:        A map mapping each column_index to some extra options to test the lines:
+        :param currency_map:        A map mapping each column_index to some extra
+        options to test the lines:
             - currency:             The currency to be applied on the column.
-            - currency_code_index:  The index of the column containing the currency code.
+            - currency_code_index:  The index of the column containing the currency
+            code.
         :param ignore_folded:       Will not filter folded lines when True.
         """
         if currency_map is None:
@@ -257,8 +263,10 @@ class TestAccountReportsCommon(AccountTestInvoicingCommon):
                 if index == 0:
                     current_value = line["name"]
                 else:
-                    # Some lines may not have columns, like title lines. In such case, no values should be provided for these.
-                    # Note that the function expect a tuple, so the line still need a comma after the name value.
+                    # Some lines may not have columns, like title lines. In such case,
+                    # no values should be provided for these.
+                    # Note that the function expect a tuple, so the line still need a
+                    # comma after the name value.
                     if j > len(expected_values[i]) - 1:
                         break
                     current_value = line["columns"][index - 1].get("name", "")
@@ -279,13 +287,15 @@ class TestAccountReportsCommon(AccountTestInvoicingCommon):
                         used_currency = self.env["res.currency"].search(
                             [("name", "=", currency_code)], limit=1
                         )
-                        assert used_currency, (
-                            "Currency having name=%s not found." % currency_code
-                        )
+                        assert (
+                            used_currency
+                        ), f"Currency having name={currency_code} not found."
                 if not used_currency:
                     used_currency = self.env.company.currency_id
 
-                if type(expected_value) in (int, float) and type(current_value) == str:
+                if type(expected_value) in (int, float) and isinstance(
+                    current_value, str
+                ):
                     if current_figure_type and current_figure_type != "monetary":
                         expected_value = str(expected_value)
                     elif options.get("multi_currency"):
@@ -308,16 +318,16 @@ class TestAccountReportsCommon(AccountTestInvoicingCommon):
         for i, to_compare in enumerate(to_compare_list):
             if to_compare[0] != to_compare[1]:
                 errors += [
-                    "\n==== Differences at index %s ====" % str(i),
-                    "Current Values:  %s" % str(to_compare[0]),
-                    "Expected Values: %s" % str(to_compare[1]),
+                    f"\n==== Differences at index {str(i)} ====",
+                    f"Current Values:  {str(to_compare[0])}",
+                    f"Expected Values: {str(to_compare[1])}",
                 ]
 
         id_counts = Counter(line["id"] for line in lines)
         duplicate_ids = {k: v for k, v in id_counts.items() if v > 1}
         if duplicate_ids:
             index_to_id = [
-                f"index={index:<6} name={line.get('name', 'no line name?!')} \tline_id={line.get('id', 'no line id?!')}"
+                f"index={index:<6} name={line.get('name', 'no line name?!')} \tline_id={line.get('id', 'no line id?!')}"  # noqa: E501
                 for index, line in enumerate(lines)
                 if line.get("id", "no line id?!") in duplicate_ids
             ]
@@ -330,8 +340,10 @@ class TestAccountReportsCommon(AccountTestInvoicingCommon):
             self.fail("\n".join(errors))
 
     def _filter_folded_lines(self, lines):
-        """Children lines returned for folded lines (for example, totals below sections) should be ignored when comparing the results
-        in assertLinesValues (their parents are folded, so they are not shown anyway). This function returns a filtered version of lines
+        """Children lines returned for folded lines (for example, totals below sections)
+        should be ignored when comparing the results
+        in assertLinesValues (their parents are folded, so they are not shown anyway).
+        This function returns a filtered version of lines
         list, without the chilren of folded lines.
         """
         filtered_lines = []
@@ -371,7 +383,7 @@ class TestAccountReportsCommon(AccountTestInvoicingCommon):
         }
         if tag_name and formula:
             raise UserError(
-                "Can't use this helper to create a line with both tags and formula"
+                _("Can't use this helper to create a line with both tags and formula")
             )
         if tag_name:
             create_vals["expression_ids"].append(
@@ -427,7 +439,7 @@ class TestAccountReportsCommon(AccountTestInvoicingCommon):
 
     @classmethod
     def _get_basic_line_dict_id_from_report_line(cls, report_line):
-        """Computes a full generic id for the provided report line (hence including the one of its parent as prefix), using no markup."""
+        """Computes a full generic id for the provided report line (hence including the one of its parent as prefix), using no markup."""  # noqa: E501
         report = report_line.report_id
         if report_line.parent_id:
             parent_line_id = cls._get_basic_line_dict_id_from_report_line(
@@ -441,7 +453,7 @@ class TestAccountReportsCommon(AccountTestInvoicingCommon):
 
     @classmethod
     def _get_basic_line_dict_id_from_report_line_ref(cls, report_line_xmlid):
-        """Same as _get_basic_line_dict_id_from_report_line, but from the line's xmlid, for convenience in the tests."""
+        """Same as _get_basic_line_dict_id_from_report_line, but from the line's xmlid, for convenience in the tests."""  # noqa: E501
         return cls._get_basic_line_dict_id_from_report_line(
             cls.env.ref(report_line_xmlid)
         )
@@ -482,7 +494,8 @@ class TestAccountReportsCommon(AccountTestInvoicingCommon):
 
     def _test_xlsx_file(self, file_content, expected_values):
         """Takes in the binary content of a xlsx file and a dict of expected values.
-        It will then parse the file in order to compare the values with the expected ones.
+        It will then parse the file in order to compare the values with the expected
+        ones.
         The expected values dict format is:
         'row_number': ['cell_1_val', 'cell_2_val', ...]
 

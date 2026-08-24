@@ -8,7 +8,7 @@ class AccountFollowupCustomHandler(models.AbstractModel):
     _description = "Follow-Up Report Custom Handler"
 
     def _custom_options_initializer(self, report, options, previous_options):
-        super()._custom_options_initializer(report, options, previous_options)
+        result = super()._custom_options_initializer(report, options, previous_options)
 
         options["hide_initial_balance"] = True
         if len(options["partner_ids"]) == 1:
@@ -22,10 +22,12 @@ class AccountFollowupCustomHandler(models.AbstractModel):
                 journal["selected"] = (
                     journal.get("type") != "general"
                 )  # dividers don't get a type
-            # Since we forced the selection of some journal, we need to recompute the filter label
+            # Since we forced the selection of some journal, we need to recompute the
+            # filter label
             report._init_options_journals_names(
                 options, previous_options=previous_options
             )
+        return result
 
     def _get_partner_aml_report_lines(
         self,
@@ -65,7 +67,8 @@ class AccountFollowupCustomHandler(models.AbstractModel):
                 if self._is_report_limit_reached(
                     report, options, treated_results_count
                 ):
-                    # We loaded one more than the limit on purpose: this way we know we need a "load more" line
+                    # We loaded one more than the limit on purpose: this way we know we
+                    # need a "load more" line
                     has_more = True
                     break
 
@@ -109,7 +112,9 @@ class AccountFollowupCustomHandler(models.AbstractModel):
                 )
             )
             lines.extend(overdue_lines)
-            # If we reached the limit just before the due line and have already loaded one extra line, we should skip the due line for now and add a "load more" line
+            # If we reached the limit just before the due line and have already loaded
+            # one extra line, we should skip the due line for now and add a "load more"
+            # line
             if (
                 self._is_report_limit_reached(report, options, treated_results_count)
                 and due_aml_values

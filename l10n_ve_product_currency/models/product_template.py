@@ -16,8 +16,10 @@ class ProductTemplate(models.Model):
     )
 
     def _default_force_currency_id(self):
-        currency_id = self.env["ir.config_parameter"].sudo().get_param(
-            "l10n_ve_product_currency.default_force_currency_id"
+        currency_id = (
+            self.env["ir.config_parameter"]
+            .sudo()
+            .get_param("l10n_ve_product_currency.default_force_currency_id")
         )
         try:
             return self.env["res.currency"].browse(int(currency_id)).exists().id

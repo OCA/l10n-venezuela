@@ -1,10 +1,10 @@
 /** @odoo-module **/
 
 import {Component, onWillStart, useState} from "@odoo/owl";
-import {useService} from "@web/core/utils/hooks";
 import {Dropdown} from "@web/core/dropdown/dropdown";
 import {DropdownItem} from "@web/core/dropdown/dropdown_item";
 import {registry} from "@web/core/registry";
+import {useService} from "@web/core/utils/hooks";
 
 export class ExchangeRateTooltip extends Component {
     static components = {Dropdown, DropdownItem};
@@ -35,8 +35,8 @@ export class ExchangeRateTooltip extends Component {
             this.state.rates = data.rates;
             this.state.company_currency = data.company_currency;
             this.state.featured = data.featured || false;
-        } catch (error) {
-            console.error("Error fetching exchange rates:", error);
+        } catch {
+            this.state.rates = [];
         } finally {
             this.state.loading = false;
         }

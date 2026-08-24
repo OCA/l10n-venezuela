@@ -13,7 +13,8 @@ class TypePerson(models.Model):
     @api.model
     def _l10n_ve_table_exists(self):
         self.env.cr.execute(
-            "SELECT EXISTS (SELECT FROM information_schema.tables WHERE table_name = %s)",
+            "SELECT EXISTS (SELECT FROM information_schema.tables "
+            "WHERE table_name = %s)",
             [self._table],
         )
         return bool(self.env.cr.fetchone()[0])
@@ -22,7 +23,5 @@ class TypePerson(models.Model):
     def _get_default_type_person_id(self):
         if not self._l10n_ve_table_exists():
             return False
-        type_person = self.search(
-            [("state", "=", True)], order="sequence, id", limit=1
-        )
+        type_person = self.search([("state", "=", True)], order="sequence, id", limit=1)
         return type_person.id

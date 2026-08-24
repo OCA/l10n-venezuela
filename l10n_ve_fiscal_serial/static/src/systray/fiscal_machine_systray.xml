@@ -29,14 +29,20 @@
                         <div class="mb-2">
                             <label class="form-label small text-muted mb-1">
                                 Equipo autorizado en este navegador
-                                <span class="ms-1">(<t t-esc="state.authorizedMachines.length"/>)</span>
+                                <span class="ms-1">(<t
+                                t-esc="state.authorizedMachines.length"
+                            />)</span>
                             </label>
                             <select
                                 class="form-select form-select-sm"
                                 t-att-disabled="state.busy"
                                 t-on-change="onSelectMachine"
                             >
-                                <t t-foreach="state.authorizedMachines" t-as="machine" t-key="machine.id">
+                                <t
+                                    t-foreach="state.authorizedMachines"
+                                    t-as="machine"
+                                    t-key="machine.id"
+                                >
                                     <option
                                         t-att-value="machine.id"
                                         t-att-selected="state.machine and state.machine.id === machine.id"
@@ -46,7 +52,9 @@
                             </select>
                         </div>
                     </t>
-                    <t t-elif="!state.authorizedMachines.length and state.machines.length">
+                    <t
+                        t-elif="!state.authorizedMachines.length and state.machines.length"
+                    >
                         <div class="small text-muted mb-2">
                             No hay máquinas autorizadas en este navegador. Use «Conectar» para autorizar un puerto USB.
                         </div>
@@ -59,7 +67,10 @@
                             </div>
                             <div t-if="state.machine.registered_serial">
                                 <span class="text-muted">Serial:</span>
-                                <span class="ms-1" t-esc="state.machine.registered_serial" />
+                                <span
+                                    class="ms-1"
+                                    t-esc="state.machine.registered_serial"
+                                />
                             </div>
                             <div>
                                 <span class="text-muted">Estado del puerto:</span>
@@ -89,8 +100,13 @@
                                 <span class="ms-1" t-esc="state.enqErrorLabel" />
                             </div>
                             <div t-if="state.machine.last_connection">
-                                <span class="text-muted">Última conexión registrada:</span>
-                                <span class="ms-1" t-esc="state.machine.last_connection" />
+                                <span
+                                    class="text-muted"
+                                >Última conexión registrada:</span>
+                                <span
+                                    class="ms-1"
+                                    t-esc="state.machine.last_connection"
+                                />
                             </div>
                             <div class="text-muted mt-1">
                                 Última comprobación:

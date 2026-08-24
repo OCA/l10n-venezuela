@@ -5,10 +5,7 @@
         <field name="inherit_id" ref="base.view_partner_form" />
         <field name="arch" type="xml">
             <xpath expr="//field[@name='category_id']" position="after">
-                <field
-                    name="economic_activity_id"
-                    invisible="country_code != 'VE'"
-                />
+                <field name="economic_activity_id" invisible="country_code != 'VE'" />
             </xpath>
             <xpath expr="//field[@name='taxpayer_type']" position="after">
                 <field name="customer_rank" invisible="1" />
@@ -19,10 +16,7 @@
                     invisible="country_code != 'VE'"
                     required="country_code == 'VE' and (supplier_rank &gt; 0 or customer_rank &gt; 0)"
                 />
-                <field
-                    name="withholding_type_id"
-                    invisible="country_code != 'VE'"
-                />
+                <field name="withholding_type_id" invisible="country_code != 'VE'" />
             </xpath>
         </field>
     </record>

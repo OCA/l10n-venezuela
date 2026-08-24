@@ -8,9 +8,7 @@ class TestL10nVeStockReturnTransferReason(TestStockCommon):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        cls.env.company.write(
-            {"account_fiscal_country_id": cls.env.ref("base.ve").id}
-        )
+        cls.env.company.write({"account_fiscal_country_id": cls.env.ref("base.ve").id})
 
     def test_return_incoming_picking_without_transfer_reason(self):
         picking_in = self.PickingObj.create(

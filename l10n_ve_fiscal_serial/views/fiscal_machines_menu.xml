@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <odoo>
     <menuitem
         id="menu_seniat_fiscal_machines"
@@ -8,7 +8,7 @@
         groups="l10n_ve_seniat.group_seniat"
     />
     <record id="menu_seniat_fiscal_machines" model="ir.ui.menu">
-        <field name="action" eval="False"/>
+        <field name="action" eval="False" />
     </record>
     <menuitem
         id="menu_seniat_fiscal_machines_list"

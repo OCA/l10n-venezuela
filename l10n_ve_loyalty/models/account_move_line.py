@@ -61,7 +61,9 @@ class AccountMoveLine(models.Model):
                         "move_id": line.move_id.id,
                         "account_id": line.account_id.id,
                         "currency_rate": line.currency_rate,
-                        "tax_ids": tuple(sorted(line.l10n_ve_global_discount_tax_ids.ids)),
+                        "tax_ids": tuple(
+                            sorted(line.l10n_ve_global_discount_tax_ids.ids)
+                        ),
                     }
                 )
             else:
@@ -97,11 +99,13 @@ class AccountMoveLine(models.Model):
 
     @api.depends("account_id", "company_id")
     def _compute_discount_allocation_key(self):
-        super()._compute_discount_allocation_key()
+        res = super()._compute_discount_allocation_key()
         for line in self.filtered(
-            lambda aml: aml.l10n_ve_global_discount_line or aml.l10n_ve_line_discount_line
+            lambda aml: aml.l10n_ve_global_discount_line
+            or aml.l10n_ve_line_discount_line
         ):
             line.discount_allocation_key = False
+        return res
 
     @api.depends(
         "account_id",
@@ -116,10 +120,13 @@ class AccountMoveLine(models.Model):
         ve_journal_lines = self.filtered(
             lambda line: line.move_id._l10n_ve_uses_global_discount_journal_lines()
         )
-        super(AccountMoveLine, self - ve_journal_lines)._compute_discount_allocation_needed()
+        res = super(
+            AccountMoveLine, self - ve_journal_lines
+        )._compute_discount_allocation_needed()
         for line in ve_journal_lines:
             line.discount_allocation_needed = False
             line.discount_allocation_dirty = True
+        return res
 
     @api.model_create_multi
     def create(self, vals_list):

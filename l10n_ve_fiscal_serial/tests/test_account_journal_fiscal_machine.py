@@ -51,7 +51,14 @@ class TestAccountJournalFiscalMachine(L10nVeSeniatCommon):
     def test_print_payload_uses_journal_machine(self):
         journal = self.company_data["default_journal_sale"]
         machine = self._create_machine()
-        machine.write({"flag_21": "01", "baudrate": "19200", "parity": "none", "use_emulator": True})
+        machine.write(
+            {
+                "flag_21": "01",
+                "baudrate": "19200",
+                "parity": "none",
+                "use_emulator": True,
+            }
+        )
         self._l10n_ve_configure_journal_fiscal_machine(
             journal,
             l10n_ve_fiscal_machine_id=machine.id,
@@ -206,12 +213,8 @@ class TestAccountJournalFiscalMachine(L10nVeSeniatCommon):
                 ],
             }
         )
-        self.assertEqual(
-            move.l10n_ve_fiscal_serial_number_placeholder, "JOURNALTEST1"
-        )
-        self.assertEqual(
-            move.l10n_ve_fiscal_invoice_number_placeholder, "00000011"
-        )
+        self.assertEqual(move.l10n_ve_fiscal_serial_number_placeholder, "JOURNALTEST1")
+        self.assertEqual(move.l10n_ve_fiscal_invoice_number_placeholder, "00000011")
         self.assertEqual(move.l10n_ve_fiscal_report_z_placeholder, "0013")
         move.write(
             {

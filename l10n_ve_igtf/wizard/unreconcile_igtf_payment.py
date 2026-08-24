@@ -19,12 +19,12 @@ class L10nVeIgtfUnreconcilePaymentWizard(models.TransientModel):
         ],
         required=True,
         default="keep_remove_igtf",
-        string="Action",
     )
 
     def action_confirm(self):
         """
-        Unreconcile the selected payment from the invoice and apply the chosen IGTF option.
+        Unreconcile the selected payment from the invoice and apply
+        the chosen IGTF option.
 
         Parameters
         ----------
@@ -38,13 +38,16 @@ class L10nVeIgtfUnreconcilePaymentWizard(models.TransientModel):
         Raises
         ------
         UserError
-            If required information is missing, IGTF account is not configured, or the resulting amount is invalid.
+            If required information is missing, IGTF account is not
+            configured, or the resulting amount is invalid.
 
         Notes
         -----
         The flow is:
-        1) Unreconcile the partial reconcile from the invoice (same as the standard payments widget).
-        2) Either cancel the payment, or keep it by removing the IGTF split (draft -> update -> post).
+        1) Unreconcile the partial reconcile from the invoice (same
+           as the standard payments widget).
+        2) Either cancel the payment, or keep it by removing the
+           IGTF split (draft -> update -> post).
         """
         self.ensure_one()
 
@@ -71,7 +74,7 @@ class L10nVeIgtfUnreconcilePaymentWizard(models.TransientModel):
             raise UserError(_("No IGTF account is configured for the company."))
 
         igtf_lines = payment.move_id.line_ids.filtered(
-            lambda l: l.account_id == igtf_account
+            lambda line: line.account_id == igtf_account
         )
         if not igtf_lines:
             payment.with_context(l10n_ve_igtf_from_register_payment=True).write(
@@ -79,7 +82,7 @@ class L10nVeIgtfUnreconcilePaymentWizard(models.TransientModel):
             )
             return {"type": "ir.actions.act_window_close"}
 
-        igtf_amount_currency_abs = sum(abs(l.amount_currency) for l in igtf_lines)
+        igtf_amount_currency_abs = sum(abs(line.amount_currency) for line in igtf_lines)
 
         payment.action_draft()
 
@@ -92,7 +95,13 @@ class L10nVeIgtfUnreconcilePaymentWizard(models.TransientModel):
             )
 
         self.env.cr.execute(
-            "UPDATE account_payment SET l10n_ve_apply_igtf = FALSE, l10n_ve_igtf_included = FALSE, amount = %s WHERE id = %s",
+            """
+            UPDATE account_payment
+            SET l10n_ve_apply_igtf = FALSE,
+                l10n_ve_igtf_included = FALSE,
+                amount = %s
+            WHERE id = %s
+            """,
             (new_amount, payment.id),
         )
         payment.invalidate_recordset(

@@ -20,8 +20,8 @@ L10N_VE_CANCEL_REASON_MOVE_TYPES = (
 )
 
 
+# pylint: disable=consider-merging-classes-inherited
 class AccountMove(models.Model):
-
     _inherit = "account.move"
 
     l10n_ve_process_date = fields.Date(
@@ -94,9 +94,10 @@ class AccountMove(models.Model):
                     texts.append(
                         "<span>Este pago estará sujeto al cobro adicional del 3% del "
                         "Impuesto a las Grandes Transacciones Financieras (IGTF), de "
-                        "conformidad con la Providencia Administrativa SNAT/2022/000013 "
-                        "publicada en la G.O N 42.339 del 17-03-2022, en caso de ser "
-                        "cancelado en divisas. No aplica en pago en Bs.</span> "
+                        "conformidad con la Providencia Administrativa "
+                        "SNAT/2022/000013 publicada en la G.O N 42.339 del "
+                        "17-03-2022, en caso de ser cancelado en divisas. No aplica "
+                        "en pago en Bs.</span> "
                     )
                 # Segundo texto sobre tipo de cambio (solo si hay tasa inversa)
                 if move.company_currency_id != move.currency_id:
@@ -119,13 +120,11 @@ class AccountMove(models.Model):
                 if not texts and (
                     move.move_type == "out_refund" or move.debit_origin_id
                 ):
-                    texts.append(
-                        "<span>%s</span>"
-                        % _(
-                            "Este documento se expresa conforme a la normativa "
-                            "tributaria vigente (SENIAT)."
-                        )
+                    notice = _(
+                        "Este documento se expresa conforme a la normativa "
+                        "tributaria vigente (SENIAT)."
                     )
+                    texts.append(f"<span>{notice}</span>")
                 move.seniat_invoice_tag = "".join(texts) if texts else False
             else:
                 move.seniat_invoice_tag = False
@@ -149,18 +148,16 @@ class AccountMove(models.Model):
                             "crédito o débito para empresas con fiscalidad venezolana."
                         )
                     )
-        if (
-            "reception_date" in vals
-            and not self.env.context.get("l10n_ve_skip_reception_term_sync")
+        if "reception_date" in vals and not self.env.context.get(
+            "l10n_ve_skip_reception_term_sync"
         ):
             to_sync = self.filtered(
                 lambda move: move._l10n_ve_use_reception_date_for_payment_terms()
             )
             to_sync.needed_terms_dirty = True
         res = super().write(vals)
-        if (
-            "reception_date" in vals
-            and not self.env.context.get("l10n_ve_skip_reception_term_sync")
+        if "reception_date" in vals and not self.env.context.get(
+            "l10n_ve_skip_reception_term_sync"
         ):
             self._l10n_ve_sync_payment_term_line_dates()
         return res
@@ -457,7 +454,10 @@ class AccountMove(models.Model):
         for move in self:
             move.l10n_ve_show_unreversed_debit_note_alert = False
             move.l10n_ve_unreversed_debit_note_count = 0
-            if move.country_code != "VE" or not move._l10n_ve_is_invoice_for_credit_debit():
+            if (
+                move.country_code != "VE"
+                or not move._l10n_ve_is_invoice_for_credit_debit()
+            ):
                 continue
             if move.state != "posted":
                 continue
@@ -636,7 +636,9 @@ class AccountMove(models.Model):
                 )
             if move.move_type == "out_invoice":
                 posted_debits = move.debit_note_ids.filtered(
-                    lambda m: m.state == "posted" and m.move_type == move.move_type
+                    lambda note, move_type=move.move_type: (
+                        note.state == "posted" and note.move_type == move_type
+                    )
                 )
                 if move._l10n_ve_get_unreversed_debit_notes():
                     raise UserError(
@@ -652,10 +654,7 @@ class AccountMove(models.Model):
                             "una nota de crédito por el monto total."
                         )
                     )
-                if (
-                    move._l10n_ve_has_full_posted_credit_on_invoice()
-                    and posted_debits
-                ):
+                if move._l10n_ve_has_full_posted_credit_on_invoice() and posted_debits:
                     raise UserError(
                         _(
                             "No puede crear una nota de débito: existe una nota de "
@@ -677,7 +676,10 @@ class AccountMove(models.Model):
         """
 
         for move in self:
-            if move.country_code != "VE" or not move._l10n_ve_is_invoice_for_credit_debit():
+            if (
+                move.country_code != "VE"
+                or not move._l10n_ve_is_invoice_for_credit_debit()
+            ):
                 continue
             if move.move_type == "in_invoice":
                 continue
@@ -754,11 +756,8 @@ class AccountMove(models.Model):
     def _l10n_ve_to_company_abs_untaxed_amount(self):
         self.ensure_one()
         lines = self.line_ids.filtered(
-            lambda line: line.display_type
-            in ("product", "global_discount", "discount")
-            or (
-                line.display_type == "rounding" and not line.tax_repartition_line_id
-            )
+            lambda line: line.display_type in ("product", "global_discount", "discount")
+            or (line.display_type == "rounding" and not line.tax_repartition_line_id)
         )
         if lines:
             return abs(sum(lines.mapped("balance")))
@@ -793,9 +792,10 @@ class AccountMove(models.Model):
         if company_cur.is_zero(limit):
             return False
         accumulated = self._l10n_ve_posted_credit_on_invoice_company_amount()
-        return float_compare(
-            accumulated, limit, precision_rounding=company_cur.rounding
-        ) >= 0
+        return (
+            float_compare(accumulated, limit, precision_rounding=company_cur.rounding)
+            >= 0
+        )
 
     def _l10n_ve_debit_note_is_reversed(self, debit_note):
         self.ensure_one()
@@ -875,9 +875,10 @@ class AccountMove(models.Model):
         if company_cur.is_zero(limit):
             return False
         accumulated = self._l10n_ve_posted_credit_notes_company_amount()
-        return float_compare(
-            accumulated, limit, precision_rounding=company_cur.rounding
-        ) >= 0
+        return (
+            float_compare(accumulated, limit, precision_rounding=company_cur.rounding)
+            >= 0
+        )
 
     def _l10n_ve_get_credit_note_root(self):
         self.ensure_one()
@@ -911,13 +912,10 @@ class AccountMove(models.Model):
     def action_l10n_ve_view_credit_notes(self):
         self.ensure_one()
         moves = self._l10n_ve_get_related_credit_note_moves() - self
-        refund_type = (
-            self._l10n_ve_refund_move_type()
-            or (
-                "in_refund"
-                if self.move_type in ("in_invoice", "in_refund")
-                else "out_refund"
-            )
+        refund_type = self._l10n_ve_refund_move_type() or (
+            "in_refund"
+            if self.move_type in ("in_invoice", "in_refund")
+            else "out_refund"
         )
         action = {
             "type": "ir.actions.act_window",
@@ -967,7 +965,7 @@ class AccountMove(models.Model):
         line_vals = []
         for debit in debit_notes:
             for line in debit.invoice_line_ids.filtered(
-                lambda l: l.display_type in (False, "product")
+                lambda move_line: move_line.display_type in (False, "product")
             ):
                 line_vals.append(
                     (
@@ -988,13 +986,19 @@ class AccountMove(models.Model):
 
     def _l10n_ve_credit_note_limit_company_amount(self):
         self.ensure_one()
-        if self.move_type not in ("out_refund", "in_refund") or not self.reversed_entry_id:
+        if (
+            self.move_type not in ("out_refund", "in_refund")
+            or not self.reversed_entry_id
+        ):
             return 0.0
         return self.reversed_entry_id._l10n_ve_max_credit_note_company_amount()
 
     def _l10n_ve_credit_note_accumulated_company_amount(self, include_current=False):
         self.ensure_one()
-        if self.move_type not in ("out_refund", "in_refund") or not self.reversed_entry_id:
+        if (
+            self.move_type not in ("out_refund", "in_refund")
+            or not self.reversed_entry_id
+        ):
             return 0.0
         company_cur = self.company_currency_id
         origin = self.reversed_entry_id
@@ -1027,16 +1031,21 @@ class AccountMove(models.Model):
         if self.l10n_ve_debit_note_reversed_ids:
             for debit in self.l10n_ve_debit_note_reversed_ids:
                 limit = debit._l10n_ve_to_company_abs_amount()
-                accumulated = self.reversed_entry_id._l10n_ve_posted_credit_for_debit_notes_company_amount(
-                    debit
+                origin = self.reversed_entry_id
+                posted_credit_amount = (
+                    origin._l10n_ve_posted_credit_for_debit_notes_company_amount
                 )
+                accumulated = posted_credit_amount(debit)
                 if self.state != "posted":
                     accumulated = company_cur.round(
                         accumulated + self._l10n_ve_to_company_abs_amount()
                     )
-                if float_compare(
-                    accumulated, limit, precision_rounding=company_cur.rounding
-                ) > 0:
+                if (
+                    float_compare(
+                        accumulated, limit, precision_rounding=company_cur.rounding
+                    )
+                    > 0
+                ):
                     raise ValidationError(
                         _(
                             "No se puede confirmar la nota de crédito '%(move)s'. "
@@ -1063,7 +1072,10 @@ class AccountMove(models.Model):
         accumulated = self._l10n_ve_credit_note_accumulated_company_amount(
             include_current=True
         )
-        if float_compare(accumulated, limit, precision_rounding=company_cur.rounding) > 0:
+        if (
+            float_compare(accumulated, limit, precision_rounding=company_cur.rounding)
+            > 0
+        ):
             origin = self.reversed_entry_id
             raise ValidationError(
                 _(
@@ -1098,7 +1110,8 @@ class AccountMove(models.Model):
 
         Notes
         -----
-        Art. 11 PA SNAT/2011/0071: obligados a MF no emplean otro medio salvo contingencia.
+        Art. 11 PA SNAT/2011/0071: obligados a MF no emplean otro medio
+        salvo contingencia.
         Art. 8 PA SNAT/2011/0071: emisión exclusiva por máquina fiscal.
         """
 
@@ -1208,6 +1221,90 @@ class AccountMove(models.Model):
             else:
                 move.l10n_ve_certified_copy_deadline = False
 
+    def _l10n_ve_emission_medium_label(self, journal, medium):
+        return dict(
+            journal._fields["l10n_ve_emission_medium"]._description_selection(self.env)
+        ).get(medium, medium)
+
+    def _l10n_ve_check_company_has_journal_medium(self, journal, medium):
+        company_medium_code = journal._l10n_ve_company_emission_medium_code()
+        if company_medium_code and not self.company_id._l10n_ve_has_emission_medium(
+            company_medium_code
+        ):
+            raise ValidationError(
+                _(
+                    "No se puede confirmar el documento “%(doc)s”. "
+                    "El diario “%(journal)s” usa el medio de emisión "
+                    "“%(medium)s”, pero ese medio no está configurado en los "
+                    "medios de emisión de la compañía."
+                )
+                % {
+                    "doc": self.name or _("Borrador"),
+                    "journal": journal.display_name,
+                    "medium": self._l10n_ve_emission_medium_label(journal, medium),
+                }
+            )
+
+    def _l10n_ve_validate_emission_control_number(self, journal, medium):
+        if medium == "contingency" and not self.l10n_ve_invoice_date:
+            raise ValidationError(
+                _(
+                    "No se puede confirmar el documento “%(doc)s”. "
+                    "En contingencia debe indicar la fecha del documento."
+                )
+                % {"doc": self.name or _("Borrador")}
+            )
+        if medium == "free":
+            if (self.l10n_ve_control_number or "").strip():
+                return
+            if not self._l10n_ve_journal_fiscal_book_section():
+                raise ValidationError(
+                    _(
+                        "No se puede confirmar el documento “%(doc)s”. "
+                        "Configure los tramos del talonario (SENIAT) en el "
+                        "diario de ventas “%(journal)s”."
+                    )
+                    % {
+                        "doc": self.name or _("Borrador"),
+                        "journal": journal.display_name,
+                    }
+                )
+            return
+        if medium == "fiscal_machine":
+            if (
+                self.l10n_ve_on_behalf_of_third_party
+                and not (self.l10n_ve_control_number or "").strip()
+            ):
+                raise ValidationError(
+                    _(
+                        "No se puede confirmar el documento “%(doc)s”. "
+                        "Indique el N° de control SENIAT (este diario no usa "
+                        "correlativo automático del talonario)."
+                    )
+                    % {"doc": self.name or _("Borrador")}
+                )
+            return
+        if medium == "digital":
+            return
+        if (self.l10n_ve_control_number or "").strip():
+            return
+        if medium == "contingency":
+            raise ValidationError(
+                _(
+                    "No se puede confirmar el documento “%(doc)s”. "
+                    "En contingencia el N° de control SENIAT es obligatorio."
+                )
+                % {"doc": self.name or _("Borrador")}
+            )
+        raise ValidationError(
+            _(
+                "No se puede confirmar el documento “%(doc)s”. "
+                "Indique el N° de control SENIAT (este diario no usa "
+                "correlativo automático del talonario)."
+            )
+            % {"doc": self.name or _("Borrador")}
+        )
+
     def _l10n_ve_validate_customer_invoice_emission_for_post(self):
         """Valida requisitos de emisión según el medio configurado en el diario.
 
@@ -1235,84 +1332,8 @@ class AccountMove(models.Model):
         medium = journal.l10n_ve_emission_medium
         if not medium:
             return
-        company_medium_code = journal._l10n_ve_company_emission_medium_code()
-        if company_medium_code and not self.company_id._l10n_ve_has_emission_medium(
-            company_medium_code
-        ):
-            medium_label = dict(
-                journal._fields["l10n_ve_emission_medium"]._description_selection(
-                    self.env
-                )
-            ).get(medium, medium)
-            raise ValidationError(
-                _(
-                    "No se puede confirmar el documento “%(doc)s”. "
-                    "El diario “%(journal)s” usa el medio de emisión "
-                    "“%(medium)s”, pero ese medio no está configurado en los "
-                    "medios de emisión de la compañía."
-                )
-                % {
-                    "doc": self.name or _("Borrador"),
-                    "journal": journal.display_name,
-                    "medium": medium_label,
-                }
-            )
-        if medium == "contingency":
-            if not self.l10n_ve_invoice_date:
-                raise ValidationError(
-                    _(
-                        "No se puede confirmar el documento “%(doc)s”. "
-                        "En contingencia debe indicar la fecha del documento."
-                    )
-                    % {"doc": self.name or _("Borrador")}
-                )
-        if medium == "free":
-            if (self.l10n_ve_control_number or "").strip():
-                return
-            if not self._l10n_ve_journal_fiscal_book_section():
-                raise ValidationError(
-                    _(
-                        "No se puede confirmar el documento “%(doc)s”. "
-                        "Configure los tramos del talonario (SENIAT) en el "
-                        "diario de ventas “%(journal)s”."
-                    )
-                    % {
-                        "doc": self.name or _("Borrador"),
-                        "journal": journal.display_name,
-                    }
-                )
-        elif medium == "fiscal_machine":
-            if self.l10n_ve_on_behalf_of_third_party:
-                if not (self.l10n_ve_control_number or "").strip():
-                    raise ValidationError(
-                        _(
-                            "No se puede confirmar el documento “%(doc)s”. "
-                            "Indique el N° de control SENIAT (este diario no usa "
-                            "correlativo automático del talonario)."
-                        )
-                        % {"doc": self.name or _("Borrador")}
-                    )
-        elif medium == "digital":
-            return
-        elif medium != "fiscal_machine" and not (
-            self.l10n_ve_control_number or ""
-        ).strip():
-            if medium == "contingency":
-                raise ValidationError(
-                    _(
-                        "No se puede confirmar el documento “%(doc)s”. "
-                        "En contingencia el N° de control SENIAT es obligatorio."
-                    )
-                    % {"doc": self.name or _("Borrador")}
-                )
-            raise ValidationError(
-                _(
-                    "No se puede confirmar el documento “%(doc)s”. "
-                    "Indique el N° de control SENIAT (este diario no usa "
-                    "correlativo automático del talonario)."
-                )
-                % {"doc": self.name or _("Borrador")}
-            )
+        self._l10n_ve_check_company_has_journal_medium(journal, medium)
+        self._l10n_ve_validate_emission_control_number(journal, medium)
 
     def _l10n_ve_validate_partner_vat_format_enabled(self):
         self.ensure_one()
@@ -1324,7 +1345,7 @@ class AccountMove(models.Model):
         return bool(country and country.code == "VE")
 
     def action_post(self):  # noqa: C901
-        """Valida RIF, totales, origen de NC/ND y un impuesto por línea antes de confirmar.
+        """Valida RIF, totales, origen de NC/ND y un impuesto por línea.
 
         Notes
         -----
@@ -1422,8 +1443,8 @@ class AccountMove(models.Model):
                             % {"move": move_id.name or _("Borrador")}
                         )
                     third = move_id.l10n_ve_third_party_partner_id
-                    third_requires_rif = move_id._l10n_ve_partner_requires_rif_validation(
-                        third
+                    third_requires_rif = (
+                        move_id._l10n_ve_partner_requires_rif_validation(third)
                     )
                     if third_requires_rif and not third.vat:
                         raise ValidationError(
@@ -1491,9 +1512,7 @@ class AccountMove(models.Model):
             raise AccessError(_("No tiene permiso para anular facturas de cliente."))
         if not self._l10n_ve_allows_cancel_wizard():
             raise UserError(
-                _(
-                    "No se puede anular documentos emitidos en máquina fiscal."
-                )
+                _("No se puede anular documentos emitidos en máquina fiscal.")
             )
         return {
             "type": "ir.actions.act_window",
@@ -1647,7 +1666,10 @@ Please create a credit note instead.
 
     def _l10n_ve_get_invoice_paperformat(self):
         self.ensure_one()
-        if self.country_code != "VE" or self.move_type not in ("out_invoice", "out_refund"):
+        if self.country_code != "VE" or self.move_type not in (
+            "out_invoice",
+            "out_refund",
+        ):
             return self.env["report.paperformat"]
         book = self._l10n_ve_fiscal_book()
         return book.paperformat_id if book else self.env["report.paperformat"]
@@ -1699,7 +1721,9 @@ Please create a credit note instead.
     )
     def _compute_l10n_ve_show_control_number_ui(self):
         for move in self:
-            move.l10n_ve_show_control_number_ui = move._l10n_ve_should_show_control_number_ui()
+            move.l10n_ve_show_control_number_ui = (
+                move._l10n_ve_should_show_control_number_ui()
+            )
 
     def _l10n_ve_should_show_control_number_ui(self):
         """Define cuándo el usuario debe consignar el N° de control SENIAT.
@@ -1852,15 +1876,16 @@ Please create a credit note instead.
 
     @api.depends("needed_terms", "reception_date")
     def _compute_invoice_date_due(self):
-        super()._compute_invoice_date_due()
+        result = super()._compute_invoice_date_due()
         for move in self:
             due_dates = move._l10n_ve_reception_payment_term_due_dates()
             if due_dates:
                 move.invoice_date_due = max(due_dates)
+        return result
 
     @api.depends("show_payment_term_details", "line_ids.date_maturity")
     def _compute_payment_term_details(self):
-        super()._compute_payment_term_details()
+        return super()._compute_payment_term_details()
 
     def _l10n_ve_sync_payment_term_line_dates(self):
         for move in self:
@@ -1883,10 +1908,14 @@ Please create a credit note instead.
                 lambda line: line.display_type == "payment_term"
                 or (
                     not line.display_type
-                    and line.account_type
-                    in ("asset_receivable", "liability_payable")
+                    and line.account_type in ("asset_receivable", "liability_payable")
                 )
-            ).sorted(lambda line: (line.date_maturity or date_ref, line.id))
+            ).sorted(
+                lambda line, date_ref=date_ref: (
+                    line.date_maturity or date_ref,
+                    line.id,
+                )
+            )
             unique_dates = list(dict.fromkeys(due_dates))
             if len(term_amls) == len(unique_dates):
                 target_dates = unique_dates
@@ -1898,7 +1927,7 @@ Please create a credit note instead.
                     date_ref
                 )
             amls = term_amls.with_context(**self._l10n_ve_reception_term_sync_context())
-            for aml, due_date in zip(amls, target_dates):
+            for aml, due_date in zip(amls, target_dates, strict=False):
                 vals = {}
                 if aml.date_maturity != due_date:
                     vals["date_maturity"] = due_date
@@ -1912,6 +1941,7 @@ Please create a credit note instead.
                     AccountMove,
                     move.with_context(**self._l10n_ve_reception_term_sync_context()),
                 ).write({"invoice_date_due": due})
+        return True
 
     def _l10n_ve_rebuild_needed_terms_from_date_ref(self, date_ref):
         self.ensure_one()
@@ -1978,9 +2008,7 @@ Please create a credit note instead.
                 continue
             unique_new_dates = list(dict.fromkeys(new_dates))
             items = [(key, values) for key, values in terms.items() if key]
-            items.sort(
-                key=lambda item: item[0].get("date_maturity") or date_ref
-            )
+            items.sort(key=lambda item: item[0].get("date_maturity") or date_ref)
             if len(items) == len(unique_new_dates):
                 target_dates = unique_new_dates
             elif len(items) == len(new_dates):
@@ -1996,7 +2024,7 @@ Please create a credit note instead.
                     date_ref
                 )
             new_terms = {}
-            for (key, values), new_date in zip(items, target_dates):
+            for (key, values), new_date in zip(items, target_dates, strict=False):
                 new_key = frozendict(
                     {
                         **dict(key),
@@ -2030,9 +2058,7 @@ Please create a credit note instead.
             for key, values in terms.items():
                 new_key = key
                 if key and not key.get("date_maturity"):
-                    new_key = frozendict(
-                        {**dict(key), "date_maturity": fallback}
-                    )
+                    new_key = frozendict({**dict(key), "date_maturity": fallback})
                     changed = True
                 if new_key in new_terms:
                     merged = dict(new_terms[new_key])
@@ -2058,9 +2084,10 @@ Please create a credit note instead.
         "invoice_date_due",
     )
     def _compute_needed_terms(self):
-        super()._compute_needed_terms()
+        result = super()._compute_needed_terms()
         self._l10n_ve_apply_reception_date_to_needed_terms()
         self._l10n_ve_fill_needed_term_dates()
+        return result
 
     @api.constrains("invoice_date", "invoice_date_due", "move_type")
     def _check_l10n_ve_invoice_date_due_not_before_invoice_date(self):
@@ -2532,8 +2559,8 @@ Please create a credit note instead.
             if move._l10n_ve_block_invoice_pdf_contingency():
                 raise UserError(
                     _(
-                        "En contingencia no esta permitido imprimir ni enviar el documento "
-                        "desde esta acción."
+                        "En contingencia no esta permitido imprimir ni enviar "
+                        "el documento desde esta acción."
                     )
                 )
         return super().action_send_and_print()
@@ -2542,9 +2569,7 @@ Please create a credit note instead.
         self.ensure_one()
         if self._l10n_ve_block_invoice_pdf_contingency():
             raise UserError(
-                _(
-                    "En contingencia no esta permitido enviar el documento por correo."
-                )
+                _("En contingencia no esta permitido enviar el documento por correo.")
             )
         return super().action_invoice_sent()
 
@@ -2627,7 +2652,8 @@ Please create a credit note instead.
         if self._l10n_ve_block_invoice_pdf_contingency():
             raise UserError(
                 _(
-                    "En contingencia no esta permitido abrir la vista previa del documento."
+                    "En contingencia no esta permitido abrir la vista previa "
+                    "del documento."
                 )
             )
         if self._l10n_ve_block_invoice_preview_fiscal_machine():
@@ -2645,9 +2671,9 @@ Please create a credit note instead.
 
     def _l10n_ve_is_ve_customer_invoice_pdf(self):
         self.ensure_one()
-        return (
-            self.country_code == "VE"
-            and self.move_type in ("out_invoice", "out_refund")
+        return self.country_code == "VE" and self.move_type in (
+            "out_invoice",
+            "out_refund",
         )
 
     def _l10n_ve_get_invoice_pdf_basename(self):
@@ -2712,15 +2738,19 @@ Please create a credit note instead.
         filename = self._get_invoice_report_filename()
         if not filename:
             filename = f"{(self.name or 'invoice').replace('/', '_')}.pdf"
-        attachment = self.env["ir.attachment"].sudo().create(
-            {
-                "name": filename,
-                "raw": pdf_content,
-                "mimetype": "application/pdf",
-                "res_model": self._name,
-                "res_id": self.id,
-                "res_field": "invoice_pdf_report_file",
-            }
+        attachment = (
+            self.env["ir.attachment"]
+            .sudo()
+            .create(
+                {
+                    "name": filename,
+                    "raw": pdf_content,
+                    "mimetype": "application/pdf",
+                    "res_model": self._name,
+                    "res_id": self.id,
+                    "res_field": "invoice_pdf_report_file",
+                }
+            )
         )
         self.message_main_attachment_id = attachment
         self.invalidate_recordset(["invoice_pdf_report_id", "invoice_pdf_report_file"])
@@ -2746,14 +2776,13 @@ Please create a credit note instead.
             if action:
                 if action.get("type") == "ir.actions.client":
                     return action
-                return self._get_action_with_base_document_layout_configurator(
-                    action
-                )
+                return self._get_action_with_base_document_layout_configurator(action)
             raise UserError(
                 _(
-                    "El diario está configurado para papel continuo. Instale el módulo "
-                    "«l10n_ve_invoice_escp» para imprimir la factura en formato ESC/P por "
-                    "USB (WebUSB), o cambie la impresión en forma libre a PDF en el diario."
+                    "El diario está configurado para papel continuo. Instale "
+                    "el módulo «l10n_ve_invoice_escp» para imprimir la "
+                    "factura en formato ESC/P por USB (WebUSB), o cambie la "
+                    "impresión en forma libre a PDF en el diario."
                 )
             )
         ctx = {}
@@ -2793,9 +2822,9 @@ Please create a credit note instead.
             if move.partner_id != origin.partner_id:
                 updates["partner_id"] = origin.partner_id.id
             if updates:
-                move.with_context(
-                    l10n_ve_skip_credit_debit_journal_lock=True
-                ).write(updates)
+                move.with_context(l10n_ve_skip_credit_debit_journal_lock=True).write(
+                    updates
+                )
 
     def _l10n_ve_is_product_discount_invoice_line(self, line):
         if line.display_type != "product":
@@ -2833,14 +2862,14 @@ Please create a credit note instead.
     def _l10n_ve_posted_credit_notes_for_remaining(self):
         self.ensure_one()
         refund_type = self._l10n_ve_refund_move_type()
-        credits = self.reversal_move_ids.filtered(
+        credit_notes = self.reversal_move_ids.filtered(
             lambda move: (
                 move.state == "posted"
                 and move.move_type == refund_type
                 and not move.l10n_ve_debit_note_reversed_ids
             )
         )
-        return credits.filtered(
+        return credit_notes.filtered(
             lambda move: not (
                 hasattr(move, "_l10n_ve_is_post_discount_credit_note")
                 and move._l10n_ve_is_post_discount_credit_note()
@@ -2975,9 +3004,9 @@ Please create a credit note instead.
             if move.journal_id != origin.journal_id:
                 raise UserError(
                     _(
-                        "No puede confirmar esta nota de crédito o débito: el diario "
-                        "(%(journal)s) debe ser el mismo que el de la factura de origen "
-                        "(%(origin_journal)s).",
+                        "No puede confirmar esta nota de crédito o débito: el "
+                        "diario (%(journal)s) debe ser el mismo que el de la "
+                        "factura de origen (%(origin_journal)s).",
                         journal=move.journal_id.display_name,
                         origin_journal=origin.journal_id.display_name,
                     )
@@ -3018,8 +3047,10 @@ Please create a credit note instead.
                 continue
             origin_product_ids = set(
                 origin.invoice_line_ids.filtered(
-                    lambda l: l.display_type == "product" and l.product_id
-                ).mapped("product_id").ids
+                    lambda line: line.display_type == "product" and line.product_id
+                )
+                .mapped("product_id")
+                .ids
             )
             for line in move.invoice_line_ids:
                 if line.display_type == "line_section":
@@ -3045,7 +3076,9 @@ Please create a credit note instead.
                         line, Product
                     )
 
-    def _l10n_ve_credit_note_line_check_description_not_product_name(self, line, product_model):
+    def _l10n_ve_credit_note_line_check_description_not_product_name(
+        self, line, product_model
+    ):
         text = html2plaintext(line.name or "").strip()
         if not text:
             return

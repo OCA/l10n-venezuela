@@ -52,14 +52,19 @@ class SaleOrderLine(models.Model):
             if float_is_zero(line.product_uom_qty, precision_rounding=rounding):
                 continue
             expected_subtotal = abs(line.price_subtotal)
-            if float_is_zero(expected_subtotal, precision_rounding=line.currency_id.rounding):
+            if float_is_zero(
+                expected_subtotal, precision_rounding=line.currency_id.rounding
+            ):
                 continue
             invoiced_subtotal = line._l10n_ve_get_discount_invoiced_subtotal()
-            if float_compare(
-                invoiced_subtotal,
-                expected_subtotal,
-                precision_rounding=line.currency_id.rounding,
-            ) < 0:
+            if (
+                float_compare(
+                    invoiced_subtotal,
+                    expected_subtotal,
+                    precision_rounding=line.currency_id.rounding,
+                )
+                < 0
+            ):
                 continue
             aligned_price = line.price_subtotal / line.product_uom_qty
             line.write({"price_unit": aligned_price})
@@ -78,7 +83,7 @@ class SaleOrderLine(models.Model):
         "product_uom_qty",
     )
     def _compute_qty_invoiced(self):
-        super()._compute_qty_invoiced()
+        res = super()._compute_qty_invoiced()
         for line in self.filtered(lambda sol: sol._l10n_ve_is_split_discount_line()):
             line_total = abs(line.price_unit * line.product_uom_qty)
             if float_is_zero(line_total, precision_rounding=line.currency_id.rounding):
@@ -96,6 +101,7 @@ class SaleOrderLine(models.Model):
                 elif move.move_type == "out_refund":
                     qty_invoiced -= portion
             line.qty_invoiced = qty_invoiced
+        return res
 
     def l10n_ve_report_line_description(self):
         self.ensure_one()
@@ -132,7 +138,9 @@ class SaleOrderLine(models.Model):
         raw_stripped = "\n".join((line.name or "").splitlines()).strip()
         if raw_stripped:
             std = "\n".join(
-                (line._get_sale_order_line_multiline_description_sale() or "").splitlines()
+                (
+                    line._get_sale_order_line_multiline_description_sale() or ""
+                ).splitlines()
             ).strip()
             if raw_stripped != std:
                 if std and raw_stripped.startswith(std):
@@ -227,10 +235,13 @@ class SaleOrderLine(models.Model):
                 tax_mapped = ", ".join(line.tax_id.mapped("name"))
                 raise ValidationError(
                     _(
-                        "No se puede asignar más de un impuesto a la línea '%s' en un "
-                        "pedido confirmado. Cree una línea separada "
-                        "para cada impuesto. "
-                        "Impuestos actuales: %s"
+                        "No se puede asignar más de un impuesto a la línea "
+                        "'%(line)s' en un pedido confirmado. Cree una línea "
+                        "separada para cada impuesto. Impuestos actuales: "
+                        "%(taxes)s"
                     )
-                    % (line.name or _("Sin nombre"), tax_mapped)
+                    % {
+                        "line": line.name or _("Sin nombre"),
+                        "taxes": tax_mapped,
+                    }
                 )

@@ -1,64 +1,105 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <templates id="template" xml:space="preserve">
-    <t t-name="l10n_ve_pos.ReceiptScreen" t-inherit="point_of_sale.ReceiptScreen" t-inherit-mode="extension">
-        <xpath expr="//div[@class='receipt-options d-flex flex-column gap-2']" position="attributes">
+    <t
+        t-name="l10n_ve_pos.ReceiptScreen"
+        t-inherit="point_of_sale.ReceiptScreen"
+        t-inherit-mode="extension"
+    >
+        <xpath
+            expr="//div[@class='receipt-options d-flex flex-column gap-2']"
+            position="attributes"
+        >
             <attribute name="t-if">!isVenezuelaPos</attribute>
         </xpath>
-        <xpath expr="//div[contains(@class, 'pos-receipt-container') and contains(@class, 'd-flex') and contains(@class, 'flex-grow-1')]" position="attributes">
+        <xpath
+            expr="//div[contains(@class, 'pos-receipt-container') and contains(@class, 'd-flex') and contains(@class, 'flex-grow-1')]"
+            position="attributes"
+        >
             <attribute name="t-if">!isVenezuelaPos</attribute>
         </xpath>
         <xpath expr="//div[hasclass('o_payment_successful')]/hr" position="after">
-            <div t-if="l10nVeShowReceiptInvoiceDetails" class="w-100 text-start small mt-2">
+            <div
+                t-if="l10nVeShowReceiptInvoiceDetails"
+                class="w-100 text-start small mt-2"
+            >
                 <div t-if="l10nVeJournalEmissionMedium === 'free'">
                     <div>
-                        <span class="text-muted" t-esc="l10nVeLabelAccountingInvoiceNumber"/>
+                        <span
+                            class="text-muted"
+                            t-esc="l10nVeLabelAccountingInvoiceNumber"
+                        />
                         <t t-esc="' '" />
-                        <t t-esc="this.currentOrder.raw.l10n_ve_pos_invoice_name || l10nVeDash"/>
+                        <t
+                            t-esc="this.currentOrder.raw.l10n_ve_pos_invoice_name || l10nVeDash"
+                        />
                     </div>
                     <div>
-                        <span class="text-muted" t-esc="l10nVeLabelControlNumber"/>
+                        <span class="text-muted" t-esc="l10nVeLabelControlNumber" />
                         <t t-esc="' '" />
-                        <span class="text-danger fw-semibold" t-esc="this.currentOrder.raw.l10n_ve_pos_control_number || l10nVeDash"/>
+                        <span
+                            class="text-danger fw-semibold"
+                            t-esc="this.currentOrder.raw.l10n_ve_pos_control_number || l10nVeDash"
+                        />
                     </div>
                 </div>
                 <div t-elif="l10nVeJournalEmissionMedium === 'fiscal_machine'">
                     <div>
-                        <span class="text-muted" t-esc="l10nVeLabelFiscalInvoiceNo"/>
+                        <span class="text-muted" t-esc="l10nVeLabelFiscalInvoiceNo" />
                         <t t-esc="' '" />
-                        <t t-esc="this.currentOrder.raw.l10n_ve_pos_fiscal_invoice_number || l10nVeDash"/>
+                        <t
+                            t-esc="this.currentOrder.raw.l10n_ve_pos_fiscal_invoice_number || l10nVeDash"
+                        />
                     </div>
                     <div>
-                        <span class="text-muted" t-esc="l10nVeLabelFiscalSerial"/>
+                        <span class="text-muted" t-esc="l10nVeLabelFiscalSerial" />
                         <t t-esc="' '" />
-                        <t t-esc="this.currentOrder.raw.l10n_ve_pos_fiscal_serial || l10nVeDash"/>
+                        <t
+                            t-esc="this.currentOrder.raw.l10n_ve_pos_fiscal_serial || l10nVeDash"
+                        />
                     </div>
                     <div>
-                        <span class="text-muted" t-esc="l10nVeLabelFiscalZ"/>
+                        <span class="text-muted" t-esc="l10nVeLabelFiscalZ" />
                         <t t-esc="' '" />
-                        <t t-esc="this.currentOrder.raw.l10n_ve_pos_fiscal_report_z || l10nVeDash"/>
+                        <t
+                            t-esc="this.currentOrder.raw.l10n_ve_pos_fiscal_report_z || l10nVeDash"
+                        />
                     </div>
                 </div>
                 <div t-elif="l10nVeJournalEmissionMedium === 'digital'">
                     <div>
-                        <span class="text-muted" t-esc="l10nVeLabelControlNumber"/>
+                        <span class="text-muted" t-esc="l10nVeLabelControlNumber" />
                         <t t-esc="' '" />
-                        <span class="text-danger fw-semibold" t-esc="this.currentOrder.raw.l10n_ve_pos_control_number || l10nVeDash"/>
+                        <span
+                            class="text-danger fw-semibold"
+                            t-esc="this.currentOrder.raw.l10n_ve_pos_control_number || l10nVeDash"
+                        />
                     </div>
                 </div>
                 <div t-else="">
                     <div t-if="this.currentOrder.raw.l10n_ve_pos_invoice_name">
-                        <span class="text-muted" t-esc="l10nVeLabelAccountingInvoiceNumber"/>
+                        <span
+                            class="text-muted"
+                            t-esc="l10nVeLabelAccountingInvoiceNumber"
+                        />
                         <t t-esc="' '" />
-                        <t t-esc="this.currentOrder.raw.l10n_ve_pos_invoice_name"/>
+                        <t t-esc="this.currentOrder.raw.l10n_ve_pos_invoice_name" />
                     </div>
                     <div t-if="this.currentOrder.raw.l10n_ve_pos_control_number">
-                        <span class="text-muted" t-esc="l10nVeLabelControlNumber"/>
+                        <span class="text-muted" t-esc="l10nVeLabelControlNumber" />
                         <t t-esc="' '" />
-                        <span class="text-danger fw-semibold" t-esc="this.currentOrder.raw.l10n_ve_pos_control_number"/>
+                        <span
+                            class="text-danger fw-semibold"
+                            t-esc="this.currentOrder.raw.l10n_ve_pos_control_number"
+                        />
                     </div>
                 </div>
-                <button t-if="l10nVeShowFormaLibreDownload" type="button" class="btn btn-primary w-100 mt-2 py-2" t-on-click="() => this.l10nVeDownloadFormaLibre()">
-                    <t t-esc="l10nVeDownloadFormaLibreLabel"/>
+                <button
+                    t-if="l10nVeShowFormaLibreDownload"
+                    type="button"
+                    class="btn btn-primary w-100 mt-2 py-2"
+                    t-on-click="() => this.l10nVeDownloadFormaLibre()"
+                >
+                    <t t-esc="l10nVeDownloadFormaLibreLabel" />
                 </button>
             </div>
         </xpath>

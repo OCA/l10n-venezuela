@@ -27,14 +27,20 @@
                     />
                 </div>
             </xpath>
-            <xpath expr="//button[@id='account_invoice_payment_btn']" position="attributes">
+            <xpath
+                expr="//button[@id='account_invoice_payment_btn']"
+                position="attributes"
+            >
                 <attribute
                     name="invisible"
                     separator="or"
                     add="l10n_ve_igtf_hide_register_payment"
                 />
             </xpath>
-            <xpath expr="//button[@id='account_invoice_payment_secondary_btn']" position="attributes">
+            <xpath
+                expr="//button[@id='account_invoice_payment_secondary_btn']"
+                position="attributes"
+            >
                 <attribute
                     name="invisible"
                     separator="or"

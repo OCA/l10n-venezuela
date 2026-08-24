@@ -117,13 +117,14 @@ class AccountReportSend(models.TransientModel):
         Should be extended to add placeholder based on the checkboxes.
         :param: partner:       The partner for which this report is generated.
         :returns: A list of dictionary for each placeholder.
-        * id:               str: The (fake) id of the attachment, this is needed in rendering in t-key.
+        * id:               str: The (fake) id of the attachment, this is needed in
+        rendering in t-key.
         * name:             str: The name of the attachment.
         * mimetype:         str: The mimetype of the attachment.
         * placeholder       bool: Should be true to prevent download / deletion.
         """
         self.ensure_one()
-        filename = f"{partner.name} - {self.account_report_id.get_default_report_filename(self.report_options, 'pdf')}"
+        filename = f"{partner.name} - {self.account_report_id.get_default_report_filename(self.report_options, 'pdf')}"  # noqa: E501
         return [
             {
                 "id": f"placeholder_{filename}",
@@ -242,20 +243,24 @@ class AccountReportSend(models.TransientModel):
 
     @api.model
     def _action_download(self, attachments):
-        """Download the PDF attachment, or a zip of attachments if there are more than one."""
+        """Download the PDF attachment, or a zip of attachments if there are more than one."""  # noqa: E501
         return {
             "type": "ir.actions.act_url",
-            "url": f'/l10n_ve_reports/download_attachments/{",".join(map(str, attachments.ids))}',
+            "url": f"/l10n_ve_reports/download_attachments/{','.join(map(str, attachments.ids))}",  # noqa: E501
             "close": True,
         }
 
     def _process_send_and_print(
         self, report, options, recipient_partner_ids=None, wizard=None
     ):
-        """Generate a report for one partner based on the options (send_and_print_values stored on the report).
-        :param options: dict of report options (should contain one partner id in options['partner_ids'])
-        :param recipient_partner_ids: list of partner ids that will receive the mail message.
-        :param wizard: account.report.send wizard if exists. Indicates if sending by cron.
+        """Generate a report for one partner based on the options (send_and_print_values
+        stored on the report).
+        :param options: dict of report options (should contain one partner id in
+        options['partner_ids'])
+        :param recipient_partner_ids: list of partner ids that will receive the mail
+        message.
+        :param wizard: account.report.send wizard if exists. Indicates if sending by
+        cron.
         """
         wizard_vals = (
             report.send_and_print_values if not wizard else wizard._get_wizard_values()
@@ -322,8 +327,10 @@ class AccountReportSend(models.TransientModel):
 
     def action_send_and_print(self, force_synchronous=False):
         """Create the documents and send them to the end customers.
-        If we are sending multiple statements and not downloading them we will process the moves asynchronously.
-        :param force_synchronous:   Flag indicating if the method should be done synchronously.
+        If we are sending multiple statements and not downloading them we will process
+        the moves asynchronously.
+        :param force_synchronous:   Flag indicating if the method should be done
+        synchronously.
         """
         self.ensure_one()
 
@@ -343,7 +350,7 @@ class AccountReportSend(models.TransientModel):
             if self.account_report_id.send_and_print_values:
                 raise UserError(
                     _(
-                        "There are currently reports waiting to be sent, please try again later."
+                        "There are currently reports waiting to be sent, please try again later."  # noqa: E501
                     )
                 )
 

@@ -65,8 +65,9 @@ class AccountPaymentRegister(models.TransientModel):
     def _get_advance_line_residual_in_wizard_currency(self, advance_line):
         self.ensure_one()
         payment_date = self.payment_date or fields.Date.context_today(self)
-        if advance_line.currency_id == self.currency_id and not self.currency_id.is_zero(
-            advance_line.amount_residual_currency
+        if (
+            advance_line.currency_id == self.currency_id
+            and not self.currency_id.is_zero(advance_line.amount_residual_currency)
         ):
             return abs(advance_line.amount_residual_currency)
         if not advance_line.company_currency_id.is_zero(advance_line.amount_residual):
@@ -128,10 +129,11 @@ class AccountPaymentRegister(models.TransientModel):
 
     @api.depends("line_ids", "l10n_ve_apply_advance")
     def _compute_from_lines(self):
-        super()._compute_from_lines()
+        result = super()._compute_from_lines()
         for wizard in self.filtered("l10n_ve_apply_advance"):
             if len(wizard.batches) == 1:
                 wizard.can_edit_wizard = True
+        return result
 
     def _get_advance_partner_label(self):
         self.ensure_one()
@@ -148,34 +150,46 @@ class AccountPaymentRegister(models.TransientModel):
             if advance_account and advance_line.account_id != advance_account:
                 raise UserError(
                     _(
-                        "La línea seleccionada no pertenece a la cuenta de anticipos del %(partner)s.",
+                        "La línea seleccionada no pertenece a la cuenta "
+                        "de anticipos del %(partner)s.",
                         partner=partner_label,
                     )
                 )
-            if advance_line.partner_id.commercial_partner_id != wizard.partner_id.commercial_partner_id:
+            if (
+                advance_line.partner_id.commercial_partner_id
+                != wizard.partner_id.commercial_partner_id
+            ):
                 raise UserError(
                     _(
-                        "La línea de anticipo no corresponde al %(partner)s de la factura.",
+                        "La línea de anticipo no corresponde al %(partner)s "
+                        "de la factura.",
                         partner=partner_label,
                     )
                 )
             if wizard.currency_id.compare_amounts(wizard.amount, 0.0) <= 0:
                 raise UserError(_("El importe a aplicar debe ser mayor que cero."))
-            if wizard.currency_id.compare_amounts(
-                wizard.amount, wizard.l10n_ve_advance_amount_available
-            ) > 0:
+            if (
+                wizard.currency_id.compare_amounts(
+                    wizard.amount, wizard.l10n_ve_advance_amount_available
+                )
+                > 0
+            ):
                 raise UserError(
                     _(
                         "No puede aplicar más del anticipo disponible (%(amount)s).",
                         amount=wizard.l10n_ve_advance_amount_available,
                     )
                 )
-            if wizard.currency_id.compare_amounts(
-                wizard.amount, wizard.l10n_ve_invoice_amount_residual
-            ) > 0:
+            if (
+                wizard.currency_id.compare_amounts(
+                    wizard.amount, wizard.l10n_ve_invoice_amount_residual
+                )
+                > 0
+            ):
                 raise UserError(
                     _(
-                        "No puede aplicar más del importe pendiente de la factura (%(amount)s).",
+                        "No puede aplicar más del importe pendiente de la "
+                        "factura (%(amount)s).",
                         amount=wizard.l10n_ve_invoice_amount_residual,
                     )
                 )

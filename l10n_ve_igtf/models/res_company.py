@@ -11,7 +11,10 @@ class ResCompany(models.Model):
         string="IGTF regime active",
         compute="_compute_l10n_ve_igtf_feature_active",
         store=True,
-        help="Technical: IGTF applies for Venezuela companies with taxpayer type Special.",
+        help=(
+            "Technical: IGTF applies for Venezuela companies with "
+            "taxpayer type Special."
+        ),
     )
 
     l10n_ve_igtf_currency_ids = fields.Many2many(
@@ -26,8 +29,10 @@ class ResCompany(models.Model):
         string="IGTF en facturas",
         default=True,
         help=(
-            "Si está activo, al confirmar facturas de venta en monedas IGTF (p. ej. USD) "
-            "se generan líneas de IGTF en el asiento. Si está desactivado, el IGTF solo "
+            "Si está activo, al confirmar facturas de venta en "
+            "monedas IGTF (p. ej. USD) "
+            "se generan líneas de IGTF en el asiento. Si está "
+            "desactivado, el IGTF solo "
             "se calcula y registra en cobros y pagos."
         ),
     )
@@ -47,7 +52,10 @@ class ResCompany(models.Model):
 
     def _l10n_ve_igtf_is_active(self):
         self.ensure_one()
-        if not self.account_fiscal_country_id or self.account_fiscal_country_id.code != "VE":
+        if (
+            not self.account_fiscal_country_id
+            or self.account_fiscal_country_id.code != "VE"
+        ):
             return False
         if self.taxpayer_type != "special":
             return False

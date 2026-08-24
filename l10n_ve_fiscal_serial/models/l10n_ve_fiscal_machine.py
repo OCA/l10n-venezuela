@@ -159,10 +159,7 @@ class L10nVeFiscalMachine(models.Model):
     def _compute_audit_count(self):
         audit_model = self.env["l10n.ve.fiscal.serial.audit"]
         machine_ids = self.ids
-        counts = {
-            machine.id: 0
-            for machine in self
-        }
+        counts = {machine.id: 0 for machine in self}
         if machine_ids:
             for machine_id, count in audit_model._read_group(
                 [("machine_id", "in", machine_ids)],
@@ -296,7 +293,7 @@ class L10nVeFiscalMachine(models.Model):
             "registered_serial": self.registered_serial or "",
         }
 
-    def apply_port_update_from_detect(self, payload):
+    def apply_port_update_from_detect(self, payload):  # noqa: C901
         """Update connection fields after selecting a port on another PC.
 
         Notes
@@ -387,8 +384,7 @@ class L10nVeFiscalMachine(models.Model):
             if self.last_connection
             else False,
             "training_mode": bool(
-                payload.get("enq_status") == 64
-                and not detected_serial
+                payload.get("enq_status") == 64 and not detected_serial
             ),
             "message": _(
                 "Puerto actualizado para este navegador/PC. "
@@ -415,9 +411,7 @@ class L10nVeFiscalMachine(models.Model):
             "name": self.name or "",
             "registered_serial": self.registered_serial or "",
             "baudrate": int(baud) if str(baud).isdigit() else 9600,
-            "parity": self.parity
-            if self.parity in ("none", "even", "odd")
-            else "even",
+            "parity": self.parity if self.parity in ("none", "even", "odd") else "even",
             "serial_port": self.serial_port or "",
             "webserial_usb_vendor_id": self.webserial_usb_vendor_id or 0,
             "webserial_usb_product_id": self.webserial_usb_product_id or 0,

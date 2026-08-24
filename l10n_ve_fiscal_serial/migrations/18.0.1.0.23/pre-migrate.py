@@ -30,11 +30,13 @@ def migrate(cr, version):
         """
         UPDATE l10n_ve_fiscal_machine AS machine
         SET use_emulator = company.l10n_ve_fiscal_serial_use_emulator,
-            send_default_code_in_name = company.l10n_ve_fiscal_serial_send_default_code_in_name
+            send_default_code_in_name =
+                company.l10n_ve_fiscal_serial_send_default_code_in_name
         FROM res_company AS company
         WHERE machine.company_id = company.id
           AND (
-              machine.use_emulator IS DISTINCT FROM company.l10n_ve_fiscal_serial_use_emulator
+              machine.use_emulator IS DISTINCT FROM
+                  company.l10n_ve_fiscal_serial_use_emulator
               OR machine.send_default_code_in_name IS DISTINCT FROM
                   company.l10n_ve_fiscal_serial_send_default_code_in_name
           )

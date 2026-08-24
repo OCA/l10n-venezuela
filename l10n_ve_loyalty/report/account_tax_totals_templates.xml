@@ -16,12 +16,10 @@
             >
                 <td>
                     Descuento
-                    <t
-                        t-if="tax_totals.get('l10n_ve_global_discount_percentage')"
-                    >
+                    <t t-if="tax_totals.get('l10n_ve_global_discount_percentage')">
                         (<t
-                            t-out="'%.2f' % (tax_totals.get('l10n_ve_global_discount_percentage') * 100.0)"
-                        />%)
+                    t-out="'%.2f' % (tax_totals.get('l10n_ve_global_discount_percentage') * 100.0)"
+                />%)
                     </t>
                 </td>
                 <td class="text-end">
@@ -51,12 +49,10 @@
             >
                 <td>
                     Descuento
-                    <t
-                        t-if="tax_totals.get('l10n_ve_global_discount_percentage')"
-                    >
+                    <t t-if="tax_totals.get('l10n_ve_global_discount_percentage')">
                         (<t
-                            t-out="'%.2f' % (tax_totals.get('l10n_ve_global_discount_percentage') * 100.0)"
-                        />%)
+                    t-out="'%.2f' % (tax_totals.get('l10n_ve_global_discount_percentage') * 100.0)"
+                />%)
                     </t>
                 </td>
                 <td class="text-end">

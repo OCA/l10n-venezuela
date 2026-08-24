@@ -28,5 +28,5 @@ class AuditlogValidationException(models.Model):
 
     @api.model
     def _create_log_in_env(self, vals):
-        """Create audit row using the current env (caller must use a fresh RW cursor and commit)."""
+        """Create the audit row in the current environment."""
         self.sudo().create(vals)

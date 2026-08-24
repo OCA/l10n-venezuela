@@ -660,7 +660,7 @@ class TestTaxReportDefaultPart(TestAccountReportsCommon):
             self.env["account.move"].with_context(default_move_type="entry")
         )
         move_form.date = fields.Date.from_string("2019-01-01")
-        for dummy in range(2):
+        for _dummy in range(2):
             for tax in tax_10 + tax_20 + tax_30:
                 with move_form.line_ids.new() as line_form:
                     line_form.name = "debit line"
@@ -763,9 +763,12 @@ class TestTaxReportDefaultPart(TestAccountReportsCommon):
         )
 
     def test_tax_report_custom_edition_tax_line(self):
-        """When on a journal entry, a tax line is edited manually by the user, it could lead to a broken mapping
-        between the original tax details and the edited tax line. In that case, some extra tax details are generated
-        on the tax line in order to reflect this edition. This test is there to ensure the tax report is well handling
+        """When on a journal entry, a tax line is edited manually by the user, it could
+        lead to a broken mapping
+        between the original tax details and the edited tax line. In that case, some
+        extra tax details are generated
+        on the tax line in order to reflect this edition. This test is there to ensure
+        the tax report is well handling
         such behavior.
         """
         tax_10 = self.env["account.tax"].create(
@@ -965,7 +968,8 @@ class TestTaxReportDefaultPart(TestAccountReportsCommon):
         )
         self.assertLinesValues(
             self.report_generic._get_lines(options),
-            #   Name                                    NET         TAX         NET         TAX         NET         TAX
+            # Name                                    NET         TAX         NET
+            # TAX         NET         TAX
             [0, 1, 2, 3, 4, 5, 6],
             [
                 ("Sales", "", 100.0, "", 500.0, "", 300.0),
@@ -985,7 +989,8 @@ class TestTaxReportDefaultPart(TestAccountReportsCommon):
         )
         self.assertLinesValues(
             self.report_grouped_account_tax._get_lines(options),
-            #   Name                                    NET         TAX         NET         TAX         NET         TAX
+            # Name                                    NET         TAX         NET
+            # TAX         NET         TAX
             [0, 1, 2, 3, 4, 5, 6],
             [
                 ("Sales", "", 100.0, "", 500.0, "", 300.0),
@@ -1010,7 +1015,8 @@ class TestTaxReportDefaultPart(TestAccountReportsCommon):
         )
         self.assertLinesValues(
             self.report_grouped_tax_account._get_lines(options),
-            #   Name                                    NET         TAX         NET         TAX         NET         TAX
+            # Name                                    NET         TAX         NET
+            # TAX         NET         TAX
             [0, 1, 2, 3, 4, 5, 6],
             [
                 ("Sales", "", 100.0, "", 500.0, "", 300.0),
@@ -1053,7 +1059,8 @@ class TestTaxReportDefaultPart(TestAccountReportsCommon):
             }
         )
 
-        # Create an invoice combining our taxes (1 line with each alone, and 1 line with both)
+        # Create an invoice combining our taxes (1 line with each alone, and 1 line with
+        # both)
         move = self.env["account.move"].create(
             {
                 "move_type": "out_invoice",
@@ -1107,8 +1114,8 @@ class TestTaxReportDefaultPart(TestAccountReportsCommon):
             [0, 1, 2],
             [
                 ("Sales", "", 108.2),
-                ("%s (42.0%%)" % affecting_tax.name, 200, 84),
-                ("%s (10.0%%)" % affected_tax.name, 242, 24.2),
+                (f"{affecting_tax.name} (42.0%)", 200, 84),
+                (f"{affected_tax.name} (10.0%)", 242, 24.2),
                 ("Total Sales", "", 108.2),
             ],
             options,
@@ -1367,7 +1374,8 @@ class TestTaxReportDefaultPart(TestAccountReportsCommon):
         move_form = Form(
             self.env["account.move"].with_context(default_move_type="entry")
         )
-        # {'invisible': [('move_type', 'not in', ['out_invoice', 'out_refund', 'in_invoice', 'in_refund', 'out_receipt', 'in_receipt'])]
+        # {'invisible': [('move_type', 'not in', ['out_invoice', 'out_refund',
+        # 'in_invoice', 'in_refund', 'out_receipt', 'in_receipt'])]
         move_form.date = "2022-02-01"
 
         for name, account_id, debit, credit, tax_to_apply in (

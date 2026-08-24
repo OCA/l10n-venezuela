@@ -117,19 +117,25 @@ class AccountMove(models.Model):
 
     def print_out_invoice(self, values):
         res = super().print_out_invoice(values)
-        for move in self.filtered(lambda record: record._l10n_ve_audit_is_fiscal_document()):
+        for move in self.filtered(
+            lambda record: record._l10n_ve_audit_is_fiscal_document()
+        ):
             move._l10n_ve_audit_log_fiscal_print_event()
         return res
 
     def print_out_refund(self, values):
         res = super().print_out_refund(values)
-        for move in self.filtered(lambda record: record._l10n_ve_audit_is_fiscal_document()):
+        for move in self.filtered(
+            lambda record: record._l10n_ve_audit_is_fiscal_document()
+        ):
             move._l10n_ve_audit_log_fiscal_print_event()
         return res
 
     def print_debit_note(self, values):
         res = super().print_debit_note(values)
-        for move in self.filtered(lambda record: record._l10n_ve_audit_is_fiscal_document()):
+        for move in self.filtered(
+            lambda record: record._l10n_ve_audit_is_fiscal_document()
+        ):
             move._l10n_ve_audit_log_fiscal_print_event()
         return res
 
@@ -159,6 +165,8 @@ class AccountMove(models.Model):
 
     def _l10n_ve_edi_on_dispatch_success(self, response):
         res = super()._l10n_ve_edi_on_dispatch_success(response)
-        for move in self.filtered(lambda record: record._l10n_ve_audit_is_fiscal_document()):
+        for move in self.filtered(
+            lambda record: record._l10n_ve_audit_is_fiscal_document()
+        ):
             move._l10n_ve_audit_log_edi_dispatch_event()
         return res

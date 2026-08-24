@@ -218,7 +218,8 @@ class AccountMove(models.Model):
                     "Configure una cuenta de anticipos en el contacto o en la compañía."
                 )
                 _logger.warning(
-                    "l10n_ve_payment_advance: factura %s partner %s sin cuenta anticipos",
+                    "l10n_ve_payment_advance: factura %s partner %s "
+                    "sin cuenta anticipos",
                     move.name,
                     move.commercial_partner_id.id,
                 )

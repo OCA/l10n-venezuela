@@ -1,10 +1,8 @@
 import logging
-import math
 import re
-from datetime import datetime
 from html.parser import HTMLParser
 
-from odoo import api, models
+from odoo import _, api, models
 from odoo.exceptions import UserError
 
 try:
@@ -17,7 +15,8 @@ _logger = logging.getLogger(__name__)
 _BDV_LINE_RE = re.compile(
     r"^(?P<date>\d{2}/\d{2}/\d{4})\s+"
     r"(?P<body>.+?)\s+"
-    r"(?P<operation>Nota de D[eé]bito|Nota de Cr[eé]dito|Saldo Inicial|Saldo Final)\s+"
+    r"(?P<operation>Nota de D[eé]bito|"
+    r"Nota de Cr[eé]dito|Saldo Inicial|Saldo Final)\s+"
     r"(?P<amount>-?[\d.]+,\d{2})\s+"
     r"(?P<balance>-?[\d.]+,\d{2})\s*$"
 )
@@ -229,9 +228,7 @@ class AccountStatementImportSheetParser(models.TransientModel):
                     mapping, data_file, currency_code
                 )
             except Exception as error:
-                _logger.warning(
-                    "No se pudo leer el comprobante BDVenlínea: %s", error
-                )
+                _logger.warning("No se pudo leer el comprobante BDVenlínea: %s", error)
         if data_file[:2] == b"PK":
             try:
                 from io import BytesIO
@@ -244,9 +241,7 @@ class AccountStatementImportSheetParser(models.TransientModel):
                 sheet = workbook.active
                 header = self._openpyxl_header(sheet, mapping)
                 columns = {
-                    column_name: self._get_column_indexes(
-                        header, column_name, mapping
-                    )
+                    column_name: self._get_column_indexes(header, column_name, mapping)
                     for column_name in self._get_column_names()
                 }
                 return self._parse_rows(
@@ -268,7 +263,10 @@ class AccountStatementImportSheetParser(models.TransientModel):
             if column_index_from_string:
                 return column_index_from_string(column_str.upper())
             raise UserError(
-                "openpyxl no está disponible. No se puede convertir letra de columna a número."
+                _(
+                    "openpyxl no está disponible. No se puede convertir "
+                    "letra de columna a número."
+                )
             )
         except (ValueError, AttributeError):
             _logger.warning("No se pudo convertir columna '%s' a índice", column_str)
@@ -277,10 +275,7 @@ class AccountStatementImportSheetParser(models.TransientModel):
     def _normalize_us_amount_for_ve_mapping(self, value, mapping):
         if not isinstance(value, str):
             return value
-        if (
-            mapping.float_thousands_sep != "dot"
-            or mapping.float_decimal_sep != "comma"
-        ):
+        if mapping.float_thousands_sep != "dot" or mapping.float_decimal_sep != "comma":
             return value
         raw = value.strip().strip('"')
         if "," in raw and raw.rfind(",") > raw.rfind("."):
@@ -317,170 +312,44 @@ class AccountStatementImportSheetParser(models.TransientModel):
             return None
         return None
 
+    def _strip_optional_text(self, value):
+        if isinstance(value, str):
+            return value.strip()
+        return value
+
+    def _strip_row_timestamp_values(self, values, columns):
+        indexes = columns.get("timestamp_column") or []
+        if not indexes:
+            return values
+        values = list(values)
+        for index in indexes:
+            if isinstance(index, int) and index < len(values):
+                values[index] = self._strip_optional_text(values[index])
+            elif not isinstance(index, int) and index in values:
+                values[index] = self._strip_optional_text(values[index])
+        return values
+
+    def _strip_optional_line_strings(self, line):
+        if not line:
+            return line
+        if "description" in line:
+            line["description"] = self._strip_optional_text(line["description"])
+        if "reference" in line:
+            line["reference"] = self._strip_optional_text(line["reference"])
+        return line
+
     def _process_row_values(self, values, mapping, currency_code, columns):
         if self._is_opening_or_closing_balance_row(values, columns=columns):
             return None
+        values = self._strip_row_timestamp_values(values, columns)
         timestamp = self._get_values_from_column(values, columns, "timestamp_column")
-        currency = (
-            self._get_values_from_column(values, columns, "currency_column")
-            if columns["currency_column"]
-            else currency_code
-        )
-
-        def _decimal(column_name):
-            if columns[column_name]:
-                return self._parse_decimal(
-                    self._get_values_from_column(values, columns, column_name),
-                    mapping,
-                )
-            return None
-
-        amount = _decimal("amount_column")
-        if not amount:
-            amount = abs(_decimal("amount_debit_column") or 0)
-        if not amount:
-            amount = -abs(_decimal("amount_credit_column") or 0)
-
-        balance = (
-            self._get_values_from_column(values, columns, "balance_column")
-            if columns["balance_column"]
-            else None
-        )
-        original_currency = (
-            self._get_values_from_column(values, columns, "original_currency_column")
-            if columns["original_currency_column"]
-            else None
-        )
-        original_amount = (
-            self._get_values_from_column(values, columns, "original_amount_column")
-            if columns["original_amount_column"]
-            else None
-        )
-        debit_credit = (
-            self._get_values_from_column(values, columns, "debit_credit_column")
-            if columns["debit_credit_column"]
-            else None
-        )
-        transaction_id = (
-            self._get_values_from_column(values, columns, "transaction_id_column")
-            if columns["transaction_id_column"]
-            else None
-        )
-        description = (
-            self._get_values_from_column(values, columns, "description_column")
-            if columns["description_column"]
-            else None
-        )
-        notes = (
-            self._get_values_from_column(values, columns, "notes_column")
-            if columns["notes_column"]
-            else None
-        )
-        reference = (
-            self._get_values_from_column(values, columns, "reference_column")
-            if columns["reference_column"]
-            else None
-        )
-        partner_name = (
-            self._get_values_from_column(values, columns, "partner_name_column")
-            if columns["partner_name_column"]
-            else None
-        )
-        bank_name = (
-            self._get_values_from_column(values, columns, "bank_name_column")
-            if columns["bank_name_column"]
-            else None
-        )
-        bank_account = (
-            self._get_values_from_column(values, columns, "bank_account_column")
-            if columns["bank_account_column"]
-            else None
-        )
-        debit_column = (
-            self._get_values_from_column(values, columns, "amount_debit_column")
-            if columns["amount_debit_column"]
-            else None
-        )
-        credit_column = (
-            self._get_values_from_column(values, columns, "amount_credit_column")
-            if columns["amount_credit_column"]
-            else None
-        )
-
-        if currency != currency_code:
-            return None
-
         if not timestamp:
             return None
-
-        if isinstance(timestamp, str):
-            try:
-                timestamp = datetime.strptime(timestamp.strip(), mapping.timestamp_format)
-            except ValueError:
-                return None
-            if timestamp.year == 1900:
-                now = datetime.now()
-                year = now.year
-                if timestamp.month > now.month:
-                    year -= 1
-                timestamp = timestamp.replace(year=year)
-
-        if balance:
-            balance = self._parse_decimal(balance, mapping)
-        else:
-            balance = None
-
-        if debit_credit is not None:
-            amount = abs(amount)
-            if debit_credit == mapping.debit_value:
-                amount = -amount
-
-        if debit_column and credit_column:
-            debit_amount = self._parse_decimal(debit_column, mapping)
-            debit_amount = abs(debit_amount)
-            credit_amount = self._parse_decimal(credit_column, mapping)
-            credit_amount = abs(credit_amount)
-            amount = -(credit_amount - debit_amount)
-
-        if original_amount:
-            original_amount = math.copysign(
-                self._parse_decimal(original_amount, mapping), amount
-            )
-        else:
-            original_amount = 0.0
-        if mapping.amount_inverse_sign:
-            amount = -amount
-            original_amount = -original_amount
-            balance = -balance if balance is not None else balance
-
-        line = {
-            "timestamp": timestamp,
-            "amount": amount,
-            "currency": currency,
-            "original_amount": original_amount,
-            "original_currency": original_currency,
-        }
-        if balance is not None:
-            line["balance"] = balance
-        if transaction_id is not None:
-            line["transaction_id"] = transaction_id
-        if description is not None:
-            line["description"] = (
-                description.strip() if isinstance(description, str) else description
-            )
-        if notes is not None:
-            line["notes"] = notes
-        if reference is not None:
-            line["reference"] = (
-                reference.strip() if isinstance(reference, str) else reference
-            )
-        if partner_name is not None:
-            line["partner_name"] = partner_name
-        if bank_name is not None:
-            line["bank_name"] = bank_name
-        if bank_account is not None:
-            line["bank_account"] = bank_account
-        return line
+        try:
+            line = super()._process_row_values(values, mapping, currency_code, columns)
+        except ValueError:
+            return None
+        return self._strip_optional_line_strings(line)
 
     def _parse_rows_openpyxl(self, mapping, currency_code, sheet, columns, data_file):
         numrows = sheet.max_row
@@ -534,9 +403,7 @@ class AccountStatementImportSheetParser(models.TransientModel):
                 ]
                 if mapping.skip_empty_lines and not any(values):
                     continue
-                line = self._process_row_values(
-                    values, mapping, currency_code, columns
-                )
+                line = self._process_row_values(values, mapping, currency_code, columns)
                 if line:
                     lines.append(line)
         else:
@@ -549,9 +416,7 @@ class AccountStatementImportSheetParser(models.TransientModel):
                 values = list(row)
                 if mapping.skip_empty_lines and not any(values):
                     continue
-                line = self._process_row_values(
-                    values, mapping, currency_code, columns
-                )
+                line = self._process_row_values(values, mapping, currency_code, columns)
                 if line:
                     lines.append(line)
         return lines

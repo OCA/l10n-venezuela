@@ -1,9 +1,11 @@
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError
 from odoo.tools import format_date
+
 from odoo.addons.web.controllers.utils import clean_action
 
 
+# pylint: disable=consider-merging-classes-inherited
 class AccountJournal(models.Model):
     _inherit = "account.journal"
 
@@ -34,14 +36,11 @@ class AccountJournal(models.Model):
         if "stock.picking" not in self.env:
             return False
         picking_model = self.env["stock.picking"]
-        return (
-            "l10n_ve_is_ve_country" in picking_model._fields
-            and callable(
-                getattr(
-                    picking_model,
-                    "_l10n_ve_dispatch_outgoing_moves_fully_invoiced",
-                    None,
-                )
+        return "l10n_ve_is_ve_country" in picking_model._fields and callable(
+            getattr(
+                picking_model,
+                "_l10n_ve_dispatch_outgoing_moves_fully_invoiced",
+                None,
             )
         )
 

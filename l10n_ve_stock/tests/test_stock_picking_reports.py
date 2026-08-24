@@ -1,9 +1,10 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
+from lxml import etree
+
 from odoo import Command
 from odoo.exceptions import UserError
 from odoo.tests import tagged
-from lxml import etree
 
 from .test_stock_picking_dispatch_guide import TestL10nVeStockDispatchGuide
 
@@ -204,7 +205,7 @@ class TestL10nVeStockPickingReports(TestL10nVeStockDispatchGuide):
         self.assertGreater(delivery_idx, -1)
         self.assertLess(invoice_idx, delivery_idx)
         invoice_block = html_text[invoice_idx:delivery_idx]
-        delivery_block = html_text[delivery_idx:delivery_idx + 1000]
+        delivery_block = html_text[delivery_idx : delivery_idx + 1000]
         if invoice_display:
             self.assertIn(invoice_display, html_text)
             self.assertIn(invoice_display, invoice_block)
@@ -353,9 +354,7 @@ class TestL10nVeStockPickingReports(TestL10nVeStockDispatchGuide):
         if not reason:
             reason = self.env["l10n.ve.discount.reason"].create({"name": "Descuento"})
         subtotal = sum(
-            line.price_subtotal
-            for line in order.order_line
-            if not line.display_type
+            line.price_subtotal for line in order.order_line if not line.display_type
         )
         self.env["l10n.ve.sale.order.discount"].create(
             {
@@ -394,9 +393,7 @@ class TestL10nVeStockPickingReports(TestL10nVeStockDispatchGuide):
         picking = self._prepare_outgoing_sale_picking(product, 1)
         order = picking.sale_id
         product_subtotal = sum(
-            line.price_subtotal
-            for line in order.order_line
-            if not line.display_type
+            line.price_subtotal for line in order.order_line if not line.display_type
         )
         discount_amount = product_subtotal * 0.1
         discount_product = self.env["product.product"].create(

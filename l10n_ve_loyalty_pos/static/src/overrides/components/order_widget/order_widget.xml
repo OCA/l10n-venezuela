@@ -22,7 +22,7 @@
                     t-key="discountLine.id"
                 >
                     <div class="d-flex justify-content-between w-100 fs-6 text-danger">
-                        <span t-esc="discountLine.name"/>
+                        <span t-esc="discountLine.name" />
                         <span
                             t-esc="formatMonetary(-taxTotals.order_sign * discountLine.amount, {currencyId: taxTotals.currency_id})"
                         />

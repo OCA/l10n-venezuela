@@ -19,7 +19,7 @@ class L10nVeLiquidityBookReportMixin(models.AbstractModel):
         }
 
     def _custom_options_initializer(self, report, options, previous_options):
-        super()._custom_options_initializer(
+        result = super()._custom_options_initializer(
             report, options, previous_options=previous_options
         )
         report._init_options_journals(
@@ -28,6 +28,7 @@ class L10nVeLiquidityBookReportMixin(models.AbstractModel):
             additional_journals_domain=[("type", "in", self._get_journal_types())],
         )
         options["unfold_all"] = options.get("unfold_all", True)
+        return result
 
     def export_to_pdf(self, options):
         report = self.env["account.report"].browse(options["report_id"])
@@ -165,10 +166,10 @@ class L10nVeLiquidityBookReportMixin(models.AbstractModel):
             running_balance = previous_balance
             journal_totals = defaultdict(
                 lambda: {
-                    "previous_balance": previous_balance,
+                    "previous_balance": previous_balance,  # noqa: B023
                     "debit": 0.0,
                     "credit": 0.0,
-                    "balance": previous_balance,
+                    "balance": previous_balance,  # noqa: B023
                 }
             )
             account_title = _("%(journal)s — %(account)s") % {

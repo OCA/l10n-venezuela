@@ -1,6 +1,6 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
-from odoo import _, api, Command, fields, models
+from odoo import Command, _, api, fields, models
 from odoo.exceptions import ValidationError
 
 
@@ -83,7 +83,7 @@ class ProductTemplate(models.Model):
             return self.env["res.company"].browse(cid)
         if isinstance(cid, models.Model):
             return cid
-        if isinstance(cid, (list, tuple)) and len(cid) >= 2:
+        if isinstance(cid, list | tuple) and len(cid) >= 2:
             if cid[0] == 4:
                 return self.env["res.company"].browse(cid[1])
             if cid[0] == 1 and len(cid) >= 2:
@@ -110,9 +110,7 @@ class ProductTemplate(models.Model):
 
     @api.model
     def _l10n_ve_get_exent_sale_tax(self, company):
-        tax = self.env["account.tax.group"]._l10n_ve_get_exempt_tax(
-            company, "sale"
-        )
+        tax = self.env["account.tax.group"]._l10n_ve_get_exempt_tax(company, "sale")
         if tax:
             return tax
         return self.env["account.tax"].search(
@@ -126,9 +124,7 @@ class ProductTemplate(models.Model):
 
     @api.model
     def _l10n_ve_get_exent_purchase_tax(self, company):
-        tax = self.env["account.tax.group"]._l10n_ve_get_exempt_tax(
-            company, "purchase"
-        )
+        tax = self.env["account.tax.group"]._l10n_ve_get_exempt_tax(company, "purchase")
         if tax:
             return tax
         return self.env["account.tax"].search(
@@ -192,9 +188,9 @@ class ProductTemplate(models.Model):
         compañía; el conteo se hace por compañía, no sobre el total.
         """
 
-        if self.env.context.get(
-            "install_mode"
-        ) or self.env.context.get("l10n_ve_skip_product_tax_constraint"):
+        if self.env.context.get("install_mode") or self.env.context.get(
+            "l10n_ve_skip_product_tax_constraint"
+        ):
             return
         for tmpl in self:
             if (

@@ -8,7 +8,10 @@
         <field name="name">Pronto pago</field>
         <field name="sequence">20</field>
     </record>
-    <record id="l10n_ve_discount_reason_foreign_currency" model="l10n.ve.discount.reason">
+    <record
+        id="l10n_ve_discount_reason_foreign_currency"
+        model="l10n.ve.discount.reason"
+    >
         <field name="name">Pago en divisas</field>
         <field name="sequence">30</field>
     </record>
@@ -16,7 +19,10 @@
         <field name="name">Descuento comercial</field>
         <field name="sequence">40</field>
     </record>
-    <record id="l10n_ve_discount_reason_commercial_adjustment" model="l10n.ve.discount.reason">
+    <record
+        id="l10n_ve_discount_reason_commercial_adjustment"
+        model="l10n.ve.discount.reason"
+    >
         <field name="name">Ajuste comercial</field>
         <field name="sequence">50</field>
     </record>

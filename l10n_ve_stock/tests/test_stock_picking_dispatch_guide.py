@@ -66,14 +66,10 @@ class TestL10nVeStockDispatchGuide(L10nVeSeniatCommon):
         while isinstance(action, dict) and action.get("res_model"):
             model = action["res_model"]
             if model == "l10n_ve.stock.picking.validate.confirmation":
-                wizard = self.env[model].with_context(
-                    **action["context"]
-                ).create({})
+                wizard = self.env[model].with_context(**action["context"]).create({})
                 action = wizard.action_confirm()
             elif model == "stock.backorder.confirmation":
-                wiz = Form(
-                    self.env[model].with_context(**action["context"])
-                ).save()
+                wiz = Form(self.env[model].with_context(**action["context"])).save()
                 action = wiz.process()
             else:
                 break
@@ -106,9 +102,9 @@ class TestL10nVeStockDispatchGuide(L10nVeSeniatCommon):
             action.get("res_model"),
             "l10n_ve.stock.picking.validate.confirmation",
         )
-        wizard = self.env[action["res_model"]].with_context(
-            **action["context"]
-        ).create({})
+        wizard = (
+            self.env[action["res_model"]].with_context(**action["context"]).create({})
+        )
         self.assertTrue(wizard.l10n_ve_next_control_number)
         self.assertRegex(wizard.l10n_ve_next_control_number, r"^01-\d{8}$")
         wizard.action_confirm()
@@ -140,8 +136,7 @@ class TestL10nVeStockDispatchGuide(L10nVeSeniatCommon):
         action = picking.button_validate()
         self.assertFalse(
             isinstance(action, dict)
-            and action.get("res_model")
-            == "l10n_ve.stock.picking.validate.confirmation"
+            and action.get("res_model") == "l10n_ve.stock.picking.validate.confirmation"
         )
         self.assertEqual(picking.state, "done")
         self.assertFalse((picking.l10n_ve_control_number or "").strip())

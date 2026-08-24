@@ -4,6 +4,5 @@ from odoo import models
 
 
 class ResCurrency(models.Model):
-
     _name = "res.currency"
     _inherit = ["res.currency", "mail.thread", "mail.activity.mixin"]

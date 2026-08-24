@@ -1,4 +1,5 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
+# pylint: disable=consider-merging-classes-inherited
 
 from odoo import api, fields, models, osv
 from odoo.tools import SQL, Query
@@ -18,7 +19,8 @@ class AccountReport(models.AbstractModel):
     )
 
     def _get_options_initializers_forced_sequence_map(self):
-        """Force the sequence for the init_options so columns headers are already generated but not the columns
+        """Force the sequence for the init_options so columns headers are already
+        generated but not the columns
         So, between _init_options_column_headers and _init_options_columns"""
         sequence_map = super()._get_options_initializers_forced_sequence_map()
         sequence_map[self._init_options_analytic_groupby] = 995
@@ -66,17 +68,20 @@ class AccountReport(models.AbstractModel):
         self._create_column_analytic(options)
 
     def _init_options_readonly_query(self, options, previous_options):
-        super()._init_options_readonly_query(options, previous_options)
+        result = super()._init_options_readonly_query(options, previous_options)
         options["readonly_query"] = options["readonly_query"] and not options.get(
             "analytic_groupby_option"
         )
+        return result
 
     def _create_column_analytic(self, options):
         """Creates the analytic columns for each plan or account in the filters.
-        This will duplicate all previous columns and adding the analytic accounts in the domain of the added columns.
+        This will duplicate all previous columns and adding the analytic accounts in the
+        domain of the added columns.
 
         The analytic_groupby_option is used so the table used is the shadowed table.
-        The domain on analytic_distribution can just use simple comparison as the column of the shadowed
+        The domain on analytic_distribution can just use simple comparison as the column
+        of the shadowed
         table will simply be filled with analytic_account_ids.
         """
         analytic_headers = []
@@ -121,12 +126,14 @@ class AccountReport(models.AbstractModel):
                 [budget for budget in options.get("budgets", []) if budget["selected"]]
             )
             if has_selected_budgets:
-                # if budget is selected, then analytic headers are placed on the same header level
+                # if budget is selected, then analytic headers are placed on the same
+                # header level
                 options["column_headers"][-1] = (
                     analytic_headers + options["column_headers"][-1]
                 )
             else:
-                # We add the analytic layer to the column_headers before creating the columns
+                # We add the analytic layer to the column_headers before creating the
+                # columns
                 analytic_headers.append({"name": ""})
 
                 options["column_headers"] = [
@@ -146,10 +153,11 @@ class AccountReport(models.AbstractModel):
         We inherit the schema of account_move_line, make the correspondence between
         account_move_line fields and account_analytic_line fields and put NULL for those
         who don't exist in account_analytic_line.
-        We also drop the NOT NULL constraints for fields who are not required in account_analytic_line.
+        We also drop the NOT NULL constraints for fields who are not required in
+        account_analytic_line.
         """
         self.env.cr.execute(
-            "SELECT 1 FROM information_schema.tables WHERE table_name='analytic_temp_account_move_line'"
+            "SELECT 1 FROM information_schema.tables WHERE table_name='analytic_temp_account_move_line'"  # noqa: E501
         )
         if self.env.cr.fetchone():
             return
@@ -194,7 +202,8 @@ class AccountReport(models.AbstractModel):
 
         query = SQL(
             """
-            CREATE OR REPLACE TEMPORARY VIEW analytic_temp_account_move_line (%(stored_aml_fields)s) AS
+            CREATE OR REPLACE TEMPORARY VIEW analytic_temp_account_move_line
+            (%(stored_aml_fields)s) AS
             SELECT %(fields_to_insert)s
             FROM account_analytic_line
             LEFT JOIN account_move_line
@@ -209,18 +218,21 @@ class AccountReport(models.AbstractModel):
         self.env.cr.execute(query)
 
     def _get_report_query(self, options, date_scope, domain=None) -> Query:
-        # Override to add the context key which will eventually trigger the shadowing of the table
+        # Override to add the context key which will eventually trigger the shadowing of
+        # the table
         context_self = self.with_context(
             account_report_analytic_groupby=options.get("analytic_groupby_option")
         )
 
-        # We add the domain filter for analytic_distribution here, as the search is not available
+        # We add the domain filter for analytic_distribution here, as the search is not
+        # available
         query = super(AccountReport, context_self)._get_report_query(
             options, date_scope, domain
         )
         if options.get("analytic_accounts"):
             if "analytic_accounts_list" in options:
-                # the table will be `analytic_temp_account_move_line` and thus analytic_distribution will be a single ID
+                # the table will be `analytic_temp_account_move_line` and thus
+                # analytic_distribution will be a single ID
                 analytic_account_ids = tuple(
                     str(account_id) for account_id in options["analytic_accounts"]
                 )
@@ -253,7 +265,8 @@ class AccountReport(models.AbstractModel):
         if not column_group_options.get("analytic_groupby_option"):
             return super().action_audit_cell(options, params)
         else:
-            # Start by getting the domain from the options. Note that this domain is targeting account.move.line
+            # Start by getting the domain from the options. Note that this domain is
+            # targeting account.move.line
             report_line = self.env["account.report.line"].browse(
                 params["report_line_id"]
             )
@@ -263,7 +276,8 @@ class AccountReport(models.AbstractModel):
             line_domain = self._get_audit_line_domain(
                 column_group_options, expression, params
             )
-            # The line domain is made for move lines, so we need some postprocessing to have it work with analytic lines.
+            # The line domain is made for move lines, so we need some postprocessing to
+            # have it work with analytic lines.
             domain = []
             AccountAnalyticLine = self.env["account.analytic.line"]
             for expression in line_domain:
@@ -274,14 +288,17 @@ class AccountReport(models.AbstractModel):
                     continue
 
                 field, operator, right_term = expression
-                # On analytic lines, the account.account field is named general_account_id and not account_id.
+                # On analytic lines, the account.account field is named
+                # general_account_id and not account_id.
                 if field.split(".")[0] == "account_id":
                     field = field.replace("account_id", "general_account_id")
                     expression = [(field, operator, right_term)]
-                # Replace the 'analytic_distribution' by the account_id domain as we expect for analytic lines.
+                # Replace the 'analytic_distribution' by the account_id domain as we
+                # expect for analytic lines.
                 elif field == "analytic_distribution":
                     expression = [("auto_account_id", "in", right_term)]
-                # For other fields not present in on the analytic line model, map them to get the info from the move_line.
+                # For other fields not present in on the analytic line model, map them
+                # to get the info from the move_line.
                 # Or ignore these conditions if there is no move lines.
                 elif field.split(".")[0] not in AccountAnalyticLine._fields:
                     expression = [(f"move_line_id.{field}", operator, right_term)]
@@ -308,7 +325,8 @@ class AccountReport(models.AbstractModel):
     @api.model
     def _get_options_journals_domain(self, options):
         domain = super()._get_options_journals_domain(options)
-        # Add False to the domain in order to select lines without journals for analytics columns.
+        # Add False to the domain in order to select lines without journals for
+        # analytics columns.
         if options.get("include_analytic_without_aml"):
             domain = osv.expression.OR(
                 [
@@ -322,7 +340,8 @@ class AccountReport(models.AbstractModel):
         self.ensure_one()
         domain = super()._get_options_domain(options, date_scope)
 
-        # Get the analytic accounts that we need to filter on from the options and add a domain for them.
+        # Get the analytic accounts that we need to filter on from the options and add a
+        # domain for them.
         if "analytic_accounts_list" in options:
             domain = osv.expression.AND(
                 [
@@ -344,10 +363,14 @@ class AccountMoveLine(models.Model):
     _inherit = "account.move.line"
 
     def _where_calc(self, domain, active_test=True):
-        """In case we need an analytic column in an account_report, we shadow the account_move_line table
-        with a temp table filled with analytic data, that will be used for the analytic columns.
-        We do it in this function to only create and fill it once for all computations of a report.
-        The following analytic columns and computations will just query the shadowed table instead of the real one.
+        """In case we need an analytic column in an account_report, we shadow the
+        account_move_line table
+        with a temp table filled with analytic data, that will be used for the analytic
+        columns.
+        We do it in this function to only create and fill it once for all computations
+        of a report.
+        The following analytic columns and computations will just query the shadowed
+        table instead of the real one.
         """
         query = super()._where_calc(domain, active_test)
         if self.env.context.get(

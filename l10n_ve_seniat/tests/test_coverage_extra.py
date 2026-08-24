@@ -19,7 +19,7 @@ class TestCoverageExtraAccountMove(L10nVeSeniatCommon):
         )
 
     def test_seniat_invoice_tag_foreign_currency_includes_rate_text(self):
-        self.env.company.partner_id.taxpayer_type = "formal"
+        self._l10n_ve_set_company_taxpayer_for_igtf_notice("special")
         company_ccy = self.env.company.currency_id
         foreign = (
             self.env.ref("base.USD")
@@ -341,14 +341,17 @@ class TestCoverageExtraAccountMove(L10nVeSeniatCommon):
         credit.ensure_one()
         self.assertEqual(credit.currency_id, credit.company_currency_id)
         inv_line = invoice.invoice_line_ids.filtered(
-            lambda l: l.display_type == "product"
+            lambda line: line.display_type == "product"
         )
         cred_line = credit.invoice_line_ids.filtered(
-            lambda l: l.display_type == "product"
+            lambda line: line.display_type == "product"
         )
         inv_line.ensure_one()
         cred_line.ensure_one()
-        if "price_subtotal_currency" in inv_line._fields and inv_line.price_subtotal_currency:
+        if (
+            "price_subtotal_currency" in inv_line._fields
+            and inv_line.price_subtotal_currency
+        ):
             expected_subtotal = abs(inv_line.price_subtotal_currency)
         else:
             expected_subtotal = abs(inv_line.balance)
@@ -703,9 +706,7 @@ class TestCoverageExtraAccountMove(L10nVeSeniatCommon):
             )
         )
         wiz.create_debit()
-        debit = self.env["account.move"].search(
-            [("debit_origin_id", "=", invoice.id)]
-        )
+        debit = self.env["account.move"].search([("debit_origin_id", "=", invoice.id)])
         debit.ensure_one()
         debit.write(
             {
@@ -744,7 +745,9 @@ class TestCoverageExtraAccountMove(L10nVeSeniatCommon):
                             "account_id": self.company_data[
                                 "default_account_revenue"
                             ].id,
-                            "tax_ids": [(6, 0, [self.company_data["default_tax_sale"].id])],
+                            "tax_ids": [
+                                (6, 0, [self.company_data["default_tax_sale"].id])
+                            ],
                         },
                     )
                 ],
@@ -814,11 +817,15 @@ class TestCoverageExtraNonVeCompany(L10nVeSeniatCommon):
             )
         )
         self.assertTrue(tax)
-        partner = self.env["res.partner"].with_company(company).create(
-            {
-                "name": "Cliente US sin VAT",
-                "country_id": self.env.ref("base.us").id,
-            }
+        partner = (
+            self.env["res.partner"]
+            .with_company(company)
+            .create(
+                {
+                    "name": "Cliente US sin VAT",
+                    "country_id": self.env.ref("base.us").id,
+                }
+            )
         )
         move = (
             self.env["account.move"]

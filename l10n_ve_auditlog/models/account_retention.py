@@ -20,7 +20,7 @@ class AccountRetention(models.Model):
 
     def action_post(self):
         to_log = self.filtered(lambda record: record.state != "emitted")
-        super().action_post()
+        res = super().action_post()
         for retention in to_log.filtered(lambda record: record.state == "emitted"):
             number = retention.number or retention.display_name
             retention._l10n_ve_audit_log_fiscal_event(
@@ -28,6 +28,7 @@ class AccountRetention(models.Model):
                 _("Emisión de retención %(document)s (N° %(number)s)")
                 % {"document": retention.display_name, "number": number},
             )
+        return res
 
     def _l10n_ve_edi_on_dispatch_success(self, response):
         res = super()._l10n_ve_edi_on_dispatch_success(response)

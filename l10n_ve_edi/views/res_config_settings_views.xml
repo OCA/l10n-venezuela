@@ -1,29 +1,50 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <odoo>
     <record id="res_config_settings_l10n_ve_edi_retention" model="ir.ui.view">
         <field name="name">res.config.settings.l10n.ve.edi.retention</field>
         <field name="model">res.config.settings</field>
-        <field name="inherit_id" ref="l10n_ve_withholding.res_config_settings_l10n_ve_withholding"/>
+        <field
+            name="inherit_id"
+            ref="l10n_ve_withholding.res_config_settings_l10n_ve_withholding"
+        />
         <field name="arch" type="xml">
-            <xpath expr="//setting[@name='retention_iva_journals_settings']//field[@name='iva_customer_retention_journal_id']/.." position="after">
-                <field name="l10n_ve_has_digital_billing_emission" invisible="1"/>
-                <div class="row mt16" invisible="not l10n_ve_has_digital_billing_emission">
+            <xpath
+                expr="//setting[@name='retention_iva_journals_settings']//field[@name='iva_customer_retention_journal_id']/.."
+                position="after"
+            >
+                <field name="l10n_ve_has_digital_billing_emission" invisible="1" />
+                <div
+                    class="row mt16"
+                    invisible="not l10n_ve_has_digital_billing_emission"
+                >
                     <label
                         string="Proveedor de facturacion digital"
                         for="l10n_ve_edi_iva_supplier_retention_provider"
                         class="col-lg-6 o_light_label"
                     />
-                    <field name="l10n_ve_edi_iva_supplier_retention_provider" class="col-lg-6"/>
+                    <field
+                        name="l10n_ve_edi_iva_supplier_retention_provider"
+                        class="col-lg-6"
+                    />
                 </div>
             </xpath>
-            <xpath expr="//setting[@name='retention_islr_journals_settings']//field[@name='islr_customer_retention_journal_id']/.." position="after">
-                <div class="row mt16" invisible="not l10n_ve_has_digital_billing_emission">
+            <xpath
+                expr="//setting[@name='retention_islr_journals_settings']//field[@name='islr_customer_retention_journal_id']/.."
+                position="after"
+            >
+                <div
+                    class="row mt16"
+                    invisible="not l10n_ve_has_digital_billing_emission"
+                >
                     <label
                         string="Proveedor de facturacion digital"
                         for="l10n_ve_edi_islr_supplier_retention_provider"
                         class="col-lg-6 o_light_label"
                     />
-                    <field name="l10n_ve_edi_islr_supplier_retention_provider" class="col-lg-6"/>
+                    <field
+                        name="l10n_ve_edi_islr_supplier_retention_provider"
+                        class="col-lg-6"
+                    />
                 </div>
             </xpath>
         </field>

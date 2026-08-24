@@ -178,8 +178,6 @@ class TestSaleOrderLineVe(L10nVeSeniatCommon):
                 ],
             }
         )
-        line = move.invoice_line_ids.filtered(
-            lambda aml: aml.display_type == "product"
-        )
+        line = move.invoice_line_ids.filtered(lambda aml: aml.display_type == "product")
         self.assertEqual(len(line), 1)
         self.assertLess(line.price_unit, 0)

@@ -1,7 +1,8 @@
+import logging
+
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError
 
-import logging
 _logger = logging.getLogger(__name__)
 
 CUSTOMER_INVOICE_TYPES = ("out_invoice", "out_refund")
@@ -135,7 +136,10 @@ class AccountPaymentRegister(models.TransientModel):
 
     def _l10n_ve_currency_applies_igtf(self):
         self.ensure_one()
-        return self.currency_id and self.currency_id in self._l10n_ve_get_allowed_currencies()
+        return (
+            self.currency_id
+            and self.currency_id in self._l10n_ve_get_allowed_currencies()
+        )
 
     def _get_lines(self):
         if not self.batches:
@@ -192,7 +196,7 @@ class AccountPaymentRegister(models.TransientModel):
         "batches",
     )
     def _compute_amount(self):
-        super()._compute_amount()
+        result = super()._compute_amount()
         for wiz in self:
             if not wiz.journal_id or not wiz.currency_id or not wiz.payment_date:
                 continue
@@ -205,6 +209,7 @@ class AccountPaymentRegister(models.TransientModel):
                 continue
             if wiz.currency_id.compare_amounts(wiz.amount, cap) > 0:
                 wiz.amount = cap
+        return result
 
     def _l10n_ve_wizard_pays_full_residual(self):
         self.ensure_one()
@@ -224,7 +229,7 @@ class AccountPaymentRegister(models.TransientModel):
         "batches",
     )
     def _compute_payment_difference_handling(self):
-        super()._compute_payment_difference_handling()
+        result = super()._compute_payment_difference_handling()
         for wizard in self:
             if not wizard.can_edit_wizard:
                 continue
@@ -241,6 +246,7 @@ class AccountPaymentRegister(models.TransientModel):
                 and wizard._l10n_ve_wizard_pays_full_residual()
             ):
                 wizard.payment_difference_handling = "reconcile"
+        return result
 
     @api.depends(
         "can_edit_wizard",
@@ -251,7 +257,7 @@ class AccountPaymentRegister(models.TransientModel):
         "l10n_ve_igtf_amount_currency",
     )
     def _compute_payment_difference(self):
-        super()._compute_payment_difference()
+        result = super()._compute_payment_difference()
         for wizard in self:
             if (
                 wizard.payment_date
@@ -260,6 +266,7 @@ class AccountPaymentRegister(models.TransientModel):
                 and wizard.currency_id
             ):
                 wizard.payment_difference += wizard.l10n_ve_igtf_amount_currency
+        return result
 
     def _l10n_ve_get_invoice_total_in_company_currency(self, move):
         self.ensure_one()
@@ -273,9 +280,7 @@ class AccountPaymentRegister(models.TransientModel):
         )
 
     def _l10n_ve_get_customer_moves_from_lines(self, lines):
-        return lines.move_id.filtered(
-            lambda m: m.move_type in CUSTOMER_INVOICE_TYPES
-        )
+        return lines.move_id.filtered(lambda m: m.move_type in CUSTOMER_INVOICE_TYPES)
 
     def _l10n_ve_get_igtf_residual_company_amount(self, lines=None):
         if lines is None:
@@ -322,14 +327,18 @@ class AccountPaymentRegister(models.TransientModel):
 
         if igtf_already_collected >= max_igtf:
             message = _(
-                "No se puede aplicar IGTF porque el monto máximo de IGTF permitido "
-                "(%(max)s %(currency)s, equivalente al %(pct)s%% del total de la factura en moneda del sistema) "
-                "ya fue cobrado en pagos anteriores (%(already)s %(currency)s)."
+                "No se puede aplicar IGTF porque el monto máximo de "
+                "IGTF permitido "
+                "(%(max)s %(currency)s, equivalente al %(pct)s%% del "
+                "total de la factura en moneda del sistema) "
+                "ya fue cobrado en pagos anteriores "
+                "(%(already)s %(currency)s)."
             ) % {
                 "max": max_igtf,
                 "already": igtf_already_collected,
                 "pct": percent,
-                "currency": self.company_currency_id.symbol or self.company_currency_id.name,
+                "currency": self.company_currency_id.symbol
+                or self.company_currency_id.name,
             }
             return True, message
 
@@ -344,7 +353,9 @@ class AccountPaymentRegister(models.TransientModel):
         if percent <= 0.0 or not self.batches:
             return False, ""
 
-        currency_symbol = self.company_currency_id.symbol or self.company_currency_id.name
+        currency_symbol = (
+            self.company_currency_id.symbol or self.company_currency_id.name
+        )
 
         if self.can_edit_wizard:
             first_batch = self.batches[0]
@@ -370,9 +381,13 @@ class AccountPaymentRegister(models.TransientModel):
                 max_available = max_igtf - igtf_already
                 if igtf_this_company > max_available:
                     return True, _(
-                        "El IGTF calculado (%(this)s %(currency)s) supera el máximo permitido "
-                        "(%(max)s %(currency)s, equivalente al %(pct)s%% del total de la factura en moneda del sistema). "
-                        "Ya se cobró %(already)s %(currency)s en pagos anteriores."
+                        "El IGTF calculado (%(this)s %(currency)s) "
+                        "supera el máximo permitido "
+                        "(%(max)s %(currency)s, equivalente al "
+                        "%(pct)s%% del total de la factura en moneda "
+                        "del sistema). "
+                        "Ya se cobró %(already)s %(currency)s en "
+                        "pagos anteriores."
                     ) % {
                         "this": igtf_this_company,
                         "max": max_igtf,
@@ -405,9 +420,13 @@ class AccountPaymentRegister(models.TransientModel):
             max_available = max_igtf - igtf_already
             if igtf_this_company > max_available:
                 return True, _(
-                    "El IGTF calculado (%(this)s %(currency)s) supera el máximo permitido "
-                    "(%(max)s %(currency)s, equivalente al %(pct)s%% del total de la factura en moneda del sistema). "
-                    "Ya se cobró %(already)s %(currency)s en pagos anteriores."
+                    "El IGTF calculado (%(this)s %(currency)s) "
+                    "supera el máximo permitido "
+                    "(%(max)s %(currency)s, equivalente al "
+                    "%(pct)s%% del total de la factura en moneda "
+                    "del sistema). "
+                    "Ya se cobró %(already)s %(currency)s en "
+                    "pagos anteriores."
                 ) % {
                     "this": igtf_this_company,
                     "max": max_igtf,
@@ -460,8 +479,8 @@ class AccountPaymentRegister(models.TransientModel):
         if not moves:
             return
 
-        max_igtf, igtf_already, igtf_this_currency = self._l10n_ve_compute_igtf_for_moves(
-            moves, igtf_included, amount
+        max_igtf, igtf_already, igtf_this_currency = (
+            self._l10n_ve_compute_igtf_for_moves(moves, igtf_included, amount)
         )
 
         igtf_this_company = self.currency_id._convert(
@@ -475,7 +494,8 @@ class AccountPaymentRegister(models.TransientModel):
 
         if total_igtf > max_igtf:
             _logger.warning(
-                "IGTF exceeds limit in payment register; it will be capped on payment line creation."
+                "IGTF exceeds limit in payment register; it will "
+                "be capped on payment line creation."
             )
 
     def _l10n_ve_get_igtf_cap_company_for_batch(self, batch_result):
@@ -505,11 +525,17 @@ class AccountPaymentRegister(models.TransientModel):
         total = 0.0
         for move in moves:
             if not move.l10n_ve_igtf_invoice_has_igtf_accrual():
-                res_wo = move.l10n_ve_igtf_get_residual_excluding_igtf_in_document_currency()
+                res_wo = (
+                    move.l10n_ve_igtf_get_residual_excluding_igtf_in_document_currency()
+                )
             else:
                 ceiling = move.l10n_ve_igtf_get_wo_igtf_total_in_document_currency()
-                used_bs = move.l10n_ve_igtf_get_cumulative_bs_paid_in_document_currency()
-                res_wo = move.l10n_ve_igtf_get_residual_excluding_igtf_in_document_currency()
+                used_bs = (
+                    move.l10n_ve_igtf_get_cumulative_bs_paid_in_document_currency()
+                )
+                res_wo = (
+                    move.l10n_ve_igtf_get_residual_excluding_igtf_in_document_currency()
+                )
                 left_from_ceiling = max(ceiling - used_bs, 0.0)
                 res_wo = min(res_wo, left_from_ceiling)
             if move.currency_id.is_zero(res_wo):
@@ -539,7 +565,9 @@ class AccountPaymentRegister(models.TransientModel):
             return None
         total = 0.0
         for move in moves:
-            base_doc = move.l10n_ve_igtf_get_residual_excluding_igtf_in_document_currency()
+            base_doc = (
+                move.l10n_ve_igtf_get_residual_excluding_igtf_in_document_currency()
+            )
             ceiling = move.l10n_ve_igtf_get_wo_igtf_total_in_document_currency()
             used_bs = move.l10n_ve_igtf_get_cumulative_bs_paid_in_document_currency()
             base_left_from_ceiling = max(ceiling - used_bs, 0.0)
@@ -566,7 +594,9 @@ class AccountPaymentRegister(models.TransientModel):
             lines = batch.get("lines", self.env["account.move.line"])
             if lines:
                 moves = lines.move_id
-                if moves and any(m.move_type not in CUSTOMER_INVOICE_TYPES for m in moves):
+                if moves and any(
+                    m.move_type not in CUSTOMER_INVOICE_TYPES for m in moves
+                ):
                     return False
         return True
 
@@ -737,7 +767,9 @@ class AccountPaymentRegister(models.TransientModel):
                 self.payment_date,
             )
         )
-        base_company = self.company_currency_id.round(igtf_company / rate) if rate else 0.0
+        base_company = (
+            self.company_currency_id.round(igtf_company / rate) if rate else 0.0
+        )
         return base_company, igtf_currency, igtf_company
 
     def _l10n_ve_compute_igtf_amount_company_currency_for_base(self):
@@ -827,7 +859,9 @@ class AccountPaymentRegister(models.TransientModel):
                 wiz.l10n_ve_ves_suggested_igtf = 0.0
                 wiz.l10n_ve_ves_payment_cap = 0.0
                 continue
-            cap_full = wiz._l10n_ve_get_max_ves_payment_full_residual_in_company_currency()
+            cap_full = (
+                wiz._l10n_ve_get_max_ves_payment_full_residual_in_company_currency()
+            )
             if cap_full is None or not wiz.currency_id:
                 wiz.l10n_ve_ves_show_bolivar_split = False
                 wiz.l10n_ve_ves_suggested_base = 0.0
@@ -920,7 +954,9 @@ class AccountPaymentRegister(models.TransientModel):
                 continue
 
             rate = wiz._l10n_ve_get_igtf_rate()
-            total_amounts = wiz._get_total_amounts_to_pay(wiz.batches) if wiz.batches else {}
+            total_amounts = (
+                wiz._get_total_amounts_to_pay(wiz.batches) if wiz.batches else {}
+            )
             base_amount = total_amounts.get("amount_by_default", wiz.amount)
             suggested = wiz.currency_id.round(base_amount * (1.0 + rate))
             wiz.custom_user_currency_id = wiz.currency_id
@@ -998,9 +1034,12 @@ class AccountPaymentRegister(models.TransientModel):
                 continue
             raise UserError(
                 _(
-                    "No puede confirmar un pago en bolívares en el estado actual de la factura "
-                    "%(name)s: el asistente o las reglas de cupo/IGTF no lo permiten. Compruebe el "
-                    "abono o utilice otra moneda, o abra una nota de crédito si corresponde a la "
+                    "No puede confirmar un pago en bolívares en el "
+                    "estado actual de la factura "
+                    "%(name)s: el asistente o las reglas de "
+                    "cupo/IGTF no lo permiten. Compruebe el "
+                    "abono o utilice otra moneda, o abra una nota "
+                    "de crédito si corresponde a la "
                     "diferencia en moneda de la factura."
                 )
                 % {"name": (move.name or str(move.id))}
@@ -1017,7 +1056,8 @@ class AccountPaymentRegister(models.TransientModel):
         ):
             raise UserError(
                 _(
-                    "El IGTF es obligatorio cuando el pago es en las monedas configuradas (ej. USD). "
+                    "El IGTF es obligatorio cuando el pago es en "
+                    "las monedas configuradas (ej. USD). "
                     "Debe aplicar IGTF para continuar."
                 )
             )
@@ -1025,18 +1065,22 @@ class AccountPaymentRegister(models.TransientModel):
         self._l10n_ve_check_register_payment_allowed_for_moves()
 
         max_bs = self._l10n_ve_get_max_ves_payment_full_residual_in_company_currency()
-        if max_bs is not None and self.currency_id.compare_amounts(
-            self.amount, max_bs
-        ) > 0:
+        if (
+            max_bs is not None
+            and self.currency_id.compare_amounts(self.amount, max_bs) > 0
+        ):
             raise UserError(
                 _(
-                    "En bolívares el abono no puede ser mayor al saldo pendiente total (incluye "
-                    "el importe que corresponde a la base en moneda documento e IGTF). Máximo "
+                    "En bolívares el abono no puede ser mayor al "
+                    "saldo pendiente total (incluye "
+                    "el importe que corresponde a la base en moneda "
+                    "documento e IGTF). Máximo "
                     "permitido ahora: %(max)s %(cur)s."
                 )
                 % {
                     "max": max_bs,
-                    "cur": self.company_currency_id.symbol or self.company_currency_id.name,
+                    "cur": self.company_currency_id.symbol
+                    or self.company_currency_id.name,
                 }
             )
 

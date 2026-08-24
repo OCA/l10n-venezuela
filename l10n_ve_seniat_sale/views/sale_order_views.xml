@@ -4,8 +4,13 @@
         <field name="model">sale.order</field>
         <field name="inherit_id" ref="sale.view_order_form" />
         <field name="arch" type="xml">
-            <xpath expr="//field[@name='order_line']//list//field[@name='product_template_id']" position="attributes">
-                <attribute name="options">{'no_create': True, 'no_create_edit': True}</attribute>
+            <xpath
+                expr="//field[@name='order_line']//list//field[@name='product_template_id']"
+                position="attributes"
+            >
+                <attribute
+                    name="options"
+                >{'no_create': True, 'no_create_edit': True}</attribute>
             </xpath>
             <xpath
                 expr="//group[@name='partner_details']/field[@name='partner_id'][@widget='res_partner_many2one']"
@@ -23,8 +28,14 @@
                 >{"no_quick_create": True, "no_create": False, "no_create_edit": False}</attribute>
                 <attribute name="placeholder">Buscar nombre o RIF...</attribute>
             </xpath>
-            <xpath expr="//group[@name='note_group']//field[@name='note']" position="before">
-                <separator string="Términos y condiciones" invisible="country_code != 'VE'" />
+            <xpath
+                expr="//group[@name='note_group']//field[@name='note']"
+                position="before"
+            >
+                <separator
+                    string="Términos y condiciones"
+                    invisible="country_code != 'VE'"
+                />
             </xpath>
             <xpath expr="//field[@name='payment_term_id']" position="after">
                 <field
@@ -73,17 +84,21 @@
                     invisible="country_code != 'VE'"
                 />
             </xpath>
-            <xpath expr="//button[@name='action_preview_sale_order']" position="attributes">
-                <attribute
-                    name="invisible"
-                >l10n_ve_hide_order_preview</attribute>
+            <xpath
+                expr="//button[@name='action_preview_sale_order']"
+                position="attributes"
+            >
+                <attribute name="invisible">l10n_ve_hide_order_preview</attribute>
             </xpath>
             <xpath expr="//button[@id='create_invoice']" position="attributes">
                 <attribute
                     name="invisible"
                 >invoice_status != 'to invoice' or country_code == 'VE'</attribute>
             </xpath>
-            <xpath expr="//button[@id='create_invoice_percentage']" position="attributes">
+            <xpath
+                expr="//button[@id='create_invoice_percentage']"
+                position="attributes"
+            >
                 <attribute
                     name="invisible"
                 >invoice_status != 'no' or state != 'sale' or country_code == 'VE'</attribute>

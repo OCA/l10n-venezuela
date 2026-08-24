@@ -1,5 +1,5 @@
 def migrate(cr, version):
-    from odoo import api, SUPERUSER_ID
+    from odoo import SUPERUSER_ID, api
 
     env = api.Environment(cr, SUPERUSER_ID, {})
     for xmlid in (

@@ -9,7 +9,10 @@
                 <group>
                     <field name="move_id" invisible="1" />
                     <field name="debit_note_ids" readonly="1" widget="many2many_tags" />
-                    <field name="reason" placeholder="Indique el motivo de la reversión..." />
+                    <field
+                        name="reason"
+                        placeholder="Indique el motivo de la reversión..."
+                    />
                 </group>
                 <footer>
                     <button

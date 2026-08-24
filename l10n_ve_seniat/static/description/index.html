@@ -370,20 +370,119 @@ ul.auto-toc {
 !! source digest: sha256:20610e54e0876592eceb0584fff7441a83aafa68b183642a3bd24e1e25a75b1e
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! -->
 <p><a class="reference external image-reference" href="https://odoo-community.org/page/development-status"><img alt="Beta" src="https://img.shields.io/badge/maturity-Beta-yellow.png" /></a> <a class="reference external image-reference" href="http://www.gnu.org/licenses/agpl-3.0-standalone.html"><img alt="License: AGPL-3" src="https://img.shields.io/badge/licence-AGPL--3-blue.png" /></a> <a class="reference external image-reference" href="https://github.com/OCA/l10n-venezuela/tree/18.0/l10n_ve_seniat"><img alt="OCA/l10n-venezuela" src="https://img.shields.io/badge/github-OCA%2Fl10n--venezuela-lightgray.png?logo=github" /></a> <a class="reference external image-reference" href="https://translation.odoo-community.org/projects/l10n-venezuela-18-0/l10n-venezuela-18-0-l10n_ve_seniat"><img alt="Translate me on Weblate" src="https://img.shields.io/badge/weblate-Translate%20me-F47D42.png" /></a> <a class="reference external image-reference" href="https://runboat.odoo-community.org/builds?repo=OCA/l10n-venezuela&amp;target_branch=18.0"><img alt="Try me on Runboat" src="https://img.shields.io/badge/runboat-Try%20me-875A7B.png" /></a></p>
-<p>Configuracion de Account l10n_ve</p>
+<p>Configuración contable SENIAT para Venezuela.</p>
+<p>Incluye facturación fiscal, numeración, validaciones de RIF y el flujo
+de notas de crédito y notas de débito tanto para facturas de cliente
+como de proveedor (<tt class="docutils literal">out_invoice</tt> / <tt class="docutils literal">in_invoice</tt>).</p>
+<p>Los descuentos globales y post-factura están en el módulo opcional
+<tt class="docutils literal">l10n_ve_loyalty</tt>.</p>
+<p>Permite configurar por compañía los medios de emisión de facturas y
+otros documentos (forma libre, máquina fiscal y facturación digital).</p>
+<p>Los reportes nativos de facturas omiten el encabezado del diseño
+seleccionado. El título muestra únicamente el nombre del documento y los
+totales omiten el IGTF cuando el diario no tiene medio de emisión. Los
+grupos de impuestos con una tasa de 0% no aparecen en los totales.</p>
+<p>La fecha de recepción de la factura es el inicio de los plazos de pago y
+de las cuotas de vencimiento.</p>
 <p><strong>Table of contents</strong></p>
 <div class="contents local topic" id="contents">
 <ul class="simple">
-<li><a class="reference internal" href="#bug-tracker" id="toc-entry-1">Bug Tracker</a></li>
-<li><a class="reference internal" href="#credits" id="toc-entry-2">Credits</a><ul>
-<li><a class="reference internal" href="#authors" id="toc-entry-3">Authors</a></li>
-<li><a class="reference internal" href="#maintainers" id="toc-entry-4">Maintainers</a></li>
+<li><a class="reference internal" href="#configuration" id="toc-entry-1">Configuration</a></li>
+<li><a class="reference internal" href="#configure" id="toc-entry-2">Configure</a><ul>
+<li><a class="reference internal" href="#medios-de-emision" id="toc-entry-3">Medios de emisión</a></li>
+<li><a class="reference internal" href="#fecha-de-recepcion" id="toc-entry-4">Fecha de recepción</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#usage" id="toc-entry-5">Usage</a></li>
+<li><a class="reference internal" href="#usage-1" id="toc-entry-6">Usage</a><ul>
+<li><a class="reference internal" href="#medios-de-emision-1" id="toc-entry-7">Medios de emisión</a></li>
+<li><a class="reference internal" href="#notas-de-credito-y-debito" id="toc-entry-8">Notas de crédito y débito</a></li>
+<li><a class="reference internal" href="#fecha-de-recepcion-y-vencimientos" id="toc-entry-9">Fecha de recepción y vencimientos</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#bug-tracker" id="toc-entry-10">Bug Tracker</a></li>
+<li><a class="reference internal" href="#credits" id="toc-entry-11">Credits</a><ul>
+<li><a class="reference internal" href="#authors" id="toc-entry-12">Authors</a></li>
+<li><a class="reference internal" href="#contributors" id="toc-entry-13">Contributors</a></li>
+<li><a class="reference internal" href="#maintainers" id="toc-entry-14">Maintainers</a></li>
 </ul>
 </li>
 </ul>
 </div>
+<div class="section" id="configuration">
+<h1><a class="toc-backref" href="#toc-entry-1">Configuration</a></h1>
+</div>
+<div class="section" id="configure">
+<h1><a class="toc-backref" href="#toc-entry-2">Configure</a></h1>
+<div class="section" id="medios-de-emision">
+<h2><a class="toc-backref" href="#toc-entry-3">Medios de emisión</a></h2>
+<ol class="arabic simple">
+<li>Vaya a <strong>Contabilidad → Configuración → Ajustes</strong>.</li>
+<li>En el bloque <strong>Venezuela</strong>, seleccione los <strong>Medios de emisión</strong> de
+la compañía (forma libre, máquina fiscal y/o facturación digital).</li>
+<li>Guarde los ajustes.</li>
+</ol>
+<p>También puede gestionar el catálogo desde <strong>SENIAT → Localización →
+Medios de emisión</strong>, y ver los medios asignados en <strong>SENIAT →
+Empresas</strong>.</p>
+</div>
+<div class="section" id="fecha-de-recepcion">
+<h2><a class="toc-backref" href="#toc-entry-4">Fecha de recepción</a></h2>
+<p>En el mismo bloque <strong>Venezuela</strong> de los ajustes de Contabilidad puede
+activar por separado el uso de la fecha de recepción como inicio de los
+plazos de pago en facturas de cliente y/o de proveedor.</p>
+</div>
+</div>
+<div class="section" id="usage">
+<h1><a class="toc-backref" href="#toc-entry-5">Usage</a></h1>
+</div>
+<div class="section" id="usage-1">
+<h1><a class="toc-backref" href="#toc-entry-6">Usage</a></h1>
+<div class="section" id="medios-de-emision-1">
+<h2><a class="toc-backref" href="#toc-entry-7">Medios de emisión</a></h2>
+<p>En <strong>SENIAT → Empresas</strong> el kanban muestra los medios de emisión
+asignados a cada compañía. La selección se realiza en los ajustes de
+Contabilidad (véase la sección de configuración).</p>
+</div>
+<div class="section" id="notas-de-credito-y-debito">
+<h2><a class="toc-backref" href="#toc-entry-8">Notas de crédito y débito</a></h2>
+<ol class="arabic simple">
+<li>Abra una factura de cliente o de proveedor publicada.</li>
+<li>Use <strong>Nota de crédito</strong> (reversión) o <strong>Nota de Debito</strong> según
+corresponda.</li>
+<li>En <strong>ventas</strong>, aplican las reglas SENIAT de emisión, montos y
+productos.</li>
+<li>En <strong>proveedor</strong>, el registro es más libre: puede cambiar moneda,
+impuestos y montos distintos a la factura origen (sin tope SENIAT de
+NC ni forzar bolívares).</li>
+<li>Si tras una nota de crédito total de cliente queda una ND sin
+revertir, use el asistente <strong>Nota de crédito por ND</strong>.</li>
+</ol>
+<p>Las notas reutilizan el mismo diario y contacto de la factura origen.</p>
+</div>
+<div class="section" id="fecha-de-recepcion-y-vencimientos">
+<h2><a class="toc-backref" href="#toc-entry-9">Fecha de recepción y vencimientos</a></h2>
+<ol class="arabic simple">
+<li>En <strong>Contabilidad → Configuración → Ajustes</strong>, bloque <strong>Venezuela</strong>,
+active <strong>Usar fecha de recepción en facturas de cliente</strong> y/o <strong>Usar
+fecha de recepción en facturas de proveedor</strong>.</li>
+<li>Tras confirmar la factura, indique la <strong>Fecha de recepción</strong>. Esa
+fecha es el inicio de los plazos de pago:<ul>
+<li>Sin plazo de pago (contado): el vencimiento pasa a la fecha de
+recepción.</li>
+<li>Con plazo (por ejemplo, 30 días): el vencimiento y cada cuota se
+calculan desde la recepción, no desde la fecha de la factura. La
+fecha de vencimiento se muestra en el encabezado y en <strong>Fecha de
+vencimiento</strong> de los apuntes contables.</li>
+</ul>
+</li>
+</ol>
+<p>Ejemplo: factura del 1 de enero, recepción el 5 de enero y pago a 30
+días → vencimiento el 4 de febrero.</p>
+</div>
+</div>
 <div class="section" id="bug-tracker">
-<h1><a class="toc-backref" href="#toc-entry-1">Bug Tracker</a></h1>
+<h1><a class="toc-backref" href="#toc-entry-10">Bug Tracker</a></h1>
 <p>Bugs are tracked on <a class="reference external" href="https://github.com/OCA/l10n-venezuela/issues">GitHub Issues</a>.
 In case of trouble, please check there if your issue has already been reported.
 If you spotted it first, help us to smash it by providing a detailed and welcomed
@@ -391,15 +490,22 @@ If you spotted it first, help us to smash it by providing a detailed and welcome
 <p>Do not contact contributors directly about support or help with technical issues.</p>
 </div>
 <div class="section" id="credits">
-<h1><a class="toc-backref" href="#toc-entry-2">Credits</a></h1>
+<h1><a class="toc-backref" href="#toc-entry-11">Credits</a></h1>
 <div class="section" id="authors">
-<h2><a class="toc-backref" href="#toc-entry-3">Authors</a></h2>
+<h2><a class="toc-backref" href="#toc-entry-12">Authors</a></h2>
 <ul class="simple">
 <li>Anderson Armeya</li>
 </ul>
 </div>
+<div class="section" id="contributors">
+<h2><a class="toc-backref" href="#toc-entry-13">Contributors</a></h2>
+<ul class="simple">
+<li>Anderson Armeya</li>
+<li>andyengit</li>
+</ul>
+</div>
 <div class="section" id="maintainers">
-<h2><a class="toc-backref" href="#toc-entry-4">Maintainers</a></h2>
+<h2><a class="toc-backref" href="#toc-entry-14">Maintainers</a></h2>
 <p>This module is maintained by the OCA.</p>
 <a class="reference external image-reference" href="https://odoo-community.org">
 <img alt="Odoo Community Association" src="https://odoo-community.org/logo.png" />

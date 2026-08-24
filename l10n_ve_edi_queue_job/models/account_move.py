@@ -1,4 +1,4 @@
-from odoo import models
+from odoo import _, models
 
 
 class AccountMove(models.Model):
@@ -9,7 +9,7 @@ class AccountMove(models.Model):
 
     def _l10n_ve_edi_schedule_send(self):
         self.ensure_one()
-        self.message_post(body="Solicitud de envio a Facturacion Digital encolada.")
+        self.message_post(body=_("Solicitud de envio a Facturacion Digital encolada."))
         self.with_delay(
             description=f"EDI VE send invoice {self.name or self.id}",
             channel="root",

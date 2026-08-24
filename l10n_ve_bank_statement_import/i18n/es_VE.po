@@ -121,3 +121,13 @@ msgstr ""
 "Solo CSV: número de filas al inicio del archivo (sin cabecera de columnas) "
 "que se descartan antes de leer movimientos, por ejemplo línea de número de "
 "cuenta."
+
+#. module: l10n_ve_bank_statement_import
+#. odoo-python
+#: code:addons/l10n_ve_bank_statement_import/models/account_statement_import_sheet_parser.py:0
+msgid ""
+"openpyxl no está disponible. No se puede convertir letra de columna a "
+"número."
+msgstr ""
+"openpyxl no está disponible. No se puede convertir letra de columna a "
+"número."

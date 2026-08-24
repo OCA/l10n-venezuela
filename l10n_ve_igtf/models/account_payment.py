@@ -13,8 +13,11 @@ class AccountPayment(models.Model):
     l10n_ve_igtf_included = fields.Boolean(
         string="Include IGTF in amount",
         default=False,
-        help="If enabled, the payment amount already includes IGTF. "
-        "Example: Invoice 100, IGTF 3% => pay 103 to settle the invoice and record 3 as IGTF.",
+        help=(
+            "If enabled, the payment amount already includes IGTF. "
+            "Example: Invoice 100, IGTF 3% => pay 103 to settle the "
+            "invoice and record 3 as IGTF."
+        ),
     )
     l10n_ve_igtf_currency_ids = fields.Many2many(
         related="company_id.l10n_ve_igtf_currency_ids",
@@ -73,7 +76,8 @@ class AccountPayment(models.Model):
             raise UserError(
                 _(
                     "You cannot enable IGTF directly on the payment. "
-                    "Please register the payment from the invoice wizard (Register Payment)."
+                    "Please register the payment from the invoice wizard "
+                    "(Register Payment)."
                 )
             )
 
@@ -114,10 +118,7 @@ class AccountPayment(models.Model):
 
     def _l10n_ve_igtf_payment_applies(self):
         self.ensure_one()
-        return (
-            self.country_code == "VE"
-            and self.company_id.l10n_ve_igtf_feature_active
-        )
+        return self.country_code == "VE" and self.company_id.l10n_ve_igtf_feature_active
 
     def _get_igtf_currency_ids(self):
         """
@@ -154,9 +155,7 @@ class AccountPayment(models.Model):
                 payment.l10n_ve_show_apply_igtf = False
                 continue
             invs = payment.reconciled_invoice_ids | payment.invoice_ids
-            if any(
-                m.l10n_ve_igtf_invoice_has_igtf_accrual() for m in invs
-            ):
+            if any(m.l10n_ve_igtf_invoice_has_igtf_accrual() for m in invs):
                 payment.l10n_ve_show_apply_igtf = False
                 continue
             payment.l10n_ve_show_apply_igtf = True
@@ -184,7 +183,9 @@ class AccountPayment(models.Model):
         None
         """
         for payment in self:
-            payment.l10n_ve_igtf_amount_currency = payment._l10n_ve_get_igtf_amounts()[0]
+            payment.l10n_ve_igtf_amount_currency = payment._l10n_ve_get_igtf_amounts()[
+                0
+            ]
 
     def _l10n_ve_get_igtf_amounts(self):
         self.ensure_one()
@@ -218,7 +219,9 @@ class AccountPayment(models.Model):
         if self.l10n_ve_igtf_cap_amount_company_currency:
             igtf_company = min(
                 raw_igtf_company,
-                self.company_currency_id.round(self.l10n_ve_igtf_cap_amount_company_currency),
+                self.company_currency_id.round(
+                    self.l10n_ve_igtf_cap_amount_company_currency
+                ),
             )
         if self.company_currency_id.is_zero(igtf_company):
             return 0.0, 0.0
@@ -245,7 +248,9 @@ class AccountPayment(models.Model):
         None
         """
         for payment in self:
-            payment.l10n_ve_igtf_amount_company_currency = payment._l10n_ve_get_igtf_amounts()[1]
+            payment.l10n_ve_igtf_amount_company_currency = (
+                payment._l10n_ve_get_igtf_amounts()[1]
+            )
 
     def _prepare_move_line_default_vals(
         self, write_off_line_vals=None, force_balance=None
@@ -332,7 +337,9 @@ class AccountPayment(models.Model):
         if self.l10n_ve_igtf_cap_amount_company_currency:
             igtf_balance_abs = min(
                 igtf_balance_abs,
-                company.currency_id.round(self.l10n_ve_igtf_cap_amount_company_currency),
+                company.currency_id.round(
+                    self.l10n_ve_igtf_cap_amount_company_currency
+                ),
             )
         if company.currency_id.is_zero(igtf_balance_abs):
             return line_vals_list
@@ -354,7 +361,8 @@ class AccountPayment(models.Model):
         if abs(counterpart_balance) < igtf_balance_abs:
             raise UserError(
                 _(
-                    "Computed IGTF exceeds the payment amount. Please review the IGTF percentage."
+                    "Computed IGTF exceeds the payment amount. "
+                    "Please review the IGTF percentage."
                 )
             )
 

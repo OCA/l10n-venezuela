@@ -22,6 +22,7 @@
         <field name="name">account.journal.report.audit.move.line.list</field>
         <field name="model">account.move.line</field>
         <field name="inherit_id" ref="account.view_move_line_tree" />
+        <field name="priority">110</field>
         <field name="mode">primary</field>
         <field name="arch" type="xml">
             <list name="move_line_tree" position="attributes">

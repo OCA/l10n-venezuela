@@ -2,7 +2,7 @@
 
 from collections import defaultdict
 
-from odoo import _, api, fields, models, Command
+from odoo import Command, _, api, fields, models
 from odoo.exceptions import UserError, ValidationError
 from odoo.tools import float_compare, float_is_zero, float_round, frozendict
 
@@ -31,7 +31,6 @@ class L10nVeAccountMoveDiscount(models.Model):
     )
     name = fields.Char(related="reason_id.name", readonly=True)
     amount = fields.Monetary(
-        string="Amount",
         required=True,
         currency_field="currency_id",
     )
@@ -49,36 +48,51 @@ class L10nVeAccountMoveDiscount(models.Model):
     @api.constrains("amount")
     def _check_amount_positive(self):
         for discount in self:
-            if float_compare(
-                discount.amount, 0.0, precision_digits=discount.currency_id.decimal_places
-            ) <= 0:
-                raise ValidationError(_("El monto del descuento debe ser mayor que cero."))
+            if (
+                float_compare(
+                    discount.amount,
+                    0.0,
+                    precision_digits=discount.currency_id.decimal_places,
+                )
+                <= 0
+            ):
+                raise ValidationError(
+                    _("El monto del descuento debe ser mayor que cero.")
+                )
 
     @api.constrains("discount_type", "move_id")
     def _check_single_percentage_discount(self):
-        for discount in self.filtered(lambda record: record.discount_type == "percentage"):
+        for discount in self.filtered(
+            lambda record: record.discount_type == "percentage"
+        ):
             others = discount.move_id.l10n_ve_global_discount_ids.filtered(
-                lambda record: record.discount_type == "percentage" and record.id != discount.id
+                lambda record, discount_id=discount.id: (
+                    record.discount_type == "percentage" and record.id != discount_id
+                )
             )
             if others:
-                raise ValidationError(_("Solo puede existir un descuento global por porcentaje."))
+                raise ValidationError(
+                    _("Solo puede existir un descuento global por porcentaje.")
+                )
 
     def _l10n_ve_sync_global_discount_accounting(self):
         moves = self.mapped("move_id").filtered(
-            lambda move: move.state == "draft" and move.is_invoice(include_receipts=True)
+            lambda move: move.state == "draft"
+            and move.is_invoice(include_receipts=True)
         )
         if not moves:
             return
-        self.env["l10n.ve.account.move.discount"]._l10n_ve_sync_global_discount_accounting_for_moves(
-            moves
-        )
+        self.env[
+            "l10n.ve.account.move.discount"
+        ]._l10n_ve_sync_global_discount_accounting_for_moves(moves)
 
     @api.model
     def _l10n_ve_sync_global_discount_accounting_for_moves(self, moves):
         if not moves:
             return
         moves = moves.filtered(
-            lambda move: move.state == "draft" and move.is_invoice(include_receipts=True)
+            lambda move: move.state == "draft"
+            and move.is_invoice(include_receipts=True)
         )
         if not moves:
             return
@@ -104,9 +118,7 @@ class L10nVeAccountMoveDiscount(models.Model):
         if self.env.context.get("l10n_ve_skip_global_discount_access_check"):
             return
         if not self.env.user.has_group("l10n_ve_loyalty.group_l10n_ve_global_discount"):
-            raise UserError(
-                _("You do not have permission to manage global discounts.")
-            )
+            raise UserError(_("You do not have permission to manage global discounts."))
 
     @api.model_create_multi
     def create(self, vals_list):
@@ -142,9 +154,9 @@ class L10nVeAccountMoveDiscount(models.Model):
         moves = self.move_id
         self._l10n_ve_check_move_editable()
         res = super().unlink()
-        self.env["l10n.ve.account.move.discount"]._l10n_ve_sync_global_discount_accounting_for_moves(
-            moves
-        )
+        self.env[
+            "l10n.ve.account.move.discount"
+        ]._l10n_ve_sync_global_discount_accounting_for_moves(moves)
         return res
 
     def _l10n_ve_check_move_editable(self):
@@ -153,7 +165,10 @@ class L10nVeAccountMoveDiscount(models.Model):
             move = discount.move_id
             if move.state != "draft":
                 raise UserError(
-                    _("Solo puede modificar descuentos globales en facturas en borrador.")
+                    _(
+                        "Solo puede modificar descuentos globales en "
+                        "facturas en borrador."
+                    )
                 )
             if move.country_code != "VE":
                 raise UserError(
@@ -206,9 +221,7 @@ class AccountMove(models.Model):
 
     def _l10n_ve_check_global_discount_user_access(self):
         if not self._l10n_ve_user_can_apply_global_discount():
-            raise UserError(
-                _("You do not have permission to manage global discounts.")
-            )
+            raise UserError(_("You do not have permission to manage global discounts."))
 
     @api.depends(
         "state",
@@ -226,15 +239,89 @@ class AccountMove(models.Model):
                 move._l10n_ve_allows_post_discount_action()
             )
 
-    def copy(self, default=None):
-        return super(
-            AccountMove,
-            self.with_context(l10n_ve_skip_global_discount_access_check=True),
-        ).copy(default=default)
+    @api.depends_context("lang")
+    @api.depends(
+        "invoice_line_ids.currency_rate",
+        "invoice_line_ids.tax_base_amount",
+        "invoice_line_ids.tax_line_id",
+        "invoice_line_ids.price_total",
+        "invoice_line_ids.price_subtotal",
+        "invoice_payment_term_id",
+        "partner_id",
+        "currency_id",
+        "l10n_ve_global_discount_ids",
+        "l10n_ve_global_discount_ids.amount",
+        "invoice_line_ids.product_id",
+    )
+    def _compute_tax_totals(self):
+        res = super()._compute_tax_totals()
+        AccountTax = self.env["account.tax"]
+        for move in self:
+            if move.country_code != "VE" or not move.tax_totals:
+                continue
+            if move.is_invoice(include_receipts=True):
+                move.tax_totals = (
+                    AccountTax._l10n_ve_apply_global_discount_to_tax_totals(
+                        move,
+                        move.tax_totals,
+                    )
+                )
+        return res
+
+    def _l10n_ve_check_credit_note_creation_allowed(self):
+        return super()._l10n_ve_check_credit_note_creation_allowed()
+
+    def _l10n_ve_is_post_discount_credit_note(self):
+        self.ensure_one()
+        return bool(self.move_type == "out_refund" and self.l10n_ve_discount_reason_id)
+
+    def _l10n_ve_force_refund_to_company_currency(self):
+        pending = self._l10n_ve_snapshot_global_discount_amounts_for_currency()
+        res = super()._l10n_ve_force_refund_to_company_currency()
+        self._l10n_ve_apply_global_discount_amounts_after_currency(pending)
+        return res
+
+    def _l10n_ve_apply_loyalty_global_discount(
+        self,
+        amount,
+        reason=None,
+        discount_type="fixed",
+        discount_percentage=0.0,
+        amount_base="untaxed",
+    ):
+        """Create a VE global discount from a loyalty/POS reward amount."""
+        self.ensure_one()
+        if self.country_code != "VE" or not self.is_invoice(include_receipts=True):
+            return self.env["l10n.ve.account.move.discount"]
+        currency = self.currency_id
+        if float_is_zero(amount, precision_rounding=currency.rounding):
+            return self.env["l10n.ve.account.move.discount"]
+        if reason is None:
+            reason = self.env["l10n.ve.discount.reason"]._l10n_ve_get_default()
+        if not reason:
+            raise UserError(_("Configure at least one Venezuela discount reason."))
+        return (
+            self.env["l10n.ve.account.move.discount"]
+            .with_context(
+                l10n_ve_skip_global_discount_access_check=True,
+            )
+            .create(
+                {
+                    "move_id": self.id,
+                    "reason_id": reason.id,
+                    "amount": currency.round(abs(amount)),
+                    "discount_type": discount_type,
+                    "discount_percentage": discount_percentage
+                    if discount_type == "percentage"
+                    else 0.0,
+                    "amount_base": amount_base or "untaxed",
+                }
+            )
+        )
 
     def copy_data(self, default=None):
         vals_list = super().copy_data(default=default)
-        for move, vals in zip(self, vals_list):
+        for move, vals in zip(self, vals_list, strict=False):
             if not move.is_invoice(include_receipts=True):
                 continue
             line_commands = vals.get("line_ids")
@@ -264,8 +351,12 @@ class AccountMove(models.Model):
 
     def copy(self, default=None):
         new_moves = super(
-            AccountMove, self.with_context(l10n_ve_skip_discount_refresh=True)
-        ).copy(default)
+            AccountMove,
+            self.with_context(
+                l10n_ve_skip_global_discount_access_check=True,
+                l10n_ve_skip_discount_refresh=True,
+            ),
+        ).copy(default=default)
         moves_to_sync = new_moves.filtered(
             lambda move: move.is_invoice(include_receipts=True)
             and move.l10n_ve_global_discount_ids
@@ -387,7 +478,9 @@ class AccountMove(models.Model):
 
     def _l10n_ve_refresh_percentage_global_discount_amounts(self):
         for move in self:
-            l10n_ve_discount_logic.l10n_ve_refresh_percentage_global_discount_amounts(move)
+            l10n_ve_discount_logic.l10n_ve_refresh_percentage_global_discount_amounts(
+                move
+            )
 
     def _l10n_ve_total_sequential_global_discount(self, subtotal_by_taxes):
         self.ensure_one()
@@ -405,9 +498,9 @@ class AccountMove(models.Model):
             return
         moves._l10n_ve_refresh_percentage_global_discount_amounts()
         moves._l10n_ve_validate_global_discount_total()
-        self.env["l10n.ve.account.move.discount"]._l10n_ve_sync_global_discount_accounting_for_moves(
-            moves
-        )
+        self.env[
+            "l10n.ve.account.move.discount"
+        ]._l10n_ve_sync_global_discount_accounting_for_moves(moves)
 
     def action_l10n_ve_open_discount_wizard(self):
         self.ensure_one()
@@ -426,7 +519,11 @@ class AccountMove(models.Model):
                 "default_discount_currency_id": self.currency_id.id,
                 **(
                     {"default_reason_id": default_reason.id}
-                    if (default_reason := self.env["l10n.ve.discount.reason"]._l10n_ve_get_default())
+                    if (
+                        default_reason := self.env[
+                            "l10n.ve.discount.reason"
+                        ]._l10n_ve_get_default()
+                    )
                     else {}
                 ),
             },
@@ -457,9 +554,12 @@ class AccountMove(models.Model):
             if not self.l10n_ve_show_credit_note_action:
                 return False
         available = self._l10n_ve_post_discount_available_untaxed()
-        return float_compare(
-            available, 0.0, precision_digits=self.currency_id.decimal_places
-        ) > 0
+        return (
+            float_compare(
+                available, 0.0, precision_digits=self.currency_id.decimal_places
+            )
+            > 0
+        )
 
     def _l10n_ve_check_post_discount_allowed(self):
         self.ensure_one()
@@ -476,11 +576,17 @@ class AccountMove(models.Model):
             )
         self._l10n_ve_check_credit_note_creation_allowed()
         available = self._l10n_ve_post_discount_available_untaxed()
-        if float_compare(
-            available, 0.0, precision_digits=self.currency_id.decimal_places
-        ) <= 0:
+        if (
+            float_compare(
+                available, 0.0, precision_digits=self.currency_id.decimal_places
+            )
+            <= 0
+        ):
             raise UserError(
-                _("No queda subtotal disponible para aplicar un descuento post-factura.")
+                _(
+                    "No queda subtotal disponible para aplicar un "
+                    "descuento post-factura."
+                )
             )
 
     def _l10n_ve_post_discount_credit_notes(self):
@@ -507,7 +613,7 @@ class AccountMove(models.Model):
         weights = [remaining[taxes] for taxes in tax_groups]
         parts = self._l10n_ve_split_amount_by_weights(used, weights)
         result = {}
-        for taxes, part in zip(tax_groups, parts):
+        for taxes, part in zip(tax_groups, parts, strict=False):
             result[taxes] = max(0.0, remaining[taxes] - part)
         return result
 
@@ -582,9 +688,7 @@ class AccountMove(models.Model):
         if currency == self.company_currency_id and rate:
             return self.currency_id.round(amount / rate)
         date = self.invoice_date or fields.Date.context_today(self)
-        return currency._convert(
-            amount, self.currency_id, self.company_id, date
-        )
+        return currency._convert(amount, self.currency_id, self.company_id, date)
 
     def _l10n_ve_post_discount_credit_note_currency(self):
         self.ensure_one()
@@ -680,7 +784,9 @@ class AccountMove(models.Model):
             lambda invoice_line: invoice_line.display_type == "product"
         ):
             taxes = line.tax_ids.filtered(lambda tax: tax.amount_type != "fixed")
-            if float_is_zero(line.price_subtotal, precision_rounding=self.currency_id.rounding):
+            if float_is_zero(
+                line.price_subtotal, precision_rounding=self.currency_id.rounding
+            ):
                 continue
             totals[taxes] += line.price_subtotal
         return totals
@@ -694,7 +800,9 @@ class AccountMove(models.Model):
             lambda line: (
                 line.display_type == "product"
                 and line.account_id
-                and set(line.tax_ids.filtered(lambda tax: tax.amount_type != "fixed").ids)
+                and set(
+                    line.tax_ids.filtered(lambda tax: tax.amount_type != "fixed").ids
+                )
                 == set(taxes.ids)
             )
         )
@@ -728,7 +836,10 @@ class AccountMove(models.Model):
         subtotal_by_taxes = self._l10n_ve_post_discount_subtotal_by_taxes()
         if not subtotal_by_taxes:
             raise UserError(
-                _("La factura no tiene líneas de producto para prorratear el descuento.")
+                _(
+                    "La factura no tiene líneas de producto para "
+                    "prorratear el descuento."
+                )
             )
         tax_groups = list(subtotal_by_taxes.keys())
         weights = [subtotal_by_taxes[taxes] for taxes in tax_groups]
@@ -737,7 +848,7 @@ class AccountMove(models.Model):
         )
         line_name = _("Descuento: %(reason)s", reason=reason.name)
         line_vals = []
-        for taxes, part in zip(tax_groups, parts):
+        for taxes, part in zip(tax_groups, parts, strict=False):
             if float_is_zero(part, precision_rounding=currency.rounding):
                 continue
             sample = self._l10n_ve_post_discount_sample_line_for_taxes(taxes)
@@ -783,9 +894,7 @@ class AccountMove(models.Model):
                 {"price_unit": self.currency_id.round(line.price_unit * factor)}
             )
 
-    def _l10n_ve_create_post_discount_credit_note(
-        self, amount, reason, amount_cn=None
-    ):
+    def _l10n_ve_create_post_discount_credit_note(self, amount, reason, amount_cn=None):
         self.ensure_one()
         target_currency = self._l10n_ve_post_discount_credit_note_currency()
         if amount_cn is not None:
@@ -838,9 +947,8 @@ class AccountMove(models.Model):
 
     def _l10n_ve_uses_global_discount_journal_lines(self):
         self.ensure_one()
-        return (
-            self._l10n_ve_global_discount_applies()
-            and bool(self._get_discount_allocation_account())
+        return self._l10n_ve_global_discount_applies() and bool(
+            self._get_discount_allocation_account()
         )
 
     def _get_rounded_base_and_tax_lines(self, round_from_tax_lines=True):
@@ -866,9 +974,7 @@ class AccountMove(models.Model):
             return [], []
         if self.env.context.get("l10n_ve_skip_global_discount_base_lines"):
             return parent_method(round_from_tax_lines=round_from_tax_lines)
-        base_lines, tax_lines = parent_method(
-            round_from_tax_lines=round_from_tax_lines
-        )
+        base_lines, tax_lines = parent_method(round_from_tax_lines=round_from_tax_lines)
         return self._l10n_ve_apply_global_discount_to_base_lines(
             base_lines,
             tax_lines,
@@ -891,7 +997,9 @@ class AccountMove(models.Model):
             base_line for base_line in product_lines if not base_line.get("tax_details")
         ]
         if lines_needing_details:
-            AccountTax._add_tax_details_in_base_lines(lines_needing_details, self.company_id)
+            AccountTax._add_tax_details_in_base_lines(
+                lines_needing_details, self.company_id
+            )
         totals = defaultdict(float)
         for base_line in product_lines:
             taxes = base_line["tax_ids"].filtered(
@@ -915,9 +1023,7 @@ class AccountMove(models.Model):
 
     def _l10n_ve_product_base_lines_for_discount(self, base_lines):
         return [
-            base_line
-            for base_line in base_lines
-            if not base_line.get("special_type")
+            base_line for base_line in base_lines if not base_line.get("special_type")
         ]
 
     def _l10n_ve_split_amount_by_weights(self, amount, weights, currency=None):
@@ -962,7 +1068,11 @@ class AccountMove(models.Model):
             return []
 
         line_currency = base_lines[0]["currency_id"] if base_lines else self.currency_id
-        rate = self.foreign_rate if foreign and hasattr(self, "foreign_rate") else self.invoice_currency_rate
+        rate = (
+            self.foreign_rate
+            if foreign and hasattr(self, "foreign_rate")
+            else self.invoice_currency_rate
+        )
         if not rate:
             rate = 1.0
 
@@ -970,16 +1080,17 @@ class AccountMove(models.Model):
         discount_base_lines = []
         sequence = 0
         running = dict(subtotal_by_taxes)
-        for discount, discount_amount in self._l10n_ve_sequential_global_discount_amounts(
-            subtotal_by_taxes
-        ):
+        for (
+            discount,
+            discount_amount,
+        ) in self._l10n_ve_sequential_global_discount_amounts(subtotal_by_taxes):
             amount = self._l10n_ve_discount_amount_in_line_currency(
                 discount_amount, line_currency
             )
             tax_groups = list(running.keys())
             weights = [running[taxes] for taxes in tax_groups]
             parts = self._l10n_ve_split_amount_by_weights(amount, weights)
-            for taxes, part in zip(tax_groups, parts):
+            for taxes, part in zip(tax_groups, parts, strict=False):
                 if float_is_zero(part, precision_rounding=line_currency.rounding):
                     continue
                 sequence += 1
@@ -1110,7 +1221,9 @@ class AccountMove(models.Model):
                 discount = base_line.get("discount") or 0.0
                 quantity = base_line.get("quantity") or 0.0
                 line_subtotal = price_unit * (1 - discount / 100.0) * quantity
-            if float_is_zero(line_subtotal, precision_rounding=self.currency_id.rounding):
+            if float_is_zero(
+                line_subtotal, precision_rounding=self.currency_id.rounding
+            ):
                 continue
             tax_account_weights[taxes][account_id] += line_subtotal
 
@@ -1124,7 +1237,9 @@ class AccountMove(models.Model):
                 tax_details["total_excluded_currency"]
                 + tax_details.get("delta_total_excluded_currency", 0.0)
             )
-            if float_is_zero(discount_amount, precision_rounding=self.currency_id.rounding):
+            if float_is_zero(
+                discount_amount, precision_rounding=self.currency_id.rounding
+            ):
                 continue
             account_amounts = tax_account_weights.get(taxes)
             if not account_amounts:
@@ -1132,7 +1247,7 @@ class AccountMove(models.Model):
             account_ids = list(account_amounts.keys())
             weights = [account_amounts[account_id] for account_id in account_ids]
             parts = self._l10n_ve_split_amount_by_weights(discount_amount, weights)
-            for account_id, part in zip(account_ids, parts):
+            for account_id, part in zip(account_ids, parts, strict=False):
                 if float_is_zero(part, precision_rounding=self.currency_id.rounding):
                     continue
                 allocations[taxes][account_id] += part
@@ -1141,7 +1256,11 @@ class AccountMove(models.Model):
     def _l10n_ve_global_discount_allocation_line_name(self, taxes):
         self.ensure_one()
         if taxes:
-            return _("%(discount)s (%(taxes)s)", discount=_("Descuento global"), taxes=taxes.name)
+            return _(
+                "%(discount)s (%(taxes)s)",
+                discount=_("Descuento global"),
+                taxes=taxes.name,
+            )
         return _("Descuento global")
 
     def _l10n_ve_remove_ve_discount_journal_lines(self):
@@ -1182,108 +1301,100 @@ class AccountMove(models.Model):
             if lines:
                 MoveLine.browse(lines.ids).unlink()
 
+    def _l10n_ve_discount_line_needs_write(self, line, values):
+        if not line.exists():
+            return False
+        for fname, value in values.items():
+            if fname == "l10n_ve_global_discount_tax_ids":
+                if set(line.l10n_ve_global_discount_tax_ids.ids) != set(value[0][2]):
+                    return True
+                continue
+            if line._fields[fname].convert_to_write(line[fname], line) != value:
+                return True
+        return False
+
+    def _l10n_ve_needed_global_discount_journal_values(
+        self, allocations, discount_account
+    ):
+        self.ensure_one()
+        needed = {}
+        rate = self.invoice_currency_rate or 1.0
+        sign = self.direction_sign
+        for taxes, account_amounts in allocations.items():
+            total_for_taxes = sum(account_amounts.values())
+            key_discount = frozendict(
+                {
+                    "move_id": self.id,
+                    "account_id": discount_account.id,
+                    "currency_rate": rate,
+                    "tax_ids": tuple(sorted(taxes.ids)),
+                }
+            )
+            needed[key_discount] = {
+                "display_type": "global_discount",
+                "name": self._l10n_ve_global_discount_allocation_line_name(taxes),
+                "account_id": discount_account.id,
+                "tax_ids": [Command.clear()],
+                "amount_currency": self.currency_id.round(-sign * total_for_taxes),
+                "balance": self.company_id.currency_id.round(
+                    -sign * total_for_taxes / rate
+                ),
+                "l10n_ve_global_discount_line": True,
+                "l10n_ve_global_discount_tax_ids": [Command.set(taxes.ids)],
+            }
+        return needed
+
+    def _l10n_ve_apply_needed_discount_journal_lines(
+        self, existing_lines, needed, MoveLine
+    ):
+        existing_map = {
+            line.l10n_ve_global_discount_allocation_key: line
+            for line in existing_lines
+            if line.l10n_ve_global_discount_allocation_key
+        }
+        to_delete = [line.id for key, line in existing_map.items() if key not in needed]
+        to_create = [
+            {**values, "move_id": self.id}
+            for key, values in needed.items()
+            if key not in existing_map
+        ]
+        to_write = [
+            (existing_map[key], values)
+            for key, values in needed.items()
+            if key in existing_map
+            and self._l10n_ve_discount_line_needs_write(existing_map[key], values)
+        ]
+        if to_delete:
+            MoveLine.browse(to_delete).exists().with_context(
+                dynamic_unlink=True
+            ).unlink()
+        if to_create:
+            MoveLine.create(to_create)
+        for line, values in to_write:
+            if line.exists():
+                line.write(values)
+
     def _l10n_ve_sync_global_discount_journal_lines(self):
         MoveLine = self.env["account.move.line"].with_context(
             skip_invoice_sync=True,
             l10n_ve_skip_discount_refresh=True,
         )
-
-        def is_write_needed(line, values):
-            if not line.exists():
-                return False
-            for fname, value in values.items():
-                if fname == "l10n_ve_global_discount_tax_ids":
-                    if set(line.l10n_ve_global_discount_tax_ids.ids) != set(
-                        value[0][2]
-                    ):
-                        return True
-                    continue
-                if (
-                    MoveLine._fields[fname].convert_to_write(line[fname], line)
-                    != value
-                ):
-                    return True
-            return False
-
         for move in self:
             if move.state != "draft" or not move.is_invoice(include_receipts=True):
                 continue
-
             existing_lines = move.line_ids.filtered("l10n_ve_global_discount_line")
-            if not move._l10n_ve_global_discount_applies():
-                if existing_lines:
-                    existing_lines.with_context(dynamic_unlink=True).unlink()
-                continue
-
             discount_account = move._get_discount_allocation_account()
-            if not discount_account:
+            if not move._l10n_ve_global_discount_applies() or not discount_account:
                 if existing_lines:
                     existing_lines.with_context(dynamic_unlink=True).unlink()
                 continue
-
             allocations = move._l10n_ve_get_global_discount_allocation_by_taxes()
-            needed = {}
-            rate = move.invoice_currency_rate or 1.0
-            sign = move.direction_sign
-            line_name_by_taxes = {}
-
-            for taxes, account_amounts in allocations.items():
-                line_name_by_taxes[taxes] = move._l10n_ve_global_discount_allocation_line_name(
-                    taxes
-                )
-                total_for_taxes = sum(account_amounts.values())
-                key_discount = frozendict(
-                    {
-                        "move_id": move.id,
-                        "account_id": discount_account.id,
-                        "currency_rate": rate,
-                        "tax_ids": tuple(sorted(taxes.ids)),
-                    }
-                )
-                needed[key_discount] = {
-                    "display_type": "global_discount",
-                    "name": line_name_by_taxes[taxes],
-                    "account_id": discount_account.id,
-                    "tax_ids": [Command.clear()],
-                    "amount_currency": move.currency_id.round(-sign * total_for_taxes),
-                    "balance": move.company_id.currency_id.round(
-                        -sign * total_for_taxes / rate
-                    ),
-                    "l10n_ve_global_discount_line": True,
-                    "l10n_ve_global_discount_tax_ids": [Command.set(taxes.ids)],
-                }
-
-            existing_map = {
-                line.l10n_ve_global_discount_allocation_key: line
-                for line in existing_lines
-                if line.l10n_ve_global_discount_allocation_key
-            }
-            to_delete = [
-                line.id
-                for key, line in existing_map.items()
-                if key not in needed
-            ]
-            to_create = [
-                {**values, "move_id": move.id}
-                for key, values in needed.items()
-                if key not in existing_map
-            ]
-            to_write = [
-                (existing_map[key], values)
-                for key, values in needed.items()
-                if key in existing_map
-                and is_write_needed(existing_map[key], values)
-            ]
-
-            if to_delete:
-                MoveLine.browse(to_delete).exists().with_context(
-                    dynamic_unlink=True
-                ).unlink()
-            if to_create:
-                MoveLine.create(to_create)
-            for line, values in to_write:
-                if line.exists():
-                    line.write(values)
+            needed = move._l10n_ve_needed_global_discount_journal_values(
+                allocations, discount_account
+            )
+            move._l10n_ve_apply_needed_discount_journal_lines(
+                existing_lines, needed, MoveLine
+            )
 
     def _l10n_ve_rebalance_payment_term_from_lines(self):
         MoveLine = self.env["account.move.line"].with_context(
@@ -1329,25 +1440,111 @@ class AccountMove(models.Model):
     def _l10n_ve_sync_payment_term_after_global_discount_lines(self):
         return self._l10n_ve_rebalance_payment_term_from_lines()
 
+    def _l10n_ve_move_line_needs_write(self, line, values):
+        if not line.exists():
+            return False
+        return any(
+            line._fields[fname].convert_to_write(line[fname], line) != values[fname]
+            for fname in values
+        )
+
+    def _l10n_ve_pre_global_product_line_update(self, base_line, to_update):
+        record = base_line.get("record")
+        if (
+            not record
+            or record.display_type != "product"
+            or base_line.get("special_type")
+        ):
+            return to_update
+        tax_details = base_line.get("tax_details") or {}
+        sign = base_line["sign"]
+        to_update = dict(to_update)
+        if float_is_zero(base_line.get("discount") or 0.0, precision_rounding=1e-9):
+            pre_global_currency = tax_details.get("raw_gross_total_excluded_currency")
+            pre_global_balance = tax_details.get("raw_gross_total_excluded")
+        else:
+            line_currency = base_line["currency_id"]
+            discount_factor = 1 - (base_line.get("discount") or 0.0) / 100.0
+            pre_global_currency = line_currency.round(
+                base_line["price_unit"] * base_line["quantity"] * discount_factor
+            )
+            rate = base_line.get("rate") or 1.0
+            pre_global_balance = self.company_id.currency_id.round(
+                pre_global_currency / rate if rate else pre_global_currency
+            )
+        if pre_global_currency is not None and pre_global_balance is not None:
+            to_update["amount_currency"] = sign * (
+                pre_global_currency
+                + tax_details.get("delta_total_excluded_currency", 0.0)
+            )
+            to_update["balance"] = sign * (
+                pre_global_balance + tax_details.get("delta_total_excluded", 0.0)
+            )
+        return to_update
+
+    def _l10n_ve_flush_grouped_line_updates(
+        self, grouped_update, to_delete, to_create, MoveLine
+    ):
+        if grouped_update:
+            for (_currency_id, values), lines in grouped_update.items():
+                lines_to_update = MoveLine.browse(lines).exists()
+                if lines_to_update:
+                    lines_to_update.write(dict(values))
+        if to_delete:
+            MoveLine.browse(to_delete).exists().with_context(
+                dynamic_unlink=True,
+            ).unlink()
+        if to_create:
+            MoveLine.create(to_create)
+
+    def _l10n_ve_apply_tax_results_writes(self, tax_results, MoveLine):
+        grouped_update = defaultdict(set)
+        to_delete = []
+        to_create = []
+        use_pre_global = self._l10n_ve_uses_global_discount_journal_lines()
+        for base_line, to_update in tax_results["base_lines_to_update"]:
+            line = base_line["record"]
+            if not isinstance(line, models.BaseModel) or not line.exists():
+                continue
+            if use_pre_global:
+                to_update = self._l10n_ve_pre_global_product_line_update(
+                    base_line, to_update
+                )
+            if self._l10n_ve_move_line_needs_write(line, to_update):
+                grouped_update[line.currency_id.id, frozendict(to_update)].add(line.id)
+        for tax_line_vals in tax_results["tax_lines_to_delete"]:
+            line = tax_line_vals["record"]
+            if line.exists():
+                to_delete.append(line.id)
+        for tax_line_vals in tax_results["tax_lines_to_add"]:
+            to_create.append(
+                {
+                    **tax_line_vals,
+                    "display_type": "tax",
+                    "move_id": self.id,
+                }
+            )
+        for tax_line_vals, _grouping_key, to_update in tax_results[
+            "tax_lines_to_update"
+        ]:
+            line = tax_line_vals["record"]
+            if not line.exists():
+                continue
+            if self._l10n_ve_move_line_needs_write(line, to_update):
+                grouped_update[line.currency_id.id, frozendict(to_update)].add(line.id)
+        self._l10n_ve_flush_grouped_line_updates(
+            grouped_update, to_delete, to_create, MoveLine
+        )
+
     def _l10n_ve_apply_global_discount_sync(self):
         AccountTax = self.env["account.tax"]
         MoveLine = self.env["account.move.line"].with_context(
             skip_invoice_sync=True,
             l10n_ve_skip_discount_refresh=True,
         )
-
-        def is_write_needed(line, values):
-            if not line.exists():
-                return False
-            return any(
-                MoveLine._fields[fname].convert_to_write(line[fname], line) != values[fname]
-                for fname in values
-            )
-
         for move in self:
             if move.state != "draft" or not move.is_invoice(include_receipts=True):
                 continue
-
             base_lines_values, tax_lines_values = move._get_rounded_base_and_tax_lines(
                 round_from_tax_lines=False
             )
@@ -1361,100 +1558,7 @@ class AccountMove(models.Model):
                 move.company_id,
                 tax_lines=tax_lines_values,
             )
-
-            grouped_update = defaultdict(set)
-            to_delete = []
-            to_create = []
-
-            use_pre_global_product_lines = move._l10n_ve_uses_global_discount_journal_lines()
-
-            for base_line, to_update in tax_results["base_lines_to_update"]:
-                line = base_line["record"]
-                if not isinstance(line, models.BaseModel) or not line.exists():
-                    continue
-                if use_pre_global_product_lines:
-                    record = base_line.get("record")
-                    if (
-                        record
-                        and record.display_type == "product"
-                        and not base_line.get("special_type")
-                    ):
-                        tax_details = base_line.get("tax_details") or {}
-                        sign = base_line["sign"]
-                        to_update = dict(to_update)
-                        if float_is_zero(
-                            base_line.get("discount") or 0.0, precision_rounding=1e-9
-                        ):
-                            pre_global_currency = tax_details.get(
-                                "raw_gross_total_excluded_currency"
-                            )
-                            pre_global_balance = tax_details.get(
-                                "raw_gross_total_excluded"
-                            )
-                        else:
-                            line_currency = base_line["currency_id"]
-                            discount_factor = 1 - (base_line.get("discount") or 0.0) / 100.0
-                            pre_global_currency = line_currency.round(
-                                base_line["price_unit"]
-                                * base_line["quantity"]
-                                * discount_factor
-                            )
-                            rate = base_line.get("rate") or 1.0
-                            pre_global_balance = move.company_id.currency_id.round(
-                                pre_global_currency / rate
-                                if rate
-                                else pre_global_currency
-                            )
-                        if (
-                            pre_global_currency is not None
-                            and pre_global_balance is not None
-                        ):
-                            to_update["amount_currency"] = sign * (
-                                pre_global_currency
-                                + tax_details.get("delta_total_excluded_currency", 0.0)
-                            )
-                            to_update["balance"] = sign * (
-                                pre_global_balance
-                                + tax_details.get("delta_total_excluded", 0.0)
-                            )
-                if is_write_needed(line, to_update):
-                    grouped_update[line.currency_id.id, frozendict(to_update)].add(line.id)
-
-            for tax_line_vals in tax_results["tax_lines_to_delete"]:
-                line = tax_line_vals["record"]
-                if line.exists():
-                    to_delete.append(line.id)
-
-            for tax_line_vals in tax_results["tax_lines_to_add"]:
-                to_create.append(
-                    {
-                        **tax_line_vals,
-                        "display_type": "tax",
-                        "move_id": move.id,
-                    }
-                )
-
-            for tax_line_vals, _grouping_key, to_update in tax_results[
-                "tax_lines_to_update"
-            ]:
-                line = tax_line_vals["record"]
-                if not line.exists():
-                    continue
-                if is_write_needed(line, to_update):
-                    grouped_update[line.currency_id.id, frozendict(to_update)].add(line.id)
-
-            if grouped_update:
-                for (_currency_id, values), lines in grouped_update.items():
-                    lines_to_update = MoveLine.browse(lines).exists()
-                    if lines_to_update:
-                        lines_to_update.write(dict(values))
-            if to_delete:
-                MoveLine.browse(to_delete).exists().with_context(
-                    dynamic_unlink=True,
-                ).unlink()
-            if to_create:
-                MoveLine.create(to_create)
-
+            move._l10n_ve_apply_tax_results_writes(tax_results, MoveLine)
             move.invalidate_recordset(
                 [
                     "amount_untaxed",
@@ -1479,7 +1583,7 @@ class AccountMove(models.Model):
         "line_ids.l10n_ve_line_discount_line",
     )
     def _compute_amount(self):
-        super()._compute_amount()
+        res = super()._compute_amount()
         for move in self.filtered(
             lambda m: m.is_invoice(include_receipts=True)
             and m._l10n_ve_uses_global_discount_journal_lines()
@@ -1501,10 +1605,7 @@ class AccountMove(models.Model):
             )
             tax_lines = move.line_ids.filtered(
                 lambda line: line.display_type == "tax"
-                or (
-                    line.display_type == "rounding"
-                    and line.tax_repartition_line_id
-                )
+                or (line.display_type == "rounding" and line.tax_repartition_line_id)
             )
             total_untaxed_currency = sum(product_lines.mapped("amount_currency")) + sum(
                 discount_lines.mapped("amount_currency")
@@ -1530,3 +1631,4 @@ class AccountMove(models.Model):
                 if move.move_type == "entry"
                 else -(sign * move.amount_total)
             )
+        return res

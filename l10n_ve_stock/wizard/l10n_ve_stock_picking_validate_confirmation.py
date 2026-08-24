@@ -40,42 +40,42 @@ class L10nVeStockPickingValidateConfirmation(models.TransientModel):
                 picking_name = wizard.picking_ids.display_name
                 number = wizard.l10n_ve_next_control_number or "—"
                 wizard.l10n_ve_confirmation_message = Markup(
-                    "<p>%s</p><p>%s</p><p>%s</p>"
-                    % (
-                        _("¿Está seguro de confirmar la entrega <strong>%s</strong>?")
-                        % picking_name,
-                        _(
-                            "Esta entrega asignará el número correlativo "
-                            "<strong>%s</strong>."
-                        )
-                        % number,
-                        _(
-                            "Tras validar, el documento quedará registrado como guía "
-                            "de despacho y no podrá ajustarse próximamente."
-                        ),
+                    "<p>{}</p><p>{}</p><p>{}</p>"
+                ).format(
+                    _(
+                        "Are you sure you want to confirm delivery "
+                        "<strong>%(picking)s</strong>?"
                     )
+                    % {"picking": picking_name},
+                    _(
+                        "This delivery will assign control number "
+                        "<strong>%(number)s</strong>."
+                    )
+                    % {"number": number},
+                    _(
+                        "After validation, the document will be recorded as a "
+                        "dispatch guide and cannot be adjusted soon."
+                    ),
                 )
             else:
                 lines = "".join(
-                    "<li>%s</li>" % picking.display_name
-                    for picking in wizard.picking_ids
+                    f"<li>{picking.display_name}</li>" for picking in wizard.picking_ids
                 )
                 number = wizard.l10n_ve_next_control_number or "—"
                 wizard.l10n_ve_confirmation_message = Markup(
-                    "<p>%s</p><ul>%s</ul><p>%s</p><p>%s</p>"
-                    % (
-                        _("¿Está seguro de confirmar estas entregas?"),
-                        lines,
-                        _(
-                            "Se asignarán los números correlativos: "
-                            "<strong>%s</strong>."
-                        )
-                        % number,
-                        _(
-                            "Tras validar, los documentos quedarán registrados como "
-                            "guías de despacho y no podrán ajustarse próximamente."
-                        ),
+                    "<p>{}</p><ul>{}</ul><p>{}</p><p>{}</p>"
+                ).format(
+                    _("Are you sure you want to confirm these deliveries?"),
+                    lines,
+                    _(
+                        "The following control numbers will be assigned: "
+                        "<strong>%(number)s</strong>."
                     )
+                    % {"number": number},
+                    _(
+                        "After validation, the documents will be recorded as "
+                        "dispatch guides and cannot be adjusted soon."
+                    ),
                 )
 
     def action_confirm(self):

@@ -1,9 +1,12 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <odoo>
     <record id="view_account_journal_form_fiscal_serial" model="ir.ui.view">
         <field name="name">account.journal.ve.fiscal.serial.form</field>
         <field name="model">account.journal</field>
-        <field name="inherit_id" ref="l10n_ve_seniat.view_account_journal_form_inherit"/>
+        <field
+            name="inherit_id"
+            ref="l10n_ve_seniat.view_account_journal_form_inherit"
+        />
         <field name="arch" type="xml">
             <xpath
                 expr="//field[@name='l10n_ve_max_invoice_lines']/parent::group"
@@ -21,22 +24,28 @@
                     options="{'no_create': True}"
                 />
             </xpath>
-            <xpath expr="//field[@name='l10n_ve_fiscal_payment_code']" position="attributes">
+            <xpath
+                expr="//field[@name='l10n_ve_fiscal_payment_code']"
+                position="attributes"
+            >
                 <attribute name="invisible">1</attribute>
             </xpath>
         </field>
     </record>
 
-    <record id="view_account_journal_form_fiscal_payment_method_line" model="ir.ui.view">
+    <record
+        id="view_account_journal_form_fiscal_payment_method_line"
+        model="ir.ui.view"
+    >
         <field name="name">account.journal.ve.fiscal.payment.method.line.form</field>
         <field name="model">account.journal</field>
-        <field name="inherit_id" ref="account.view_account_journal_form"/>
+        <field name="inherit_id" ref="account.view_account_journal_form" />
         <field name="arch" type="xml">
             <xpath expr="//page[@name='page_incoming_payments']" position="inside">
-                <field name="l10n_ve_show_fiscal_payment_method" invisible="1"/>
+                <field name="l10n_ve_show_fiscal_payment_method" invisible="1" />
             </xpath>
             <xpath expr="//page[@name='page_outgoing_payments']" position="inside">
-                <field name="l10n_ve_show_fiscal_payment_method" invisible="1"/>
+                <field name="l10n_ve_show_fiscal_payment_method" invisible="1" />
             </xpath>
             <xpath
                 expr="//page[@name='page_incoming_payments']//field[@name='inbound_payment_method_line_ids']/list/field[@name='payment_account_id']"

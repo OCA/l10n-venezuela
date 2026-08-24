@@ -84,9 +84,7 @@ class StockMove(models.Model):
             price_currency = company.currency_id
         base_taxes = product.taxes_id._filter_taxes_by_company(company)
         if partner:
-            fpos = self.env["account.fiscal.position"]._get_fiscal_position(
-                partner
-            )
+            fpos = self.env["account.fiscal.position"]._get_fiscal_position(partner)
             if fpos:
                 base_taxes = fpos.map_tax(base_taxes)
         taxes = base_taxes

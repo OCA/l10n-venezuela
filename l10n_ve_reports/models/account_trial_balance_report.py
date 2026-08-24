@@ -62,7 +62,8 @@ class TrialBalanceCustomHandler(models.AbstractModel):
             )
         ]
 
-        # We need to find the index of debit and credit columns for initial and end balance in case of extra custom columns
+        # We need to find the index of debit and credit columns for initial and end
+        # balance in case of extra custom columns
         init_balance_debit_index = next(
             (
                 index
@@ -190,7 +191,9 @@ class TrialBalanceCustomHandler(models.AbstractModel):
 
     def _get_column_group_creation_data(self, report, options, previous_options=None):
         """
-        Return tuple of tuples containing a reference to the column_group creation function and on which side ('left' | 'right') of the report the column_group goes
+        Return tuple of tuples containing a reference to the column_group creation
+        function and on which side ('left' | 'right') of the report the column_group
+        goes
         """
         return (
             (self._create_column_group_initial_balance, "left"),
@@ -216,7 +219,8 @@ class TrialBalanceCustomHandler(models.AbstractModel):
         )
 
         if exclude_initial_balance:
-            # This column group must not include initial balance; we use a special option key for that in general ledger
+            # This column group must not include initial balance; we use a special
+            # option key for that in general ledger
             for column_group in column_group_vals:
                 column_group["forced_options"]["general_ledger_strict_range"] = True
 
@@ -230,12 +234,13 @@ class TrialBalanceCustomHandler(models.AbstractModel):
         side_to_append["columns"] += columns
 
     def _custom_options_initializer(self, report, options, previous_options):
-        """Modifies the provided options to add a column group for initial balance and end balance, as well as the appropriate columns."""
+        """Modifies the provided options to add a column group for initial balance and end balance, as well as the appropriate columns."""  # noqa: E501
         default_group_vals = {"horizontal_groupby_element": {}, "forced_options": {}}
         left_side = {"column_headers": [], "column_groups": {}, "columns": []}
         right_side = {"column_headers": [], "column_groups": {}, "columns": []}
 
-        # Columns between initial and end balance must not include initial balance; we use a special option key for that in general ledger
+        # Columns between initial and end balance must not include initial balance; we
+        # use a special option key for that in general ledger
         for column_group in options["column_groups"].values():
             column_group["forced_options"]["general_ledger_strict_range"] = True
 
@@ -269,7 +274,8 @@ class TrialBalanceCustomHandler(models.AbstractModel):
             True  # So that GL does not compute them
         )
 
-        # All the periods displayed between initial and end balance need to use the same rates, so we manually change the period key.
+        # All the periods displayed between initial and end balance need to use the same
+        # rates, so we manually change the period key.
         # account.report will then compute the currency table periods accordingly
         middle_periods_period_key = "_trial_balance_middle_periods"
         for col_group in options["column_groups"].values():
@@ -280,7 +286,8 @@ class TrialBalanceCustomHandler(models.AbstractModel):
         report._init_options_order_column(options, previous_options)
 
     def _custom_line_postprocessor(self, report, options, lines):
-        # If the hierarchy is enabled, ensure to add the o_account_coa_column_contrast class to the hierarchy lines
+        # If the hierarchy is enabled, ensure to add the o_account_coa_column_contrast
+        # class to the hierarchy lines
         if options.get("hierarchy"):
             for line in lines:
                 model, dummy = report._get_model_info_from_id(line["id"])
@@ -347,8 +354,10 @@ class TrialBalanceCustomHandler(models.AbstractModel):
             append_col_groups=compute_end_balance,
         )
 
-        # We don't add end_column_groups on purpose: they shouldn't be computed, since we'll just sum the values of other groups in that one.
-        # So, we don't want to run any SQL for it. We also force a dedicated column_group_key on the end columns, to better identify them.
+        # We don't add end_column_groups on purpose: they shouldn't be computed, since
+        # we'll just sum the values of other groups in that one.
+        # So, we don't want to run any SQL for it. We also force a dedicated
+        # column_group_key on the end columns, to better identify them.
         if not compute_end_balance:
             for column_data in side_to_append["columns"][-len(report.column_ids) :]:
                 column_data["column_group_key"] = TRIAL_BALANCE_END_COLUMN_GROUP_KEY

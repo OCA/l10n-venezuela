@@ -191,7 +191,7 @@ class AccountRetention(models.Model):
             "title": _("Missing IVA withholding percentage"),
             "message": _(
                 'The contact "%(partner)s" has no IVA withholding percentage '
-                "configured. Set the field \"Withholding Type\" on the partner "
+                'configured. Set the field "Withholding Type" on the partner '
                 "before confirming this operation.",
                 partner=self.partner_id.display_name,
             ),
@@ -237,9 +237,7 @@ class AccountRetention(models.Model):
     )
     def _compute_affected_invoice_display_names(self):
         for retention in self:
-            names = retention.retention_line_ids.mapped(
-                "affected_invoice_display_name"
-            )
+            names = retention.retention_line_ids.mapped("affected_invoice_display_name")
             retention.affected_invoice_display_names = ", ".join(
                 dict.fromkeys(name for name in names if name)
             )
@@ -576,7 +574,7 @@ class AccountRetention(models.Model):
                     and self.env["account.journal"]
                     .browse(payment_vals["journal_id"])
                     .inbound_payment_method_line_ids.filtered(
-                        lambda l: l.code == "manual"
+                        lambda method: method.code == "manual"
                     )[:1]
                     .id
                 ),
@@ -595,7 +593,7 @@ class AccountRetention(models.Model):
                     and self.env["account.journal"]
                     .browse(payment_vals["journal_id"])
                     .outbound_payment_method_line_ids.filtered(
-                        lambda l: l.code == "manual"
+                        lambda method: method.code == "manual"
                     )[:1]
                     .id
                 ),
@@ -634,7 +632,7 @@ class AccountRetention(models.Model):
                 and self.env["account.journal"]
                 .browse(payment_vals["journal_id"])
                 .outbound_payment_method_line_ids.filtered(
-                    lambda l: l.code == "manual"
+                    lambda method: method.code == "manual"
                 )[:1]
                 .id
             )
@@ -647,9 +645,9 @@ class AccountRetention(models.Model):
                 payment_vals["journal_id"]
                 and self.env["account.journal"]
                 .browse(payment_vals["journal_id"])
-                .inbound_payment_method_line_ids.filtered(lambda l: l.code == "manual")[
-                    :1
-                ]
+                .inbound_payment_method_line_ids.filtered(
+                    lambda method: method.code == "manual"
+                )[:1]
                 .id
             )
             payment = Payment.create(payment_vals)
@@ -671,21 +669,25 @@ class AccountRetention(models.Model):
             if not journal:
                 errors.append(
                     _(
-                        "1) Diario IVA: no hay diario de retencion IVA configurado para este tipo."
+                        "1) Diario IVA: no hay diario de retencion IVA "
+                        "configurado para este tipo."
                     )
                 )
             else:
                 if journal.type not in ("bank", "cash"):
                     errors.append(
                         _(
-                            "1) Diario IVA: el diario '%(journal)s' debe ser de tipo Banco o Caja.",
+                            "1) Diario IVA: el diario '%(journal)s' "
+                            "debe ser de tipo Banco o Caja.",
                             journal=journal.display_name,
                         )
                     )
                 if not journal.default_account_id and not journal.suspense_account_id:
                     errors.append(
                         _(
-                            "1) Diario IVA: el diario '%(journal)s' no tiene cuentas configuradas (cuenta por defecto o cuenta transitoria).",
+                            "1) Diario IVA: el diario '%(journal)s' no tiene "
+                            "cuentas configuradas (cuenta por defecto o "
+                            "cuenta transitoria).",
                             journal=journal.display_name,
                         )
                     )
@@ -693,7 +695,8 @@ class AccountRetention(models.Model):
             if not retention.partner_id._l10n_ve_get_withholding_type():
                 errors.append(
                     _(
-                        "4) Partner: el proveedor '%(partner)s' no tiene tipo de retencion configurado.",
+                        "4) Partner: el proveedor '%(partner)s' no tiene "
+                        "tipo de retencion configurado.",
                         partner=retention.partner_id.display_name,
                     )
                 )
@@ -701,24 +704,33 @@ class AccountRetention(models.Model):
             invoices = retention.retention_line_ids.mapped("move_id")
             if not invoices:
                 errors.append(
-                    _("2) Facturas: la retencion no tiene lineas con facturas asociadas.")
+                    _(
+                        "2) Facturas: la retencion no tiene lineas "
+                        "con facturas asociadas."
+                    )
                 )
             else:
                 not_posted = invoices.filtered(lambda inv: inv.state != "posted")
                 if not_posted:
                     errors.append(
                         _(
-                            "2) Facturas: deben estar publicadas. Facturas no publicadas: %(invoices)s",
+                            "2) Facturas: deben estar publicadas. "
+                            "Facturas no publicadas: %(invoices)s",
                             invoices=", ".join(m.display_name for m in not_posted),
                         )
                     )
 
-                without_residual = invoices.filtered(lambda inv: inv.amount_residual <= 0)
+                without_residual = invoices.filtered(
+                    lambda inv: inv.amount_residual <= 0
+                )
                 if without_residual:
                     errors.append(
                         _(
-                            "2) Facturas: deben tener saldo pendiente > 0. Facturas sin saldo pendiente: %(invoices)s",
-                            invoices=", ".join(m.display_name for m in without_residual),
+                            "2) Facturas: deben tener saldo pendiente > 0. "
+                            "Facturas sin saldo pendiente: %(invoices)s",
+                            invoices=", ".join(
+                                m.display_name for m in without_residual
+                            ),
                         )
                     )
 
@@ -731,31 +743,39 @@ class AccountRetention(models.Model):
                 if without_taxes:
                     errors.append(
                         _(
-                            "2) Facturas: deben tener impuestos > 0. Facturas sin impuestos validos: %(invoices)s",
+                            "2) Facturas: deben tener impuestos > 0. "
+                            "Facturas sin impuestos validos: %(invoices)s",
                             invoices=", ".join(m.display_name for m in without_taxes),
                         )
                     )
 
+                current_retention = retention
                 with_active_retention = invoices.filtered(
-                    lambda inv: any(
+                    lambda inv, current=current_retention: any(
                         inv.retention_iva_line_ids.filtered(
-                            lambda line: line.retention_id != retention
-                            and line.state in ("draft", "emitted")
+                            lambda line, current=current: (
+                                line.retention_id != current
+                                and line.state in ("draft", "emitted")
+                            )
                         )
                     )
                 )
                 if with_active_retention:
                     errors.append(
                         _(
-                            "3) Facturas: ya tienen una retencion IVA activa (draft/emitted). Facturas afectadas: %(invoices)s",
-                            invoices=", ".join(m.display_name for m in with_active_retention),
+                            "3) Facturas: ya tienen una retencion IVA activa "
+                            "(draft/emitted). Facturas afectadas: %(invoices)s",
+                            invoices=", ".join(
+                                m.display_name for m in with_active_retention
+                            ),
                         )
                     )
 
             if errors:
                 raise UserError(
                     _(
-                        "No se puede confirmar la retencion IVA porque fallaron estas validaciones:\n\n%(errors)s",
+                        "No se puede confirmar la retencion IVA porque "
+                        "fallaron estas validaciones:\n\n%(errors)s",
                         errors="\n".join(errors),
                     )
                 )
@@ -984,9 +1004,9 @@ class AccountRetention(models.Model):
         a payment concept.
         """
         self.ensure_one()
-        without_type = self.retention_line_ids.mapped(
-            "move_id"
-        ).filtered(lambda m: not m._l10n_ve_withholding_partner().type_person_id)
+        without_type = self.retention_line_ids.mapped("move_id").filtered(
+            lambda m: not m._l10n_ve_withholding_partner().type_person_id
+        )
         if without_type:
             raise UserError(_("Select a type person"))
         if not any(
@@ -1004,7 +1024,8 @@ class AccountRetention(models.Model):
             if not payment.move_id or not payment.move_id.line_ids:
                 raise UserError(
                     _(
-                        "El pago de retencion '%(payment)s' no genero asiento contable al publicar.\n\n"
+                        "El pago de retencion '%(payment)s' no genero "
+                        "asiento contable al publicar.\n\n"
                         "Revise la configuracion del diario '%(journal)s':\n"
                         "- Cuenta por defecto o cuenta transitoria\n"
                         "- Cuentas de pagos/cobros pendientes\n"
@@ -1030,7 +1051,9 @@ class AccountRetention(models.Model):
             move_lines_detail = "\n".join(
                 [
                     _(
-                        "- Linea '%(name)s' | cuenta=%(account)s | tipo=%(type)s | balance=%(balance)s | reconciled=%(reconciled)s",
+                        "- Linea '%(name)s' | cuenta=%(account)s | "
+                        "tipo=%(type)s | balance=%(balance)s | "
+                        "reconciled=%(reconciled)s",
                         name=line.name or "/",
                         account=line.account_id.display_name,
                         type=line.account_id.account_type,
@@ -1042,7 +1065,8 @@ class AccountRetention(models.Model):
             )
             raise ValidationError(
                 _(
-                    "No existen lineas conciliables en el asiento del pago de retencion.\n\n"
+                    "No existen lineas conciliables en el asiento "
+                    "del pago de retencion.\n\n"
                     "Pago: %(payment)s\n"
                     "Asiento: %(move)s\n"
                     "Tipo esperado de cuenta: %(account_type)s\n"

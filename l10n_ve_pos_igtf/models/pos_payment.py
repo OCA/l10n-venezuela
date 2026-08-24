@@ -1,4 +1,4 @@
-from odoo import fields, models, _
+from odoo import _, fields, models
 from odoo.tools import float_is_zero, float_round
 
 
@@ -31,11 +31,11 @@ class PosPayment(models.Model):
         account = self.company_id.l10n_ve_igtf_account_id
         if not account:
             return 0.0
-        lines = move.line_ids.filtered(lambda l: l.account_id == account)
+        lines = move.line_ids.filtered(lambda line: line.account_id == account)
         if not lines:
             return 0.0
         order = self.pos_order_id
-        amt = sum(abs(l.amount_currency) for l in lines)
+        amt = sum(abs(line.amount_currency) for line in lines)
         if order:
             return order.currency_id.round(amt)
         return self.currency_id.round(amt)
@@ -53,7 +53,10 @@ class PosPayment(models.Model):
         from_move = self._l10n_ve_pos_get_igtf_amount_from_posted_move()
         if not float_is_zero(from_move, precision_rounding=prec):
             return from_move
-        if not self.include_igtf and not self._l10n_ve_pos_payment_applies_igtf_by_currency():
+        if (
+            not self.include_igtf
+            and not self._l10n_ve_pos_payment_applies_igtf_by_currency()
+        ):
             return 0.0
         pct = (self.company_id.l10n_ve_igtf_percent or 0.0) / 100.0
         if not pct:
@@ -117,7 +120,8 @@ class PosPayment(models.Model):
                         "journal_id": journal.id,
                         "date": fields.Date.context_today(order, order.date_order),
                         "ref": _(
-                            "Invoice payment for %(order)s (%(account_move)s) using %(payment_method)s",
+                            "Invoice payment for %(order)s (%(account_move)s)"
+                            " using %(payment_method)s",
                             order=order.name,
                             account_move=order.account_move.name,
                             payment_method=payment_method.name,
@@ -219,11 +223,15 @@ class PosPayment(models.Model):
             ).property_account_receivable_id.id
             if amounts["amount_converted"] < 0:
                 credit_line_ids += lines.filtered(
-                    lambda l, acc=receivable_acc_id: l.debit and l.account_id.id == acc
+                    lambda line, acc=receivable_acc_id: (
+                        line.debit and line.account_id.id == acc
+                    )
                 ).ids
             else:
                 credit_line_ids += lines.filtered(
-                    lambda l, acc=receivable_acc_id: l.credit and l.account_id.id == acc
+                    lambda line, acc=receivable_acc_id: (
+                        line.credit and line.account_id.id == acc
+                    )
                 ).ids
             payment_move._post()
         return result.with_context(credit_line_ids=credit_line_ids)

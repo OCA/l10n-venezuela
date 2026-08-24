@@ -118,7 +118,7 @@ class L10nVeBookReportMixin(models.AbstractModel):
         )
         return label in all_labels
 
-    def _l10n_ve_prepare_book_columns(
+    def _l10n_ve_prepare_book_columns(  # noqa: C901
         self, options, company, book_type, include_third_party=False
     ):
         columns = list(options.get("columns", []))
@@ -163,7 +163,10 @@ class L10nVeBookReportMixin(models.AbstractModel):
             if include_third_party and label in third_party_labels:
                 if company.l10n_ve_on_behalf_of_third_party_enabled:
                     for aliquot_type in ordered_types:
-                        if aliquot_type == "exempt" or aliquot_type not in configured_types:
+                        if (
+                            aliquot_type == "exempt"
+                            or aliquot_type not in configured_types
+                        ):
                             continue
                         for col_label in third_party_map.get(aliquot_type, []):
                             matched = col_by_label.get(col_label)

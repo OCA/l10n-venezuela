@@ -55,16 +55,16 @@ class TestL10nVeSeniatInvoiceDashboard(L10nVeSeniatCommon):
         self.assertGreaterEqual(counts["posted_invoices_month"], 1)
         self.assertGreaterEqual(counts["credit_notes_month"], 1)
 
-        invoice_action = self.env["account.journal"].action_l10n_ve_invoice_dashboard_open(
-            "posted_invoices_month"
-        )
+        invoice_action = self.env[
+            "account.journal"
+        ].action_l10n_ve_invoice_dashboard_open("posted_invoices_month")
         self.assertEqual(invoice_action["res_model"], "account.move")
         self.assertIn(("invoice_date", ">=", month_start), invoice_action["domain"])
         self.assertIn(("move_type", "=", "out_invoice"), invoice_action["domain"])
 
-        credit_action = self.env["account.journal"].action_l10n_ve_invoice_dashboard_open(
-            "credit_notes_month"
-        )
+        credit_action = self.env[
+            "account.journal"
+        ].action_l10n_ve_invoice_dashboard_open("credit_notes_month")
         self.assertIn(("move_type", "=", "out_refund"), credit_action["domain"])
 
     def test_invoice_dashboard_counts_overdue_unpaid_invoices(self):
@@ -106,7 +106,9 @@ class TestL10nVeSeniatInvoiceDashboard(L10nVeSeniatCommon):
             "overdue_unpaid_invoices"
         )
         self.assertIn(("move_type", "=", "out_invoice"), action["domain"])
-        self.assertIn(("payment_state", "in", ("not_paid", "partial")), action["domain"])
+        self.assertIn(
+            ("payment_state", "in", ("not_paid", "partial")), action["domain"]
+        )
         self.assertIn(("invoice_date_due", "<", self.today), action["domain"])
 
     def test_invoice_dashboard_hidden_for_non_ve_company(self):

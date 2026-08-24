@@ -26,14 +26,18 @@ class TestL10nVeIgtfCommon(L10nVeSeniatCommon):
 
         cls.igtf_account = cls.company.l10n_ve_igtf_account_id
         if not cls.igtf_account:
-            cls.igtf_account = cls.env["account.account"].with_company(cls.company).create(
-                {
-                    "name": "IGTF Payable Test",
-                    "code": "2102099",
-                    "account_type": "liability_current",
-                    "company_ids": [Command.set([cls.company.id])],
-                    "reconcile": True,
-                }
+            cls.igtf_account = (
+                cls.env["account.account"]
+                .with_company(cls.company)
+                .create(
+                    {
+                        "name": "IGTF Payable Test",
+                        "code": "2102099",
+                        "account_type": "liability_current",
+                        "company_ids": [Command.set([cls.company.id])],
+                        "reconcile": True,
+                    }
+                )
             )
 
         cls.company.partner_id.write({"taxpayer_type": "special"})
@@ -68,19 +72,23 @@ class TestL10nVeIgtfCommon(L10nVeSeniatCommon):
                 }
             )
 
-        cls.partner = cls.env["res.partner"].with_company(cls.company).create(
-            {
-                "name": "IGTF Test Partner",
-                "vat": "V12345678",
-                "country_id": cls.env.ref("base.ve").id,
-                "invoice_sending_method": "manual",
-                "invoice_edi_format": False,
-                "property_account_receivable_id": cls.receivable_account.id,
-                "property_account_payable_id": cls.company_data_ve[
-                    "default_account_payable"
-                ].id,
-                "company_id": False,
-            }
+        cls.partner = (
+            cls.env["res.partner"]
+            .with_company(cls.company)
+            .create(
+                {
+                    "name": "IGTF Test Partner",
+                    "vat": "V12345678",
+                    "country_id": cls.env.ref("base.ve").id,
+                    "invoice_sending_method": "manual",
+                    "invoice_edi_format": False,
+                    "property_account_receivable_id": cls.receivable_account.id,
+                    "property_account_payable_id": cls.company_data_ve[
+                        "default_account_payable"
+                    ].id,
+                    "company_id": False,
+                }
+            )
         )
 
     def _create_customer_invoice(self, amount, currency):
@@ -134,9 +142,13 @@ class TestL10nVeIgtfCommon(L10nVeSeniatCommon):
         wizard_snapshot = {
             "l10n_ve_apply_igtf": bool(wizard.l10n_ve_apply_igtf),
             "l10n_ve_igtf_included": bool(wizard.l10n_ve_igtf_included),
-            "l10n_ve_igtf_amount_company_currency": wizard.l10n_ve_igtf_amount_company_currency,
+            "l10n_ve_igtf_amount_company_currency": (
+                wizard.l10n_ve_igtf_amount_company_currency
+            ),
             "l10n_ve_igtf_amount_currency": wizard.l10n_ve_igtf_amount_currency,
-            "l10n_ve_base_amount_company_currency": wizard.l10n_ve_base_amount_company_currency,
+            "l10n_ve_base_amount_company_currency": (
+                wizard.l10n_ve_base_amount_company_currency
+            ),
         }
         payments = wizard._create_payments()
         payment = payments[:1]
@@ -188,20 +200,25 @@ class TestL10nVeIgtfCommon(L10nVeSeniatCommon):
                     return tax_group
         return None
 
-    def _assert_no_writeoff_or_exchange_diff(self, invoice, payment, allow_exchange=False):
+    def _assert_no_writeoff_or_exchange_diff(
+        self, invoice, payment, allow_exchange=False
+    ):
         exchange_accounts = (
             self.company.income_currency_exchange_account_id
             | self.company.expense_currency_exchange_account_id
         )
         writeoff_lines = payment.move_id.line_ids.filtered(
-            lambda line: (line.name == "Write-Off") or (line.account_id in exchange_accounts)
+            lambda line: (line.name == "Write-Off")
+            or (line.account_id in exchange_accounts)
         )
         self.assertFalse(writeoff_lines)
 
         receivable_lines = invoice.line_ids.filtered(
             lambda line: line.account_id.account_type == "asset_receivable"
         )
-        partials = receivable_lines.matched_debit_ids | receivable_lines.matched_credit_ids
+        partials = (
+            receivable_lines.matched_debit_ids | receivable_lines.matched_credit_ids
+        )
         if not allow_exchange:
             self.assertFalse(partials.filtered("exchange_move_id"))
 
@@ -210,7 +227,9 @@ class TestL10nVeIgtfCommon(L10nVeSeniatCommon):
 
     def _expected_igtf_company_from_payment_amount(self, payment_amount_usd):
         payment_amount_ves = self.ves.round(
-            self.usd._convert(payment_amount_usd, self.ves, self.company, self.test_date)
+            self.usd._convert(
+                payment_amount_usd, self.ves, self.company, self.test_date
+            )
         )
         return self.ves.round(payment_amount_ves * 0.03)
 
@@ -225,7 +244,9 @@ class TestL10nVeIgtfCommon(L10nVeSeniatCommon):
         )
 
         igtf_lines = self._get_payment_igtf_line(payment)
-        payment_igtf_company = abs(sum(igtf_lines.mapped("balance"))) if igtf_lines else 0.0
+        payment_igtf_company = (
+            abs(sum(igtf_lines.mapped("balance"))) if igtf_lines else 0.0
+        )
         payment_igtf_currency = (
             abs(sum(igtf_lines.mapped("amount_currency"))) if igtf_lines else 0.0
         )
@@ -242,7 +263,9 @@ class TestL10nVeIgtfCommon(L10nVeSeniatCommon):
         )
 
         rate = self.company.l10n_ve_igtf_percent / 100.0
-        payment_base_company = self.ves.round(payment_igtf_company / rate) if rate else 0.0
+        payment_base_company = (
+            self.ves.round(payment_igtf_company / rate) if rate else 0.0
+        )
         self.assertAlmostEqual(
             wizard_data["l10n_ve_base_amount_company_currency"],
             payment_base_company,
@@ -271,18 +294,25 @@ class TestL10nVeIgtfCommon(L10nVeSeniatCommon):
             (
                 line
                 for line in widget_lines
-                if line.get("account_payment_id") == payment.id and not line.get("is_exchange")
+                if line.get("account_payment_id") == payment.id
+                and not line.get("is_exchange")
             ),
             None,
         )
         self.assertTrue(payment_line)
 
-        partial = self.env["account.partial.reconcile"].browse(payment_line.get("partial_id"))
+        partial = self.env["account.partial.reconcile"].browse(
+            payment_line.get("partial_id")
+        )
         widget_currency = invoice.currency_id
         igtf_lines = self._get_payment_igtf_line(payment)
-        total_igtf_company = payment.company_currency_id.round(abs(sum(igtf_lines.mapped("balance"))))
+        total_igtf_company = payment.company_currency_id.round(
+            abs(sum(igtf_lines.mapped("balance")))
+        )
 
-        if not partial.exists() or payment.company_currency_id.is_zero(total_igtf_company):
+        if not partial.exists() or payment.company_currency_id.is_zero(
+            total_igtf_company
+        ):
             self.assertFalse(payment_line.get("l10n_ve_igtf_amount"))
             return
 
@@ -294,9 +324,9 @@ class TestL10nVeIgtfCommon(L10nVeSeniatCommon):
             else False
         )
         self.assertTrue(pay_line)
-        matched_partials = (pay_line.matched_debit_ids | pay_line.matched_credit_ids).filtered(
-            lambda pr: not pr.exchange_move_id
-        )
+        matched_partials = (
+            pay_line.matched_debit_ids | pay_line.matched_credit_ids
+        ).filtered(lambda pr: not pr.exchange_move_id)
         total_net_paymentline_widget = 0.0
         for pr in matched_partials:
             line_currency = (
@@ -324,7 +354,10 @@ class TestL10nVeIgtfCommon(L10nVeSeniatCommon):
                 self.assertFalse(payment_line.get("l10n_ve_igtf_amount"))
             return
 
-        allocation_ratio = payment_line.get("l10n_ve_net_amount", payment_line.get("amount", 0.0)) / total_net_paymentline_widget
+        allocation_ratio = (
+            payment_line.get("l10n_ve_net_amount", payment_line.get("amount", 0.0))
+            / total_net_paymentline_widget
+        )
         expected_company_igtf = payment.company_currency_id.round(
             total_igtf_company * allocation_ratio
         )

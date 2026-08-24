@@ -370,21 +370,65 @@ ul.auto-toc {
 !! source digest: sha256:10757df21990e721a33fb7c8ccfb6df65390a2fb975b9590bf697d1546eca3ac
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! -->
 <p><a class="reference external image-reference" href="https://odoo-community.org/page/development-status"><img alt="Beta" src="https://img.shields.io/badge/maturity-Beta-yellow.png" /></a> <a class="reference external image-reference" href="http://www.gnu.org/licenses/lgpl-3.0-standalone.html"><img alt="License: LGPL-3" src="https://img.shields.io/badge/licence-LGPL--3-blue.png" /></a> <a class="reference external image-reference" href="https://github.com/OCA/l10n-venezuela/tree/18.0/l10n_ve_withholding"><img alt="OCA/l10n-venezuela" src="https://img.shields.io/badge/github-OCA%2Fl10n--venezuela-lightgray.png?logo=github" /></a> <a class="reference external image-reference" href="https://translation.odoo-community.org/projects/l10n-venezuela-18-0/l10n-venezuela-18-0-l10n_ve_withholding"><img alt="Translate me on Weblate" src="https://img.shields.io/badge/weblate-Translate%20me-F47D42.png" /></a> <a class="reference external image-reference" href="https://runboat.odoo-community.org/builds?repo=OCA/l10n-venezuela&amp;target_branch=18.0"><img alt="Try me on Runboat" src="https://img.shields.io/badge/runboat-Try%20me-875A7B.png" /></a></p>
-<p>Retenciones Este modulo esta basado en el repositorio de
-<a class="reference external" href="https://github.com/binaural-dev/odoo-venezuela">https://github.com/binaural-dev/odoo-venezuela</a></p>
+<p>Retenciones IVA, ISLR y municipales para Venezuela.</p>
+<p>Los comprobantes emitidos se pueden imprimir desde la factura o desde el
+formulario de la retención. Los listados y las líneas de retención
+muestran las facturas afectadas y permiten abrirlas mediante su
+referencia de proveedor.</p>
+<p>En el comprobante y el TXT de retención IVA, las notas de débito de
+proveedor (<tt class="docutils literal">in_invoice</tt> con <tt class="docutils literal">debit_origin_id</tt>) se reportan como tipo
+<tt class="docutils literal">02</tt>, con el número de la ND en la columna correspondiente y la
+factura origen como documento afectado.</p>
 <p><strong>Table of contents</strong></p>
 <div class="contents local topic" id="contents">
 <ul class="simple">
-<li><a class="reference internal" href="#bug-tracker" id="toc-entry-1">Bug Tracker</a></li>
-<li><a class="reference internal" href="#credits" id="toc-entry-2">Credits</a><ul>
-<li><a class="reference internal" href="#authors" id="toc-entry-3">Authors</a></li>
-<li><a class="reference internal" href="#maintainers" id="toc-entry-4">Maintainers</a></li>
+<li><a class="reference internal" href="#usage" id="toc-entry-1">Usage</a><ul>
+<li><a class="reference internal" href="#comprobante-de-retencion-iva-y-notas-de-debito" id="toc-entry-2">Comprobante de retención IVA y notas de débito</a></li>
+<li><a class="reference internal" href="#impresion-y-consulta-de-facturas-afectadas" id="toc-entry-3">Impresión y consulta de facturas afectadas</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#bug-tracker" id="toc-entry-4">Bug Tracker</a></li>
+<li><a class="reference internal" href="#credits" id="toc-entry-5">Credits</a><ul>
+<li><a class="reference internal" href="#authors" id="toc-entry-6">Authors</a></li>
+<li><a class="reference internal" href="#contributors" id="toc-entry-7">Contributors</a></li>
+<li><a class="reference internal" href="#maintainers" id="toc-entry-8">Maintainers</a></li>
 </ul>
 </li>
 </ul>
 </div>
+<div class="section" id="usage">
+<h1><a class="toc-backref" href="#toc-entry-1">Usage</a></h1>
+<div class="section" id="comprobante-de-retencion-iva-y-notas-de-debito">
+<h2><a class="toc-backref" href="#toc-entry-2">Comprobante de retención IVA y notas de débito</a></h2>
+<ol class="arabic simple">
+<li>Publique una factura o nota de débito de proveedor con retención IVA.</li>
+<li>En el PDF del comprobante, la ND aparece en la columna <strong>Nota de
+Débito</strong>, el tipo de transacción es <tt class="docutils literal"><span class="pre">02-REG</span></tt> y <strong>Factura afectada</strong>
+muestra el número de la factura origen.</li>
+<li>El TXT SENIAT de IVA usa el mismo criterio (tipo de documento
+<tt class="docutils literal">02</tt>).</li>
+</ol>
+</div>
+<div class="section" id="impresion-y-consulta-de-facturas-afectadas">
+<h2><a class="toc-backref" href="#toc-entry-3">Impresión y consulta de facturas afectadas</a></h2>
+<ol class="arabic simple">
+<li>Abra una factura de proveedor que tenga una retención IVA o ISLR
+emitida.</li>
+<li>Use el icono de impresora junto al número de comprobante para
+descargar el comprobante sin abrir primero la retención.</li>
+<li>También puede abrir una retención emitida y usar el botón
+<strong>Imprimir</strong>.</li>
+<li>En el listado de retenciones consulte las facturas afectadas.</li>
+<li>En las líneas de la retención use el identificador mostrado y el
+icono de enlace para abrir directamente la factura correspondiente.</li>
+</ol>
+<p>Las facturas afectadas se identifican priorizando el número de control,
+la referencia del proveedor o el número de factura fiscal, seguido por
+el número interno del asiento entre paréntesis.</p>
+</div>
+</div>
 <div class="section" id="bug-tracker">
-<h1><a class="toc-backref" href="#toc-entry-1">Bug Tracker</a></h1>
+<h1><a class="toc-backref" href="#toc-entry-4">Bug Tracker</a></h1>
 <p>Bugs are tracked on <a class="reference external" href="https://github.com/OCA/l10n-venezuela/issues">GitHub Issues</a>.
 In case of trouble, please check there if your issue has already been reported.
 If you spotted it first, help us to smash it by providing a detailed and welcomed
@@ -392,16 +436,23 @@ If you spotted it first, help us to smash it by providing a detailed and welcome
 <p>Do not contact contributors directly about support or help with technical issues.</p>
 </div>
 <div class="section" id="credits">
-<h1><a class="toc-backref" href="#toc-entry-2">Credits</a></h1>
+<h1><a class="toc-backref" href="#toc-entry-5">Credits</a></h1>
 <div class="section" id="authors">
-<h2><a class="toc-backref" href="#toc-entry-3">Authors</a></h2>
+<h2><a class="toc-backref" href="#toc-entry-6">Authors</a></h2>
 <ul class="simple">
 <li>BinauralDev</li>
 <li>Anderson Armeya</li>
 </ul>
 </div>
+<div class="section" id="contributors">
+<h2><a class="toc-backref" href="#toc-entry-7">Contributors</a></h2>
+<ul class="simple">
+<li>Anderson Armeya</li>
+<li>andyengit</li>
+</ul>
+</div>
 <div class="section" id="maintainers">
-<h2><a class="toc-backref" href="#toc-entry-4">Maintainers</a></h2>
+<h2><a class="toc-backref" href="#toc-entry-8">Maintainers</a></h2>
 <p>This module is maintained by the OCA.</p>
 <a class="reference external image-reference" href="https://odoo-community.org">
 <img alt="Odoo Community Association" src="https://odoo-community.org/logo.png" />

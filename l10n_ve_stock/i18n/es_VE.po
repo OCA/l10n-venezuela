@@ -317,8 +317,10 @@ msgstr "Entregas"
 #. module: l10n_ve_stock
 #. odoo-python
 #: code:addons/l10n_ve_stock/wizard/l10n_ve_stock_picking_validate_confirmation.py:0
-msgid "Esta entrega asignará el número correlativo <strong>%s</strong>."
-msgstr "Esta entrega asignará el número correlativo <strong>%s</strong>."
+msgid ""
+"This delivery will assign control number <strong>%(number)s</strong>."
+msgstr ""
+"Esta entrega asignará el número correlativo <strong>%(number)s</strong>."
 
 #. module: l10n_ve_stock
 #: model_terms:ir.ui.view,arch_db:l10n_ve_stock.report_dispatch_guide_document
@@ -593,8 +595,10 @@ msgstr "Orden de venta"
 #. module: l10n_ve_stock
 #. odoo-python
 #: code:addons/l10n_ve_stock/wizard/l10n_ve_stock_picking_validate_confirmation.py:0
-msgid "Se asignarán los números correlativos: <strong>%s</strong>."
-msgstr "Se asignarán los números correlativos: <strong>%s</strong>."
+msgid ""
+"The following control numbers will be assigned: <strong>%(number)s</strong>."
+msgstr ""
+"Se asignarán los números correlativos: <strong>%(number)s</strong>."
 
 #. module: l10n_ve_stock
 #. odoo-python
@@ -689,8 +693,8 @@ msgstr "Transportista"
 #. odoo-python
 #: code:addons/l10n_ve_stock/wizard/l10n_ve_stock_picking_validate_confirmation.py:0
 msgid ""
-"Tras validar, el documento quedará registrado como guía de despacho y no "
-"podrá ajustarse próximamente."
+"After validation, the document will be recorded as a dispatch guide and "
+"cannot be adjusted soon."
 msgstr ""
 "Tras validar, el documento quedará registrado como guía de despacho y no "
 "podrá ajustarse próximamente."
@@ -699,8 +703,8 @@ msgstr ""
 #. odoo-python
 #: code:addons/l10n_ve_stock/wizard/l10n_ve_stock_picking_validate_confirmation.py:0
 msgid ""
-"Tras validar, los documentos quedarán registrados como guías de despacho y "
-"no podrán ajustarse próximamente."
+"After validation, the documents will be recorded as dispatch guides and "
+"cannot be adjusted soon."
 msgstr ""
 "Tras validar, los documentos quedarán registrados como guías de despacho y "
 "no podrán ajustarse próximamente."
@@ -748,14 +752,16 @@ msgstr "m³"
 #. module: l10n_ve_stock
 #. odoo-python
 #: code:addons/l10n_ve_stock/wizard/l10n_ve_stock_picking_validate_confirmation.py:0
-msgid "¿Está seguro de confirmar estas entregas?"
+msgid "Are you sure you want to confirm these deliveries?"
 msgstr "¿Está seguro de confirmar estas entregas?"
 
 #. module: l10n_ve_stock
 #. odoo-python
 #: code:addons/l10n_ve_stock/wizard/l10n_ve_stock_picking_validate_confirmation.py:0
-msgid "¿Está seguro de confirmar la entrega <strong>%s</strong>?"
-msgstr "¿Está seguro de confirmar la entrega <strong>%s</strong>?"
+msgid ""
+"Are you sure you want to confirm delivery <strong>%(picking)s</strong>?"
+msgstr ""
+"¿Está seguro de confirmar la entrega <strong>%(picking)s</strong>?"
 
 #~ msgid "0.00"
 #~ msgstr "0.00"

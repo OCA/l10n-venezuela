@@ -28,12 +28,103 @@ Venezuela SENIAT - Accounting
 
 |badge1| |badge2| |badge3| |badge4| |badge5|
 
-Configuracion de Account l10n_ve
+Configuración contable SENIAT para Venezuela.
+
+Incluye facturación fiscal, numeración, validaciones de RIF y el flujo
+de notas de crédito y notas de débito tanto para facturas de cliente
+como de proveedor (``out_invoice`` / ``in_invoice``).
+
+Los descuentos globales y post-factura están en el módulo opcional
+``l10n_ve_loyalty``.
+
+Permite configurar por compañía los medios de emisión de facturas y
+otros documentos (forma libre, máquina fiscal y facturación digital).
+
+Los reportes nativos de facturas omiten el encabezado del diseño
+seleccionado. El título muestra únicamente el nombre del documento y los
+totales omiten el IGTF cuando el diario no tiene medio de emisión. Los
+grupos de impuestos con una tasa de 0% no aparecen en los totales.
+
+La fecha de recepción de la factura es el inicio de los plazos de pago y
+de las cuotas de vencimiento.
 
 **Table of contents**
 
 .. contents::
    :local:
+
+Configuration
+=============
+
+Configure
+=========
+
+Medios de emisión
+-----------------
+
+1. Vaya a **Contabilidad → Configuración → Ajustes**.
+2. En el bloque **Venezuela**, seleccione los **Medios de emisión** de
+   la compañía (forma libre, máquina fiscal y/o facturación digital).
+3. Guarde los ajustes.
+
+También puede gestionar el catálogo desde **SENIAT → Localización →
+Medios de emisión**, y ver los medios asignados en **SENIAT →
+Empresas**.
+
+Fecha de recepción
+------------------
+
+En el mismo bloque **Venezuela** de los ajustes de Contabilidad puede
+activar por separado el uso de la fecha de recepción como inicio de los
+plazos de pago en facturas de cliente y/o de proveedor.
+
+Usage
+=====
+
+Usage
+=====
+
+Medios de emisión
+-----------------
+
+En **SENIAT → Empresas** el kanban muestra los medios de emisión
+asignados a cada compañía. La selección se realiza en los ajustes de
+Contabilidad (véase la sección de configuración).
+
+Notas de crédito y débito
+-------------------------
+
+1. Abra una factura de cliente o de proveedor publicada.
+2. Use **Nota de crédito** (reversión) o **Nota de Debito** según
+   corresponda.
+3. En **ventas**, aplican las reglas SENIAT de emisión, montos y
+   productos.
+4. En **proveedor**, el registro es más libre: puede cambiar moneda,
+   impuestos y montos distintos a la factura origen (sin tope SENIAT de
+   NC ni forzar bolívares).
+5. Si tras una nota de crédito total de cliente queda una ND sin
+   revertir, use el asistente **Nota de crédito por ND**.
+
+Las notas reutilizan el mismo diario y contacto de la factura origen.
+
+Fecha de recepción y vencimientos
+---------------------------------
+
+1. En **Contabilidad → Configuración → Ajustes**, bloque **Venezuela**,
+   active **Usar fecha de recepción en facturas de cliente** y/o **Usar
+   fecha de recepción en facturas de proveedor**.
+2. Tras confirmar la factura, indique la **Fecha de recepción**. Esa
+   fecha es el inicio de los plazos de pago:
+
+   - Sin plazo de pago (contado): el vencimiento pasa a la fecha de
+     recepción.
+   - Con plazo (por ejemplo, 30 días): el vencimiento y cada cuota se
+     calculan desde la recepción, no desde la fecha de la factura. La
+     fecha de vencimiento se muestra en el encabezado y en **Fecha de
+     vencimiento** de los apuntes contables.
+
+Ejemplo: factura del 1 de enero, recepción el 5 de enero y pago a 30
+días → vencimiento el 4 de febrero.
 
 Bug Tracker
 ===========
@@ -52,6 +143,12 @@ Authors
 -------
 
 * Anderson Armeya
+
+Contributors
+------------
+
+- Anderson Armeya
+- andyengit
 
 Maintainers
 -----------

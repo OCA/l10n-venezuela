@@ -4,18 +4,36 @@
         <field name="model">account.move</field>
         <field name="inherit_id" ref="account.view_move_form" />
         <field name="arch" type="xml">
-            <xpath expr="//div[@name='due_date']/field[@name='invoice_payment_term_id']" position="attributes">
-                <attribute name="context">{'example_date': reception_date or invoice_date, 'example_amount': tax_totals['total_amount_currency']}</attribute>
+            <xpath
+                expr="//div[@name='due_date']/field[@name='invoice_payment_term_id']"
+                position="attributes"
+            >
+                <attribute
+                    name="context"
+                >{'example_date': reception_date or invoice_date, 'example_amount': tax_totals['total_amount_currency']}</attribute>
             </xpath>
-            <xpath expr="//div[@name='due_date']/field[@name='invoice_date_due']" position="attributes">
-                <attribute name="invisible">invoice_payment_term_id and not l10n_ve_use_reception_date_payment_term</attribute>
-                <attribute name="readonly">state != 'draft' or invoice_payment_term_id</attribute>
+            <xpath
+                expr="//div[@name='due_date']/field[@name='invoice_date_due']"
+                position="attributes"
+            >
+                <attribute
+                    name="invisible"
+                >invoice_payment_term_id and not l10n_ve_use_reception_date_payment_term</attribute>
+                <attribute
+                    name="readonly"
+                >state != 'draft' or invoice_payment_term_id</attribute>
             </xpath>
-            <xpath expr="//page[@id='aml_tab']//list//field[@name='date_maturity']" position="attributes">
+            <xpath
+                expr="//page[@id='aml_tab']//list//field[@name='date_maturity']"
+                position="attributes"
+            >
                 <attribute name="optional">show</attribute>
             </xpath>
             <!-- Art. 16 PA SNAT/2024/000102: fecha del documento en contingencia. -->
-            <xpath expr="//group[@id='header_right_group']/label[@for='invoice_date'][1]" position="before">
+            <xpath
+                expr="//group[@id='header_right_group']/label[@for='invoice_date'][1]"
+                position="before"
+            >
                 <field name="l10n_ve_use_reception_date_payment_term" invisible="1" />
                 <field
                     name="reception_date"
@@ -23,7 +41,10 @@
                     readonly="state != 'posted'"
                 />
             </xpath>
-            <xpath expr="//group[@id='header_right_group']/label[@for='invoice_date'][1]" position="before">
+            <xpath
+                expr="//group[@id='header_right_group']/label[@for='invoice_date'][1]"
+                position="before"
+            >
                 <label
                     for="l10n_ve_invoice_date"
                     string="Fecha del documento"
@@ -37,7 +58,10 @@
                 />
             </xpath>
             <!-- Art. 18 PA SNAT/2024/000102: motivo de anulación registrado. -->
-            <xpath expr="//group[@id='header_right_group']/label[@for='invoice_date'][1]" position="before">
+            <xpath
+                expr="//group[@id='header_right_group']/label[@for='invoice_date'][1]"
+                position="before"
+            >
                 <label
                     for="l10n_ve_cancel_reason_id"
                     string="Motivo de anulación"
@@ -52,41 +76,76 @@
                     readonly="1"
                 />
             </xpath>
-            <xpath expr="//group[@id='header_right_group']/label[@for='invoice_date'][1]" position="attributes">
+            <xpath
+                expr="//group[@id='header_right_group']/label[@for='invoice_date'][1]"
+                position="attributes"
+            >
                 <attribute
                     name="invisible"
                 >move_type not in ('out_invoice', 'out_refund', 'out_receipt') or (country_code == 'VE' and (state == 'posted' or l10n_ve_journal_emission_medium or (state == 'draft' and l10n_ve_journal_emission_medium == 'contingency')))</attribute>
             </xpath>
-            <xpath expr="//group[@id='header_right_group']/field[@name='invoice_date'][1]" position="attributes">
+            <xpath
+                expr="//group[@id='header_right_group']/field[@name='invoice_date'][1]"
+                position="attributes"
+            >
                 <attribute
                     name="invisible"
                 >move_type not in ('out_invoice', 'out_refund', 'out_receipt') or (country_code == 'VE' and (state == 'posted' or l10n_ve_journal_emission_medium or (state == 'draft' and l10n_ve_journal_emission_medium == 'contingency')))</attribute>
                 <attribute name="readonly">state == 'posted'</attribute>
             </xpath>
             <xpath expr="//button[@name='preview_invoice']" position="attributes">
-                <attribute name="invisible">move_type not in ('out_invoice', 'out_refund') or (country_code == 'VE' and (state != 'posted' or l10n_ve_hide_invoice_preview_send)) or (country_code != 'VE' and state in ('draft', 'cancel'))</attribute>
+                <attribute
+                    name="invisible"
+                >move_type not in ('out_invoice', 'out_refund') or (country_code == 'VE' and (state != 'posted' or l10n_ve_hide_invoice_preview_send)) or (country_code != 'VE' and state in ('draft', 'cancel'))</attribute>
             </xpath>
-            <xpath expr="//header//button[@name='action_invoice_sent'][1]" position="attributes">
-                <attribute name="invisible">state != 'posted' or is_being_sent or invoice_pdf_report_id or move_type not in ('out_invoice', 'out_refund') or (country_code == 'VE' and l10n_ve_hide_invoice_preview_send)</attribute>
+            <xpath
+                expr="//header//button[@name='action_invoice_sent'][1]"
+                position="attributes"
+            >
+                <attribute
+                    name="invisible"
+                >state != 'posted' or is_being_sent or invoice_pdf_report_id or move_type not in ('out_invoice', 'out_refund') or (country_code == 'VE' and l10n_ve_hide_invoice_preview_send)</attribute>
             </xpath>
-            <xpath expr="//header//button[@name='action_invoice_sent'][2]" position="attributes">
-                <attribute name="invisible">state != 'posted' or (not is_being_sent and not invoice_pdf_report_id) or move_type not in ('out_invoice', 'out_refund', 'in_invoice', 'in_refund') or (country_code == 'VE' and move_type in ('out_invoice', 'out_refund') and l10n_ve_hide_invoice_preview_send)</attribute>
+            <xpath
+                expr="//header//button[@name='action_invoice_sent'][2]"
+                position="attributes"
+            >
+                <attribute
+                    name="invisible"
+                >state != 'posted' or (not is_being_sent and not invoice_pdf_report_id) or move_type not in ('out_invoice', 'out_refund', 'in_invoice', 'in_refund') or (country_code == 'VE' and move_type in ('out_invoice', 'out_refund') and l10n_ve_hide_invoice_preview_send)</attribute>
             </xpath>
-            <xpath expr="//header//button[@name='action_print_pdf'][1]" position="attributes">
-                <attribute name="invisible">state != 'posted' or is_being_sent or invoice_pdf_report_id or move_type == 'entry' or (country_code == 'VE' and move_type in ('out_invoice', 'out_refund') and l10n_ve_hide_invoice_print_pdf)</attribute>
+            <xpath
+                expr="//header//button[@name='action_print_pdf'][1]"
+                position="attributes"
+            >
+                <attribute
+                    name="invisible"
+                >state != 'posted' or is_being_sent or invoice_pdf_report_id or move_type == 'entry' or (country_code == 'VE' and move_type in ('out_invoice', 'out_refund') and l10n_ve_hide_invoice_print_pdf)</attribute>
             </xpath>
-            <xpath expr="//header//button[@name='action_print_pdf'][2]" position="attributes">
-                <attribute name="invisible">state != 'posted' or (not is_being_sent and not invoice_pdf_report_id) or (country_code == 'VE' and move_type in ('out_invoice', 'out_refund') and l10n_ve_hide_invoice_print_pdf)</attribute>
+            <xpath
+                expr="//header//button[@name='action_print_pdf'][2]"
+                position="attributes"
+            >
+                <attribute
+                    name="invisible"
+                >state != 'posted' or (not is_being_sent and not invoice_pdf_report_id) or (country_code == 'VE' and move_type in ('out_invoice', 'out_refund') and l10n_ve_hide_invoice_print_pdf)</attribute>
             </xpath>
             <xpath expr="//button[@name='button_draft']" position="attributes">
                 <!-- Art. 22-24 PA SNAT/2011/0071: usar NC en lugar de borrador. -->
-                <attribute name="invisible">not show_reset_to_draft_button or (country_code == 'VE' and move_type in ('out_invoice', 'out_refund', 'out_receipt', 'in_invoice', 'in_refund', 'in_receipt'))</attribute>
+                <attribute
+                    name="invisible"
+                >not show_reset_to_draft_button or (country_code == 'VE' and move_type in ('out_invoice', 'out_refund', 'out_receipt', 'in_invoice', 'in_refund', 'in_receipt'))</attribute>
             </xpath>
             <xpath expr="//button[@name='button_cancel'][2]" position="attributes">
-                <attribute name="invisible">not id or state != 'draft' or move_type == 'entry' or (country_code == 'VE' and move_type in ('out_invoice', 'out_refund', 'out_receipt'))</attribute>
+                <attribute
+                    name="invisible"
+                >not id or state != 'draft' or move_type == 'entry' or (country_code == 'VE' and move_type in ('out_invoice', 'out_refund', 'out_receipt'))</attribute>
             </xpath>
 
-            <xpath expr="//field[@name='tax_lock_date_message']/parent::div" position="after">
+            <xpath
+                expr="//field[@name='tax_lock_date_message']/parent::div"
+                position="after"
+            >
                 <!-- Art. 22-24 PA SNAT/2011/0071: NC por ND adicional sin revertir. -->
                 <div
                     class="alert alert-warning d-flex align-items-center flex-wrap gap-2"
@@ -96,7 +155,11 @@
                     <div class="flex-grow-1">
                         <strong>Nota de débito adicional pendiente.</strong>
                         Esta factura ya tiene una nota de crédito total. Existe
-                        <field name="l10n_ve_unreversed_debit_note_count" readonly="1" class="oe_inline" />
+                        <field
+                        name="l10n_ve_unreversed_debit_note_count"
+                        readonly="1"
+                        class="oe_inline"
+                    />
                         nota(s) de débito sin revertir. Debe emitir una nota de crédito
                         referenciada a la factura con los montos de la(s) nota(s) de débito.
                     </div>
@@ -163,7 +226,10 @@
                 </button>
             </xpath>
 
-            <xpath expr="//header//button[@name='action_reverse']" position="attributes">
+            <xpath
+                expr="//header//button[@name='action_reverse']"
+                position="attributes"
+            >
                 <attribute
                     name="invisible"
                 >move_type not in ('out_invoice', 'in_invoice') or state != 'posted' or (country_code == 'VE' and not l10n_ve_show_credit_note_action)</attribute>
@@ -382,19 +448,13 @@
                 expr="//page[@id='other_tab']//group[@name='accounting_info_group']"
                 position="inside"
             >
-                <field
-                    name="l10n_ve_process_date"
-                    readonly="state == 'cancel'"
-                />
+                <field name="l10n_ve_process_date" readonly="state == 'cancel'" />
             </xpath>
             <xpath
                 expr="//page[@id='other_tab_entry']//group[@name='misc_group']"
                 position="inside"
             >
-                <field
-                    name="l10n_ve_process_date"
-                    readonly="state == 'cancel'"
-                />
+                <field name="l10n_ve_process_date" readonly="state == 'cancel'" />
             </xpath>
             <xpath expr="//page[@name='other_info']" position="inside">
                 <!-- Art. 32 PA SNAT/2011/0071: copia certificada por cuenta de terceros. -->
@@ -487,7 +547,10 @@
             <xpath expr="//group[@id='header_left_group']" position="inside">
                 <field name="l10n_ve_lock_credit_debit_journal" invisible="1" />
             </xpath>
-            <xpath expr="//div[@name='journal_div']/field[@name='journal_id']" position="attributes">
+            <xpath
+                expr="//div[@name='journal_div']/field[@name='journal_id']"
+                position="attributes"
+            >
                 <attribute
                     name="readonly"
                 >l10n_ve_lock_credit_debit_journal or (posted_before and name not in (False, '', '/'))</attribute>
@@ -507,6 +570,7 @@
         <field name="name">account.invoice.list</field>
         <field name="model">account.move</field>
         <field name="inherit_id" ref="account.view_invoice_tree" />
+        <field name="priority">110</field>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='name']" position="after">
                 <field name="l10n_ve_journal_emission_medium" column_invisible="True" />
@@ -544,6 +608,9 @@
                 <field name="country_code" column_invisible="1" />
                 <field name="debit_origin_id" column_invisible="1" />
             </xpath>
+            <!-- Replace invoice_date: SENIAT needs the fiscal document datetime
+                 (l10n_ve_invoice_date), not the accounting invoice_date. Hiding
+                 the original would keep a duplicate misleading date column. -->
             <xpath
                 expr="//field[@name='invoice_date'][@column_invisible=&quot;context.get('default_move_type') not in ('out_invoice', 'out_refund', 'out_receipt')&quot;]"
                 position="replace"

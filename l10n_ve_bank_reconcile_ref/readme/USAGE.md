@@ -1,20 +1,21 @@
-# Usage
+1. Install the module ``l10n_ve_bank_reconcile_ref``.
+2. Go to **Invoicing > Configuration > Reconciliation Models**.
+3. Open **VE: Match by reference (payment then invoice)** or create an
+   **Invoice Matching** rule.
+4. Enable:
 
-1. Instale el m�dulo `l10n_ve_bank_reconcile_ref`.
-2. Vaya a **Facturaci�n ? Configuraci�n ? Modelos de conciliaci�n**.
-3. Abra **VE: Match por referencia (pago ? factura)** o cree una regla tipo
-   **Emparejar facturas/facturas de proveedor**.
-4. Active:
-   - Buscar en Etiqueta y/o Referencia del extracto
-   - Match por sufijo de referencia
-   - Longitudes (ej. `6,4`)
-   - Priorizar pagos antes que facturas
-   - Auto-validar
-   - Matching �nico
-5. Importe el extracto bancario y abra la conciliaci�n del diario.
+   - Search on Label and/or Reference of the statement
+   - Match by reference suffix
+   - Suffix lengths (for example ``6,4``)
+   - Match payments before invoices
+   - Auto-validate
+   - Unique matching
 
-Comportamiento:
+5. Import the bank statement and open the journal reconciliation.
 
-- 1 candidato + monto compatible ? se auto-concilia (si Auto-validar est� activo).
-- Varios candidatos ? solo se sugieren.
-- Referencias poco fiables (`0`, vac�as o muy cortas) se ignoran.
+Behavior:
+
+- One candidate and a compatible amount: auto-reconcile when Auto-validate
+  is on.
+- Several candidates: only suggestions.
+- Unreliable references (``0``, empty, or too short) are ignored.

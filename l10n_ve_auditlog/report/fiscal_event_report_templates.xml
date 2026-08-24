@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <odoo>
     <template id="report_fiscal_document_event">
         <t t-call="web.html_container">
@@ -12,7 +12,10 @@
                         </p>
                         <p>
                             <strong>Fecha:</strong>
-                            <span t-field="doc.create_date" t-options='{"widget": "datetime"}' />
+                            <span
+                                t-field="doc.create_date"
+                                t-options='{"widget": "datetime"}'
+                            />
                         </p>
                         <p>
                             <strong>Usuario:</strong>
@@ -20,7 +23,9 @@
                         </p>
                         <p>
                             <strong>Tipo de evento:</strong>
-                            <span t-esc="dict(doc._fields['fiscal_event_type'].selection).get(doc.fiscal_event_type, '')" />
+                            <span
+                                t-esc="dict(doc._fields['fiscal_event_type'].selection).get(doc.fiscal_event_type, '')"
+                            />
                         </p>
                         <p>
                             <strong>Descripción:</strong>
@@ -49,14 +54,25 @@
                         <tbody>
                             <tr t-foreach="docs" t-as="doc">
                                 <td>
-                                    <span t-field="doc.create_date" t-options='{"widget": "datetime"}' />
+                                    <span
+                                        t-field="doc.create_date"
+                                        t-options='{"widget": "datetime"}'
+                                    />
                                 </td>
-                                <td><span t-esc="doc.user_id.name" /></td>
-                                <td><span t-esc="doc.name" /></td>
                                 <td>
-                                    <span t-esc="dict(doc._fields['fiscal_event_type'].selection).get(doc.fiscal_event_type, '')" />
+                                    <span t-esc="doc.user_id.name" />
                                 </td>
-                                <td><span t-esc="doc.fiscal_event_description" /></td>
+                                <td>
+                                    <span t-esc="doc.name" />
+                                </td>
+                                <td>
+                                    <span
+                                        t-esc="dict(doc._fields['fiscal_event_type'].selection).get(doc.fiscal_event_type, '')"
+                                    />
+                                </td>
+                                <td>
+                                    <span t-esc="doc.fiscal_event_description" />
+                                </td>
                             </tr>
                         </tbody>
                     </table>

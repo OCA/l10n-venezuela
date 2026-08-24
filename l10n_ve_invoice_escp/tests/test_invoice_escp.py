@@ -3,9 +3,9 @@ from odoo.exceptions import UserError
 from odoo.tests import tagged
 
 from odoo.addons.l10n_ve_invoice_escp.report.invoice_escp import (
-    build_move_escp_bytes,
     _l10n_ve_escp_invoice_margin_lines,
     _l10n_ve_max_product_table_lines,
+    build_move_escp_bytes,
 )
 from odoo.addons.l10n_ve_seniat.tests.common import L10nVeSeniatCommon
 
@@ -213,5 +213,7 @@ class TestL10nVeInvoiceEscp(L10nVeSeniatCommon):
         move.action_post()
         self.assertEqual(_l10n_ve_max_product_table_lines(move), 4)
         raw = build_move_escp_bytes(move).decode("cp858", errors="replace")
-        blank_slots = sum(1 for ln in raw.split("\n") if ln == " " * len(ln) and len(ln) > 50)
+        blank_slots = sum(
+            1 for ln in raw.split("\n") if ln == " " * len(ln) and len(ln) > 50
+        )
         self.assertGreaterEqual(blank_slots, 3)

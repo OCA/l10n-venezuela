@@ -19,20 +19,20 @@ class TestTrialBalanceReport(TestAccountReportsCommon):
             ]
         }
         cls.company_data_2["default_account_payable"].with_context(
-            context
-        ).code = "211010"
+            **context
+        ).code = "211010"  # noqa: E501
         cls.company_data_2["default_account_revenue"].with_context(
-            context
-        ).code = "400010"
+            **context
+        ).code = "400010"  # noqa: E501
         cls.company_data_2["default_account_expense"].with_context(
-            context
-        ).code = "600010"
+            **context
+        ).code = "600010"  # noqa: E501
         cls.env["account.account"].search(
             [
                 ("company_ids", "=", cls.company_data_2["company"].id),
                 ("account_type", "=", "equity_unaffected"),
             ]
-        ).with_context(context).code = "999989"
+        ).with_context(**context).code = "999989"
 
         # Entries in 2016 for company_1 to test the initial balance.
         cls.move_2016_1 = cls.env["account.move"].create(
@@ -82,7 +82,8 @@ class TestTrialBalanceReport(TestAccountReportsCommon):
         )
         cls.move_2016_1.action_post()
 
-        # Entries in 2016 for company_2 to test the initial balance in multi-companies/multi-currencies.
+        # Entries in 2016 for company_2 to test the initial balance in
+        # multi-companies/multi-currencies.
         cls.move_2016_2 = cls.env["account.move"].create(
             {
                 "move_type": "entry",
@@ -238,7 +239,8 @@ class TestTrialBalanceReport(TestAccountReportsCommon):
         )
         cls.move_2017_1.action_post()
 
-        # Entry in 2017 for company_2 to test the current period in multi-companies/multi-currencies.
+        # Entry in 2017 for company_2 to test the current period in
+        # multi-companies/multi-currencies.
         cls.move_2017_2 = cls.env["account.move"].create(
             {
                 "move_type": "entry",
@@ -274,7 +276,8 @@ class TestTrialBalanceReport(TestAccountReportsCommon):
         )
         cls.move_2017_2.action_post()
 
-        # Archive 'default_journal_bank' to ensure archived entries are not filtered out.
+        # Archive 'default_journal_bank' to ensure archived entries are not filtered
+        # out.
         cls.company_data_2["default_journal_bank"].active = False
 
         # Deactive all currencies to ensure group_multi_currency is disabled.
@@ -399,8 +402,10 @@ class TestTrialBalanceReport(TestAccountReportsCommon):
 
         self.assertLinesValues(
             self.report._get_lines(options),
-            #                                           [  Initial Balance   ]          [       Balance      ]          [       Total        ]
-            #   Name                                    Debit           Credit          Debit           Credit          Debit           Credit
+            # [  Initial Balance   ]          [       Balance      ]          [
+            # Total        ]
+            # Name                                    Debit           Credit
+            # Debit           Credit          Debit           Credit
             [0, 1, 2, 3, 4, 5, 6],
             [
                 ("211000 Account Payable", 2000.0, 0.0, 100.0, 0.0, 2100.0, 0.0),
@@ -532,8 +537,10 @@ class TestTrialBalanceReport(TestAccountReportsCommon):
 
         self.assertLinesValues(
             self.report._get_lines(options),
-            #                                           [  Initial Balance   ]          [       Balance      ]          [       Total        ]
-            #   Name                                    Debit           Credit          Debit           Credit          Debit           Credit
+            # [  Initial Balance   ]          [       Balance      ]          [
+            # Total        ]
+            # Name                                    Debit           Credit
+            # Debit           Credit          Debit           Credit
             [0, 1, 2, 3, 4, 5, 6],
             [
                 ("211000 Account Payable", 1000.0, 0.0, 1100.0, 0.0, 2100.0, 0.0),
@@ -562,8 +569,10 @@ class TestTrialBalanceReport(TestAccountReportsCommon):
 
         self.assertLinesValues(
             self.report._get_lines(options),
-            #                                           [  Initial Balance   ]          [       Balance      ]          [       Total        ]
-            #   Name                                    Debit           Credit          Debit           Credit          Debit           Credit
+            # [  Initial Balance   ]          [       Balance      ]          [
+            # Total        ]
+            # Name                                    Debit           Credit
+            # Debit           Credit          Debit           Credit
             [0, 1, 2, 3, 4, 5, 6],
             [
                 ("121000 Account Receivable", 0.0, 0.0, 1000.0, 0.0, 1000.0, 0.0),
@@ -602,8 +611,10 @@ class TestTrialBalanceReport(TestAccountReportsCommon):
 
         self.assertLinesValues(
             self.report._get_lines(options),
-            #                                           [  Initial Balance   ]          [       Balance      ]          [       Total        ]
-            #   Name                                    Debit           Credit          Debit           Credit          Debit           Credit
+            # [  Initial Balance   ]          [       Balance      ]          [
+            # Total        ]
+            # Name                                    Debit           Credit
+            # Debit           Credit          Debit           Credit
             [0, 1, 2, 3, 4, 5, 6],
             [
                 ("121000 Account Receivable", 0.0, 0.0, 1000.0, 0.0, 1000.0, 0.0),
@@ -657,11 +668,15 @@ class TestTrialBalanceReport(TestAccountReportsCommon):
         for i, val in enumerate(expected_header_values, start=1):
             self.assertDictEqual(options["column_headers"][0][i], val)
 
-        # Rate for 2016 and 2017 is (1/3 (from 2016) * 366 + 1/2 (from 2017) * 365) / 731 => 0.416552668
+        # Rate for 2016 and 2017 is (1/3 (from 2016) * 366 + 1/2 (from 2017) * 365) /
+        # 731 => 0.416552668
         self.assertLinesValues(
             self.report._get_lines(options),
-            #                                           [  Initial Balance   ]          [        2016        ]          [        2017        ]          [       Total        ]
-            #   Name                                    Debit           Credit          Debit           Credit          Debit           Credit          Debit           Credit
+            # [  Initial Balance   ]          [        2016        ]          [
+            # 2017        ]          [       Total        ]
+            # Name                                    Debit           Credit
+            # Debit           Credit          Debit           Credit          Debit
+            # Credit
             [0, 1, 2, 3, 4, 5, 6, 7, 8],
             [
                 (
@@ -724,8 +739,11 @@ class TestTrialBalanceReport(TestAccountReportsCommon):
 
         self.assertLinesValues(
             self.report._get_lines(options),
-            #                                           [  Initial Balance   ]          [        2017        ]          [        2016        ]          [       Total        ]
-            #   Name                                    Debit           Credit          Debit           Credit          Debit           Credit          Debit           Credit
+            # [  Initial Balance   ]          [        2017        ]          [
+            # 2016        ]          [       Total        ]
+            # Name                                    Debit           Credit
+            # Debit           Credit          Debit           Credit          Debit
+            # Credit
             [0, 1, 2, 3, 4, 5, 6, 7, 8],
             [
                 (
@@ -790,8 +808,10 @@ class TestTrialBalanceReport(TestAccountReportsCommon):
 
         self.assertLinesValues(
             self.report._get_lines(options),
-            #                                           [  Initial Balance   ]          [       Balance      ]          [       Total        ]
-            #   Name                                    Debit           Credit          Debit           Credit          Debit           Credit
+            # [  Initial Balance   ]          [       Balance      ]          [
+            # Total        ]
+            # Name                                    Debit           Credit
+            # Debit           Credit          Debit           Credit
             [0, 1, 2, 3, 4, 5, 6],
             [
                 ("121000 Account Receivable", 0.0, 0.0, 1000.0, 0.0, 1000.0, 0.0),
@@ -941,8 +961,10 @@ class TestTrialBalanceReport(TestAccountReportsCommon):
 
     def test_action_general_ledger(self):
         """
-        This test will check that the action caret_option_open_general_ledger works as expected which means that
-        a default_filter_accounts is set and that in case of hierarchy, the group is unfolded
+        This test will check that the action caret_option_open_general_ledger works as
+        expected which means that
+        a default_filter_accounts is set and that in case of hierarchy, the group is
+        unfolded
         """
         self.env["account.group"].create(
             [
@@ -958,8 +980,10 @@ class TestTrialBalanceReport(TestAccountReportsCommon):
         lines = self.report._get_lines(options)
         self.assertLinesValues(
             lines,
-            #                                               [  Initial Balance   ]          [       Balance      ]          [       Total        ]
-            #   Name                                        Debit           Credit          Debit           Credit          Debit           Credit
+            # [  Initial Balance   ]          [       Balance      ]          [
+            # Total        ]
+            # Name                                        Debit           Credit
+            # Debit           Credit          Debit           Credit
             [0, 1, 2, 3, 4, 5, 6],
             [
                 ("6 Group_6", 0.0, 21000.0, 200.0, 0.0, 200.0, 21000.0),
@@ -991,12 +1015,14 @@ class TestTrialBalanceReport(TestAccountReportsCommon):
         self.assertEqual(res["context"]["default_filter_accounts"], "600000")
         general_ledger_lines = general_ledger._get_lines(res["params"]["options"])
         unfolded_lines = [line for line in general_ledger_lines if line.get("unfolded")]
-        # Since the line 600000 Expenses has no child, unfolded is set to False. That's why we have only one element in the list
+        # Since the line 600000 Expenses has no child, unfolded is set to False. That's
+        # why we have only one element in the list
         self.assertEqual(len(unfolded_lines), 1)
 
     def test_blank_if_zero(self):
         """
-        This test will check that the option blank if zero works as expected which means that
+        This test will check that the option blank if zero works as expected which means
+        that
         a '0.0' value will be blanked, but not in the total line.
         """
         self.report.column_ids.write({"blank_if_zero": True})
@@ -1011,8 +1037,10 @@ class TestTrialBalanceReport(TestAccountReportsCommon):
 
         self.assertLinesValues(
             self.report._get_lines(options),
-            #                                           [  Initial Balance   ]          [       Balance      ]          [       Total        ]
-            #   Name                                    Debit           Credit          Debit           Credit          Debit           Credit
+            # [  Initial Balance   ]          [       Balance      ]          [
+            # Total        ]
+            # Name                                    Debit           Credit
+            # Debit           Credit          Debit           Credit
             [0, 1, 2, 3, 4, 5, 6],
             [
                 ("121000 Account Receivable", "", "", 1000.0, "", 1000.0, ""),
@@ -1117,9 +1145,12 @@ class TestTrialBalanceReport(TestAccountReportsCommon):
         lines = self.report._get_lines(options)
         self.assertLinesValues(
             lines,
-            #                                          [         Initial Balance        ]    [            Jan 2020            ]    [           End Balance          ]
-            #                                          [ Account XYZ ]    [    Total    ]    [ Account XYZ ]    [    Total    ]    [ Account XYZ ]    [    Total    ]
-            #   Name                                   Debit    Credit    Debit    Credit    Debit    Credit    Debit    Credit    Debit    Credit    Debit    Credit
+            # [         Initial Balance        ]    [            Jan 2020            ]
+            # [           End Balance          ]
+            # [ Account XYZ ]    [    Total    ]    [ Account XYZ ]    [    Total    ]
+            # [ Account XYZ ]    [    Total    ]
+            # Name                                   Debit    Credit    Debit    Credit
+            # Debit    Credit    Debit    Credit    Debit    Credit    Debit    Credit
             [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
             [
                 (
@@ -1199,9 +1230,12 @@ class TestTrialBalanceReport(TestAccountReportsCommon):
         lines = self.report._get_lines(options)
         self.assertLinesValues(
             lines,
-            #                                          [         Initial Balance        ]    [            Jan 2020            ]    [           End Balance          ]
-            #                                          [   Plan XYZ  ]    [    Total    ]    [   Plan XYZ  ]    [    Total    ]    [   Plan XYZ  ]    [    Total    ]
-            #   Name                                   Debit    Credit    Debit    Credit    Debit    Credit    Debit    Credit    Debit    Credit    Debit    Credit
+            # [         Initial Balance        ]    [            Jan 2020            ]
+            # [           End Balance          ]
+            # [   Plan XYZ  ]    [    Total    ]    [   Plan XYZ  ]    [    Total    ]
+            # [   Plan XYZ  ]    [    Total    ]
+            # Name                                   Debit    Credit    Debit    Credit
+            # Debit    Credit    Debit    Credit    Debit    Credit    Debit    Credit
             [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
             [
                 (

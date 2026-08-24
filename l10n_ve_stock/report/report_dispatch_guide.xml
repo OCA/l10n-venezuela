@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <odoo>
     <template id="report_dispatch_guide_company_header">
         <div class="row mb-3 l10n_ve_dispatch_company_header align-items-start">
@@ -46,10 +46,7 @@
 
     <template id="report_dispatch_guide_document">
         <t t-call="web.basic_layout">
-            <t
-                t-set="company"
-                t-value="o.company_id.sudo()"
-            />
+            <t t-set="company" t-value="o.company_id.sudo()" />
             <t t-set="origin_p" t-value="o._l10n_ve_dispatch_origin_partner()" />
             <t
                 t-set="delivery_addr_p"
@@ -64,14 +61,8 @@
                 t-set="total_cur"
                 t-value="o._l10n_ve_dispatch_guide_total_display()[1]"
             />
-            <t
-                t-set="subtotal_amt"
-                t-value="o.l10n_ve_dispatch_display_subtotal"
-            />
-            <t
-                t-set="subtotal_cur"
-                t-value="o.l10n_ve_dispatch_display_currency_id"
-            />
+            <t t-set="subtotal_amt" t-value="o.l10n_ve_dispatch_display_subtotal" />
+            <t t-set="subtotal_cur" t-value="o.l10n_ve_dispatch_display_currency_id" />
             <t
                 t-set="discount_display"
                 t-value="o._l10n_ve_dispatch_guide_discount_display()"
@@ -200,9 +191,14 @@
                         </div>
                         <div class="mb-1">
                             <strong>Dirección de entrega: </strong>
-                            <span t-out="o._l10n_ve_dispatch_address_inline(delivery_addr_p)" />
+                            <span
+                                t-out="o._l10n_ve_dispatch_address_inline(delivery_addr_p)"
+                            />
                         </div>
-                        <div class="mb-1" t-if="o._l10n_ve_dispatch_partner_contact_phone()">
+                        <div
+                            class="mb-1"
+                            t-if="o._l10n_ve_dispatch_partner_contact_phone()"
+                        >
                             <strong>Teléfono: </strong>
                             <span t-out="o._l10n_ve_dispatch_partner_contact_phone()" />
                         </div>
@@ -210,7 +206,9 @@
                     <div class="col-4 l10n_ve_dispatch_header_col">
                         <div class="mb-1">
                             <strong>Dirección de salida: </strong>
-                            <span t-out="o._l10n_ve_dispatch_address_inline(origin_p)" />
+                            <span
+                                t-out="o._l10n_ve_dispatch_address_inline(origin_p)"
+                            />
                         </div>
                         <div class="mb-1" t-if="o.l10n_ve_transport_partner_id">
                             <strong>Transportista: </strong>
@@ -221,14 +219,16 @@
                             <span>
                                 <t t-out="l10n_ve_tp.name" />
                                 <t t-if="l10n_ve_tp.vat"> - <span
-                                        class="text-uppercase"
-                                        t-out="l10n_ve_tp.vat"
-                                    /></t>
+                                    class="text-uppercase"
+                                    t-out="l10n_ve_tp.vat"
+                                /></t>
                             </span>
                         </div>
                         <div class="mb-1" t-if="o.l10n_ve_fleet_vehicle_id">
                             <strong>Modelo vehículo: </strong>
-                            <span t-out="o._l10n_ve_dispatch_fleet_vehicle_model_name() or '—'" />
+                            <span
+                                t-out="o._l10n_ve_dispatch_fleet_vehicle_model_name() or '—'"
+                            />
                         </div>
                         <div class="mb-1" t-if="o.l10n_ve_fleet_vehicle_id">
                             <strong>Placa: </strong>
@@ -249,10 +249,7 @@
                             <strong>Albarán: </strong>
                             <span t-field="o.name" />
                         </div>
-                        <div
-                            class="mb-1"
-                            t-if="o.l10n_ve_control_number"
-                        >
+                        <div class="mb-1" t-if="o.l10n_ve_control_number">
                             <strong>N° de control: </strong>
                             <span
                                 class="text-danger"

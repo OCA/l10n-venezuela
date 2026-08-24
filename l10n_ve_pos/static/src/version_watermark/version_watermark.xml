@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <templates xml:space="preserve">
     <t t-name="l10n_ve_pos.VersionLabel">
-        <span t-if="version" t-esc="version" class="l10n_ve_pos_version_label"/>
+        <span t-if="version" t-esc="version" class="l10n_ve_pos_version_label" />
     </t>
 </templates>

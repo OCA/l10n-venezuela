@@ -35,7 +35,8 @@ class StockPicking(models.Model):
         "product.pricelist",
         string="Lista de precios (guía)",
         domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]",
-        help="Obligatoria en la guía cuando el albarán no proviene de un pedido de venta.",
+        help="Obligatoria en la guía cuando el albarán no proviene de un "
+        "pedido de venta.",
     )
     l10n_ve_dispatch_currency_id = fields.Many2one(
         "res.currency",
@@ -45,7 +46,8 @@ class StockPicking(models.Model):
     l10n_ve_dispatch_amount_total = fields.Monetary(
         string="Total con impuestos (guía)",
         currency_field="l10n_ve_dispatch_currency_id",
-        help="Total documental con impuestos cuando no hay pedido de venta (multimoneda).",
+        help="Total documental con impuestos cuando no hay pedido de venta "
+        "(multimoneda).",
     )
     l10n_ve_dispatch_display_currency_id = fields.Many2one(
         comodel_name="res.currency",
@@ -217,9 +219,7 @@ class StockPicking(models.Model):
             if picking.sale_id:
                 total_cur = picking.sale_id.currency_id
                 picking.l10n_ve_dispatch_display_currency_id = total_cur
-                picking.l10n_ve_dispatch_display_total = (
-                    picking.sale_id.amount_total
-                )
+                picking.l10n_ve_dispatch_display_total = picking.sale_id.amount_total
                 subtotal_sum = 0.0
                 for move in moves:
                     cur = move.l10n_ve_dispatch_currency_id
@@ -236,9 +236,7 @@ class StockPicking(models.Model):
                     )
                 )
             else:
-                total_cur = (
-                    picking.l10n_ve_dispatch_currency_id or company.currency_id
-                )
+                total_cur = picking.l10n_ve_dispatch_currency_id or company.currency_id
                 picking.l10n_ve_dispatch_display_currency_id = total_cur
                 subtotal_sum = 0.0
                 total_lines = 0.0
@@ -327,24 +325,20 @@ class StockPicking(models.Model):
             if picking._l10n_ve_requires_internal_transfer_reason():
                 if not picking.l10n_ve_internal_transfer_reason_id:
                     raise UserError(
-                        _(
-                            "Indique el motivo de traslado antes de imprimir la guía."
-                        )
+                        _("Indique el motivo de traslado antes de imprimir la guía.")
                     )
             if not picking._l10n_ve_dispatch_needs_manual_pricing():
                 continue
             if not picking.l10n_ve_dispatch_pricelist_id:
                 raise UserError(
                     _(
-                        "Seleccione la lista de precios para la guía (albarán sin pedido "
-                        "de venta vinculado)."
+                        "Seleccione la lista de precios para la guía "
+                        "(albarán sin pedido de venta vinculado)."
                     )
                 )
             if not picking.l10n_ve_dispatch_currency_id:
                 raise UserError(
-                    _(
-                        "Indique la moneda del total con impuestos para la guía."
-                    )
+                    _("Indique la moneda del total con impuestos para la guía.")
                 )
 
     def _l10n_ve_dispatch_origin_partner(self):
@@ -402,14 +396,10 @@ class StockPicking(models.Model):
             wt = qty * product.weight if product.weight else 0.0
             vol = qty * product.volume if product.volume else 0.0
             weight_line = (
-                f"{wt:.2f} {product.weight_uom_name}"
-                if product.weight
-                else "—"
+                f"{wt:.2f} {product.weight_uom_name}" if product.weight else "—"
             )
             volume_line = (
-                f"{vol:.4f} {product.volume_uom_name}"
-                if product.volume
-                else "—"
+                f"{vol:.4f} {product.volume_uom_name}" if product.volume else "—"
             )
             pv = move._l10n_ve_dispatch_line_pricing_values()
             price_unit = pv["price_unit"]
@@ -492,9 +482,8 @@ class StockPicking(models.Model):
     def _l10n_ve_dispatch_guide_discount_display(self):
         """Return (amount, currency, detail lines) for the dispatch guide report."""
         self.ensure_one()
-        currency = (
-            self.l10n_ve_dispatch_display_currency_id
-            or (self.sale_id.currency_id if self.sale_id else self.company_id.currency_id)
+        currency = self.l10n_ve_dispatch_display_currency_id or (
+            self.sale_id.currency_id if self.sale_id else self.company_id.currency_id
         )
         amount = self.l10n_ve_dispatch_display_discount
         if float_is_zero(amount, precision_rounding=currency.rounding):
@@ -521,7 +510,7 @@ class StockPicking(models.Model):
         return amount, currency, lines
 
     def _l10n_ve_dispatch_outgoing_moves_fully_invoiced(self):
-        """True si las cantidades del albarán ya están cubiertas por facturas publicadas."""
+        """True if picking quantities are already covered by posted invoices."""
         self.ensure_one()
         Move = self.env["stock.move"]
         if "invoice_line_ids" not in Move._fields:
@@ -529,7 +518,11 @@ class StockPicking(models.Model):
         saw_product = False
         per_soline_qty = defaultdict(float)
         for move in self.move_ids:
-            if move.scrapped or not move.product_id or move.product_id.type == "service":
+            if (
+                move.scrapped
+                or not move.product_id
+                or move.product_id.type == "service"
+            ):
                 continue
             qty_uom = move.quantity if move.state == "done" else move.product_uom_qty
             if float_is_zero(qty_uom, precision_rounding=move.product_uom.rounding):
@@ -552,11 +545,14 @@ class StockPicking(models.Model):
                 threshold = sol.qty_delivered
             else:
                 threshold = sol.qty_delivered + qty_pick
-            if float_compare(
-                sol.qty_invoiced_posted,
-                threshold,
-                precision_rounding=sol.product_uom.rounding,
-            ) < 0:
+            if (
+                float_compare(
+                    sol.qty_invoiced_posted,
+                    threshold,
+                    precision_rounding=sol.product_uom.rounding,
+                )
+                < 0
+            ):
                 return False
         return True
 
@@ -720,7 +716,7 @@ class StockPicking(models.Model):
         self.ensure_one()
         sale = self.sudo().sale_id
         token = sale.access_token if sale else ""
-        return "/my/picking/pdf/%s?access_token=%s" % (self.id, token)
+        return f"/my/picking/pdf/{self.id}?access_token={token}"
 
     def l10n_ve_portal_control_number_display(self):
         self.ensure_one()
@@ -763,10 +759,14 @@ class StockPicking(models.Model):
     def _pre_action_done_hook(self):
         if not self.env.context.get("l10n_ve_dispatch_guide_validate_confirmed"):
             pickings = self.filtered(
-                lambda picking: picking._l10n_ve_will_assign_dispatch_control_number_on_validate()
+                lambda picking: (
+                    picking._l10n_ve_will_assign_dispatch_control_number_on_validate()
+                )
             )
             if pickings:
-                return pickings._action_open_dispatch_guide_validate_confirmation_wizard()
+                return (
+                    pickings._action_open_dispatch_guide_validate_confirmation_wizard()
+                )
         return super()._pre_action_done_hook()
 
     def _action_done(self):

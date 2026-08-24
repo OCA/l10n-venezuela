@@ -197,7 +197,9 @@ class AccountReconcileModel(models.Model):
     def _filter_amls_by_amount(self, st_line, amls):
         return amls.filtered(lambda aml: self._amount_matches_st_line(st_line, aml))
 
-    def _search_ref_match_amls(self, st_line, partner, source, st_refs, mode, suffix_len):
+    def _search_ref_match_amls(
+        self, st_line, partner, source, st_refs, mode, suffix_len
+    ):
         base_domain = self._get_ref_match_amls_domain(st_line, partner, source)
         text_domains = self._get_ref_match_text_domains(
             source, st_refs, mode, suffix_len

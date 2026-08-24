@@ -24,7 +24,8 @@ class AccountJournal(models.Model):
         companies_with_machine = set(
             FiscalMachine.search(
                 [("company_id", "in", companies.ids), ("active", "=", True)]
-            ).mapped("company_id")
+            )
+            .mapped("company_id")
             .ids
         )
         for journal in self:

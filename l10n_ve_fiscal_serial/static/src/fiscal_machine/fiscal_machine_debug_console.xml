@@ -1,26 +1,55 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <templates xml:space="preserve">
     <t t-name="l10n_ve_fiscal_serial.FiscalMachineDebugConsole">
-        <div t-attf-class="o_fiscal_machine_debug_console {{ embedded ? 'o_fiscal_machine_debug_console_embedded' : 'o_fiscal_machines p-3' }}">
+        <div
+            t-attf-class="o_fiscal_machine_debug_console {{ embedded ? 'o_fiscal_machine_debug_console_embedded' : 'o_fiscal_machines p-3' }}"
+        >
             <div class="row g-3">
                 <div t-attf-class="col-12 {{ embedded ? '' : 'col-lg-7' }}">
                     <div class="card">
                         <div class="card-body">
-                            <div class="d-flex align-items-start justify-content-between flex-wrap gap-2 mb-2">
-                                <h3 class="card-title mb-0" t-esc="machineTitle"/>
-                                <div class="d-flex flex-column align-items-end gap-1 text-end" style="max-width: min(100%, 520px);">
-                                    <span t-attf-class="badge rounded-pill {{ statusClass }}" t-esc="statusLabel"/>
-                                    <span t-if="state.phase === 'connected' and fpMachineLine" class="small text-muted text-break" t-esc="fpMachineLine"/>
+                            <div
+                                class="d-flex align-items-start justify-content-between flex-wrap gap-2 mb-2"
+                            >
+                                <h3 class="card-title mb-0" t-esc="machineTitle" />
+                                <div
+                                    class="d-flex flex-column align-items-end gap-1 text-end"
+                                    style="max-width: min(100%, 520px);"
+                                >
+                                    <span
+                                        t-attf-class="badge rounded-pill {{ statusClass }}"
+                                        t-esc="statusLabel"
+                                    />
+                                    <span
+                                        t-if="state.phase === 'connected' and fpMachineLine"
+                                        class="small text-muted text-break"
+                                        t-esc="fpMachineLine"
+                                    />
                                 </div>
                             </div>
-                            <p t-if="state.serialPortHint" class="text-muted small mb-2">
-                                Puerto registrado: <strong t-esc="state.serialPortHint"/>
+                            <p
+                                t-if="state.serialPortHint"
+                                class="text-muted small mb-2"
+                            >
+                                Puerto registrado: <strong
+                                t-esc="state.serialPortHint"
+                            />
                             </p>
-                            <p class="text-muted small mb-3">Web Serial (Chrome/Edge, HTTPS). Los pasos y la consola del navegador registran el mismo flujo.</p>
+                            <p
+                                class="text-muted small mb-3"
+                            >Web Serial (Chrome/Edge, HTTPS). Los pasos y la consola del navegador registran el mismo flujo.</p>
                             <div class="row g-2 mb-3">
                                 <div class="col-md-6">
-                                    <label class="form-label mb-0 small" for="o_fiscal_baud">Baudios</label>
-                                    <select id="o_fiscal_baud" class="form-select form-select-sm" t-model="state.serialBaud" t-att-disabled="state.busy or state.phase === 'connected'">
+                                    <label
+                                        class="form-label mb-0 small"
+                                        for="o_fiscal_baud"
+                                    >Baudios</label>
+                                    <select
+                                        id="o_fiscal_baud"
+                                        class="form-select form-select-sm"
+                                        t-model="state.serialBaud"
+                                        t-att-disabled="state.busy or state.phase === 'connected'"
+                                    >
                                         <option value="9600">9600</option>
                                         <option value="19200">19200</option>
                                         <option value="38400">38400</option>
@@ -28,33 +57,69 @@
                                     </select>
                                 </div>
                                 <div class="col-md-6">
-                                    <label class="form-label mb-0 small" for="o_fiscal_parity">Paridad</label>
-                                    <select id="o_fiscal_parity" class="form-select form-select-sm" t-model="state.serialParity" t-att-disabled="state.busy or state.phase === 'connected'">
-                                        <option value="even">8E1 par (TFHKA / DLL)</option>
+                                    <label
+                                        class="form-label mb-0 small"
+                                        for="o_fiscal_parity"
+                                    >Paridad</label>
+                                    <select
+                                        id="o_fiscal_parity"
+                                        class="form-select form-select-sm"
+                                        t-model="state.serialParity"
+                                        t-att-disabled="state.busy or state.phase === 'connected'"
+                                    >
+                                        <option
+                                            value="even"
+                                        >8E1 par (TFHKA / DLL)</option>
                                         <option value="none">8N1 sin paridad</option>
                                     </select>
                                 </div>
                             </div>
                             <p class="text-muted small mb-2">
-                                FLAG_21 configurada: <strong><t t-esc="state.flag21"/></strong>
+                                FLAG_21 configurada: <strong>
+                                <t t-esc="state.flag21" />
+                            </strong>
                             </p>
-                            <p class="text-muted small mb-2">Si no responde el ENQ, pruebe <strong>8N1</strong> y el baud del manual; el flujo de apertura replica el DLL (DSR/DTR, CTS/RTS, luego ENQ con 5 bytes).</p>
+                            <p
+                                class="text-muted small mb-2"
+                            >Si no responde el ENQ, pruebe <strong
+                            >8N1</strong> y el baud del manual; el flujo de apertura replica el DLL (DSR/DTR, CTS/RTS, luego ENQ con 5 bytes).</p>
                             <div class="d-flex gap-2 mb-3 flex-wrap">
-                                <button type="button" class="btn btn-primary" t-on-click="onOpenConnection" t-att-disabled="state.busy or state.phase === 'connected'">
+                                <button
+                                    type="button"
+                                    class="btn btn-primary"
+                                    t-on-click="onOpenConnection"
+                                    t-att-disabled="state.busy or state.phase === 'connected'"
+                                >
                                     Abrir conexión
                                 </button>
-                                <button type="button" class="btn btn-secondary" t-on-click="onCloseConnection" t-att-disabled="state.busy or state.phase !== 'connected'">
+                                <button
+                                    type="button"
+                                    class="btn btn-secondary"
+                                    t-on-click="onCloseConnection"
+                                    t-att-disabled="state.busy or state.phase !== 'connected'"
+                                >
                                     Cerrar conexión
                                 </button>
                             </div>
-                            <div t-if="state.phase === 'connecting'" class="alert alert-warning py-2 small mb-3" role="status">
+                            <div
+                                t-if="state.phase === 'connecting'"
+                                class="alert alert-warning py-2 small mb-3"
+                                role="status"
+                            >
                                 Conectando… Si no aparece el selector de puerto, mire si el navegador bloqueó un popup o revise la consola (F12).
                             </div>
-                            <div t-if="state.phase === 'connected'" class="alert alert-success py-2 small mb-3" role="status">
+                            <div
+                                t-if="state.phase === 'connected'"
+                                class="alert alert-success py-2 small mb-3"
+                                role="status"
+                            >
                                 Puerto abierto: permanece así hasta que pulse «Cerrar conexión».
                             </div>
                             <div class="mb-3">
-                                <label class="form-label" for="o_fiscal_cmd_text">Comando (ISO-8859-1 / Latin-1)</label>
+                                <label
+                                    class="form-label"
+                                    for="o_fiscal_cmd_text"
+                                >Comando (ISO-8859-1 / Latin-1)</label>
                                 <textarea
                                     id="o_fiscal_cmd_text"
                                     class="form-control font-monospace"
@@ -63,44 +128,104 @@
                                     t-model="state.commandText"
                                     t-att-readonly="state.busy or state.phase !== 'connected'"
                                 />
-                                <p t-if="state.phase !== 'connected'" class="form-text text-muted mb-0">
+                                <p
+                                    t-if="state.phase !== 'connected'"
+                                    class="form-text text-muted mb-0"
+                                >
                                     El campo está bloqueado hasta que el estado muestre «Puerto abierto» (badge verde).
                                 </p>
                             </div>
                             <div class="d-flex gap-2 mb-3 flex-wrap">
-                                <button type="button" class="btn btn-primary" t-on-click="onSendCommand" t-att-disabled="isSendDisabled">
+                                <button
+                                    type="button"
+                                    class="btn btn-primary"
+                                    t-on-click="onSendCommand"
+                                    t-att-disabled="isSendDisabled"
+                                >
                                     Enviar comando
                                 </button>
-                                <button type="button" class="btn btn-outline-primary" t-on-click="onSendSampleInvoice" t-att-disabled="isSendDisabled">
+                                <button
+                                    type="button"
+                                    class="btn btn-outline-primary"
+                                    t-on-click="onSendSampleInvoice"
+                                    t-att-disabled="isSendDisabled"
+                                >
                                     Secuencia factura de prueba
                                 </button>
-                                <button type="button" class="btn btn-outline-secondary" t-on-click="onSendProbeSeven" t-att-disabled="isSendDisabled">
+                                <button
+                                    type="button"
+                                    class="btn btn-outline-secondary"
+                                    t-on-click="onSendProbeSeven"
+                                    t-att-disabled="isSendDisabled"
+                                >
                                     Probar comando 7 (ACK)
                                 </button>
-                                <button type="button" class="btn btn-outline-info" t-on-click="onReadFpStatusEnq" t-att-disabled="isSendDisabled" title="Comando nativo TFHKA: byte ENQ (0x05); la impresora responde 5 bytes con estado y error fiscal.">
+                                <button
+                                    type="button"
+                                    class="btn btn-outline-info"
+                                    t-on-click="onReadFpStatusEnq"
+                                    t-att-disabled="isSendDisabled"
+                                    title="Comando nativo TFHKA: byte ENQ (0x05); la impresora responde 5 bytes con estado y error fiscal."
+                                >
                                     Estado impresora (ENQ)
                                 </button>
-                                <button type="button" class="btn btn-outline-info" t-on-click="onReadAllStatuses" t-att-disabled="isSendDisabled" title="Lee ENQ, S1, S2, S3, S4, S5, S25 y SV y muestra el resultado en el registro.">
+                                <button
+                                    type="button"
+                                    class="btn btn-outline-info"
+                                    t-on-click="onReadAllStatuses"
+                                    t-att-disabled="isSendDisabled"
+                                    title="Lee ENQ, S1, S2, S3, S4, S5, S25 y SV y muestra el resultado en el registro."
+                                >
                                     Obtener todos los status
                                 </button>
-                                <button type="button" class="btn btn-outline-dark" t-on-click="onPrintXReport" t-att-disabled="isSendDisabled">
+                                <button
+                                    type="button"
+                                    class="btn btn-outline-dark"
+                                    t-on-click="onPrintXReport"
+                                    t-att-disabled="isSendDisabled"
+                                >
                                     Reporte X
                                 </button>
-                                <button type="button" class="btn btn-outline-danger" t-on-click="onPrintZReport" t-att-disabled="isSendDisabled">
+                                <button
+                                    type="button"
+                                    class="btn btn-outline-danger"
+                                    t-on-click="onPrintZReport"
+                                    t-att-disabled="isSendDisabled"
+                                >
                                     Reporte Z
                                 </button>
-                                <button t-if="!embedded" type="button" class="btn btn-outline-success" t-on-click="onConfigureFiscalMachine" t-att-disabled="isSendDisabled">
+                                <button
+                                    t-if="!embedded"
+                                    type="button"
+                                    class="btn btn-outline-success"
+                                    t-on-click="onConfigureFiscalMachine"
+                                    t-att-disabled="isSendDisabled"
+                                >
                                     Configurar maquina fiscal
                                 </button>
-                                <button t-if="embedded" type="button" class="btn btn-outline-success" t-on-click="onConfigureFiscalMachine" t-att-disabled="isSendDisabled">
+                                <button
+                                    t-if="embedded"
+                                    type="button"
+                                    class="btn btn-outline-success"
+                                    t-on-click="onConfigureFiscalMachine"
+                                    t-att-disabled="isSendDisabled"
+                                >
                                     Enviar FLAG_21 a impresora
                                 </button>
                             </div>
-                            <div t-if="state.lastCmdResult" class="alert alert-secondary mb-3" role="status">
-                                <t t-esc="state.lastCmdResult"/>
+                            <div
+                                t-if="state.lastCmdResult"
+                                class="alert alert-secondary mb-3"
+                                role="status"
+                            >
+                                <t t-esc="state.lastCmdResult" />
                             </div>
-                            <div t-if="state.estado" class="alert alert-info mb-0" role="status">
-                                <t t-esc="state.estado"/>
+                            <div
+                                t-if="state.estado"
+                                class="alert alert-info mb-0"
+                                role="status"
+                            >
+                                <t t-esc="state.estado" />
                             </div>
                         </div>
                     </div>
@@ -109,7 +234,12 @@
                     <div class="card mb-3">
                         <div class="card-header py-2">Registro de sesión</div>
                         <div class="card-body p-2">
-                            <pre class="o_fiscal_serial_log mb-0 small font-monospace text-muted" style="max-height: 220px; overflow: auto; white-space: pre-wrap;"><t t-esc="logDisplayText"/></pre>
+                            <pre
+                                class="o_fiscal_serial_log mb-0 small font-monospace text-muted"
+                                style="max-height: 220px; overflow: auto; white-space: pre-wrap;"
+                            >
+                                <t t-esc="logDisplayText" />
+                            </pre>
                         </div>
                     </div>
                     <div t-if="!embedded" class="card">
@@ -117,11 +247,19 @@
                         <div class="card-body small">
                             <p class="fw-bold mb-1">En el navegador</p>
                             <ol class="ps-3 mb-3">
-                                <li>Abra <strong>Herramientas de desarrollador</strong> (F12) → pestaña <strong>Consola</strong>.</li>
-                                <li>Recargue la página (F5), opcionalmente filtre por <code>l10n_ve_fiscal_serial</code>.</li>
-                                <li>Pulse «Abrir conexión», elija el puerto y copie las líneas que salgan con el prefijo indicado.</li>
+                                <li>Abra <strong
+                                >Herramientas de desarrollador</strong> (F12) → pestaña <strong
+                                >Consola</strong>.</li>
+                                <li
+                                >Recargue la página (F5), opcionalmente filtre por <code
+                                >l10n_ve_fiscal_serial</code>.</li>
+                                <li
+                                >Pulse «Abrir conexión», elija el puerto y copie las líneas que salgan con el prefijo indicado.</li>
                             </ol>
-                            <p class="text-muted mb-0">Los eventos también quedan en <strong>Auditoría fiscal serial</strong>.</p>
+                            <p
+                                class="text-muted mb-0"
+                            >Los eventos también quedan en <strong
+                            >Auditoría fiscal serial</strong>.</p>
                         </div>
                     </div>
                     <p t-if="embedded" class="text-muted small mb-0">

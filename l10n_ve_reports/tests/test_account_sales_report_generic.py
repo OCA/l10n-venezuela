@@ -21,7 +21,8 @@ class AccountSalesReportTest(AccountSalesReportCommon):
             {
                 "country_id": cls.env.ref("base.us").id,
                 "vat": "US123456789047",
-                #  Country outside of EU to avoid local reports being chosen over this one (wanted behaviour)
+                # Country outside of EU to avoid local reports being chosen over this
+                # one (wanted behaviour)
             }
         )
         return res
@@ -112,7 +113,8 @@ class AccountSalesReportTest(AccountSalesReportCommon):
         self.assertLinesValues(
             report._get_lines(options),
             # pylint: disable=C0326
-            #   Partner,                country code,             VAT Number,               Amount
+            # Partner,                country code,             VAT Number,
+            # Amount
             [0, 1, 2, 3],
             [
                 (
@@ -162,7 +164,8 @@ class AccountSalesReportTest(AccountSalesReportCommon):
 
         self.assertLinesValues(
             report._get_lines(options),
-            #   Partner,                country code,             VAT Number,               Amount
+            # Partner,                country code,             VAT Number,
+            # Amount
             [0, 1, 2, 3],
             [
                 (
@@ -177,12 +180,14 @@ class AccountSalesReportTest(AccountSalesReportCommon):
         )
 
     def test_ec_sales_set_as_main(self):
-        """Test setting a partner as the main in EC Sales Report when two partners share the same VAT.
+        """Test setting a partner as the main in EC Sales Report when two partners share
+        the same VAT.
 
         Scenario:
         - Two partners have the same VAT.
         - Set one partner as the main partner.
-        - Validate that the second partner is linked correctly as a child and that moves are updated.
+        - Validate that the second partner is linked correctly as a child and that moves
+        are updated.
         """
         # Prepare partners
         partner_main = self.partner_a

@@ -68,9 +68,8 @@ class TxtWizard(models.TransientModel):
                 )
 
             line_data["RIF de proveedor"] = (
-                (line.move_id.partner_id.prefix_vat or "")
-                + (line.move_id.partner_id.vat or "")
-            )
+                line.move_id.partner_id.prefix_vat or ""
+            ) + (line.move_id.partner_id.vat or "")
             line_data["Número de documento"] = line.move_id.ref or line.move_id.name
             line_data["Número de control"] = line.move_id.ref
             line_data["Número de comprobante de retención"] = (

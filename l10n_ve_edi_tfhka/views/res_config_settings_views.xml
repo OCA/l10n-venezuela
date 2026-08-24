@@ -1,12 +1,18 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <odoo>
     <record id="res_config_settings_l10n_ve_edi_tfhka" model="ir.ui.view">
         <field name="name">res.config.settings.l10n.ve.edi.tfhka</field>
         <field name="model">res.config.settings</field>
-        <field name="inherit_id" ref="account.res_config_settings_view_form"/>
+        <field name="inherit_id" ref="account.res_config_settings_view_form" />
         <field name="arch" type="xml">
-            <xpath expr="//block[@name='fiscal_localization_setting_container']" position="after">
-                <block name="l10n_ve_edi_tfhka_block" title="Facturacion Digital The Factory HKA">
+            <xpath
+                expr="//block[@name='fiscal_localization_setting_container']"
+                position="after"
+            >
+                <block
+                    name="l10n_ve_edi_tfhka_block"
+                    title="Facturacion Digital The Factory HKA"
+                >
                     <div class="col-12 col-lg-6 o_setting_box">
                         <div class="o_setting_right_pane">
                             <div class="alert alert-info mb-3" role="alert">
@@ -14,16 +20,19 @@
                                 <ul class="mb-0">
                                     <li>
                                         Pruebas:
-                                        <code>https://demoemisionv2.thefactoryhka.com.ve</code>
+                                        <code
+                                    >https://demoemisionv2.thefactoryhka.com.ve</code>
                                     </li>
                                     <li>
                                         Producción:
-                                        <span class="text-muted">pendiente de configuración</span>
+                                        <span
+                                        class="text-muted"
+                                    >pendiente de configuración</span>
                                     </li>
                                 </ul>
                             </div>
                             <group>
-                                <field name="tfhka_api_environment"/>
+                                <field name="tfhka_api_environment" />
                                 <field
                                     name="tfhka_production_url"
                                     invisible="tfhka_api_environment != 'production'"
@@ -34,8 +43,8 @@
                                     name="tfhka_base_url"
                                     readonly="tfhka_api_environment == 'test'"
                                 />
-                                <field name="tfhka_username"/>
-                                <field name="tfhka_password" password="True"/>
+                                <field name="tfhka_username" />
+                                <field name="tfhka_password" password="True" />
                                 <button
                                     name="action_test_tfhka_connection"
                                     type="object"
@@ -58,42 +67,75 @@
     <record id="res_config_settings_l10n_ve_edi_tfhka_retention" model="ir.ui.view">
         <field name="name">res.config.settings.l10n.ve.edi.tfhka.retention</field>
         <field name="model">res.config.settings</field>
-        <field name="inherit_id" ref="l10n_ve_edi.res_config_settings_l10n_ve_edi_retention"/>
+        <field
+            name="inherit_id"
+            ref="l10n_ve_edi.res_config_settings_l10n_ve_edi_retention"
+        />
         <field name="arch" type="xml">
-            <xpath expr="//field[@name='l10n_ve_edi_iva_supplier_retention_provider']/.." position="after">
-                <div class="row mt16" invisible="l10n_ve_edi_iva_supplier_retention_provider != 'tfhka'">
+            <xpath
+                expr="//field[@name='l10n_ve_edi_iva_supplier_retention_provider']/.."
+                position="after"
+            >
+                <div
+                    class="row mt16"
+                    invisible="l10n_ve_edi_iva_supplier_retention_provider != 'tfhka'"
+                >
                     <label
                         string="Serie (TFHKA)"
                         for="tfhka_iva_supplier_retention_edi_serie"
                         class="col-lg-6 o_light_label"
                     />
-                    <field name="tfhka_iva_supplier_retention_edi_serie" class="col-lg-6"/>
+                    <field
+                        name="tfhka_iva_supplier_retention_edi_serie"
+                        class="col-lg-6"
+                    />
                 </div>
-                <div class="row mt16" invisible="l10n_ve_edi_iva_supplier_retention_provider != 'tfhka'">
+                <div
+                    class="row mt16"
+                    invisible="l10n_ve_edi_iva_supplier_retention_provider != 'tfhka'"
+                >
                     <label
                         string="Sucursal / establecimiento (TFHKA)"
                         for="tfhka_iva_supplier_retention_edi_sucursal"
                         class="col-lg-6 o_light_label"
                     />
-                    <field name="tfhka_iva_supplier_retention_edi_sucursal" class="col-lg-6"/>
+                    <field
+                        name="tfhka_iva_supplier_retention_edi_sucursal"
+                        class="col-lg-6"
+                    />
                 </div>
             </xpath>
-            <xpath expr="//field[@name='l10n_ve_edi_islr_supplier_retention_provider']/.." position="after">
-                <div class="row mt16" invisible="l10n_ve_edi_islr_supplier_retention_provider != 'tfhka'">
+            <xpath
+                expr="//field[@name='l10n_ve_edi_islr_supplier_retention_provider']/.."
+                position="after"
+            >
+                <div
+                    class="row mt16"
+                    invisible="l10n_ve_edi_islr_supplier_retention_provider != 'tfhka'"
+                >
                     <label
                         string="Serie (TFHKA)"
                         for="tfhka_islr_supplier_retention_edi_serie"
                         class="col-lg-6 o_light_label"
                     />
-                    <field name="tfhka_islr_supplier_retention_edi_serie" class="col-lg-6"/>
+                    <field
+                        name="tfhka_islr_supplier_retention_edi_serie"
+                        class="col-lg-6"
+                    />
                 </div>
-                <div class="row mt16" invisible="l10n_ve_edi_islr_supplier_retention_provider != 'tfhka'">
+                <div
+                    class="row mt16"
+                    invisible="l10n_ve_edi_islr_supplier_retention_provider != 'tfhka'"
+                >
                     <label
                         string="Sucursal / establecimiento (TFHKA)"
                         for="tfhka_islr_supplier_retention_edi_sucursal"
                         class="col-lg-6 o_light_label"
                     />
-                    <field name="tfhka_islr_supplier_retention_edi_sucursal" class="col-lg-6"/>
+                    <field
+                        name="tfhka_islr_supplier_retention_edi_sucursal"
+                        class="col-lg-6"
+                    />
                 </div>
             </xpath>
         </field>

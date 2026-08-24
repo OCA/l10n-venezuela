@@ -153,7 +153,7 @@ class PosOrder(models.Model):
         return base_lines
 
     def _compute_prices(self):
-        super()._compute_prices()
+        res = super()._compute_prices()
         AccountTax = self.env["account.tax"]
         for order in self:
             if not order._l10n_ve_pos_company_is_venezuela():
@@ -164,7 +164,8 @@ class PosOrder(models.Model):
                 continue
             order.amount_paid = sum(payment.amount for payment in order.payment_ids)
             order.amount_return = -sum(
-                payment.amount < 0 and payment.amount or 0 for payment in order.payment_ids
+                payment.amount < 0 and payment.amount or 0
+                for payment in order.payment_ids
             )
             base_lines = order.lines._prepare_tax_base_line_values()
             base_lines.extend(order._l10n_ve_manual_discount_base_lines())
@@ -187,6 +188,7 @@ class PosOrder(models.Model):
             order.amount_tax = refund_factor * tax_totals["tax_amount_currency"]
             order.amount_total = refund_factor * tax_totals["total_amount_currency"]
             order.amount_difference = order.amount_paid - order.amount_total
+        return res
 
     def _prepare_tax_base_line_values(self):
         values = super()._prepare_tax_base_line_values()
@@ -272,7 +274,11 @@ class PosOrder(models.Model):
         self.ensure_one()
         if not from_currency or not to_currency or from_currency == to_currency:
             return (to_currency or from_currency or self.currency_id).round(amount)
-        conversion_date = fields.Date.to_date(self.date_order) if self.date_order else fields.Date.context_today(self)
+        conversion_date = (
+            fields.Date.to_date(self.date_order)
+            if self.date_order
+            else fields.Date.context_today(self)
+        )
         return from_currency._convert(
             amount,
             to_currency,
@@ -367,14 +373,24 @@ class PosOrder(models.Model):
         Credit/pay-later on the original only cancels the receivable.
         """
         self.ensure_one()
-        if float_compare(self.amount_total, 0.0, precision_rounding=self.currency_id.rounding) >= 0:
+        if (
+            float_compare(
+                self.amount_total, 0.0, precision_rounding=self.currency_id.rounding
+            )
+            >= 0
+        ):
             return 0.0
         credit = 0.0
         for payment in self.payment_ids:
             method = payment.payment_method_id
             if not self._l10n_ve_is_pay_later_payment_method(method):
                 continue
-            if float_compare(payment.amount, 0.0, precision_rounding=self.currency_id.rounding) < 0:
+            if (
+                float_compare(
+                    payment.amount, 0.0, precision_rounding=self.currency_id.rounding
+                )
+                < 0
+            ):
                 credit += abs(payment.amount)
         credit = self.currency_id.round(credit)
         max_from_original = self._l10n_ve_get_original_non_credit_paid_amount()
@@ -403,7 +419,9 @@ class PosOrder(models.Model):
             credit_points = order._l10n_ve_convert_amount(
                 amount, order.currency_id, wallet_currency
             )
-            if float_is_zero(credit_points, precision_rounding=wallet_currency.rounding):
+            if float_is_zero(
+                credit_points, precision_rounding=wallet_currency.rounding
+            ):
                 continue
             LoyaltyCard = order.env["loyalty.card"].sudo()
             card = LoyaltyCard.search(

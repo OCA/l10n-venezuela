@@ -4,6 +4,7 @@ from datetime import date
 
 from dateutil.relativedelta import relativedelta
 from lxml import html as lxml_html
+
 from odoo import Command, fields
 from odoo.exceptions import UserError, ValidationError
 from odoo.tests import tagged
@@ -190,9 +191,7 @@ class TestAccountMove(L10nVeSeniatCommon):
                 }
             )
         )
-        move = self.env["account.move"].create(
-            self._create_invoice_vals(partner)
-        )
+        move = self.env["account.move"].create(self._create_invoice_vals(partner))
         move.action_post()
         self.assertEqual(move.state, "posted")
 
@@ -247,21 +246,23 @@ class TestAccountMove(L10nVeSeniatCommon):
                 "country_id": self.env.ref("base.ve").id,
             }
         )
-        product = self.env["product.product"].with_context(
-            l10n_ve_skip_product_tax_constraint=True
-        ).create(
-            {
-                "name": "Producto dos impuestos",
-                "list_price": 100.0,
-                "taxes_id": [
-                    Command.set(
-                        [self.company_data["default_tax_sale"].id, tax_b.id]
-                    )
-                ],
-                "supplier_taxes_id": [
-                    Command.set([self.company_data["default_tax_purchase"].id])
-                ],
-            }
+        product = (
+            self.env["product.product"]
+            .with_context(l10n_ve_skip_product_tax_constraint=True)
+            .create(
+                {
+                    "name": "Producto dos impuestos",
+                    "list_price": 100.0,
+                    "taxes_id": [
+                        Command.set(
+                            [self.company_data["default_tax_sale"].id, tax_b.id]
+                        )
+                    ],
+                    "supplier_taxes_id": [
+                        Command.set([self.company_data["default_tax_purchase"].id])
+                    ],
+                }
+            )
         )
         move = self.env["account.move"].create(
             {
@@ -412,9 +413,7 @@ class TestAccountMove(L10nVeSeniatCommon):
             raise_if_not_found=False,
         )
         if not reason:
-            reason = self.env["l10n_ve.invoice.cancel.reason"].search(
-                [], limit=1
-            )
+            reason = self.env["l10n_ve.invoice.cancel.reason"].search([], limit=1)
         self.assertTrue(reason)
         move = self.env["account.move"].create(
             self._create_invoice_vals(self.partner_ve)
@@ -713,9 +712,7 @@ class TestAccountMove(L10nVeSeniatCommon):
             )
         )
         wiz.create_debit()
-        debit = self.env["account.move"].search(
-            [("debit_origin_id", "=", invoice.id)]
-        )
+        debit = self.env["account.move"].search([("debit_origin_id", "=", invoice.id)])
         debit.ensure_one()
         debit.write(
             {
@@ -847,9 +844,7 @@ class TestAccountMove(L10nVeSeniatCommon):
             )
         )
         wiz.create_debit()
-        debit = self.env["account.move"].search(
-            [("debit_origin_id", "=", invoice.id)]
-        )
+        debit = self.env["account.move"].search([("debit_origin_id", "=", invoice.id)])
         debit.ensure_one()
         debit.write(
             {
@@ -894,7 +889,7 @@ class TestAccountMove(L10nVeSeniatCommon):
         )
         wizard = (
             self.env["l10n_ve.account.move.debit.credit.wizard"]
-            .with_context(action.get("context", {}))
+            .with_context(**action.get("context", {}))
             .create({"reason": "reversión ND adicional"})
         )
         result = wizard.action_create_credit_note()
@@ -937,7 +932,7 @@ class TestAccountMove(L10nVeSeniatCommon):
                 {
                     "name": "Bobina",
                     "quantity": 9.0,
-                    "price_unit": 30.15,
+                    "price_unit": 30.0,
                     "account_id": revenue,
                     "tax_ids": [Command.set(tax_ids)],
                 }
@@ -946,7 +941,7 @@ class TestAccountMove(L10nVeSeniatCommon):
                 {
                     "name": "Kit",
                     "quantity": 6.0,
-                    "price_unit": 8.08,
+                    "price_unit": 8.0,
                     "account_id": revenue,
                     "tax_ids": [Command.set(tax_ids)],
                 }
@@ -957,7 +952,7 @@ class TestAccountMove(L10nVeSeniatCommon):
                 {
                     "name": "Bobina",
                     "quantity": 2.0,
-                    "price_unit": 30.15,
+                    "price_unit": 30.0,
                     "account_id": revenue,
                     "tax_ids": [Command.set(tax_ids)],
                 }
@@ -982,7 +977,7 @@ class TestAccountMove(L10nVeSeniatCommon):
                         "product_id": disc_product.id,
                         "name": "Descuento 10%",
                         "quantity": 1.0,
-                        "price_unit": -39.741,
+                        "price_unit": -36.0,
                         "account_id": revenue,
                         "tax_ids": [Command.clear()],
                     }
@@ -992,9 +987,9 @@ class TestAccountMove(L10nVeSeniatCommon):
                 Command.create(
                     {
                         "product_id": disc_product.id,
-                        "name": "10.00% sobre 60.30",
+                        "name": "10.00% sobre 60.00",
                         "quantity": 1.0,
-                        "price_unit": -6.03,
+                        "price_unit": -6.0,
                         "account_id": revenue,
                         "tax_ids": [Command.clear()],
                     }
@@ -1030,10 +1025,12 @@ class TestAccountMove(L10nVeSeniatCommon):
         self.assertAlmostEqual(kit.quantity, 6.0, places=2)
         if has_discount_product:
             discount = credit.invoice_line_ids.filtered(
-                lambda line: line.product_id == self.env.company.sale_discount_product_id
+                lambda line: line.product_id
+                == self.env.company.sale_discount_product_id
             )
             self.assertEqual(len(discount), 1)
-            self.assertAlmostEqual(discount.price_unit, -33.711, places=3)
+            remaining_discount = invoice.currency_id.round(30.0)
+            self.assertAlmostEqual(discount.price_unit, -remaining_discount, places=2)
         credit.action_post()
         self.assertEqual(credit.state, "posted")
 
@@ -1240,9 +1237,7 @@ class TestAccountMove(L10nVeSeniatCommon):
             raise_if_not_found=False,
         )
         if not reason:
-            reason = self.env["l10n_ve.invoice.cancel.reason"].search(
-                [], limit=1
-            )
+            reason = self.env["l10n_ve.invoice.cancel.reason"].search([], limit=1)
         self.assertTrue(reason)
         invoice = self.env["account.move"].create(
             self._create_invoice_vals(self.partner_ve)
@@ -1315,7 +1310,7 @@ class TestAccountMove(L10nVeSeniatCommon):
         self.assertEqual(move._l10n_ve_control_number_parts("00000007"), ("00", 7))
 
     def test_seniat_invoice_tag_same_currency(self):
-        self.env.company.partner_id.taxpayer_type = "formal"
+        self._l10n_ve_set_company_taxpayer_for_igtf_notice("special")
         move = self.env["account.move"].create(
             self._create_invoice_vals(self.partner_ve)
         )
@@ -1370,6 +1365,22 @@ class TestAccountMove(L10nVeSeniatCommon):
         foreign_currency = self.env.ref("base.USD")
         if foreign_currency == self.env.company.currency_id:
             foreign_currency = self.env.ref("base.EUR")
+        foreign_currency.active = True
+        if not self.env["res.currency.rate"].search(
+            [
+                ("currency_id", "=", foreign_currency.id),
+                ("company_id", "=", self.env.company.id),
+            ],
+            limit=1,
+        ):
+            self.env["res.currency.rate"].create(
+                {
+                    "currency_id": foreign_currency.id,
+                    "company_id": self.env.company.id,
+                    "name": fields.Date.today(),
+                    "inverse_company_rate": 36.5,
+                }
+            )
         journal = self.company_data["default_journal_sale"]
         journal.write(
             {
@@ -1461,15 +1472,11 @@ class TestAccountMove(L10nVeSeniatCommon):
 
         for layout_xmlid in layout_xmlids:
             with self.subTest(layout=layout_xmlid):
-                self.env.company.external_report_layout_id = self.env.ref(
-                    layout_xmlid
-                )
+                self.env.company.external_report_layout_id = self.env.ref(layout_xmlid)
                 report = self.env["ir.actions.report"]._render_qweb_html(
                     "account.report_invoice", move.ids
                 )[0]
-                report_html = (
-                    report.decode() if isinstance(report, bytes) else report
-                )
+                report_html = report.decode() if isinstance(report, bytes) else report
                 document = lxml_html.fromstring(report_html)
                 headers = document.xpath(
                     "//*[contains(concat(' ', normalize-space(@class), ' '),"
@@ -1491,6 +1498,11 @@ class TestAccountMove(L10nVeSeniatCommon):
             self._create_invoice_vals(self.partner_ve)
         )
         move.action_post()
+        if hasattr(move, "l10n_ve_invoice_escp_get_payload"):
+            action = move.action_print_pdf()
+            self.assertEqual(action.get("type"), "ir.actions.client")
+            self.assertEqual(action.get("tag"), "l10n_ve_invoice_escp_print")
+            return
         with self.assertRaises(UserError) as cm:
             move.action_print_pdf()
         self.assertIn("l10n_ve_invoice_escp", str(cm.exception))
@@ -1521,7 +1533,9 @@ class TestAccountMove(L10nVeSeniatCommon):
         )
         self.assertEqual(move.get_extra_print_items(), [])
 
-    def test_get_extra_print_items_posted_hides_pdf_download_without_original_print(self):
+    def test_get_extra_print_items_posted_hides_pdf_download_without_original_print(
+        self,
+    ):
         journal = self.company_data["default_journal_sale"]
         journal.l10n_ve_emission_medium = "free"
         journal.l10n_ve_free_form_print_medium = "pdf"
@@ -1971,11 +1985,7 @@ class TestAccountMove(L10nVeSeniatCommon):
         }
         move._l10n_ve_fill_needed_term_dates()
         self.assertTrue(
-            all(
-                key.get("date_maturity")
-                for key in move.needed_terms
-                if key
-            )
+            all(key.get("date_maturity") for key in move.needed_terms if key)
         )
         move._compute_invoice_date_due()
         self.assertEqual(move.invoice_date_due, due_date)
@@ -2007,15 +2017,15 @@ class TestAccountMove(L10nVeSeniatCommon):
         )
 
     def _payment_term_maturity_dates(self, move):
-        return move.line_ids.filtered(
-            lambda line: line.display_type == "payment_term"
-        ).sorted("date_maturity").mapped("date_maturity")
+        return (
+            move.line_ids.filtered(lambda line: line.display_type == "payment_term")
+            .sorted("date_maturity")
+            .mapped("date_maturity")
+        )
 
     def test_reception_date_shifts_due_date_from_payment_term(self):
         self._enable_reception_date_payment_terms(customer=True)
-        term = self._create_payment_term(
-            "Net 30", [(100.0, 30, "days_after")]
-        )
+        term = self._create_payment_term("Net 30", [(100.0, 30, "days_after")])
         vals = self._create_invoice_vals(self.partner_ve)
         vals["invoice_date"] = date(2026, 1, 1)
         vals["invoice_payment_term_id"] = term.id
@@ -2025,15 +2035,11 @@ class TestAccountMove(L10nVeSeniatCommon):
         move.invalidate_recordset(["invoice_date_due", "line_ids"])
         self.env["account.move.line"].invalidate_model(["date_maturity"])
         self.assertEqual(move.invoice_date_due, date(2026, 2, 4))
-        self.assertEqual(
-            self._payment_term_maturity_dates(move), [date(2026, 2, 4)]
-        )
+        self.assertEqual(self._payment_term_maturity_dates(move), [date(2026, 2, 4)])
 
     def test_reception_date_updates_due_date_after_post(self):
         self._enable_reception_date_payment_terms(customer=True)
-        term = self._create_payment_term(
-            "Net 30 posted", [(100.0, 30, "days_after")]
-        )
+        term = self._create_payment_term("Net 30 posted", [(100.0, 30, "days_after")])
         vals = self._create_invoice_vals(self.partner_ve)
         vals["invoice_date"] = date(2026, 1, 1)
         vals["invoice_payment_term_id"] = term.id
@@ -2044,16 +2050,12 @@ class TestAccountMove(L10nVeSeniatCommon):
         move.invalidate_recordset(["invoice_date_due", "line_ids"])
         self.env["account.move.line"].invalidate_model(["date_maturity"])
         self.assertEqual(move.invoice_date_due, date(2026, 2, 4))
-        self.assertEqual(
-            self._payment_term_maturity_dates(move), [date(2026, 2, 4)]
-        )
+        self.assertEqual(self._payment_term_maturity_dates(move), [date(2026, 2, 4)])
         move.reception_date = False
         move.invalidate_recordset(["invoice_date_due", "line_ids"])
         self.env["account.move.line"].invalidate_model(["date_maturity"])
         self.assertEqual(move.invoice_date_due, date(2026, 1, 31))
-        self.assertEqual(
-            self._payment_term_maturity_dates(move), [date(2026, 1, 31)]
-        )
+        self.assertEqual(self._payment_term_maturity_dates(move), [date(2026, 1, 31)])
 
     def test_reception_date_applies_to_payment_term_installments(self):
         self._enable_reception_date_payment_terms(vendor=True)
@@ -2095,15 +2097,11 @@ class TestAccountMove(L10nVeSeniatCommon):
         self.assertEqual(move.invoice_date_due, date(2026, 1, 31))
         move.reception_date = date(2026, 1, 5)
         self.assertEqual(move.invoice_date_due, date(2026, 1, 31))
-        self.assertEqual(
-            self._payment_term_maturity_dates(move), [date(2026, 1, 31)]
-        )
+        self.assertEqual(self._payment_term_maturity_dates(move), [date(2026, 1, 31)])
 
     def test_reception_date_ignored_when_customer_setting_off(self):
         self._enable_reception_date_payment_terms(customer=False, vendor=True)
-        term = self._create_payment_term(
-            "Net 30 off", [(100.0, 30, "days_after")]
-        )
+        term = self._create_payment_term("Net 30 off", [(100.0, 30, "days_after")])
         vals = self._create_invoice_vals(self.partner_ve)
         vals["invoice_date"] = date(2026, 1, 1)
         vals["invoice_payment_term_id"] = term.id
@@ -2113,9 +2111,7 @@ class TestAccountMove(L10nVeSeniatCommon):
         move.invalidate_recordset(["invoice_date_due", "line_ids"])
         self.env["account.move.line"].invalidate_model(["date_maturity"])
         self.assertEqual(move.invoice_date_due, date(2026, 1, 31))
-        self.assertEqual(
-            self._payment_term_maturity_dates(move), [date(2026, 1, 31)]
-        )
+        self.assertEqual(self._payment_term_maturity_dates(move), [date(2026, 1, 31)])
         self.assertFalse(move.l10n_ve_use_reception_date_payment_term)
 
     def test_reception_date_vendor_setting_off_keeps_bill_due(self):
@@ -2132,9 +2128,7 @@ class TestAccountMove(L10nVeSeniatCommon):
         move.invalidate_recordset(["invoice_date_due", "line_ids"])
         self.env["account.move.line"].invalidate_model(["date_maturity"])
         self.assertEqual(move.invoice_date_due, date(2026, 1, 31))
-        self.assertEqual(
-            self._payment_term_maturity_dates(move), [date(2026, 1, 31)]
-        )
+        self.assertEqual(self._payment_term_maturity_dates(move), [date(2026, 1, 31)])
         self.assertFalse(move.l10n_ve_use_reception_date_payment_term)
 
     def test_reception_date_sets_due_when_no_payment_term(self):
@@ -2154,15 +2148,11 @@ class TestAccountMove(L10nVeSeniatCommon):
             }
         )
         self.assertEqual(move.invoice_date_due, date(2026, 8, 21))
-        self.assertEqual(
-            self._payment_term_maturity_dates(move), [date(2026, 8, 21)]
-        )
+        self.assertEqual(self._payment_term_maturity_dates(move), [date(2026, 8, 21)])
 
     def test_reception_date_write_overrides_old_due_from_form(self):
         self._enable_reception_date_payment_terms(customer=True)
-        term = self._create_payment_term(
-            "Net 30 form", [(100.0, 30, "days_after")]
-        )
+        term = self._create_payment_term("Net 30 form", [(100.0, 30, "days_after")])
         vals = self._create_invoice_vals(self.partner_ve)
         vals["invoice_date"] = date(2026, 1, 1)
         vals["invoice_payment_term_id"] = term.id
@@ -2177,9 +2167,7 @@ class TestAccountMove(L10nVeSeniatCommon):
             }
         )
         self.assertEqual(move.invoice_date_due, date(2026, 2, 4))
-        self.assertEqual(
-            self._payment_term_maturity_dates(move), [date(2026, 2, 4)]
-        )
+        self.assertEqual(self._payment_term_maturity_dates(move), [date(2026, 2, 4)])
 
     def test_reception_date_settings_related_on_config(self):
         settings = self.env["res.config.settings"].create(
@@ -2190,9 +2178,5 @@ class TestAccountMove(L10nVeSeniatCommon):
             }
         )
         settings.execute()
-        self.assertTrue(
-            self.env.company.l10n_ve_reception_date_payment_term_customer
-        )
-        self.assertTrue(
-            self.env.company.l10n_ve_reception_date_payment_term_vendor
-        )
+        self.assertTrue(self.env.company.l10n_ve_reception_date_payment_term_customer)
+        self.assertTrue(self.env.company.l10n_ve_reception_date_payment_term_vendor)

@@ -205,7 +205,7 @@ class TestAccountPaymentRegisterSameDay(L10nVeSeniatCommon):
             "invoice_line_ids": [
                 Command.create(
                     {
-                        "name": "Line %s" % index,
+                        "name": f"Line {index}",
                         "quantity": 1.0,
                         "price_unit": amount,
                         "account_id": account.id,
@@ -277,9 +277,7 @@ class TestAccountPaymentRegisterSameDay(L10nVeSeniatCommon):
     def test_same_day_ves_payment_uses_tax_totals(self):
         invoice = self._create_usd_invoice([10.17, 25.33, 8.91])
         tax_totals_ves = invoice.tax_totals["total_amount"]
-        wizard = self._create_payment_register(
-            invoice, self.invoice_date, self.ves
-        )
+        wizard = self._create_payment_register(invoice, self.invoice_date, self.ves)
         self.assertEqual(
             wizard.currency_id.compare_amounts(wizard.amount, tax_totals_ves),
             0,
@@ -309,18 +307,18 @@ class TestAccountPaymentRegisterSameDay(L10nVeSeniatCommon):
 
     def test_mixed_same_day_ves_payment_uses_current_rate(self):
         invoice = self._create_usd_invoice([100.0])
-        usd_wizard = self._create_payment_register(
-            invoice, self.invoice_date, self.usd
-        )
+        usd_wizard = self._create_payment_register(invoice, self.invoice_date, self.usd)
         usd_wizard.amount = 40.0
         usd_wizard._create_payments()
         invoice.invalidate_recordset()
-        wizard = self._create_payment_register(
-            invoice, self.invoice_date, self.ves
+        wizard = self._create_payment_register(invoice, self.invoice_date, self.ves)
+        expected = abs(
+            sum(
+                invoice.line_ids.filtered(
+                    lambda line: line.display_type == "payment_term"
+                ).mapped("amount_residual")
+            )
         )
-        expected = abs(sum(invoice.line_ids.filtered(
-            lambda line: line.display_type == "payment_term"
-        ).mapped("amount_residual")))
         self.assertEqual(
             wizard.currency_id.compare_amounts(wizard.amount, expected),
             0,
@@ -335,22 +333,22 @@ class TestAccountPaymentRegisterSameDay(L10nVeSeniatCommon):
     def test_same_day_ves_partial_keeps_fiscal_residual(self):
         invoice = self._create_usd_invoice([10.17, 25.33, 8.91])
         fiscal_ves = invoice.tax_totals["total_amount"]
-        first = self._create_payment_register(
-            invoice, self.invoice_date, self.ves
-        )
+        first = self._create_payment_register(invoice, self.invoice_date, self.ves)
         first.amount = 1000.0
         first._create_payments()
         invoice.invalidate_recordset()
-        leftover = abs(sum(invoice.line_ids.filtered(
-            lambda line: line.display_type == "payment_term"
-        ).mapped("amount_residual")))
+        leftover = abs(
+            sum(
+                invoice.line_ids.filtered(
+                    lambda line: line.display_type == "payment_term"
+                ).mapped("amount_residual")
+            )
+        )
         self.assertEqual(
             self.ves.compare_amounts(leftover, fiscal_ves - 1000.0),
             0,
         )
-        wizard = self._create_payment_register(
-            invoice, self.invoice_date, self.ves
-        )
+        wizard = self._create_payment_register(invoice, self.invoice_date, self.ves)
         self.assertEqual(
             wizard.currency_id.compare_amounts(wizard.amount, leftover),
             0,
@@ -366,9 +364,7 @@ class TestAccountPaymentRegisterSameDay(L10nVeSeniatCommon):
             self.ves.compare_amounts(leftover, fiscal_ves - 2500.0),
             0,
         )
-        wizard = self._create_payment_register(
-            invoice, self.invoice_date, self.ves
-        )
+        wizard = self._create_payment_register(invoice, self.invoice_date, self.ves)
         self.assertEqual(
             wizard.currency_id.compare_amounts(wizard.amount, leftover),
             0,
@@ -380,9 +376,7 @@ class TestAccountPaymentRegisterSameDay(L10nVeSeniatCommon):
         self._pay_amount(invoice, self.invoice_date, self.ves, fiscal_ves - 100.0)
         leftover = self._payment_term_residual(invoice)
         self.assertEqual(self.ves.compare_amounts(leftover, 100.0), 0)
-        wizard = self._create_payment_register(
-            invoice, self.invoice_date, self.ves
-        )
+        wizard = self._create_payment_register(invoice, self.invoice_date, self.ves)
         self.assertEqual(
             wizard.currency_id.compare_amounts(wizard.amount, 100.0),
             0,
@@ -406,9 +400,7 @@ class TestAccountPaymentRegisterSameDay(L10nVeSeniatCommon):
             self.ves.compare_amounts(leftover, fiscal_ves - paid),
             0,
         )
-        wizard = self._create_payment_register(
-            invoice, self.invoice_date, self.ves
-        )
+        wizard = self._create_payment_register(invoice, self.invoice_date, self.ves)
         self.assertEqual(
             wizard.currency_id.compare_amounts(wizard.amount, leftover),
             0,
@@ -453,9 +445,7 @@ class TestAccountPaymentRegisterSameDay(L10nVeSeniatCommon):
             self.ves.compare_amounts(leftover, after_usd - 1000.0),
             0,
         )
-        wizard = self._create_payment_register(
-            invoice, self.invoice_date, self.ves
-        )
+        wizard = self._create_payment_register(invoice, self.invoice_date, self.ves)
         self.assertEqual(
             wizard.currency_id.compare_amounts(wizard.amount, leftover),
             0,
@@ -465,8 +455,7 @@ class TestAccountPaymentRegisterSameDay(L10nVeSeniatCommon):
         invoice_a = self._create_usd_invoice([10.17, 8.91])
         invoice_b = self._create_usd_invoice([25.33])
         expected = self.ves.round(
-            invoice_a.tax_totals["total_amount"]
-            + invoice_b.tax_totals["total_amount"]
+            invoice_a.tax_totals["total_amount"] + invoice_b.tax_totals["total_amount"]
         )
         wizard = (
             self.env["account.payment.register"]
@@ -489,9 +478,7 @@ class TestAccountPaymentRegisterSameDay(L10nVeSeniatCommon):
 
     def test_same_day_vendor_bill_uses_tax_totals(self):
         bill = self._create_usd_invoice([12.5, 7.3], move_type="in_invoice")
-        wizard = self._create_payment_register(
-            bill, self.invoice_date, self.ves
-        )
+        wizard = self._create_payment_register(bill, self.invoice_date, self.ves)
         self.assertEqual(
             wizard.currency_id.compare_amounts(
                 wizard.amount, bill.tax_totals["total_amount"]
@@ -516,9 +503,7 @@ class TestAccountPaymentRegisterSameDay(L10nVeSeniatCommon):
 
     def test_same_day_tiny_invoice_uses_tax_totals(self):
         invoice = self._create_usd_invoice([0.1])
-        wizard = self._create_payment_register(
-            invoice, self.invoice_date, self.ves
-        )
+        wizard = self._create_payment_register(invoice, self.invoice_date, self.ves)
         self.assertEqual(
             wizard.currency_id.compare_amounts(
                 wizard.amount, invoice.tax_totals["total_amount"]
@@ -563,9 +548,7 @@ class TestAccountPaymentRegisterSameDay(L10nVeSeniatCommon):
         invoice = self._create_usd_invoice(
             [100.0], extra_vals={"invoice_payment_term_id": term.id}
         )
-        wizard = self._create_payment_register(
-            invoice, self.invoice_date, self.ves
-        )
+        wizard = self._create_payment_register(invoice, self.invoice_date, self.ves)
         self.assertEqual(
             wizard.currency_id.compare_amounts(
                 wizard.amount, invoice.tax_totals["total_amount"]

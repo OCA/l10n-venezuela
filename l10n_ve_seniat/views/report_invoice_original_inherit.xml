@@ -14,10 +14,7 @@
             t-set="igtf_groups"
             t-value="[group for group in all_tax_groups if group.get('id') == -1 and any(o.env['account.tax'].browse(group.get('involved_tax_ids', [])).mapped('amount'))]"
         />
-        <t
-            t-set="igtf_group"
-            t-value="igtf_groups[0] if igtf_groups else {}"
-        />
+        <t t-set="igtf_group" t-value="igtf_groups[0] if igtf_groups else {}" />
         <t
             t-set="vat_percent_tokens"
             t-value="[token for token in vat_group.get('group_name', '').replace(':', ' ').split() if '%' in token]"
@@ -26,10 +23,7 @@
             t-set="vat_percent"
             t-value="vat_percent_tokens[0] if vat_percent_tokens else '16%'"
         />
-        <t
-            t-set="igtf_percent_value"
-            t-value="o.l10n_ve_report_igtf_percent()"
-        />
+        <t t-set="igtf_percent_value" t-value="o.l10n_ve_report_igtf_percent()" />
         <t
             t-set="igtf_percent"
             t-value="('%s' % igtf_percent_value).replace('.', ',') + '%'"
@@ -57,12 +51,10 @@
         <tr t-if="tax_totals.get('l10n_ve_show_global_discount')">
             <td>
                 Descuento
-                <t
-                    t-if="tax_totals.get('l10n_ve_global_discount_percentage')"
-                >
+                <t t-if="tax_totals.get('l10n_ve_global_discount_percentage')">
                     (<t
-                        t-out="'%.2f' % (tax_totals.get('l10n_ve_global_discount_percentage') * 100.0)"
-                    />%):
+                t-out="'%.2f' % (tax_totals.get('l10n_ve_global_discount_percentage') * 100.0)"
+            />%):
                 </t>
                 <t t-else="">:</t>
             </td>
@@ -140,7 +132,9 @@
             </td>
         </tr>
         <tr class="o_total">
-            <td><strong>Total a Pagar</strong></td>
+            <td>
+                <strong>Total a Pagar</strong>
+            </td>
             <td class="text-end">
                 <strong
                     t-out="tax_totals.get('total_amount', 0)"
@@ -209,18 +203,12 @@
                 name="t-attf-class"
             >o_total_table table table-borderless avoid-page-break-inside {{ 'l10n_ve_totals_dual' if l10n_ve_dual_currency_totals else 'l10n_ve_totals_single' }}</attribute>
         </xpath>
-        <xpath
-            expr="//t[@t-call='account.document_tax_totals']"
-            position="attributes"
-        >
+        <xpath expr="//t[@t-call='account.document_tax_totals']" position="attributes">
             <attribute
                 name="t-if"
             >o.tax_totals and not l10n_ve_dual_currency_totals</attribute>
         </xpath>
-        <xpath
-            expr="//t[@t-call='account.document_tax_totals']"
-            position="after"
-        >
+        <xpath expr="//t[@t-call='account.document_tax_totals']" position="after">
             <t
                 t-if="l10n_ve_dual_currency_totals"
                 t-call="l10n_ve_seniat.document_tax_totals_dual_currency"
@@ -238,12 +226,11 @@
                 name="t-if"
             >o.tax_totals.get('display_in_company_currency') and not l10n_ve_dual_currency_totals</attribute>
         </xpath>
-        <xpath expr="//div[@id='right-elements']/div[hasclass('mb-2')]" position="attributes">
-            <attribute
-                name="class"
-                add="o_l10n_ve_total_amount_words"
-                separator=" "
-            />
+        <xpath
+            expr="//div[@id='right-elements']/div[hasclass('mb-2')]"
+            position="attributes"
+        >
+            <attribute name="class" add="o_l10n_ve_total_amount_words" separator=" " />
         </xpath>
     </template>
 
@@ -255,9 +242,7 @@
             expr="//div[contains(concat(' ', normalize-space(@t-attf-class), ' '), ' header ')]"
             position="attributes"
         >
-            <attribute
-                name="t-if"
-            >display_report_header is not False</attribute>
+            <attribute name="t-if">display_report_header is not False</attribute>
         </xpath>
     </template>
 
@@ -269,9 +254,7 @@
             expr="//div[contains(concat(' ', normalize-space(@t-attf-class), ' '), ' header ')]"
             position="attributes"
         >
-            <attribute
-                name="t-if"
-            >display_report_header is not False</attribute>
+            <attribute name="t-if">display_report_header is not False</attribute>
         </xpath>
     </template>
 
@@ -283,9 +266,7 @@
             expr="//div[contains(concat(' ', normalize-space(@t-attf-class), ' '), ' header ')]"
             position="attributes"
         >
-            <attribute
-                name="t-if"
-            >display_report_header is not False</attribute>
+            <attribute name="t-if">display_report_header is not False</attribute>
         </xpath>
     </template>
 
@@ -297,9 +278,7 @@
             expr="//div[contains(concat(' ', normalize-space(@t-attf-class), ' '), ' header ')]"
             position="attributes"
         >
-            <attribute
-                name="t-if"
-            >display_report_header is not False</attribute>
+            <attribute name="t-if">display_report_header is not False</attribute>
         </xpath>
     </template>
 
@@ -311,9 +290,7 @@
             expr="//div[contains(concat(' ', normalize-space(@t-attf-class), ' '), ' header ')]"
             position="attributes"
         >
-            <attribute
-                name="t-if"
-            >display_report_header is not False</attribute>
+            <attribute name="t-if">display_report_header is not False</attribute>
         </xpath>
     </template>
 
@@ -325,9 +302,7 @@
             expr="//div[contains(concat(' ', normalize-space(@t-attf-class), ' '), ' header ')]"
             position="attributes"
         >
-            <attribute
-                name="t-if"
-            >display_report_header is not False</attribute>
+            <attribute name="t-if">display_report_header is not False</attribute>
         </xpath>
     </template>
 
@@ -339,9 +314,7 @@
             expr="//div[contains(concat(' ', normalize-space(@t-attf-class), ' '), ' header ')]"
             position="attributes"
         >
-            <attribute
-                name="t-if"
-            >display_report_header is not False</attribute>
+            <attribute name="t-if">display_report_header is not False</attribute>
         </xpath>
     </template>
 </odoo>

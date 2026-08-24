@@ -19,7 +19,8 @@ class TestFinancialReport(TestAccountReportsCommon):
 
         # ==== Accounts ====
 
-        # Cleanup existing "Current year earnings" accounts since we can only have one by company.
+        # Cleanup existing "Current year earnings" accounts since we can only have one
+        # by company.
         cls.env["account.account"].search(
             [
                 (
@@ -48,8 +49,8 @@ class TestFinancialReport(TestAccountReportsCommon):
             [
                 {
                     **data[1],
-                    "name": "account%s" % i,
-                    "code": "code%s" % i,
+                    "name": f"account{i}",
+                    "code": f"code{i}",
                     "account_type": data[0],
                 }
                 for i, data in enumerate(account_type_data)
@@ -81,7 +82,7 @@ class TestFinancialReport(TestAccountReportsCommon):
                     Command.create(
                         {
                             "field_name": "partner_id",
-                            "domain": f"[('id', 'in', {(cls.partner_a + cls.partner_b).ids})]",
+                            "domain": f"[('id', 'in', {(cls.partner_a + cls.partner_b).ids})]",  # noqa: E501
                         }
                     ),
                     Command.create(
@@ -405,7 +406,7 @@ class TestFinancialReport(TestAccountReportsCommon):
 
     def _build_generic_id_from_financial_line(self, financial_rep_ln_xmlid):
         report_line = self.env.ref(financial_rep_ln_xmlid)
-        return "-account.financial.html.report.line-%s" % report_line.id
+        return f"-account.financial.html.report.line-{report_line.id}"
 
     def _get_line_id_from_generic_id(self, generic_id):
         return int(generic_id.split("-")[-1])
@@ -435,7 +436,7 @@ class TestFinancialReport(TestAccountReportsCommon):
     def test_financial_report_strict_empty_range_on_report_lines_with_no_parent_id(
         self,
     ):
-        """Tests that lines with no parent can be correctly filtered by date range with no invoices"""
+        """Tests that lines with no parent can be correctly filtered by date range with no invoices"""  # noqa: E501
         self.report_no_parent_id.filter_multi_company = "disabled"
         options = self._generate_options(
             self.report_no_parent_id,
@@ -525,7 +526,8 @@ class TestFinancialReport(TestAccountReportsCommon):
     @freeze_time("2016-05-05")
     def test_balance_sheet_last_month_vs_custom_current_year_earnings(self):
         """
-        Checks the balance sheet calls the right period of the P&L when using last_month date filter, or an equivalent custom filter
+        Checks the balance sheet calls the right period of the P&L when using last_month
+        date filter, or an equivalent custom filter
         (this used to fail due to options regeneration made by the P&L's get_options())"
         """
         to_invoice = [
@@ -932,7 +934,8 @@ class TestFinancialReport(TestAccountReportsCommon):
 
     def test_financial_report_horizontal_group_total(self):
         """
-        In case we don't have comparison, just one column and one level of groupby a new column is added which is the total
+        In case we don't have comparison, just one column and one level of groupby a new
+        column is added which is the total
         of the horizontal group
         """
         horizontal_group = self.env["account.report.horizontal.group.oca"].create(
@@ -942,7 +945,7 @@ class TestFinancialReport(TestAccountReportsCommon):
                     Command.create(
                         {
                             "field_name": "partner_id",
-                            "domain": f"[('id', 'in', {(self.partner_a + self.partner_b).ids})]",
+                            "domain": f"[('id', 'in', {(self.partner_a + self.partner_b).ids})]",  # noqa: E501
                         }
                     ),
                 ],
@@ -964,7 +967,8 @@ class TestFinancialReport(TestAccountReportsCommon):
         )
 
         self.assertTrue(options["show_horizontal_group_total"])
-        # Since we don't calculate the value when totals below section is activated, we disable it
+        # Since we don't calculate the value when totals below section is activated, we
+        # disable it
         self.assertHorizontalGroupTotal(
             self.report._get_lines(options),
             [
@@ -1166,7 +1170,7 @@ class TestFinancialReport(TestAccountReportsCommon):
                                                 {
                                                     "label": "balance",
                                                     "engine": "domain",
-                                                    "formula": f"[('account_id', '=', {account1.id})]",
+                                                    "formula": f"[('account_id', '=', {account1.id})]",  # noqa: E501
                                                     "subformula": "sum",
                                                     "date_scope": "from_beginning",
                                                 }
@@ -1184,7 +1188,7 @@ class TestFinancialReport(TestAccountReportsCommon):
                                                 {
                                                     "label": "balance",
                                                     "engine": "domain",
-                                                    "formula": f"[('account_id', '=', {account2.id})]",
+                                                    "formula": f"[('account_id', '=', {account2.id})]",  # noqa: E501
                                                     "subformula": "sum",
                                                     "date_scope": "from_beginning",
                                                 }
@@ -1199,7 +1203,8 @@ class TestFinancialReport(TestAccountReportsCommon):
             }
         )
 
-        # TODO without this, the create() puts newIds in the sublines, and flushing doesn't help. Seems to be an ORM bug.
+        # TODO without this, the create() puts newIds in the sublines, and flushing
+        # doesn't help. Seems to be an ORM bug.
         self.env.invalidate_all()
 
         options = self._generate_options(
@@ -1257,12 +1262,13 @@ class TestFinancialReport(TestAccountReportsCommon):
             options,
         )
 
-        # Removing the comparison should hide the lines, as they will be 0 in every considered period (the current one)
+        # Removing the comparison should hide the lines, as they will be 0 in every
+        # considered period (the current one)
         options = self._update_comparison_filter(options, report, "previous_period", 0)
         self.assertLinesValues(report._get_lines(options), [0, 1, 2, 3], [], options)
 
     def test_option_hierarchy(self):
-        """Check that the report lines are correct when the option "Hierarchy and subtotals is ticked"""
+        """Check that the report lines are correct when the option "Hierarchy and subtotals is ticked"""  # noqa: E501
         self.env["account.group"].create(
             {
                 "name": "Sales",
@@ -1314,7 +1320,7 @@ class TestFinancialReport(TestAccountReportsCommon):
         )
 
     def test_option_hierarchy_with_no_group_lines(self):
-        """Check that the report lines of 'No Group' have correct ids with the option 'Hierarchy and subtotals'"""
+        """Check that the report lines of 'No Group' have correct ids with the option 'Hierarchy and subtotals'"""  # noqa: E501
         self.env["account.group"].create(
             {
                 "name": "Sales",

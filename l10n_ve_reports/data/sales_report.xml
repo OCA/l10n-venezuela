@@ -2,7 +2,6 @@
 <odoo auto_sequence="1">
     <record id="generic_ec_sales_report" model="account.report">
         <field name="name">🇻🇪 Generic EC Sales List</field>
-        <field name="filter_show_draft" eval="True" />
         <field name="filter_period_comparison" eval="False" />
         <field name="filter_date_range" eval="True" />
         <field name="filter_journals" eval="True" />

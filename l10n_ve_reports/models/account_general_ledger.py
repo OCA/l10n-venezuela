@@ -22,7 +22,7 @@ class GeneralLedgerCustomHandler(models.AbstractModel):
 
     def _custom_options_initializer(self, report, options, previous_options):
         # Remove multi-currency columns if needed
-        super()._custom_options_initializer(
+        result = super()._custom_options_initializer(
             report, options, previous_options=previous_options
         )
         if self.env.user.has_group("base.group_multi_currency"):
@@ -34,10 +34,12 @@ class GeneralLedgerCustomHandler(models.AbstractModel):
                 if column["expression_label"] != "amount_currency"
             ]
 
-        # Automatically unfold the report when printing it, unless some specific lines have been unfolded
+        # Automatically unfold the report when printing it, unless some specific lines
+        # have been unfolded
         options["unfold_all"] = (
             options["export_mode"] == "print" and not options.get("unfolded_lines")
         ) or options["unfold_all"]
+        return result
 
     def _dynamic_lines_generator(
         self, report, options, all_column_groups_expression_totals, warnings=None
@@ -130,8 +132,10 @@ class GeneralLedgerCustomHandler(models.AbstractModel):
         )[0]
         if limit_to_load:
             # Apply the load_more_limit.
-            # load_more_limit cannot be passed to the call to _get_aml_values, otherwise it won't be applied per account but on the whole result.
-            # We gain perf from batching, but load every result ; then we need to filter them.
+            # load_more_limit cannot be passed to the call to _get_aml_values, otherwise
+            # it won't be applied per account but on the whole result.
+            # We gain perf from batching, but load every result ; then we need to filter
+            # them.
 
             aml_results_per_account_id = {}
             for (
@@ -223,12 +227,17 @@ class GeneralLedgerCustomHandler(models.AbstractModel):
 
         :return:    [(record, values_by_column_group), ...],  where
                     - record is an account.account record.
-                    - values_by_column_group is a dict in the form {column_group_key: values, ...}
-                        - column_group_key is a string identifying a column group, as in options['column_groups']
+                    - values_by_column_group is a dict in the form {column_group_key:
+                    values, ...}
+                        - column_group_key is a string identifying a column group, as in
+                        options['column_groups']
                         - values is a list of dictionaries, one per period containing:
-                            - sum:                              {'debit': float, 'credit': float, 'balance': float}
-                            - (optional) initial_balance:       {'debit': float, 'credit': float, 'balance': float}
-                            - (optional) unaffected_earnings:   {'debit': float, 'credit': float, 'balance': float}
+                            - sum:                              {'debit': float,
+                            'credit': float, 'balance': float}
+                            - (optional) initial_balance:       {'debit': float,
+                            'credit': float, 'balance': float}
+                            - (optional) unaffected_earnings:   {'debit': float,
+                            'credit': float, 'balance': float}
         """
         # Execute the queries and dispatch the results.
         query = self._get_query_sums(report, options)
@@ -268,8 +277,10 @@ class GeneralLedgerCustomHandler(models.AbstractModel):
                 )
                 groupby_companies[res["groupby"]][column_group_key] = res
 
-        # Affect the unaffected earnings to the first fetched account of type 'account.data_unaffected_earnings'.
-        # It's less costly to fetch all candidate accounts in a single search and then iterate it.
+        # Affect the unaffected earnings to the first fetched account of type
+        # 'account.data_unaffected_earnings'.
+        # It's less costly to fetch all candidate accounts in a single search and then
+        # iterate it.
         if groupby_companies:
             unaffected_earnings_accounts = self.env["account.account"].search(
                 [
@@ -282,7 +293,7 @@ class GeneralLedgerCustomHandler(models.AbstractModel):
             )
             for company_id, groupby_company in groupby_companies.items():
                 if equity_unaffected_account := unaffected_earnings_accounts.filtered(
-                    lambda a: self.env["res.company"].browse(company_id).root_id
+                    lambda a: self.env["res.company"].browse(company_id).root_id  # noqa: B023
                     in a.company_ids
                 ):
                     for column_group_key in options["column_groups"]:
@@ -329,7 +340,8 @@ class GeneralLedgerCustomHandler(models.AbstractModel):
         return [(account, groupby_accounts[account.id]) for account in accounts]
 
     def _get_query_sums(self, report, options) -> SQL:
-        """Construct a query retrieving all the aggregated sums to build the report. It includes:
+        """Construct a query retrieving all the aggregated sums to build the report. It
+        includes:
         - sums for all accounts.
         - sums for the initial balances.
         - sums for the unaffected earnings.
@@ -344,7 +356,8 @@ class GeneralLedgerCustomHandler(models.AbstractModel):
         # 1) Get sums for all accounts.
         # ============================================
         for column_group_key, options_group in options_by_column_group.items():
-            # Sum is computed including the initial balance of the accounts configured to do so, unless a special option key is used
+            # Sum is computed including the initial balance of the accounts configured
+            # to do so, unless a special option key is used
             # (this is required for trial balance, which is based on general ledger)
             sum_date_scope = (
                 "strict_range"
@@ -385,8 +398,10 @@ class GeneralLedgerCustomHandler(models.AbstractModel):
                     account_move_line.account_id                            AS groupby,
                     'sum'                                                   AS key,
                     MAX(account_move_line.date)                             AS max_date,
-                    %(column_group_key)s                                    AS column_group_key,
-                    COALESCE(SUM(account_move_line.amount_currency), 0.0)   AS amount_currency,
+                    %(column_group_key)s                                    AS
+                    column_group_key,
+                    COALESCE(SUM(account_move_line.amount_currency), 0.0)   AS
+                    amount_currency,
                     SUM(%(debit_select)s)   AS debit,
                     SUM(%(credit_select)s)  AS credit,
                     SUM(%(balance_select)s) AS balance
@@ -433,13 +448,19 @@ class GeneralLedgerCustomHandler(models.AbstractModel):
                     SQL(
                         """
                     SELECT
-                        account_move_line.company_id                            AS groupby,
+                        account_move_line.company_id                            AS
+                        groupby,
                         'unaffected_earnings'                                   AS key,
-                        NULL                                                    AS max_date,
-                        %(column_group_key)s                                    AS column_group_key,
-                        COALESCE(SUM(account_move_line.amount_currency), 0.0)   AS amount_currency,
-                        SUM(%(debit_select)s)                                   AS debit,
-                        SUM(%(credit_select)s)                                  AS credit,
+                        NULL                                                    AS
+                        max_date,
+                        %(column_group_key)s                                    AS
+                        column_group_key,
+                        COALESCE(SUM(account_move_line.amount_currency), 0.0)   AS
+                        amount_currency,
+                        SUM(%(debit_select)s)                                   AS
+                        debit,
+                        SUM(%(credit_select)s)                                  AS
+                        credit,
                         SUM(%(balance_select)s) AS balance
                     FROM %(table_references)s
                     %(currency_table_join)s
@@ -468,7 +489,8 @@ class GeneralLedgerCustomHandler(models.AbstractModel):
 
     def _get_options_unaffected_earnings(self, options):
         """Create options used to compute the unaffected earnings.
-        The unaffected earnings are the amount of benefits/loss that have not been allocated to
+        The unaffected earnings are the amount of benefits/loss that have not been
+        allocated to
         another account in the previous fiscal years.
         The resulting dates domain will be:
         [
@@ -513,7 +535,8 @@ class GeneralLedgerCustomHandler(models.AbstractModel):
                 has_more = True
                 break
 
-            # For asset_receivable the name will already contains the ref with the _compute_name
+            # For asset_receivable the name will already contains the ref with the
+            # _compute_name
             if aml_result["ref"] and aml_result["account_type"] != "asset_receivable":
                 aml_result["communication"] = (
                     f"{aml_result['ref']} - {aml_result['name']}"
@@ -521,9 +544,12 @@ class GeneralLedgerCustomHandler(models.AbstractModel):
             else:
                 aml_result["communication"] = aml_result["name"]
 
-            # The same aml can return multiple results when using account_report_cash_basis module, if the receivable/payable
-            # is reconciled with multiple payments. In this case, the date shown for the move lines actually corresponds to the
-            # reconciliation date. In order to keep distinct lines in this case, we include date in the grouping key.
+            # The same aml can return multiple results when using
+            # account_report_cash_basis module, if the receivable/payable
+            # is reconciled with multiple payments. In this case, the date shown for the
+            # move lines actually corresponds to the
+            # reconciliation date. In order to keep distinct lines in this case, we
+            # include date in the grouping key.
             aml_key = (aml_result["id"], aml_result["date"])
 
             account_result = rslt[aml_result["account_id"]]
@@ -536,9 +562,12 @@ class GeneralLedgerCustomHandler(models.AbstractModel):
                 aml_result["column_group_key"]
             ]
             if already_present_result:
-                # In case the same move line gives multiple results at the same date, add them.
-                # This does not happen in standard GL report, but could because of custom shadowing of account.move.line,
-                # such as the one done in account_report_cash_basis (if the payable/receivable line is reconciled twice at the same date).
+                # In case the same move line gives multiple results at the same date,
+                # add them.
+                # This does not happen in standard GL report, but could because of
+                # custom shadowing of account.move.line,
+                # such as the one done in account_report_cash_basis (if the
+                # payable/receivable line is reconciled twice at the same date).
                 already_present_result["debit"] += aml_result["debit"]
                 already_present_result["credit"] += aml_result["credit"]
                 already_present_result["balance"] += aml_result["balance"]
@@ -553,10 +582,12 @@ class GeneralLedgerCustomHandler(models.AbstractModel):
     def _get_query_amls(
         self, report, options, expanded_account_ids, offset=0, limit=None
     ) -> SQL:
-        """Construct a query retrieving the account.move.lines when expanding a report line with or without the load
+        """Construct a query retrieving the account.move.lines when expanding a report
+        line with or without the load
         more.
         :param options:               The report options.
-        :param expanded_account_ids:  The account.account ids corresponding to consider. If None, match every account.
+        :param expanded_account_ids:  The account.account ids corresponding to consider.
+        If None, match every account.
         :param offset:                The offset of the query (used by the load more).
         :param limit:                 The limit of the query (used by the load more).
         :return:                      (query, params)
@@ -572,7 +603,8 @@ class GeneralLedgerCustomHandler(models.AbstractModel):
             options
         ).items():
             # Get sums for the account move lines.
-            # period: [('date' <= options['date_to']), ('date', '>=', options['date_from'])]
+            # period: [('date' <= options['date_to']), ('date', '>=',
+            # options['date_from'])]
             query = report._get_report_query(
                 group_options, domain=additional_domain, date_scope="strict_range"
             )
@@ -607,7 +639,8 @@ class GeneralLedgerCustomHandler(models.AbstractModel):
                     account_move_line.partner_id,
                     account_move_line.currency_id,
                     account_move_line.amount_currency,
-                    COALESCE(account_move_line.invoice_date, account_move_line.date) AS invoice_date,
+                    COALESCE(account_move_line.invoice_date, account_move_line.date) AS
+                    invoice_date,
                     account_move_line.date                  AS date,
                     %(debit_select)s                        AS debit,
                     %(credit_select)s                       AS credit,
@@ -624,14 +657,20 @@ class GeneralLedgerCustomHandler(models.AbstractModel):
                     full_rec.id                             AS full_rec_name,
                     %(column_group_key)s                    AS column_group_key
                 FROM %(table_references)s
-                JOIN account_move move                      ON move.id = account_move_line.move_id
+                JOIN account_move move                      ON move.id =
+                account_move_line.move_id
                 %(currency_table_join)s
-                LEFT JOIN res_company company               ON company.id = account_move_line.company_id
-                LEFT JOIN res_partner partner               ON partner.id = account_move_line.partner_id
-                LEFT JOIN account_journal journal           ON journal.id = account_move_line.journal_id
-                LEFT JOIN account_full_reconcile full_rec   ON full_rec.id = account_move_line.full_reconcile_id
+                LEFT JOIN res_company company               ON company.id =
+                account_move_line.company_id
+                LEFT JOIN res_partner partner               ON partner.id =
+                account_move_line.partner_id
+                LEFT JOIN account_journal journal           ON journal.id =
+                account_move_line.journal_id
+                LEFT JOIN account_full_reconcile full_rec   ON full_rec.id =
+                account_move_line.full_reconcile_id
                 WHERE %(search_condition)s
-                ORDER BY account_move_line.date, account_move_line.move_name, account_move_line.id
+                ORDER BY account_move_line.date, account_move_line.move_name,
+                account_move_line.id
                 """,
                 account_code=account_code,
                 account_name=account_name,
@@ -692,8 +731,10 @@ class GeneralLedgerCustomHandler(models.AbstractModel):
                     account_move_line.account_id                          AS groupby,
                     'initial_balance'                                     AS key,
                     NULL                                                  AS max_date,
-                    %(column_group_key)s                                  AS column_group_key,
-                    COALESCE(SUM(account_move_line.amount_currency), 0.0) AS amount_currency,
+                    %(column_group_key)s                                  AS
+                    column_group_key,
+                    COALESCE(SUM(account_move_line.amount_currency), 0.0) AS
+                    amount_currency,
                     SUM(%(debit_select)s)                                 AS debit,
                     SUM(%(credit_select)s)                                AS credit,
                     SUM(%(balance_select)s)                               AS balance
@@ -739,7 +780,8 @@ class GeneralLedgerCustomHandler(models.AbstractModel):
 
     def _get_options_initial_balance(self, options):
         """Create options used to compute the initial balances.
-        The initial balances depict the current balance of the accounts at the beginning of
+        The initial balances depict the current balance of the accounts at the beginning
+        of
         the selected period in the report.
         The resulting dates domain will be:
         [
@@ -762,9 +804,11 @@ class GeneralLedgerCustomHandler(models.AbstractModel):
 
         # Date from computation
         # We have two case:
-        # 1) We are choosing a date that starts at the beginning of a fiscal year and we want the initial period to be
+        # 1) We are choosing a date that starts at the beginning of a fiscal year and we
+        # want the initial period to be
         # the previous fiscal year
-        # 2) We are choosing a date that starts in the middle of a fiscal year and in that case we want the initial period
+        # 2) We are choosing a date that starts in the middle of a fiscal year and in
+        # that case we want the initial period
         # to be the beginning of the fiscal year
         date_from = fields.Date.from_string(new_options["date"]["date_from"])
         current_fiscalyear_dates = self.env.company.compute_fiscalyear_dates(date_from)
@@ -969,7 +1013,8 @@ class GeneralLedgerCustomHandler(models.AbstractModel):
             if initial_balance_line:
                 lines.append(initial_balance_line)
 
-                # For the first expansion of the line, the initial balance line gives the progress
+                # For the first expansion of the line, the initial balance line gives
+                # the progress
                 progress = init_load_more_progress(initial_balance_line)
 
         # Get move lines

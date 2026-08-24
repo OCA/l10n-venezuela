@@ -7,10 +7,7 @@
         <field name="arch" type="xml">
             <!-- Art. 13 num. 5-7 PA SNAT/2011/0071: RIF del adquiriente. -->
             <xpath expr="//field[@name='vat']" position="after">
-                <field
-                    name="taxpayer_type"
-                    invisible="country_code != 'VE'"
-                />
+                <field name="taxpayer_type" invisible="country_code != 'VE'" />
             </xpath>
             <xpath expr="//field[@name='vat']" position="attributes">
                 <attribute name="invisible">country_code == 'VE'</attribute>

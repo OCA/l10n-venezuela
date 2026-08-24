@@ -5,7 +5,7 @@
     "version": "18.0.1.4.1",
     "category": "Accounting",
     "website": "https://github.com/OCA/l10n-venezuela",
-    "author": "andyengit",
+    "author": "andyengit, Odoo Community Association (OCA)",
     "maintainers": ["andyengit"],
     "license": "AGPL-3",
     "depends": [

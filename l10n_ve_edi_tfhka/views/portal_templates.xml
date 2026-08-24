@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <odoo>
     <template
         id="portal_invoice_page_inherit_l10n_ve_edi_tfhka"
@@ -16,7 +16,10 @@
         name="VE portal: guia digital TFHKA en entregas"
         inherit_id="sale_stock.sale_order_portal_content_inherit_sale_stock"
     >
-        <xpath expr="//div[@name='delivery_order']//div[hasclass('small')][1]" position="after">
+        <xpath
+            expr="//div[@name='delivery_order']//div[hasclass('small')][1]"
+            position="after"
+        >
             <div
                 t-if="picking.l10n_ve_edi_tfhka_get_public_document_url()"
                 class="small mt-1"
@@ -26,14 +29,14 @@
                     target="_blank"
                     class="btn btn-sm btn-outline-primary"
                 >
-                    <i class="fa fa-external-link"/> Guia digital TFHKA
+                    <i class="fa fa-external-link" /> Guia digital TFHKA
                 </a>
                 <a
                     t-att-href="'/my/picking/pdf/%s?%s&amp;tfhka=pdf' % (picking.id, keep_query())"
                     target="_blank"
                     class="btn btn-sm btn-outline-secondary ms-1"
                 >
-                    <i class="fa fa-download"/> PDF
+                    <i class="fa fa-download" /> PDF
                 </a>
             </div>
         </xpath>

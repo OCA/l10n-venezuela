@@ -17,7 +17,9 @@ class TestBudgetReport(TestAccountReportsCommon):
         cls.account_4 = cls.copy_account(cls.account_1)
 
         # Create a test report
-        cls.report = cls.env["account.report"].create(
+        cls.report = cls.env[
+            "account.report"
+        ].create(
             {
                 "name": "Budget Test",
                 "filter_date_range": True,
@@ -41,7 +43,7 @@ class TestBudgetReport(TestAccountReportsCommon):
                                 Command.create(
                                     {
                                         "label": "balance",
-                                        "formula": "[('account_id.account_type', '=', 'income')]",
+                                        "formula": "[('account_id.account_type', '=', 'income')]",  # noqa: E501
                                         "subformula": "sum",
                                         "engine": "domain",
                                     }
@@ -299,7 +301,8 @@ class TestBudgetReport(TestAccountReportsCommon):
         self.assertLinesValues(
             self.report._get_lines(options),
             [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
-            #                        [ Period 2024 + Budget 2024 + % + Budget 2023 + %] [ Period 2023 + Budget 2024 + % + Budget 2023 + %]
+            # [ Period 2024 + Budget 2024 + % + Budget 2023 + %] [ Period 2023 + Budget
+            # 2024 + % + Budget 2023 + %]
             [
                 (
                     "line_domain",
@@ -432,8 +435,10 @@ class TestBudgetReport(TestAccountReportsCommon):
         The test checks the following scenarios:
         1. Adding a rounded value (1200) for an entire year (12 months).
         2. Setting the value to 300 for 3 months (no change expected).
-        3. Setting the value to 900 for 3 months, resulting in three new values of 200 each.
-        4. Reducing the value for a whole year to a non-rounded value and checking if the
+        3. Setting the value to 900 for 3 months, resulting in three new values of 200
+        each.
+        4. Reducing the value for a whole year to a non-rounded value and checking if
+        the
            remainder is correctly applied to the last period.
         """
 
@@ -446,7 +451,9 @@ class TestBudgetReport(TestAccountReportsCommon):
                 date_to=options["date"]["date_to"],
             )
 
-        budget_2024 = self.env["account.report.budget.oca"].create({"name": "Budget 2024"})
+        budget_2024 = self.env["account.report.budget.oca"].create(
+            {"name": "Budget 2024"}
+        )
         self._create_moves({self.account_1.id: 200}, "2024-01-01", "2024-12-31")
 
         options = self._generate_options(
@@ -606,7 +613,8 @@ class TestBudgetReport(TestAccountReportsCommon):
         )
 
     def test_financial_budget_with_analytic_groupby(self):
-        """Ensure that when budgets and analytics groupby filters are both active, then their headers are
+        """Ensure that when budgets and analytics groupby filters are both active, then
+        their headers are
         displayed on the same level, and values in the report are properly computed"""
 
         budget_a = self.env["account.report.budget.oca"].create([{"name": "Budget A"}])
@@ -683,8 +691,10 @@ class TestBudgetReport(TestAccountReportsCommon):
 
         self.assertLinesValues(
             self.report._get_lines(options),
-            #                                   [                             2025                          ]    [                          2024                             ]
-            #                                   [ A1 ] [ A2 ] [ Total ] [ Budget A ] [ % ] [ Budget B ] [ % ]    [ A1 ] [ A2 ] [ Total ] [ Budget A ] [ % ] [ Budget B ] [ % ]
+            # [                             2025                          ]    [
+            # 2024                             ]
+            # [ A1 ] [ A2 ] [ Total ] [ Budget A ] [ % ] [ Budget B ] [ % ]    [ A1 ] [
+            # A2 ] [ Total ] [ Budget A ] [ % ] [ Budget B ] [ % ]
             [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14],
             [
                 (
@@ -760,8 +770,10 @@ class TestBudgetReport(TestAccountReportsCommon):
         )
 
     def test_financial_budget_with_several_columns(self):
-        """Ensure that financial budget feature works properly on reports with several columns,
-        and that percentage column of budget is hidden is the case where multiple monetary columns exist"""
+        """Ensure that financial budget feature works properly on reports with several
+        columns,
+        and that percentage column of budget is hidden is the case where multiple
+        monetary columns exist"""
         self.report.write(
             {
                 "column_ids": [
@@ -795,7 +807,8 @@ class TestBudgetReport(TestAccountReportsCommon):
             },
         )
 
-        # Ensure level header colspan is 3 for top header, 2 for the columns + 1 selected budget
+        # Ensure level header colspan is 3 for top header, 2 for the columns + 1
+        # selected budget
         self.assertEqual(
             self.report._get_column_headers_render_data(options),
             {
@@ -807,8 +820,8 @@ class TestBudgetReport(TestAccountReportsCommon):
 
         self.assertLinesValues(
             self.report._get_lines(options),
-            #                                   [          2020                ]  [            2019              ]
-            #                                   [ col 1 ] [ col 2 ] [ budget 1 ]  [ col 1 ] [ col 2 ] [ budget 1 ]
+            # [          2020                ]  [            2019              ]
+            # [ col 1 ] [ col 2 ] [ budget 1 ]  [ col 1 ] [ col 2 ] [ budget 1 ]
             [0, 1, 2, 3, 4, 5, 6],
             [
                 ("line_domain", 600, "", 1110, 0, "", 0),
@@ -826,7 +839,7 @@ class TestBudgetReport(TestAccountReportsCommon):
         )
 
     def test_hierarchy_with_budget(self):
-        """Check that the report lines are correct with a budget and the option "Hierarchy and subtotals" is ticked"""
+        """Check that the report lines are correct with a budget and the option "Hierarchy and subtotals" is ticked"""  # noqa: E501
         self.env["account.group"].create(
             {
                 "name": "Sales",

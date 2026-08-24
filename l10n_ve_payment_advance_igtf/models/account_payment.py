@@ -6,10 +6,9 @@ class AccountPayment(models.Model):
 
     @api.depends("l10n_ve_is_advance_application")
     def _compute_l10n_ve_show_apply_igtf(self):
-        super()._compute_l10n_ve_show_apply_igtf()
-        self.filtered("l10n_ve_is_advance_application").l10n_ve_show_apply_igtf = (
-            False
-        )
+        result = super()._compute_l10n_ve_show_apply_igtf()
+        self.filtered("l10n_ve_is_advance_application").l10n_ve_show_apply_igtf = False
+        return result
 
     def _l10n_ve_get_igtf_amounts(self):
         self.ensure_one()

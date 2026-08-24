@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <odoo>
     <!-- Form view -->
     <record id="view_auditlog_login_attempt_form" model="ir.ui.view">
@@ -33,7 +33,11 @@
         <field name="name">auditlog.login.attempt.list</field>
         <field name="model">auditlog.login.attempt</field>
         <field name="arch" type="xml">
-            <list create="false" decoration-danger="result == 'failed'" decoration-success="result == 'success'">
+            <list
+                create="false"
+                decoration-danger="result == 'failed'"
+                decoration-success="result == 'success'"
+            >
                 <field name="attempt_date" />
                 <field name="login" />
                 <field name="ip_address" />
@@ -53,16 +57,53 @@
                 <field name="ip_address" />
                 <field name="user_id" />
                 <separator />
-                <filter name="filter_success" string="Successful" domain="[('result', '=', 'success')]" />
-                <filter name="filter_failed" string="Failed" domain="[('result', '=', 'failed')]" />
+                <filter
+                    name="filter_success"
+                    string="Successful"
+                    domain="[('result', '=', 'success')]"
+                />
+                <filter
+                    name="filter_failed"
+                    string="Failed"
+                    domain="[('result', '=', 'failed')]"
+                />
                 <separator />
-                <filter name="filter_today" string="Today" domain="[('attempt_date', '>=', (context_today()).strftime('%Y-%m-%d'))]" />
+                <filter
+                    name="filter_today"
+                    string="Today"
+                    domain="[('attempt_date', '>=', (context_today()).strftime('%Y-%m-%d'))]"
+                />
                 <group string="Group By..." expand="0">
-                    <filter name="group_by_login" string="Login" domain="[]" context="{'group_by':'login'}" />
-                    <filter name="group_by_ip_address" string="IP Address" domain="[]" context="{'group_by':'ip_address'}" />
-                    <filter name="group_by_result" string="Result" domain="[]" context="{'group_by':'result'}" />
-                    <filter name="group_by_user_id" string="User" domain="[]" context="{'group_by':'user_id'}" />
-                    <filter name="group_by_attempt_date" string="Date" domain="[]" context="{'group_by':'attempt_date'}" />
+                    <filter
+                        name="group_by_login"
+                        string="Login"
+                        domain="[]"
+                        context="{'group_by':'login'}"
+                    />
+                    <filter
+                        name="group_by_ip_address"
+                        string="IP Address"
+                        domain="[]"
+                        context="{'group_by':'ip_address'}"
+                    />
+                    <filter
+                        name="group_by_result"
+                        string="Result"
+                        domain="[]"
+                        context="{'group_by':'result'}"
+                    />
+                    <filter
+                        name="group_by_user_id"
+                        string="User"
+                        domain="[]"
+                        context="{'group_by':'user_id'}"
+                    />
+                    <filter
+                        name="group_by_attempt_date"
+                        string="Date"
+                        domain="[]"
+                        context="{'group_by':'attempt_date'}"
+                    />
                 </group>
             </search>
         </field>
@@ -77,5 +118,10 @@
         <field name="context">{'search_default_filter_today': 1}</field>
     </record>
     <!-- Menu item under Audit -->
-    <menuitem id="menu_action_auditlog_login_attempt" parent="menu_audit" action="action_auditlog_login_attempt" sequence="35" />
+    <menuitem
+        id="menu_action_auditlog_login_attempt"
+        parent="menu_audit"
+        action="action_auditlog_login_attempt"
+        sequence="35"
+    />
 </odoo>

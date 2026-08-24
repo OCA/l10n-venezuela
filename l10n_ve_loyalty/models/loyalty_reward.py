@@ -28,16 +28,14 @@ class LoyaltyReward(models.Model):
 
     def _l10n_ve_prepare_discount_product_values(self, values):
         """Fill technical loyalty product vals for Venezuelan companies."""
-        for reward, vals in zip(self, values):
+        for reward, vals in zip(self, values, strict=False):
             if not reward._l10n_ve_company_is_venezuela():
                 continue
             company = (
-                reward.company_id
-                or reward.program_id.company_id
-                or self.env.company
+                reward.company_id or reward.program_id.company_id or self.env.company
             )
-            sale_tax, purchase_tax = reward._l10n_ve_get_technical_discount_product_taxes(
-                company
+            sale_tax, purchase_tax = (
+                reward._l10n_ve_get_technical_discount_product_taxes(company)
             )
             if sale_tax:
                 vals["taxes_id"] = [(6, 0, sale_tax.ids)]

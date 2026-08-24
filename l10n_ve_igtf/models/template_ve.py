@@ -25,14 +25,18 @@ class AccountChartTemplate(models.AbstractModel):
     @template("ve_seniat_basic", "account.account")
     def _get_ve_seniat_basic_igtf_account(self):
         return {
-            "l10n_ve_igtf.l10n_ve_igtf_account_igtf_payable": _L10N_VE_IGTF_ACCOUNT_VALUES,
+            "l10n_ve_igtf.l10n_ve_igtf_account_igtf_payable": (
+                _L10N_VE_IGTF_ACCOUNT_VALUES
+            ),
         }
 
     @template("ve_seniat_basic", "res.company")
     def _get_ve_seniat_basic_res_company_igtf(self):
         return {
             self.env.company.id: {
-                "l10n_ve_igtf_account_id": "l10n_ve_igtf.l10n_ve_igtf_account_igtf_payable",
+                "l10n_ve_igtf_account_id": (
+                    "l10n_ve_igtf.l10n_ve_igtf_account_igtf_payable"
+                ),
                 "l10n_ve_igtf_percent": 3.0,
             },
         }
@@ -40,14 +44,18 @@ class AccountChartTemplate(models.AbstractModel):
     @template("ve_seniat_empty", "account.account")
     def _get_ve_seniat_empty_igtf_account(self):
         return {
-            "l10n_ve_igtf.l10n_ve_igtf_account_igtf_payable": _L10N_VE_IGTF_ACCOUNT_VALUES,
+            "l10n_ve_igtf.l10n_ve_igtf_account_igtf_payable": (
+                _L10N_VE_IGTF_ACCOUNT_VALUES
+            ),
         }
 
     @template("ve_seniat_empty", "res.company")
     def _get_ve_seniat_empty_res_company_igtf(self):
         return {
             self.env.company.id: {
-                "l10n_ve_igtf_account_id": "l10n_ve_igtf.l10n_ve_igtf_account_igtf_payable",
+                "l10n_ve_igtf_account_id": (
+                    "l10n_ve_igtf.l10n_ve_igtf_account_igtf_payable"
+                ),
                 "l10n_ve_igtf_percent": 3.0,
             },
         }

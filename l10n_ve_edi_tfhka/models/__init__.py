@@ -6,4 +6,3 @@ from . import account_retention
 from . import stock_picking
 from . import ir_actions_report
 from . import res_config_settings
-from . import res_config_settings_retention

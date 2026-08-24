@@ -29,7 +29,8 @@ class AccountMoveLine(models.Model):
     @api.depends("product_id", "product_uom_id", "move_id.tax_closing_report_id")
     def _compute_tax_ids(self):
         """Some special cases may see accounts used in tax closing having default taxes.
-        They would trigger the constrains above, which we don't want. Instead, we don't trigger
+        They would trigger the constrains above, which we don't want. Instead, we don't
+        trigger
         the tax computation in this case.
         """
         # EXTEND account
@@ -37,26 +38,34 @@ class AccountMoveLine(models.Model):
             lambda line: not line.move_id.tax_closing_report_id
         )
         (self - lines_to_compute).tax_ids = False
-        super(AccountMoveLine, lines_to_compute)._compute_tax_ids()
+        result = super(AccountMoveLine, lines_to_compute)._compute_tax_ids()
+        return result
 
     @api.model
     def _prepare_aml_shadowing_for_report(self, change_equivalence_dict):
-        """Prepares the fields lists for creating a temporary table shadowing the account_move_line one.
-        This is used to switch the computation mode of the reports, with analytics or financial budgets, for example.
+        """Prepares the fields lists for creating a temporary table shadowing the
+        account_move_line one.
+        This is used to switch the computation mode of the reports, with analytics or
+        financial budgets, for example.
 
-        :param change_equivalence_dict: A dict, in the form {aml_field: sql_equivalence}, where:
-                                        - aml_field: is a string containing the name of field of account.move.line
-                                        - sql_equivalence: is the value to use to shadow aml_field. It can be an SQL object; if
+        :param change_equivalence_dict: A dict, in the form {aml_field:
+        sql_equivalence}, where:
+                                        - aml_field: is a string containing the name of
+                                        field of account.move.line
+                                        - sql_equivalence: is the value to use to shadow
+                                        aml_field. It can be an SQL object; if
                                           it's not, it'll be escaped in the query.
 
         :return: A tuple of 2 SQL objects, so that:
-                 - The first one is the fields list to pass into the INSERT TO part of the query filling up the temporary table
-                 - The second one contains the field values to insert into the SELECT clause of the same query, in the same order
+                 - The first one is the fields list to pass into the INSERT TO part of
+                 the query filling up the temporary table
+                 - The second one contains the field values to insert into the SELECT
+                 clause of the same query, in the same order
                    as in the first element of the returned tuple.
         """
         line_fields = self.env["account.move.line"].fields_get()
         self.env.cr.execute(
-            "SELECT column_name FROM information_schema.columns WHERE table_name='account_move_line'"
+            "SELECT column_name FROM information_schema.columns WHERE table_name='account_move_line'"  # noqa: E501
         )
         stored_fields = {f[0] for f in self.env.cr.fetchall() if f[0] in line_fields}
 

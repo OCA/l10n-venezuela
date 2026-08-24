@@ -1,9 +1,14 @@
 #!/usr/bin/env python3
+# ruff: noqa: E501
 """Genera articulos.md con texto íntegro de cada providencia (un archivo por norma)."""
+
+import logging
 import re
 import shutil
 import urllib.request
 from pathlib import Path
+
+_logger = logging.getLogger(__name__)
 
 BASE = Path(__file__).resolve().parent
 AGENT = Path("/home/odoo/.cursor/projects/workspace/agent-tools")
@@ -88,7 +93,7 @@ def trim_header(text):
         re.IGNORECASE,
     )
     if m:
-        text = text[m.start():]
+        text = text[m.start() :]
     return text
 
 
@@ -100,7 +105,9 @@ def fix_pa71_art08(text):
     return pattern.sub(PA71_ART08 + "\n\n", text, count=1)
 
 
-def write_providencia(folder, code, gaceta, source_text, fix_art08=False, skip_trim=False):
+def write_providencia(
+    folder, code, gaceta, source_text, fix_art08=False, skip_trim=False
+):
     folder_path = BASE / folder
     folder_path.mkdir(parents=True, exist_ok=True)
 
@@ -132,7 +139,7 @@ def write_providencia(folder, code, gaceta, source_text, fix_art08=False, skip_t
         f"Texto íntegro en [articulos.md](./articulos.md).\n"
     )
     (folder_path / "README.md").write_text(readme, encoding="utf-8")
-    print(f"{folder}: articulos.md ({len(body)} caracteres)")
+    _logger.info("%s: articulos.md (%s caracteres)", folder, len(body))
 
 
 def main():
@@ -140,22 +147,32 @@ def main():
         "SNAT-2011-00071",
         "SNAT/2011/00071",
         "N° 39.795 (08/11/2011)",
-        (AGENT / "c8ac8e17-0a65-4026-b5a7-4cca00fbacb7.txt").read_text(encoding="utf-8"),
+        (AGENT / "c8ac8e17-0a65-4026-b5a7-4cca00fbacb7.txt").read_text(
+            encoding="utf-8"
+        ),
         fix_art08=True,
     )
     write_providencia(
         "SNAT-2024-000102",
         "SNAT/2024/000102",
         "N° 43.032 (19/12/2024)",
-        (AGENT / "45b96864-6b93-43c0-b44b-ddb9c2631391.txt").read_text(encoding="utf-8"),
+        (AGENT / "45b96864-6b93-43c0-b44b-ddb9c2631391.txt").read_text(
+            encoding="utf-8"
+        ),
     )
     write_providencia(
         "SNAT-2018-0141",
         "SNAT/2018/0141",
         "N° 41.518 (06/11/2018)",
-        (AGENT / "aec9efcf-b6d4-4fe2-97c1-046af284c1ac.txt").read_text(encoding="utf-8"),
+        (AGENT / "aec9efcf-b6d4-4fe2-97c1-046af284c1ac.txt").read_text(
+            encoding="utf-8"
+        ),
     )
-    pa121 = (AGENT / "pa-2024-121.txt").read_text(encoding="utf-8") if (AGENT / "pa-2024-121.txt").exists() else None
+    pa121 = (
+        (AGENT / "pa-2024-121.txt").read_text(encoding="utf-8")
+        if (AGENT / "pa-2024-121.txt").exists()
+        else None
+    )
     if not pa121:
         pa121 = """Capítulo I Disposiciones Generales
 
@@ -374,7 +391,7 @@ def build_ley_iva():
         if i == 0:
             m = re.search(r"(TÍTULO I\b|Artículo 1\.)", text)
             if m:
-                text = text[m.start():]
+                text = text[m.start() :]
         else:
             m = re.search(
                 r"(TÍTULO [IVXLC]+.*|Capítulo I.*|Artículo \d+)",
@@ -382,7 +399,7 @@ def build_ley_iva():
                 re.IGNORECASE,
             )
             if m:
-                text = text[m.start():]
+                text = text[m.start() :]
         parts.append(trim_footer(text))
     body = "\n\n".join(parts)
     write_providencia(

@@ -5,7 +5,11 @@ def migrate(cr, version):
             VALUES
                 ('external_layout_l10n_ve_presupuesto', 'web', 'external_layout'),
                 ('report_saleorder_document_ve', 'sale', 'report_saleorder_document'),
-                ('quote_document_layout_preview_ve', 'sale', 'quote_document_layout_preview')
+                (
+                    'quote_document_layout_preview_ve',
+                    'sale',
+                    'quote_document_layout_preview',
+                )
         )
         UPDATE ir_ui_view AS child
            SET inherit_id = new_data.res_id

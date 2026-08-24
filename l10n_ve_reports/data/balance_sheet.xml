@@ -258,6 +258,10 @@
                                     name="name"
                                 >Current Year Unallocated Earnings</field>
                                 <field name="code">CURR_YEAR_EARNINGS</field>
+                                <field
+                                    name="action_id"
+                                    ref="action_account_report_pl"
+                                />
                                 <field name="aggregation_formula" />
                                 <field name="expression_ids">
                                     <record
@@ -451,5 +455,15 @@
                 >-sum([('account_id.account_type', '=', 'off_balance')])</field>
             </record>
         </field>
+    </record>
+
+    <record id="action_account_report_bs" model="ir.actions.client">
+        <field name="name">🇻🇪 Balance Sheet</field>
+        <field name="tag">account_report_oca</field>
+        <field name="path">balance-sheet-ve</field>
+        <field
+            name="context"
+            eval="{'report_id': ref('l10n_ve_reports.balance_sheet')}"
+        />
     </record>
 </odoo>

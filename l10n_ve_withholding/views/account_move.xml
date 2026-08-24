@@ -83,7 +83,10 @@
                 <field name="company_currency_id" invisible="1" />
             </xpath>
 
-            <xpath expr="//field[@name='tax_lock_date_message']/parent::div" position="after">
+            <xpath
+                expr="//field[@name='tax_lock_date_message']/parent::div"
+                position="after"
+            >
                 <field name="l10n_ve_missing_iva_withholding_type" invisible="1" />
                 <div
                     class="alert alert-warning d-flex align-items-center mb-0"

@@ -37,13 +37,12 @@ class AuditlogAccountReportAccess(models.Model):
             ("qweb", "QWeb render (legacy)"),
             ("account_report", "Engine export (legacy)"),
         ],
-        string="Source",
         required=True,
         readonly=True,
         index=True,
     )
     report_name = fields.Char(readonly=True)
-    report_model = fields.Char(string="Report Model", readonly=True, index=True)
+    report_model = fields.Char(readonly=True, index=True)
     account_report_id = fields.Many2one(
         "account.report",
         string="Financial Report",
@@ -76,10 +75,7 @@ class AuditlogAccountReportAccess(models.Model):
         name = action_dict.get("name") or action_dict.get("display_name") or ""
         if atype == "ir.actions.act_window":
             res_model = action_dict.get("res_model") or ""
-            if not (
-                res_model.startswith("account.")
-                or res_model == "account.report"
-            ):
+            if not (res_model.startswith("account.") or res_model == "account.report"):
                 return
             self._create_log_vals(
                 source="action_access",
@@ -107,10 +103,7 @@ class AuditlogAccountReportAccess(models.Model):
             )
         elif atype == "ir.actions.client":
             tag = action_dict.get("tag") or ""
-            if not (
-                tag in ACCOUNT_REPORT_CLIENT_TAGS
-                or "account_report" in tag
-            ):
+            if not (tag in ACCOUNT_REPORT_CLIENT_TAGS or "account_report" in tag):
                 return
             ctx = action_dict.get("context") or {}
             if isinstance(ctx, str):
@@ -121,9 +114,7 @@ class AuditlogAccountReportAccess(models.Model):
             report_id = ctx.get("report_id") if isinstance(ctx, dict) else None
             account_report = self.env["account.report"]
             report_rec = (
-                account_report.browse(report_id)
-                if report_id
-                else account_report
+                account_report.browse(report_id) if report_id else account_report
             )
             self._create_log_vals(
                 source="action_access",

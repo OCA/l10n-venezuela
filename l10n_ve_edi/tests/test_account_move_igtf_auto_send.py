@@ -1,7 +1,7 @@
 from unittest import SkipTest
 from unittest.mock import patch
 
-from odoo import Command, fields
+from odoo import Command
 from odoo.tests import tagged
 
 from odoo.addons.l10n_ve_igtf.tests.common import TestL10nVeIgtfCommon
@@ -33,14 +33,18 @@ class TestL10nVeEdiIgtfAutoSend(TestL10nVeIgtfCommon):
                 "l10n_ve_debit_note_section_id": False,
             }
         )
-        cls.digital_journal = cls.env["account.journal"].with_company(cls.company).create(
-            {
-                "name": "Ventas digital IGTF",
-                "code": "VEDG",
-                "type": "sale",
-                "l10n_ve_emission_medium": "digital",
-                "l10n_ve_edi_provider": "tfhka",
-            }
+        cls.digital_journal = (
+            cls.env["account.journal"]
+            .with_company(cls.company)
+            .create(
+                {
+                    "name": "Ventas digital IGTF",
+                    "code": "VEDG",
+                    "type": "sale",
+                    "l10n_ve_emission_medium": "digital",
+                    "l10n_ve_edi_provider": "tfhka",
+                }
+            )
         )
 
     def _create_usd_invoice_with_igtf_accrual(self):

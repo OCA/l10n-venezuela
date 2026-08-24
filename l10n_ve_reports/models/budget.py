@@ -10,8 +10,8 @@ class AccountReportBudget(models.Model):
     _description = "Accounting Report Budget"
     _order = "sequence, id"
 
-    sequence = fields.Integer(string="Sequence")
-    name = fields.Char(string="Name", required=True)
+    sequence = fields.Integer()
+    name = fields.Char(required=True)
     item_ids = fields.One2many(
         string="Items",
         comodel_name="account.report.budget.item.oca",
@@ -116,7 +116,8 @@ class AccountReportBudget(models.Model):
 
         if budget_items_commands:
             self.item_ids = budget_items_commands
-            # Make sure that the model is flushed before continuing the code and fetching these new items
+            # Make sure that the model is flushed before continuing the code and
+            # fetching these new items
             self.env["account.report.budget.item.oca"].flush_model()
 
     def copy_data(self, default=None):
@@ -155,5 +156,5 @@ class AccountReportBudgetItem(models.Model):
     account_id = fields.Many2one(
         string="Account", comodel_name="account.account", required=True
     )
-    amount = fields.Float(string="Amount", default=0)
+    amount = fields.Float(default=0)
     date = fields.Date(required=True)

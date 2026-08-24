@@ -108,7 +108,9 @@ class L10nVeEdiMixin(models.AbstractModel):
         compact = re.sub(r"[\s\._/]", "", clean)
         prefix_match = re.search(r"[VEJPGC]", compact)
         prefix = prefix_match.group(0) if prefix_match else ""
-        number = re.sub(r"[^0-9A-Z\-]", "", compact[len(prefix):] if prefix else compact)
+        number = re.sub(
+            r"[^0-9A-Z\-]", "", compact[len(prefix) :] if prefix else compact
+        )
         return prefix, number
 
     def _l10n_ve_edi_format_decimal(self, amount):

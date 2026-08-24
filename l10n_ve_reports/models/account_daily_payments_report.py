@@ -20,7 +20,7 @@ class DailyPaymentsReportCustomHandler(models.AbstractModel):
         return monday, friday
 
     def _custom_options_initializer(self, report, options, previous_options):
-        super()._custom_options_initializer(
+        result = super()._custom_options_initializer(
             report, options, previous_options=previous_options
         )
         report._init_options_journals(
@@ -48,6 +48,7 @@ class DailyPaymentsReportCustomHandler(models.AbstractModel):
             options["date"]["period"] = 0
 
         self._update_line_date_column_label(options)
+        return result
 
     def _get_line_date_column_name(self, date_type):
         if date_type == "payment":
@@ -344,7 +345,8 @@ class DailyPaymentsReportCustomHandler(models.AbstractModel):
             JOIN account_partial_reconcile part ON
                 part.debit_move_id = line.id OR part.credit_move_id = line.id
             JOIN account_move_line counterpart ON
-                part.debit_move_id = counterpart.id OR part.credit_move_id = counterpart.id
+                part.debit_move_id = counterpart.id OR part.credit_move_id =
+                counterpart.id
             WHERE payment.outstanding_account_id IS NOT NULL
               AND line.account_id = payment.outstanding_account_id
               AND line.id != counterpart.id
@@ -352,7 +354,9 @@ class DailyPaymentsReportCustomHandler(models.AbstractModel):
             """,
             (st_line.id,),
         )
-        return self.env["account.payment"].browse(id for id, in self.env.cr.fetchall())
+        return self.env["account.payment"].browse(
+            id for (id,) in self.env.cr.fetchall()
+        )
 
     def _get_invoice_moves_for_daily_payment_line(self, move):
         move = move[:1]
@@ -483,13 +487,16 @@ class DailyPaymentsReportCustomHandler(models.AbstractModel):
         )
         if not retention_journal_ids:
             return journals
-        return journals.filtered(lambda journal: journal.id not in retention_journal_ids)
+        return journals.filtered(
+            lambda journal: journal.id not in retention_journal_ids
+        )
 
     def _filter_moves_by_date_type(self, moves, date_from, date_to, date_type):
         return moves.filtered(
-            lambda move, df=date_from, dt=date_to, dtp=date_type: self._move_in_date_range(
-                move, df, dt, dtp
-            )
+            lambda move,
+            df=date_from,
+            dt=date_to,
+            dtp=date_type: self._move_in_date_range(move, df, dt, dtp)
         )
 
     def _get_posted_moves_by_date(
@@ -544,9 +551,10 @@ class DailyPaymentsReportCustomHandler(models.AbstractModel):
         ]
         amls = self.env["account.move.line"].search(domain, order="date asc, id asc")
         amls = amls.filtered(
-            lambda line, df=date_from, dt=date_to, dtp=date_type: self._aml_in_date_range(
-                line, df, dt, dtp
-            )
+            lambda line,
+            df=date_from,
+            dt=date_to,
+            dtp=date_type: self._aml_in_date_range(line, df, dt, dtp)
         )
         if not exclude_move_ids:
             return amls
@@ -608,7 +616,7 @@ class DailyPaymentsReportCustomHandler(models.AbstractModel):
                 columns.append(report._build_column_dict(None, column, options=options))
         return columns
 
-    def _dynamic_lines_generator(
+    def _dynamic_lines_generator(  # noqa: C901
         self, report, options, all_column_groups_expression_totals, warnings=None
     ):
         lines = []
@@ -633,8 +641,8 @@ class DailyPaymentsReportCustomHandler(models.AbstractModel):
 
             def _get_method_group(payment_method_line):
                 key = self._get_payment_method_group_key(payment_method_line)
-                if key not in method_groups:
-                    method_groups[key] = {
+                if key not in method_groups:  # noqa: B023
+                    method_groups[key] = {  # noqa: B023
                         "payment_method_line": payment_method_line,
                         "name": self._get_payment_method_group_name(
                             payment_method_line
@@ -643,12 +651,12 @@ class DailyPaymentsReportCustomHandler(models.AbstractModel):
                         "pending_lines": [],
                         "totals": defaultdict(float),
                     }
-                return method_groups[key]
+                return method_groups[key]  # noqa: B023
 
             def _add_amount_to_totals(method_group, amount):
                 for col_group_key in options["column_groups"]:
                     totals_by_group[col_group_key] += amount
-                    journal_group_totals[col_group_key] += amount
+                    journal_group_totals[col_group_key] += amount  # noqa: B023
                     method_group["totals"][col_group_key] += amount
 
             posted_moves = self._get_posted_moves_by_date(
@@ -657,18 +665,12 @@ class DailyPaymentsReportCustomHandler(models.AbstractModel):
             registered_moves = posted_moves.filtered(
                 lambda m, j=journal: self._is_move_bank_liquidity_registered(m, j)
             )
-            pending_posted_bank_moves = (
-                posted_moves - registered_moves
-            ).filtered(
-                lambda m, j=journal: self._bank_move_has_pending_bridge_residual(
-                    m, j
-                )
+            pending_posted_bank_moves = (posted_moves - registered_moves).filtered(
+                lambda m, j=journal: self._bank_move_has_pending_bridge_residual(m, j)
             )
             moves_by_date = defaultdict(list)
             for move in registered_moves:
-                moves_by_date[self._get_move_display_date(move, date_type)].append(
-                    move
-                )
+                moves_by_date[self._get_move_display_date(move, date_type)].append(move)
 
             for move_date in sorted(moves_by_date.keys()):
                 for move in moves_by_date[move_date]:
@@ -682,7 +684,9 @@ class DailyPaymentsReportCustomHandler(models.AbstractModel):
                         self._get_move_payment_method_line(move)
                     )
                     _add_amount_to_totals(method_group, amt)
-                    partner_label = move.partner_id.display_name if move.partner_id else ""
+                    partner_label = (
+                        move.partner_id.display_name if move.partner_id else ""
+                    )
                     method_group["registered_lines"].append(
                         (
                             0,
@@ -698,7 +702,7 @@ class DailyPaymentsReportCustomHandler(models.AbstractModel):
                                     options,
                                     {
                                         "line_date": display_date,
-                                        "invoice_documents": self._format_invoice_documents_label(
+                                        "invoice_documents": self._format_invoice_documents_label(  # noqa: E501
                                             move
                                         ),
                                         "partner": partner_label,
@@ -738,9 +742,7 @@ class DailyPaymentsReportCustomHandler(models.AbstractModel):
                     self._get_move_payment_method_line(move)
                 )
                 _add_amount_to_totals(method_group, amt)
-                partner_label = (
-                    move.partner_id.display_name if move.partner_id else ""
-                )
+                partner_label = move.partner_id.display_name if move.partner_id else ""
                 method_group["pending_lines"].append(
                     (
                         0,
@@ -756,7 +758,7 @@ class DailyPaymentsReportCustomHandler(models.AbstractModel):
                                 options,
                                 {
                                     "line_date": display_date,
-                                    "invoice_documents": self._format_invoice_documents_label(
+                                    "invoice_documents": self._format_invoice_documents_label(  # noqa: E501
                                         move
                                     ),
                                     "partner": partner_label,
@@ -802,7 +804,7 @@ class DailyPaymentsReportCustomHandler(models.AbstractModel):
                                 options,
                                 {
                                     "line_date": display_date,
-                                    "invoice_documents": self._format_invoice_documents_label(
+                                    "invoice_documents": self._format_invoice_documents_label(  # noqa: E501
                                         move
                                     ),
                                     "partner": partner_label,
@@ -830,8 +832,10 @@ class DailyPaymentsReportCustomHandler(models.AbstractModel):
                 _add_amount_to_totals(method_group, amt)
                 move = aml.move_id
                 partner_label = aml.partner_id.display_name if aml.partner_id else ""
-                short_name = (move.name if move else None) or aml.move_name or _(
-                    "Línea pendiente"
+                short_name = (
+                    (move.name if move else None)
+                    or aml.move_name
+                    or _("Línea pendiente")
                 )
                 method_group["pending_lines"].append(
                     (
@@ -848,7 +852,7 @@ class DailyPaymentsReportCustomHandler(models.AbstractModel):
                                 options,
                                 {
                                     "line_date": display_date,
-                                    "invoice_documents": self._format_invoice_documents_label(
+                                    "invoice_documents": self._format_invoice_documents_label(  # noqa: E501
                                         aml.move_id
                                     ),
                                     "partner": partner_label,
@@ -918,7 +922,7 @@ class DailyPaymentsReportCustomHandler(models.AbstractModel):
                         "account.journal",
                         journal.id,
                         parent_line_id=method_line_id,
-                        markup="daily_pay_section_done_%s" % method_markup,
+                        markup=f"daily_pay_section_done_{method_markup}",
                     )
                     lines.append(
                         (
@@ -926,9 +930,7 @@ class DailyPaymentsReportCustomHandler(models.AbstractModel):
                             {
                                 "id": registered_section_id,
                                 "name": _("Pagos y cobros registrados"),
-                                "columns": self._build_row_columns(
-                                    report, options, {}
-                                ),
+                                "columns": self._build_row_columns(report, options, {}),
                                 "level": 2,
                                 "unfoldable": False,
                                 "parent_id": method_line_id,
@@ -943,7 +945,7 @@ class DailyPaymentsReportCustomHandler(models.AbstractModel):
                         "account.journal",
                         journal.id,
                         parent_line_id=method_line_id,
-                        markup="daily_pay_section_pending_%s" % method_markup,
+                        markup=f"daily_pay_section_pending_{method_markup}",
                     )
                     lines.append(
                         (
@@ -951,9 +953,7 @@ class DailyPaymentsReportCustomHandler(models.AbstractModel):
                             {
                                 "id": pending_section_id,
                                 "name": _("Pendientes (borrador y cuentas puente)"),
-                                "columns": self._build_row_columns(
-                                    report, options, {}
-                                ),
+                                "columns": self._build_row_columns(report, options, {}),
                                 "level": 2,
                                 "unfoldable": False,
                                 "parent_id": method_line_id,

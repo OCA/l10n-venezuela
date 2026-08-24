@@ -15,6 +15,16 @@ class TestAccountFiscalPosition(L10nVeSeniatCommon):
             raise_if_not_found=False,
         )
         if not cls.free_port_fpos or cls.free_port_fpos.company_id != cls.env.company:
+            cls.free_port_fpos = cls.Fpos.search(
+                [
+                    ("company_id", "=", cls.env.company.id),
+                    ("auto_apply", "=", True),
+                    ("state_ids", "in", cls.ne_state.ids),
+                ],
+                order="sequence, id",
+                limit=1,
+            )
+        if not cls.free_port_fpos:
             cls.free_port_fpos = cls.Fpos.create(
                 {
                     "name": "Puerto Libre",

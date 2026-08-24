@@ -1,7 +1,10 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
+from psycopg2.errors import UniqueViolation
+
 from odoo.exceptions import ValidationError
 from odoo.tests import tagged
+from odoo.tools import mute_logger
 
 from odoo.addons.l10n_ve_seniat.tests.common import L10nVeSeniatCommon
 
@@ -81,7 +84,7 @@ class TestAccountTaxGroupL10nVe(L10nVeSeniatCommon):
             group.write({"l10n_ve_aliquot_type": "general"})
 
     def test_aliquot_type_unique_per_company(self):
-        with self.assertRaises(Exception):
+        with mute_logger("odoo.sql_db"), self.assertRaises(UniqueViolation):
             with self.cr.savepoint():
                 self._create_ve_tax_group(
                     "General duplicado",

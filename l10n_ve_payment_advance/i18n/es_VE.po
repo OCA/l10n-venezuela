@@ -304,7 +304,7 @@ msgstr "Mostrar Anticipo Difference Handling"
 #. odoo-javascript
 #. odoo-python
 #: code:addons/l10n_ve_payment_advance/models/account_move.py:0
-#: code:addons/l10n_ve_payment_advance/static/src/components/account_advance_payment_field/account_advance_payment_field.js:0
+#: code:addons/l10n_ve_payment_advance/static/src/components/account_advance_payment_field/account_advance_payment_field.esm.js:0
 msgid "Sin anticipos pendientes"
 msgstr "Sin anticipos pendientes"
 

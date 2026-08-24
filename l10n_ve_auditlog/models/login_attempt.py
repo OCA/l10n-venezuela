@@ -14,10 +14,9 @@ class AuditlogLoginAttempt(models.Model):
 
     login = fields.Char("Login / Email", required=True, readonly=True, index=True)
     ip_address = fields.Char("IP Address", required=True, readonly=True, index=True)
-    user_agent = fields.Char("User Agent", readonly=True)
+    user_agent = fields.Char(readonly=True)
     result = fields.Selection(
         [("success", "Success"), ("failed", "Failed")],
-        string="Result",
         required=True,
         readonly=True,
         index=True,
@@ -30,7 +29,6 @@ class AuditlogLoginAttempt(models.Model):
         ondelete="set null",
     )
     attempt_date = fields.Datetime(
-        "Attempt Date",
         required=True,
         readonly=True,
         default=fields.Datetime.now,

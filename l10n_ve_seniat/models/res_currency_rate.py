@@ -6,7 +6,6 @@ from odoo import _, api, fields, models
 from odoo.exceptions import UserError
 from odoo.tools.float_utils import float_compare
 
-
 _L10N_VE_INVOICE_MOVE_TYPES = (
     "out_invoice",
     "out_refund",
@@ -50,9 +49,7 @@ class ResCurrencyRate(models.Model):
 
     def _l10n_ve_rate_keys_in_vals(self, vals):
         v = self._sanitize_vals(dict(vals))
-        return bool(
-            {"rate", "company_rate", "inverse_company_rate"} & set(v.keys())
-        )
+        return bool({"rate", "company_rate", "inverse_company_rate"} & set(v.keys()))
 
     def _l10n_ve_skip_validation(self):
         return bool(self.env.context.get("l10n_ve_skip_currency_rate_validation"))
@@ -116,9 +113,8 @@ class ResCurrencyRate(models.Model):
             return super().write(vals)
 
         vals = dict(vals)
-        if (
-            "l10n_ve_rate_edit_count" in vals
-            and not self.env.user.has_group("base.group_system")
+        if "l10n_ve_rate_edit_count" in vals and not self.env.user.has_group(
+            "base.group_system"
         ):
             raise UserError(
                 _("No puede modificar manualmente el contador de ediciones de la tasa.")
@@ -162,14 +158,13 @@ class ResCurrencyRate(models.Model):
                     != 0
                 ):
                     new_count = rec.l10n_ve_rate_edit_count + 1
-                    rec.with_context(
-                        l10n_ve_skip_currency_rate_validation=True
-                    ).write({"l10n_ve_rate_edit_count": new_count})
+                    rec.with_context(l10n_ve_skip_currency_rate_validation=True).write(
+                        {"l10n_ve_rate_edit_count": new_count}
+                    )
                     if rec.currency_id:
                         rec.currency_id.message_post(
-                            body=Markup(
-                                "<p>%s</p>"
-                                % _(
+                            body=Markup("<p>{}</p>").format(
+                                _(
                                     "Tasa del %(date)s: %(old)s → %(new)s "
                                     "(edición %(count)s/2).",
                                     date=rec.name,

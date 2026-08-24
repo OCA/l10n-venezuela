@@ -1,6 +1,6 @@
-En extractos bancarios venezolanos (Banesco, Provincial, Mercantil, etc.) la
-referencia del banco a menudo es m�s larga que la guardada en el pago o la
-factura. Es habitual que solo coincidan los �ltimos 6 o 4 d�gitos.
+On Venezuelan bank statements (Banesco, Provincial, Mercantil, and others)
+the bank reference is often longer than the one stored on the payment or
+invoice. Usually only the last 6 or 4 digits match.
 
-Este m�dulo cubre ese caso sin forzar matches ambiguos: si hay varios
-candidatos, solo sugiere y deja la validaci�n al usuario.
+This module covers that case without forcing ambiguous matches: if there are
+several candidates, it only suggests them and leaves validation to the user.

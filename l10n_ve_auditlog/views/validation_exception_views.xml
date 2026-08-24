@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <odoo>
     <record id="view_auditlog_validation_exception_tree" model="ir.ui.view">
         <field name="name">auditlog.validation.exception.list</field>
@@ -48,10 +48,24 @@
                 <field name="user_id" />
                 <field name="ip_address" />
                 <separator />
-                <filter name="filter_today" string="Today" domain="[('create_date', '>=', (context_today()).strftime('%Y-%m-%d'))]" />
+                <filter
+                    name="filter_today"
+                    string="Today"
+                    domain="[('create_date', '>=', (context_today()).strftime('%Y-%m-%d'))]"
+                />
                 <group string="Group By" expand="0">
-                    <filter name="group_exception_class" string="Type" domain="[]" context="{'group_by':'exception_class'}" />
-                    <filter name="group_user" string="User" domain="[]" context="{'group_by':'user_id'}" />
+                    <filter
+                        name="group_exception_class"
+                        string="Type"
+                        domain="[]"
+                        context="{'group_by':'exception_class'}"
+                    />
+                    <filter
+                        name="group_user"
+                        string="User"
+                        domain="[]"
+                        context="{'group_by':'user_id'}"
+                    />
                 </group>
             </search>
         </field>
@@ -64,5 +78,10 @@
         <field name="search_view_id" ref="view_auditlog_validation_exception_search" />
         <field name="context">{'search_default_filter_today': 1}</field>
     </record>
-    <menuitem id="menu_action_auditlog_validation_exception" parent="menu_audit" action="action_auditlog_validation_exception" sequence="36" />
+    <menuitem
+        id="menu_action_auditlog_validation_exception"
+        parent="menu_audit"
+        action="action_auditlog_validation_exception"
+        sequence="36"
+    />
 </odoo>

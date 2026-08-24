@@ -46,7 +46,11 @@ class AccountTax(models.Model):
 
     @api.model
     def _l10n_ve_build_discount_totals_result(
-        self, document, tax_totals, global_discount_amount_currency, global_discount_lines
+        self,
+        document,
+        tax_totals,
+        global_discount_amount_currency,
+        global_discount_lines,
     ):
         base_amount_currency = tax_totals.get("base_amount_currency", 0.0)
         base_amount = tax_totals.get("base_amount", 0.0)
@@ -75,9 +79,9 @@ class AccountTax(models.Model):
 
         global_discount_amount_foreign = 0.0
         if document._name == "account.move":
-            foreign_currency = getattr(document, "foreign_currency_id", False) or getattr(
-                company, "foreign_currency_id", False
-            )
+            foreign_currency = getattr(
+                document, "foreign_currency_id", False
+            ) or getattr(company, "foreign_currency_id", False)
         else:
             foreign_currency = getattr(company, "foreign_currency_id", False)
         conversion_date = self._l10n_ve_get_document_conversion_date(document)
@@ -95,7 +99,8 @@ class AccountTax(models.Model):
         percentage_lines = [
             line
             for line in global_discount_lines
-            if line.get("discount_type") == "percentage" and line.get("discount_percentage")
+            if line.get("discount_type") == "percentage"
+            and line.get("discount_percentage")
         ]
         if (
             percentage_lines
@@ -285,4 +290,3 @@ class AccountTax(models.Model):
             if amount:
                 amounts[line_id] = amount
         return amounts
-

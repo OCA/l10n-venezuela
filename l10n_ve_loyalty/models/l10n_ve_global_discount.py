@@ -1,6 +1,6 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
-from odoo import _, api, fields, models
+from odoo import _, fields, models
 from odoo.exceptions import UserError, ValidationError
 from odoo.tools import float_compare, float_is_zero
 
@@ -33,10 +33,12 @@ class L10nVeGlobalDiscountMixin(models.AbstractModel):
 
 
 def l10n_ve_ordered_global_discounts(discounts):
-    percentage = discounts.filtered(lambda discount: discount.discount_type == "percentage")
-    fixed = discounts.filtered(lambda discount: discount.discount_type != "percentage").sorted(
-        "id"
+    percentage = discounts.filtered(
+        lambda discount: discount.discount_type == "percentage"
     )
+    fixed = discounts.filtered(
+        lambda discount: discount.discount_type != "percentage"
+    ).sorted("id")
     return percentage + fixed
 
 
@@ -58,7 +60,7 @@ def l10n_ve_remaining_subtotal_by_taxes(document, subtotal_by_taxes=None):
         tax_groups = list(running.keys())
         weights = [running[taxes] for taxes in tax_groups]
         parts = document._l10n_ve_split_amount_by_weights(amount, weights)
-        for taxes, part in zip(tax_groups, parts):
+        for taxes, part in zip(tax_groups, parts, strict=False):
             running[taxes] = max(0.0, running[taxes] - part)
     return running
 
@@ -95,7 +97,7 @@ def l10n_ve_fixed_discount_to_untaxed(
         capped, weights, currency=currency
     )
     untaxed_sum = 0.0
-    for part, factor in zip(parts, factors):
+    for part, factor in zip(parts, factors, strict=False):
         untaxed_sum += part / factor
     return currency.round(untaxed_sum)
 
@@ -112,7 +114,9 @@ def l10n_ve_sequential_global_discount_amounts(document, subtotal_by_taxes):
     currency = document.currency_id
     running = dict(subtotal_by_taxes)
     results = []
-    for discount in l10n_ve_ordered_global_discounts(document.l10n_ve_global_discount_ids):
+    for discount in l10n_ve_ordered_global_discounts(
+        document.l10n_ve_global_discount_ids
+    ):
         total_running = sum(running.values())
         if float_is_zero(total_running, precision_rounding=currency.rounding):
             break
@@ -126,7 +130,7 @@ def l10n_ve_sequential_global_discount_amounts(document, subtotal_by_taxes):
         tax_groups = list(running.keys())
         weights = [running[taxes] for taxes in tax_groups]
         parts = document._l10n_ve_split_amount_by_weights(amount, weights)
-        for taxes, part in zip(tax_groups, parts):
+        for taxes, part in zip(tax_groups, parts, strict=False):
             running[taxes] = max(0.0, running[taxes] - part)
     return results
 
@@ -165,18 +169,23 @@ def l10n_ve_validate_global_discount_total(document):
     subtotal_by_taxes = document._l10n_ve_global_discount_subtotal_by_taxes()
     currency = document.currency_id
     running_total = sum(subtotal_by_taxes.values())
-    for discount in l10n_ve_ordered_global_discounts(document.l10n_ve_global_discount_ids):
+    for discount in l10n_ve_ordered_global_discounts(
+        document.l10n_ve_global_discount_ids
+    ):
         if float_is_zero(running_total, precision_rounding=currency.rounding):
             break
         if discount.discount_type == "percentage":
             amount = currency.round(running_total * discount.discount_percentage)
         else:
             amount = discount.amount
-            if float_compare(
-                amount,
-                running_total,
-                precision_digits=currency.decimal_places,
-            ) > 0:
+            if (
+                float_compare(
+                    amount,
+                    running_total,
+                    precision_digits=currency.decimal_places,
+                )
+                > 0
+            ):
                 raise UserError(
                     _(
                         "El descuento (%(discount)s) supera el subtotal disponible "
@@ -186,12 +195,17 @@ def l10n_ve_validate_global_discount_total(document):
                 )
         running_total = max(0.0, running_total - amount)
     total_subtotal = sum(subtotal_by_taxes.values())
-    total_discount = l10n_ve_total_sequential_global_discount(document, subtotal_by_taxes)
-    if float_compare(
-        total_discount,
-        total_subtotal,
-        precision_digits=document.currency_id.decimal_places,
-    ) > 0:
+    total_discount = l10n_ve_total_sequential_global_discount(
+        document, subtotal_by_taxes
+    )
+    if (
+        float_compare(
+            total_discount,
+            total_subtotal,
+            precision_digits=document.currency_id.decimal_places,
+        )
+        > 0
+    ):
         raise UserError(
             _(
                 "La suma de los descuentos globales (%(discount)s) supera el "
@@ -206,7 +220,9 @@ def l10n_ve_check_single_percentage_global_discount(discounts):
         lambda discount: discount.discount_type == "percentage"
     )
     if len(percentage_discounts) > 1:
-        raise ValidationError(_("Solo puede existir un descuento global por porcentaje."))
+        raise ValidationError(
+            _("Solo puede existir un descuento global por porcentaje.")
+        )
 
 
 def l10n_ve_refresh_percentage_global_discount_amounts(document):

@@ -69,17 +69,23 @@ class TestRefSuffixMatch(AccountTestInvoicingCommon):
             lambda line: line.account_id.account_type
             in ("asset_receivable", "liability_payable")
         )
+        line_types = [
+            (line.account_id.account_type, line.balance) for line in invoice.line_ids
+        ]
         self.assertTrue(
             lines,
-            f"Invoice {invoice.name} has no AR/AP lines: "
-            f"{[(line.account_id.account_type, line.balance) for line in invoice.line_ids]}",
+            f"Invoice {invoice.name} has no AR/AP lines: {line_types}",
         )
         return lines[:1]
 
     def _create_payment_line(self, amount, payment_reference, partner=None):
-        Payment = self.env["account.payment"].sudo().with_context(
-            mail_create_nolog=True,
-            tracking_disable=True,
+        Payment = (
+            self.env["account.payment"]
+            .sudo()
+            .with_context(
+                mail_create_nolog=True,
+                tracking_disable=True,
+            )
         )
         payment = Payment.create(
             {

@@ -11,5 +11,6 @@
         "l10n_ve_auditlog",
     ],
     "license": "AGPL-3",
+    "images": [],
     "installable": True,
 }

@@ -16,7 +16,9 @@ class IrActionsReport(models.Model):
     def _l10n_ve_is_dispatch_guide_report(self, report):
         return (report.report_name or "") == DISPATCH_GUIDE_REPORT
 
-    def _l10n_ve_check_block_dispatch_pdf_before_digital_sent(self, report_ref, res_ids, data=None):
+    def _l10n_ve_check_block_dispatch_pdf_before_digital_sent(
+        self, report_ref, res_ids, data=None
+    ):
         if not res_ids:
             return
         report = self._get_report(report_ref)
@@ -27,11 +29,14 @@ class IrActionsReport(models.Model):
                 raise UserError(
                     _(
                         "No puede imprimir la guia hasta que el envio a "
-                        "facturacion digital finalice correctamente (estado EDI: enviado)."
+                        "facturacion digital finalice correctamente "
+                        "(estado EDI: enviado)."
                     )
                 )
 
-    def _l10n_ve_check_block_retention_pdf_before_digital_sent(self, report_ref, res_ids, data=None):
+    def _l10n_ve_check_block_retention_pdf_before_digital_sent(
+        self, report_ref, res_ids, data=None
+    ):
         if not res_ids:
             return
         report = self._get_report(report_ref)
@@ -42,7 +47,8 @@ class IrActionsReport(models.Model):
                 raise UserError(
                     _(
                         "No puede imprimir el comprobante hasta que el envio a "
-                        "facturacion digital finalice correctamente (estado EDI: enviado)."
+                        "facturacion digital finalice correctamente "
+                        "(estado EDI: enviado)."
                     )
                 )
 
@@ -52,7 +58,9 @@ class IrActionsReport(models.Model):
             return valid_ids
         retentions = self.env["account.retention"].browse(record_ids)
         if not retentions.filtered(
-            lambda retention: retention._l10n_ve_edi_retention_blocking_print_before_digital_sent()
+            lambda retention: (
+                retention._l10n_ve_edi_retention_blocking_print_before_digital_sent()
+            )
         ):
             return valid_ids
         reports = self.env["ir.actions.report"].browse(valid_ids)
@@ -63,11 +71,14 @@ class IrActionsReport(models.Model):
         }
         if not blocked_report_ids:
             return valid_ids
-        return [report_id for report_id in valid_ids if report_id not in blocked_report_ids]
+        return [
+            report_id for report_id in valid_ids if report_id not in blocked_report_ids
+        ]
 
     def report_action(self, docids, data=None, config=True):
-        if self.model == "account.retention" and self._l10n_ve_is_retention_voucher_report(
-            self
+        if (
+            self.model == "account.retention"
+            and self._l10n_ve_is_retention_voucher_report(self)
         ):
             if isinstance(docids, models.Model):
                 res_ids = docids.ids
@@ -100,7 +111,8 @@ class IrActionsReport(models.Model):
                     raise UserError(
                         _(
                             "No hay PDF de facturacion digital para imprimir. "
-                            "Verifique credenciales TFHKA en Ajustes y que la emision en TFHKA haya generado el documento."
+                            "Verifique credenciales TFHKA en Ajustes y que la "
+                            "emision en TFHKA haya generado el documento."
                         )
                     )
                 att = move.invoice_pdf_report_id
@@ -116,7 +128,8 @@ class IrActionsReport(models.Model):
                     raise UserError(
                         _(
                             "No hay PDF de facturacion digital para imprimir. "
-                            "Verifique credenciales TFHKA en Ajustes y que la emision en TFHKA haya generado el comprobante."
+                            "Verifique credenciales TFHKA en Ajustes y que la "
+                            "emision en TFHKA haya generado el comprobante."
                         )
                     )
                 attachment = retention.l10n_ve_edi_tfhka_pdf_attachment_id
@@ -132,7 +145,8 @@ class IrActionsReport(models.Model):
                     raise UserError(
                         _(
                             "No hay PDF de facturacion digital para imprimir. "
-                            "Verifique credenciales TFHKA en Ajustes y que la emision en TFHKA haya generado el documento."
+                            "Verifique credenciales TFHKA en Ajustes y que la "
+                            "emision en TFHKA haya generado el documento."
                         )
                     )
                 attachment = picking.l10n_ve_edi_tfhka_pdf_attachment_id

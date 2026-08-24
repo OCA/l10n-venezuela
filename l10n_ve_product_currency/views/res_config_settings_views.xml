@@ -1,6 +1,8 @@
 <odoo>
     <record id="res_config_settings_view_form" model="ir.ui.view">
-        <field name="name">res.config.settings.form.inherit.l10n_ve_product_currency</field>
+        <field
+            name="name"
+        >res.config.settings.form.inherit.l10n_ve_product_currency</field>
         <field name="model">res.config.settings</field>
         <field name="inherit_id" ref="product.res_config_settings_view_form" />
         <field name="arch" type="xml">

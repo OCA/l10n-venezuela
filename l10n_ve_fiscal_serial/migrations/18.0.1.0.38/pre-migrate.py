@@ -16,16 +16,17 @@ def _column_exists(cr, table, column):
     return bool(cr.fetchone())
 
 
-def _ensure_column(cr, table, column, ddl_type):
-    if not _column_exists(cr, table, column):
-        cr.execute(f"ALTER TABLE {table} ADD COLUMN {column} {ddl_type}")
-
-
 def migrate(cr, version):
-    _ensure_column(cr, "res_company", "l10n_ve_fiscal_flag_21", "VARCHAR")
-    _ensure_column(cr, "res_company", "l10n_ve_fiscal_flag_50", "VARCHAR")
-    _ensure_column(cr, "res_company", "l10n_ve_fiscal_use_barcode", "BOOLEAN")
-    _ensure_column(cr, "res_company", "l10n_ve_fiscal_footer", "TEXT")
+    if not _column_exists(cr, "res_company", "l10n_ve_fiscal_flag_21"):
+        cr.execute("ALTER TABLE res_company ADD COLUMN l10n_ve_fiscal_flag_21 VARCHAR")
+    if not _column_exists(cr, "res_company", "l10n_ve_fiscal_flag_50"):
+        cr.execute("ALTER TABLE res_company ADD COLUMN l10n_ve_fiscal_flag_50 VARCHAR")
+    if not _column_exists(cr, "res_company", "l10n_ve_fiscal_use_barcode"):
+        cr.execute(
+            "ALTER TABLE res_company ADD COLUMN l10n_ve_fiscal_use_barcode BOOLEAN"
+        )
+    if not _column_exists(cr, "res_company", "l10n_ve_fiscal_footer"):
+        cr.execute("ALTER TABLE res_company ADD COLUMN l10n_ve_fiscal_footer TEXT")
 
     if not _column_exists(cr, "l10n_ve_fiscal_machine", "flag_21"):
         return

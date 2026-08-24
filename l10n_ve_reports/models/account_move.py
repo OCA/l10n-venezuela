@@ -20,7 +20,8 @@ class AccountMove(models.Model):
     tax_closing_alert = fields.Boolean(compute="_compute_tax_closing_alert")
 
     def _post(self, soft=True):
-        # Overridden to create carryover external values and join the pdf of the report when posting the tax closing
+        # Overridden to create carryover external values and join the pdf of the report
+        # when posting the tax closing
         for move in self.filtered(lambda m: m.tax_closing_report_id):
             report = move.tax_closing_report_id
             options = move._get_tax_closing_report_options(
@@ -31,11 +32,15 @@ class AccountMove(models.Model):
         return super()._post(soft)
 
     def action_post(self):
-        # In the case of a TaxClosingNonPostedDependingMovesError, which can occur when dealing with branches or tax
-        # units during the closing process, the parent company may have non-posted closing entries from other companies.
-        # If this exception occurs, we will return an action client that will display a component indicating that there
+        # In the case of a TaxClosingNonPostedDependingMovesError, which can occur when
+        # dealing with branches or tax
+        # units during the closing process, the parent company may have non-posted
+        # closing entries from other companies.
+        # If this exception occurs, we will return an action client that will display a
+        # component indicating that there
         # are non-posted dependent moves, along with a link to those moves.
-        # Also, we are not using a RedirectWarning because it will force a rollback on the closing move created for
+        # Also, we are not using a RedirectWarning because it will force a rollback on
+        # the closing move created for
         # depending companies.
         try:
             res = super().action_post()
@@ -59,8 +64,9 @@ class AccountMove(models.Model):
         return res
 
     def button_draft(self):
-        # Overridden in order to delete the carryover values when resetting the tax closing to draft
-        super().button_draft()
+        # Overridden in order to delete the carryover values when resetting the tax
+        # closing to draft
+        result = super().button_draft()
         for closing_move in self.filtered(lambda m: m.tax_closing_report_id):
             report = closing_move.tax_closing_report_id
             options = closing_move._get_tax_closing_report_options(
@@ -91,19 +97,20 @@ class AccountMove(models.Model):
             ):
                 raise UserError(
                     _(
-                        "You cannot reset this closing entry to draft, as it would delete carryover values impacting the tax report of a "
-                        "locked period. To do this, you first need to modify you tax return lock date."
+                        "You cannot reset this closing entry to draft, as it would delete carryover values impacting the tax report of a "  # noqa: E501
+                        "locked period. To do this, you first need to modify you tax return lock date."  # noqa: E501
                     )
                 )
 
             if self._has_subsequent_posted_closing_moves():
                 raise UserError(
                     _(
-                        "You cannot reset this closing entry to draft, as another closing entry has been posted at a later date."
+                        "You cannot reset this closing entry to draft, as another closing entry has been posted at a later date."  # noqa: E501
                     )
                 )
 
             carryover_values.unlink()
+        return result
 
     def _has_subsequent_posted_closing_moves(self):
         self.ensure_one()
@@ -142,12 +149,16 @@ class AccountMove(models.Model):
         raise UserError(_("Tax Return report has been removed from this module."))
 
     def _close_tax_period(self, report, options):
-        """Closes tax closing entries. The tax closing activities on them will be marked done, and the next tax closing entry
-        will be generated or updated (if already existing). Also, a pdf of the tax report at the time of closing
+        """Closes tax closing entries. The tax closing activities on them will be marked
+        done, and the next tax closing entry
+        will be generated or updated (if already existing). Also, a pdf of the tax
+        report at the time of closing
         will be posted in the chatter of each move.
 
-        The tax lock date of each  move's company will be set to the move's date in case no other draft tax closing
-        move exists for that company (whatever their foreign VAT fiscal position) before or at that date, meaning that
+        The tax lock date of each  move's company will be set to the move's date in case
+        no other draft tax closing
+        move exists for that company (whatever their foreign VAT fiscal position) before
+        or at that date, meaning that
         all the tax closings have been performed so far.
         """
         self.ensure_one()
@@ -206,8 +217,10 @@ class AccountMove(models.Model):
                     )
                     depending_action["context"].pop("search_default_posted", None)
 
-                # In case of dependent moves, we will raise an error that will be caught in the action_post method.
-                # When the exception is caught, a component will inform the user that there are some dependent moves
+                # In case of dependent moves, we will raise an error that will be caught
+                # in the action_post method.
+                # When the exception is caught, a component will inform the user that
+                # there are some dependent moves
                 # to be posted and provide a link to these moves.
                 raise TaxClosingNonPostedDependingMovesError(depending_action)
 
@@ -216,7 +229,8 @@ class AccountMove(models.Model):
                 allowed_company_ids=company_ids
             )._generate_carryover_external_values(options)
 
-            # Post the message with the attachments (PDF of the report, and possibly an additional export file)
+            # Post the message with the attachments (PDF of the report, and possibly an
+            # additional export file)
             attachments = self._get_vat_report_attachments(report, options)
             subject = _(
                 "Vat closing from %(date_from)s to %(date_to)s",
@@ -231,7 +245,7 @@ class AccountMove(models.Model):
             for closing_move in depending_closings:
                 closing_move.message_post(
                     body=_(
-                        "The attachments of the tax report can be found on the %(link_start)sclosing entry%(link_end)s of the representative company.",
+                        "The attachments of the tax report can be found on the %(link_start)sclosing entry%(link_end)s of the representative company.",  # noqa: E501
                         link_start=Markup(
                             '<a href="#" data-oe-model="account.move" data-oe-id="%s">'
                         )
@@ -262,7 +276,8 @@ class AccountMove(models.Model):
         mat_to_send_xml_id = "l10n_ve_reports.mail_activity_type_tax_report_to_be_sent"
         mat_to_send = self.env.ref(mat_to_send_xml_id, raise_if_not_found=False)
         if not mat_to_send:
-            # As this is introduced in stable, we ensure data exists by creating them on the fly if needed
+            # As this is introduced in stable, we ensure data exists by creating them on
+            # the fly if needed
             mat_to_send = (
                 self.env["mail.activity.type"]
                 .sudo()
@@ -273,7 +288,7 @@ class AccountMove(models.Model):
                             "noupdate": False,
                             "values": {
                                 "name": "Tax Report Ready",
-                                "summary": "Tax report is ready to be sent to the administration",
+                                "summary": "Tax report is ready to be sent to the administration",  # noqa: E501
                                 "category": "tax_report",
                                 "delay_count": "0",
                                 "delay_unit": "days",
@@ -361,8 +376,10 @@ class AccountMove(models.Model):
 
         # In case the company submits its report in different regions, a closing entry
         # is made for each fiscal position defining a foreign VAT.
-        # We hence need to make sure to select a tax report in the right country when opening
-        # the report (in case there are many, we pick the first one available; it doesn't impact the closing)
+        # We hence need to make sure to select a tax report in the right country when
+        # opening
+        # the report (in case there are many, we pick the first one available; it
+        # doesn't impact the closing)
         if fiscal_position and fiscal_position.foreign_vat:
             fpos_option = fiscal_position.id
             report_country = fiscal_position.country_id
@@ -392,7 +409,8 @@ class AccountMove(models.Model):
                 company_ids = candidate_tax_unit.company_ids.ids
             else:
                 same_vat_branches = self.env.company._get_branches_with_same_vat()
-                # Consider the one with the least number of parents (highest in hierarchy) as the active company, coming first
+                # Consider the one with the least number of parents (highest in
+                # hierarchy) as the active company, coming first
                 company_ids = same_vat_branches.sorted(lambda x: len(x.parent_ids)).ids
         else:
             company_ids = self.env.company.ids

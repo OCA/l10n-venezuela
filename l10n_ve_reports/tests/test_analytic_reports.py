@@ -472,7 +472,7 @@ class TestAnalyticReport(TestAccountReportsCommon):
                                 "product_id": self.product_a.id,
                                 "price_unit": 2000.0,
                                 "analytic_distribution": {
-                                    f"{self.analytic_account_parent.id},{other_account.id}": 100,
+                                    f"{self.analytic_account_parent.id},{other_account.id}": 100,  # noqa: E501
                                 },
                             }
                         ),
@@ -586,7 +586,8 @@ class TestAnalyticReport(TestAccountReportsCommon):
 
         self.assertLinesValues(
             general_ledger_report._get_lines(options),
-            #   Name                                    Debit           Credit          Balance
+            # Name                                    Debit           Credit
+            # Balance
             [0, 5, 6, 7],
             [
                 ["400000 Product Sales", 0.00, 100.00, -100.00],
@@ -645,17 +646,17 @@ class TestAnalyticReport(TestAccountReportsCommon):
         )
         out_invoice_2.action_post()
 
-        horizontal_group = self.env[
-            "account.report.horizontal.group.oca"
-        ].create(
+        horizontal_group = self.env["account.report.horizontal.group.oca"].create(
             {
                 "name": "Horizontal Group Journal Entries",
                 "report_ids": [self.report.id],
                 "rule_ids": [
                     Command.create(
                         {
-                            "field_name": "move_id",  # this field is specific to account.move.line and not in account.analytic.line
-                            "domain": f"[('id', 'in', {(out_invoice_1 + out_invoice_2).ids})]",
+                            # this field is specific to account.move.line and not in
+                            # account.analytic.line
+                            "field_name": "move_id",
+                            "domain": f"[('id', 'in', {(out_invoice_1 + out_invoice_2).ids})]",  # noqa: E501
                         }
                     ),
                 ],
@@ -678,8 +679,10 @@ class TestAnalyticReport(TestAccountReportsCommon):
 
         self.assertLinesValues(
             self.report._get_lines(options),
-            #   Horizontal groupby               [             Move 2              ]     [               Move 1                ]
-            #   Analytic groupby                    A1          A2      A3      Balance     A1          A2       A3         Balance
+            # Horizontal groupby               [             Move 2              ]     [
+            # Move 1                ]
+            # Analytic groupby                    A1          A2      A3      Balance
+            # A1          A2       A3         Balance
             [0, 1, 2, 3, 4, 5, 6, 7, 8],
             [
                 ["Revenue", 100.00, 0.00, 0.00, 100.00, 0.00, 400.00, -50.00, 500.00],
@@ -757,7 +760,7 @@ class TestAnalyticReport(TestAccountReportsCommon):
                 "amount": 100.0,
                 "unit_amount": 1.0,
                 "company_id": self.env.company.id,
-                self.analytic_plan_parent._column_name(): self.analytic_account_parent.id,
+                self.analytic_plan_parent._column_name(): self.analytic_account_parent.id,  # noqa: E501
                 "general_account_id": self.company_data["default_account_revenue"].id,
             }
         )
@@ -793,7 +796,8 @@ class TestAnalyticReport(TestAccountReportsCommon):
 
     def test_analytic_groupby_plans_without_analytic_accounts(self):
         """
-        Ensure that grouping on several analytic plans without any analytic accounts works as expected
+        Ensure that grouping on several analytic plans without any analytic accounts
+        works as expected
         """
         analytic_plans_without_accounts = self.env["account.analytic.plan"].create(
             [
@@ -814,7 +818,7 @@ class TestAnalyticReport(TestAccountReportsCommon):
         self.assertEqual(
             len(options["column_groups"]),
             3,
-            "the number of column groups should be 3, despite the 2 analytic plans having the exact same analytic accounts list",
+            "the number of column groups should be 3, despite the 2 analytic plans having the exact same analytic accounts list",  # noqa: E501
         )
 
         self.assertLinesValues(

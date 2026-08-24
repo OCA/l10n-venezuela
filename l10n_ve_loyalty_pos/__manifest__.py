@@ -20,7 +20,8 @@
     ],
     "assets": {
         "point_of_sale._assets_pos": [
-            "l10n_ve_loyalty_pos/static/src/**/*",
+            "l10n_ve_loyalty_pos/static/src/**/*.esm.js",
+            "l10n_ve_loyalty_pos/static/src/**/*.xml",
         ],
     },
     "license": "AGPL-3",

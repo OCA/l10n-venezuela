@@ -16,10 +16,11 @@ class DiaryBookReportCustomHandler(models.AbstractModel):
         }
 
     def _custom_options_initializer(self, report, options, previous_options):
-        super()._custom_options_initializer(
+        result = super()._custom_options_initializer(
             report, options, previous_options=previous_options
         )
         options["unfold_all"] = options.get("unfold_all", True)
+        return result
 
     def _dynamic_lines_generator(
         self, report, options, all_column_groups_expression_totals, warnings=None

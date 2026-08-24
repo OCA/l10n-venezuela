@@ -1,5 +1,6 @@
 from odoo import _, api, models
 from odoo.exceptions import UserError
+
 from odoo.addons.web.controllers.utils import clean_action
 
 

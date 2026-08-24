@@ -65,8 +65,7 @@ class TestL10nVeBookReportColumns(L10nVeSeniatCommon):
         report = self.env.ref("l10n_ve_reports.sales_book_report")
         options = report.get_options({})
         labels = [
-            column.get("expression_label")
-            for column in options.get("columns", [])
+            column.get("expression_label") for column in options.get("columns", [])
         ]
 
         general_index = labels.index("tax_base_general_aliquot")

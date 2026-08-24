@@ -1,11 +1,15 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <odoo>
     <template
         id="sale_order_portal_template_ve"
         inherit_id="sale.sale_order_portal_template"
         name="VE portal: sidebar sin total en HTML"
+        priority="110"
     >
-        <xpath expr="//t[@id='sale_order_portal_sidebar']//t[@t-set='title']" position="replace">
+        <xpath
+            expr="//t[@id='sale_order_portal_sidebar']//t[@t-set='title']"
+            position="replace"
+        >
             <t t-set="title">
                 <h2
                     t-if="sale_order.country_code != 'VE' or report_type != 'html'"
@@ -13,10 +17,17 @@
                     data-id="total_amount"
                     class="mb-0 text-break"
                 />
-                <h2 t-else="" class="mb-0 text-break text-muted" t-out="sale_order.name"/>
+                <h2
+                    t-else=""
+                    class="mb-0 text-break text-muted"
+                    t-out="sale_order.name"
+                />
             </t>
         </xpath>
-        <xpath expr="//t[@id='sale_order_portal_sidebar']//div[@name='sale_order_advantage']/parent::*" position="attributes">
+        <xpath
+            expr="//t[@id='sale_order_portal_sidebar']//div[@name='sale_order_advantage']/parent::*"
+            position="attributes"
+        >
             <attribute name="t-if">
                 not sale_order.is_expired and sale_order.state in ['draft', 'sent'] and not (sale_order.country_code == 'VE' and report_type == 'html')
             </attribute>
@@ -27,6 +38,7 @@
         id="sale_order_portal_content_ve"
         inherit_id="sale.sale_order_portal_content"
         name="VE portal: líneas sin impuesto/importe gravado, sin bloque totales, nota SENIAT"
+        priority="110"
     >
         <xpath expr="//table[@id='sales_order_table']/parent::div" position="before">
             <div
@@ -69,10 +81,14 @@
             >'o_l10n_ve_portal_no_fiscal_wrap' if sale_order.country_code == 'VE' and report_type == 'html' else ''</attribute>
         </xpath>
         <xpath expr="//th[@id='taxes_header']" position="attributes">
-            <attribute name="t-if">sale_order.country_code != 'VE' or report_type != 'html'</attribute>
+            <attribute
+                name="t-if"
+            >sale_order.country_code != 'VE' or report_type != 'html'</attribute>
         </xpath>
         <xpath expr="//td[@id='taxes']" position="attributes">
-            <attribute name="t-if">sale_order.country_code != 'VE' or report_type != 'html'</attribute>
+            <attribute
+                name="t-if"
+            >sale_order.country_code != 'VE' or report_type != 'html'</attribute>
         </xpath>
         <xpath expr="//td[@id='subtotal']" position="replace">
             <td t-if="not line.is_downpayment" class="text-end" id="subtotal">
@@ -86,11 +102,17 @@
                     class="oe_order_line_price_subtotal"
                     t-field="line.price_total"
                 />
-                <span t-else="" class="oe_order_line_price_subtotal" t-field="line.price_subtotal"/>
+                <span
+                    t-else=""
+                    class="oe_order_line_price_subtotal"
+                    t-field="line.price_subtotal"
+                />
             </td>
         </xpath>
         <xpath expr="//div[@id='total']" position="attributes">
-            <attribute name="t-if">sale_order.country_code != 'VE' or report_type != 'html'</attribute>
+            <attribute
+                name="t-if"
+            >sale_order.country_code != 'VE' or report_type != 'html'</attribute>
         </xpath>
         <xpath expr="//section[@id='details']" position="after">
             <section
@@ -98,7 +120,7 @@
                 id="l10n_ve_seniat_note"
                 class="mt-4"
             >
-                <div t-field="sale_order.l10n_ve_seniat_note"/>
+                <div t-field="sale_order.l10n_ve_seniat_note" />
             </section>
         </xpath>
     </template>

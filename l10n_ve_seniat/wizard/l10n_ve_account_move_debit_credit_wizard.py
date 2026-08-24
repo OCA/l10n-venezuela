@@ -72,12 +72,15 @@ class L10nVeAccountMoveDebitCreditWizard(models.TransientModel):
                     "journal_id": invoice.journal_id.id,
                     "invoice_date": fields.Date.context_today(self),
                     "ref": _(
-                        "Reversión nota(s) de débito %(debits)s de factura %(invoice)s: %(reason)s",
+                        "Reversión nota(s) de débito %(debits)s de factura "
+                        "%(invoice)s: %(reason)s",
                         debits=debit_names,
                         invoice=invoice.name,
                         reason=self.reason,
                     ),
-                    "l10n_ve_debit_note_reversed_ids": [(6, 0, self.debit_note_ids.ids)],
+                    "l10n_ve_debit_note_reversed_ids": [
+                        (6, 0, self.debit_note_ids.ids)
+                    ],
                     "invoice_line_ids": line_vals,
                 }
             )

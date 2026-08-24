@@ -20,9 +20,7 @@ def migrate(cr, version):
     )
     for view_id, view_name, module_name, xmlid_name in cr.fetchall():
         xmlid = (
-            f"{module_name}.{xmlid_name}"
-            if module_name and xmlid_name
-            else "no_xmlid"
+            f"{module_name}.{xmlid_name}" if module_name and xmlid_name else "no_xmlid"
         )
         if xmlid == "no_xmlid":
             cr.execute(
@@ -34,7 +32,8 @@ def migrate(cr, version):
                 (view_id,),
             )
             _logger.warning(
-                "Desactivada vista huerfana de account.move con audit_log_ids: id=%s name=%s",
+                "Desactivada vista huerfana de account.move con "
+                "audit_log_ids: id=%s name=%s",
                 view_id,
                 view_name,
             )
@@ -48,7 +47,11 @@ def migrate(cr, version):
             arch_text = arch_value.get("en_US")
             if not arch_text:
                 arch_text = next(
-                    (val for val in arch_value.values() if isinstance(val, str) and val),
+                    (
+                        val
+                        for val in arch_value.values()
+                        if isinstance(val, str) and val
+                    ),
                     None,
                 )
         elif isinstance(arch_value, str):

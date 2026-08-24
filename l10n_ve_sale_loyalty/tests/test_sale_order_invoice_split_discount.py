@@ -87,7 +87,9 @@ class TestSaleOrderGlobalDiscount(L10nVeSeniatCommon):
         )
         wizard.action_apply_discount()
         self.assertEqual(len(order.l10n_ve_global_discount_ids), 1)
-        self.assertAlmostEqual(order.l10n_ve_global_discount_ids.amount, 110.0, places=2)
+        self.assertAlmostEqual(
+            order.l10n_ve_global_discount_ids.amount, 110.0, places=2
+        )
         order.action_confirm()
         invoices = order._create_invoices()
         self.assertEqual(len(invoices), 2)
@@ -144,5 +146,7 @@ class TestSaleOrderGlobalDiscount(L10nVeSeniatCommon):
         invoice = order._create_invoices()
         self.assertEqual(len(invoice), 1)
         self.assertEqual(len(invoice.l10n_ve_global_discount_ids), 1)
-        self.assertAlmostEqual(invoice.l10n_ve_global_discount_ids.amount, 10.0, places=2)
+        self.assertAlmostEqual(
+            invoice.l10n_ve_global_discount_ids.amount, 10.0, places=2
+        )
         self.assertAlmostEqual(invoice.amount_total, order.amount_total, places=2)

@@ -2,7 +2,9 @@
 <odoo>
     <record id="module_category_l10n_ve_seniat_access" model="ir.module.category">
         <field name="name">Venezuela (SENIAT)</field>
-        <field name="description">Permisos de fiscalización y documentos venezolanos, independientes del apartado de contabilidad.</field>
+        <field
+            name="description"
+        >Permisos de fiscalización y documentos venezolanos, independientes del apartado de contabilidad.</field>
         <field name="sequence">16</field>
     </record>
 
@@ -52,11 +54,17 @@
 
     <record id="group_l10n_ve_invoice_void" model="res.groups">
         <field name="name">Anular Facturas</field>
-        <field name="category_id" ref="l10n_ve_seniat.module_category_l10n_ve_seniat_access" />
+        <field
+            name="category_id"
+            ref="l10n_ve_seniat.module_category_l10n_ve_seniat_access"
+        />
     </record>
 
     <record id="account.group_account_manager" model="res.groups">
-        <field name="implied_ids" eval="[(4, ref('l10n_ve_seniat.group_l10n_ve_invoice_void'))]" />
+        <field
+            name="implied_ids"
+            eval="[(4, ref('l10n_ve_seniat.group_l10n_ve_invoice_void'))]"
+        />
     </record>
 
     <record id="base.group_system" model="res.groups">

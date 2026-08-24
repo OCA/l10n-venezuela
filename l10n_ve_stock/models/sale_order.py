@@ -8,7 +8,9 @@ class SaleOrder(models.Model):
 
     def _action_confirm(self):
         res = super()._action_confirm()
-        self.filtered(lambda o: o.country_code == "VE")._l10n_ve_split_delivery_pickings()
+        self.filtered(
+            lambda o: o.country_code == "VE"
+        )._l10n_ve_split_delivery_pickings()
         return res
 
     def _l10n_ve_split_delivery_pickings(self):
@@ -39,8 +41,7 @@ class SaleOrder(models.Model):
                 if len(moves) <= max_moves:
                     continue
                 chunks = [
-                    moves[i : i + max_moves]
-                    for i in range(0, len(moves), max_moves)
+                    moves[i : i + max_moves] for i in range(0, len(moves), max_moves)
                 ]
                 for chunk in chunks[1:]:
                     new_picking = picking.copy(

@@ -18,6 +18,7 @@ class TestAccountBook(L10nVeSeniatCommon):
             login="l10n_ve_book_invoice_user",
             groups="account.group_account_invoice",
         )
+
     def _new_entry_move(self):
         return self.env["account.move"].create(
             {
@@ -94,7 +95,8 @@ class TestAccountBook(L10nVeSeniatCommon):
                 "section_id": sec.id,
                 "number": 10,
                 "res_model": "account.move",
-                "res_id": self.env["account.move"].create(
+                "res_id": self.env["account.move"]
+                .create(
                     {
                         "move_type": "entry",
                         "line_ids": [
@@ -124,7 +126,8 @@ class TestAccountBook(L10nVeSeniatCommon):
                             ),
                         ],
                     }
-                ).id,
+                )
+                .id,
             }
         )
         book.invalidate_recordset(
@@ -801,7 +804,9 @@ class TestAccountBook(L10nVeSeniatCommon):
                 "number_to": 10,
             }
         )
-        bad_id = self.env["account.move"].search([], order="id desc", limit=1).id + 999_999
+        bad_id = (
+            self.env["account.move"].search([], order="id desc", limit=1).id + 999_999
+        )
         doc = self.env["account.book.document"].create(
             {
                 "book_id": book.id,
@@ -850,11 +855,15 @@ class TestAccountBook(L10nVeSeniatCommon):
                 limit=1,
             )
         )
-        partner_us = self.env["res.partner"].with_company(us_company).create(
-            {
-                "name": "P us",
-                "country_id": self.env.ref("base.us").id,
-            }
+        partner_us = (
+            self.env["res.partner"]
+            .with_company(us_company)
+            .create(
+                {
+                    "name": "P us",
+                    "country_id": self.env.ref("base.us").id,
+                }
+            )
         )
         move_us = (
             self.env["account.move"]

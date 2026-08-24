@@ -109,7 +109,8 @@ class TestJournalReport(TestAccountReportsCommon):
         )
         cls.move_sales_0.action_post()
 
-        # Invoice in 2017 for company_1, with foreign currency to test a sale journal at current date.
+        # Invoice in 2017 for company_1, with foreign currency to test a sale journal at
+        # current date.
         cls.other_currency = cls.setup_other_currency(
             "EUR", rounding=0.001, rates=[("2016-01-01", 2.0), ("2017-01-01", 2.0)]
         )
@@ -214,7 +215,7 @@ class TestJournalReport(TestAccountReportsCommon):
                             "repartition_type": "tax",
                             "tag_ids": [
                                 Command.link(
-                                    cls.tax_report.line_ids.expression_ids._get_matching_tags(
+                                    cls.tax_report.line_ids.expression_ids._get_matching_tags(  # noqa: E501
                                         "+"
                                     ).id
                                 )
@@ -301,7 +302,8 @@ class TestJournalReport(TestAccountReportsCommon):
 
     def test_journal_lines(self):
         """
-        Check the journal report lines for the journal of type sale within the first month of 2017
+        Check the journal report lines for the journal of type sale within the first
+        month of 2017
         """
         options_2016 = self._generate_options(
             self.report,
@@ -431,7 +433,8 @@ class TestJournalReport(TestAccountReportsCommon):
 
     def test_show_payment_lines_option(self):
         """
-        Check the journal report lines of the default bank journal with payments included
+        Check the journal report lines of the default bank journal with payments
+        included
         """
         options_no_payment = self._generate_options(
             self.report,
@@ -603,7 +606,8 @@ class TestJournalReport(TestAccountReportsCommon):
 
     def test_document_data_for_bank_journal_with_show_payment_option(self):
         """
-        Check that show payment affect the result of the bank journal data when this filter is changed
+        Check that show payment affect the result of the bank journal data when this
+        filter is changed
         """
         options = self._generate_options(
             self.report,

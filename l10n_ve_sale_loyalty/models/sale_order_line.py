@@ -33,7 +33,8 @@ class SaleOrderLine(models.Model):
 
     def _l10n_ve_refresh_order_global_discounts(self):
         orders = self.mapped("order_id").filtered(
-            lambda order: order.country_code == "VE" and order.l10n_ve_global_discount_ids
+            lambda order: order.country_code == "VE"
+            and order.l10n_ve_global_discount_ids
         )
         if orders:
             orders._l10n_ve_refresh_global_discounts_from_lines()

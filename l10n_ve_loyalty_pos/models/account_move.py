@@ -32,20 +32,22 @@ class AccountMove(models.Model):
     def _l10n_ve_fiscal_serial_global_discount_amount(self):
         amount = super()._l10n_ve_fiscal_serial_global_discount_amount()
         ewallet_amount = self._l10n_ve_pos_ewallet_spend_amount_company()
-        if float_is_zero(ewallet_amount, precision_rounding=self.company_currency_id.rounding):
+        if float_is_zero(
+            ewallet_amount, precision_rounding=self.company_currency_id.rounding
+        ):
             return amount
         return self.company_currency_id.round(max(amount - ewallet_amount, 0.0))
 
     def _l10n_ve_fiscal_serial_payment_lines_from_pos_orders(self):
         lines = super()._l10n_ve_fiscal_serial_payment_lines_from_pos_orders()
         ewallet_amount = self._l10n_ve_pos_ewallet_spend_amount_company()
-        if float_is_zero(ewallet_amount, precision_rounding=self.company_currency_id.rounding):
+        if float_is_zero(
+            ewallet_amount, precision_rounding=self.company_currency_id.rounding
+        ):
             return lines
         label_order = self.pos_order_ids[:1]
         payment_method = (
-            label_order._l10n_ve_ewallet_fiscal_payment_code()
-            if label_order
-            else "24"
+            label_order._l10n_ve_ewallet_fiscal_payment_code() if label_order else "24"
         )
         lines.append(
             {

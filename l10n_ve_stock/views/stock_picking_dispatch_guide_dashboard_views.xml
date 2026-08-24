@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <odoo>
     <record id="stock_picking_unfactured_dispatch_guide_tree" model="ir.ui.view">
         <field name="name">stock.picking.unfactured.dispatch.guide.list</field>
@@ -59,10 +59,7 @@
                     filter_domain="['|', ('name', 'ilike', self), ('origin', 'ilike', self)]"
                 />
                 <field name="l10n_ve_control_number" string="N° de control" />
-                <field
-                    name="l10n_ve_dispatch_guide_user_id"
-                    string="Usuario"
-                />
+                <field name="l10n_ve_dispatch_guide_user_id" string="Usuario" />
                 <field
                     name="partner_id"
                     filter_domain="[('partner_id', 'child_of', self)]"
@@ -88,11 +85,7 @@
                     string="Fecha guía"
                     date="l10n_ve_dispatch_guide_date"
                 />
-                <filter
-                    name="date_done"
-                    string="Fecha de entrega"
-                    date="date_done"
-                />
+                <filter name="date_done" string="Fecha de entrega" date="date_done" />
                 <separator />
                 <group expand="0" string="Agrupar por">
                     <filter
@@ -125,12 +118,18 @@
         </field>
     </record>
 
-    <record id="action_l10n_ve_unfactured_dispatch_guides" model="ir.actions.act_window">
+    <record
+        id="action_l10n_ve_unfactured_dispatch_guides"
+        model="ir.actions.act_window"
+    >
         <field name="name">Guías de despacho no facturadas</field>
         <field name="res_model">stock.picking</field>
         <field name="view_mode">list,form</field>
         <field name="view_id" ref="stock_picking_unfactured_dispatch_guide_tree" />
-        <field name="search_view_id" ref="stock_picking_unfactured_dispatch_guide_search" />
+        <field
+            name="search_view_id"
+            ref="stock_picking_unfactured_dispatch_guide_search"
+        />
         <field name="context">{'create': False}</field>
     </record>
 </odoo>

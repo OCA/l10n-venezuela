@@ -22,7 +22,10 @@ class L10nVeBookFolioVoidWizard(models.TransientModel):
     reason = fields.Text(
         string="Motivo",
         required=True,
-        help="Motivo por el cual se consume un número de control sin documento asociado.",
+        help=(
+            "Motivo por el cual se consume un número de control sin "
+            "documento asociado."
+        ),
     )
 
     def action_confirm(self):

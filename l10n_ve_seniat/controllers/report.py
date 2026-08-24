@@ -4,11 +4,13 @@ import json
 import logging
 
 import werkzeug.exceptions
+
 from odoo import http
-from odoo.addons.web.controllers.report import ReportController as WebReportController
 from odoo.exceptions import AccessError, UserError
 from odoo.http import request
 from odoo.tools.misc import html_escape
+
+from odoo.addons.web.controllers.report import ReportController as WebReportController
 
 _logger = logging.getLogger(__name__)
 

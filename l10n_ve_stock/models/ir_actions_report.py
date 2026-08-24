@@ -21,7 +21,9 @@ class IrActionsReport(models.Model):
         return report.report_name == _L10N_VE_DISPATCH_GUIDE_REPORT_NAME
 
     def _render_qweb_pdf_prepare_streams(self, report_ref, data, res_ids=None):
-        if not self._l10n_ve_should_apply_dispatch_guide_paperformat(report_ref, res_ids):
+        if not self._l10n_ve_should_apply_dispatch_guide_paperformat(
+            report_ref, res_ids
+        ):
             return super()._render_qweb_pdf_prepare_streams(
                 report_ref, data, res_ids=res_ids
             )
@@ -52,9 +54,7 @@ class IrActionsReport(models.Model):
             )
             sub_streams = super(
                 IrActionsReport, self.with_context(**ctx)
-            )._render_qweb_pdf_prepare_streams(
-                report_ref, data, res_ids=[res_id]
-            )
+            )._render_qweb_pdf_prepare_streams(report_ref, data, res_ids=[res_id])
             collected_streams[res_id] = sub_streams[res_id]
         return collected_streams
 
@@ -63,9 +63,7 @@ class IrActionsReport(models.Model):
         if report.report_name == _L10N_VE_DISPATCH_GUIDE_REPORT_NAME:
             pickings = self.env["stock.picking"].browse(res_ids or [])
             pickings.l10n_ve_dispatch_guide_report_check()
-        pdf, rep_type = super()._render_qweb_pdf(
-            report_ref, res_ids=res_ids, data=data
-        )
+        pdf, rep_type = super()._render_qweb_pdf(report_ref, res_ids=res_ids, data=data)
         if report.report_name == _L10N_VE_DISPATCH_GUIDE_REPORT_NAME:
             pickings = self.env["stock.picking"].browse(res_ids or [])
             to_mark = pickings.filtered(

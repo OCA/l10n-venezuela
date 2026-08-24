@@ -6,10 +6,11 @@ class AccountFiscalPosition(models.Model):
 
     def _inverse_foreign_vat(self):
         # EXTENDS account
-        super()._inverse_foreign_vat()
+        result = super()._inverse_foreign_vat()
         for fpos in self:
             if fpos.foreign_vat:
                 fpos._create_draft_closing_move_for_foreign_vat()
+        return result
 
     def _create_draft_closing_move_for_foreign_vat(self):
         self.ensure_one()

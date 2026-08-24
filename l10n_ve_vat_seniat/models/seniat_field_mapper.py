@@ -205,7 +205,8 @@ def partner_vals_from_seniat_parsed(env, parsed):
         )
     else:
         _logger.info(
-            "l10n_ve_vat_seniat mapeo portal sin coincidencias kv=%s tipo_txt=%r persona=%r",
+            "l10n_ve_vat_seniat mapeo portal sin coincidencias kv=%s "
+            "tipo_txt=%r persona=%r",
             parsed.get("seniat_table_kv"),
             tipo_txt[:200] if tipo_txt else "",
             persona_txt,

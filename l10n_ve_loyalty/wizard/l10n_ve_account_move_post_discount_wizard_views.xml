@@ -12,7 +12,11 @@
                     <field name="company_currency_id" invisible="1" />
                     <field name="move_state" invisible="1" />
                     <field name="allowed_currency_ids" invisible="1" />
-                    <field name="discount_mode" widget="radio" options="{'horizontal': true}" />
+                    <field
+                        name="discount_mode"
+                        widget="radio"
+                        options="{'horizontal': true}"
+                    />
                     <field name="reason_id" options="{'no_create': True}" />
                     <field
                         name="discount_percentage"
@@ -33,7 +37,10 @@
                         required="discount_mode == 'amount'"
                         options="{'no_create': True, 'no_open': True}"
                     />
-                    <field name="available_amount" invisible="discount_mode != 'amount'" />
+                    <field
+                        name="available_amount"
+                        invisible="discount_mode != 'amount'"
+                    />
                     <field
                         name="amount"
                         invisible="discount_mode != 'amount'"

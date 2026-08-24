@@ -19,7 +19,9 @@ class TestIgtfPaymentFlows(TestL10nVeIgtfCommon):
         )
         self.assertFalse(wizard.l10n_ve_show_apply_igtf)
         self.assertFalse(wizard.l10n_ve_apply_igtf)
-        self.assertAlmostEqual(wizard.l10n_ve_igtf_amount_company_currency, 0.0, places=2)
+        self.assertAlmostEqual(
+            wizard.l10n_ve_igtf_amount_company_currency, 0.0, places=2
+        )
 
     def _assert_igtf_case_in_bs(self, payment_ratio, expected_igtf_bs):
         invoice = self._create_customer_invoice(amount=100.0, currency=self.ves)
@@ -131,7 +133,9 @@ class TestIgtfPaymentFlows(TestL10nVeIgtfCommon):
             abs(invoice.l10n_ve_igtf_collected_amount_company_currency),
             places=2,
         )
-        self.assertLessEqual(abs(igtf_group.get("tax_amount", 0.0)), invoice.amount_total * 0.03)
+        self.assertLessEqual(
+            abs(igtf_group.get("tax_amount", 0.0)), invoice.amount_total * 0.03
+        )
         self._assert_no_writeoff_or_exchange_diff(invoice, payment)
 
     def test_invoice_ves_half_payment_usd_with_igtf(self):
@@ -150,7 +154,9 @@ class TestIgtfPaymentFlows(TestL10nVeIgtfCommon):
         igtf_line = self._get_payment_igtf_line(payment)
         igtf_company = abs(invoice.l10n_ve_igtf_collected_amount_company_currency)
         if igtf_line:
-            self.assertAlmostEqual(igtf_company, abs(sum(igtf_line.mapped("balance"))), places=2)
+            self.assertAlmostEqual(
+                igtf_company, abs(sum(igtf_line.mapped("balance"))), places=2
+            )
         self.assertLessEqual(
             igtf_company,
             invoice.amount_total * 0.03,
@@ -234,7 +240,9 @@ class TestIgtfPaymentFlows(TestL10nVeIgtfCommon):
             lambda line: line.account_id.account_type == "asset_receivable"
         )
         self.assertTrue(payment_receivable_lines)
-        self.assertGreater(abs(sum(payment_receivable_lines.mapped("amount_residual"))), 0.0)
+        self.assertGreater(
+            abs(sum(payment_receivable_lines.mapped("amount_residual"))), 0.0
+        )
 
         exchange_accounts = (
             self.company.income_currency_exchange_account_id
@@ -380,7 +388,7 @@ class TestIgtfPaymentFlows(TestL10nVeIgtfCommon):
         self.assertAlmostEqual(payment.amount, 10.0, places=2)
         self.assertGreater(invoice.amount_residual, 0)
         self.assertLess(invoice.amount_residual, invoice.amount_total)
-        # Cross-currency company residual can leave a small gap vs amount_total - amount.
+        # Cross-currency residual can leave a small gap vs amount_total.
         self.assertAlmostEqual(invoice.amount_residual, 13.08, delta=0.5)
         self.assertNotEqual(invoice.payment_state, "paid")
 
@@ -420,7 +428,9 @@ class TestIgtfPaymentFlows(TestL10nVeIgtfCommon):
         ratios = [1.00, 0.50, 0.15, 0.88]
         for payment_ratio in ratios:
             with self.subTest(payment_ratio=payment_ratio):
-                invoice = self._create_customer_invoice(amount=invoice_amount_usd, currency=self.usd)
+                invoice = self._create_customer_invoice(
+                    amount=invoice_amount_usd, currency=self.usd
+                )
                 payment_amount_usd = self.usd.round(invoice_amount_usd * payment_ratio)
                 payment, wizard = self._register_invoice_payment(
                     invoice=invoice,
@@ -432,7 +442,9 @@ class TestIgtfPaymentFlows(TestL10nVeIgtfCommon):
                 )
                 self._assert_wizard_payment_consistency(wizard, payment)
 
-                expected_igtf_bs = self._expected_igtf_bs_from_payment(payment_amount_usd, self.usd)
+                expected_igtf_bs = self._expected_igtf_bs_from_payment(
+                    payment_amount_usd, self.usd
+                )
                 max_igtf_bs = self._invoice_max_igtf_bs(invoice)
                 expected_igtf_bs = min(expected_igtf_bs, max_igtf_bs)
                 self.assertAlmostEqual(
@@ -470,7 +482,9 @@ class TestIgtfPaymentFlows(TestL10nVeIgtfCommon):
         )
         igtf_group = self._get_igtf_group_from_tax_totals(invoice)
         self.assertTrue(igtf_group)
-        self.assertAlmostEqual(abs(igtf_group.get("tax_amount", 0.0)), max_igtf_bs, places=2)
+        self.assertAlmostEqual(
+            abs(igtf_group.get("tax_amount", 0.0)), max_igtf_bs, places=2
+        )
 
     def test_invoice_usd_paid_103pct_in_usd_igtf_capped_in_bs(self):
         invoice = self._create_customer_invoice(amount=100.0, currency=self.usd)
@@ -572,7 +586,9 @@ class TestIgtfPaymentFlows(TestL10nVeIgtfCommon):
         )
         self._assert_wizard_payment_consistency(wizard, payment)
 
-        expected_igtf_bs = self._expected_igtf_bs_from_payment(payment_amount_usd, self.usd)
+        expected_igtf_bs = self._expected_igtf_bs_from_payment(
+            payment_amount_usd, self.usd
+        )
         self.assertAlmostEqual(
             wizard["l10n_ve_igtf_amount_company_currency"],
             expected_igtf_bs,

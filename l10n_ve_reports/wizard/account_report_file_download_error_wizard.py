@@ -16,6 +16,6 @@ class AccountReportFileDownloadErrorWizard(models.TransientModel):
         if self.file_name:
             return {
                 "type": "ir.actions.act_url",
-                "url": f"/web/content/account.report.file.download.error.wizard/{self.id}/file_content/{self.file_name}?download=1",
+                "url": f"/web/content/account.report.file.download.error.wizard/{self.id}/file_content/{self.file_name}?download=1",  # noqa: E501
                 "close": True,
             }

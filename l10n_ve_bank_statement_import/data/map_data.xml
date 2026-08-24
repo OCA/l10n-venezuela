@@ -51,10 +51,7 @@
         <field name="credit_value">C</field>
         <field name="skip_empty_lines">True</field>
     </record>
-    <record
-        id="banco_bfc_statement_map"
-        model="account.statement.import.sheet.mapping"
-    >
+    <record id="banco_bfc_statement_map" model="account.statement.import.sheet.mapping">
         <field name="name">Banco BFC - Estado de Cuenta</field>
         <field name="footer_lines_skip_count">0</field>
         <field name="header_lines_skip_count">1</field>

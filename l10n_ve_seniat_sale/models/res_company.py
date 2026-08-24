@@ -9,8 +9,7 @@ class ResCompany(models.Model):
     def write(self, vals):
         res = super().write(vals)
         if any(
-            k in vals
-            for k in ("sale_discount_product_id", "account_fiscal_country_id")
+            k in vals for k in ("sale_discount_product_id", "account_fiscal_country_id")
         ):
             for company in self:
                 company._l10n_ve_patch_sale_discount_product()

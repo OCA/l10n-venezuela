@@ -8,7 +8,8 @@ from odoo.http import content_disposition, request
 from odoo.tools.misc import html_escape
 
 from odoo.addons.account.controllers.download_docs import _get_headers
-from odoo.addons.l10n_ve_reports.models.account_report import (
+
+from ..models.account_report import (
     AccountReportFileDownloadException,
 )
 
@@ -53,7 +54,8 @@ class AccountReportController(http.Controller):
 
             if file_type in ("zip", "xaf"):
                 # Adding direct_passthrough to the response and giving it a file
-                # as content means that we will stream the content of the file to the user
+                # as content means that we will stream the content of the file to the
+                # user
                 # Which will prevent having the whole file in memory
                 response.direct_passthrough = True
 

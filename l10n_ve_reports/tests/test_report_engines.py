@@ -556,7 +556,7 @@ class TestReportEngines(TestAccountReportsCommon):
         )
         test_line_13 = self._prepare_test_report_line(
             self._prepare_test_expression_account_codes(
-                rf"tag(account_reports.account_codes_engine_test_tag1) + tag({account_tags[1].id})"
+                rf"tag(account_reports.account_codes_engine_test_tag1) + tag({account_tags[1].id})"  # noqa: E501
             ),
             groupby="account_id",
         )
@@ -574,7 +574,7 @@ class TestReportEngines(TestAccountReportsCommon):
         )
         test_line_16 = self._prepare_test_report_line(
             self._prepare_test_expression_account_codes(
-                rf"tag(account_reports.account_codes_engine_test_tag1)\(101)D + 101003 + tag({account_tags[1].id})\(101)C"
+                rf"tag(account_reports.account_codes_engine_test_tag1)\(101)D + 101003 + tag({account_tags[1].id})\(101)C"  # noqa: E501
             ),
             groupby="account_id",
         )
@@ -1143,7 +1143,7 @@ class TestReportEngines(TestAccountReportsCommon):
         # Test exponential notation
         test9 = self._prepare_test_report_line(
             self._prepare_test_expression_aggregation(
-                "(test1.tax_tags + (2 * test1.domain) + 100.0 + 1.752e-17) / (9999.account_codes)"
+                "(test1.tax_tags + (2 * test1.domain) + 100.0 + 1.752e-17) / (9999.account_codes)"  # noqa: E501
             ),
             name="test9",
             code="test9",
@@ -1248,7 +1248,8 @@ class TestReportEngines(TestAccountReportsCommon):
             self._prepare_test_expression_domain(
                 [("account_id.code", "=", "101003")], "sum"
             ),
-            name="test12_5",  # No code on purpose to check a different case of sum_children
+            # No code on purpose to check a different case of sum_children
+            name="test12_5",
         )
 
         report = self._create_report(
@@ -1285,7 +1286,8 @@ class TestReportEngines(TestAccountReportsCommon):
             country_id=self.fake_country.id,
         )
 
-        # Set parent link properly for sum_children test, now that all lines are created:
+        # Set parent link properly for sum_children test, now that all lines are
+        # created:
         line_12_1 = self.env["account.report.line"].search([("code", "=", "test12_1")])
         self.env["account.report.line"].search(
             [("code", "in", ("test12_2", "test12_3", "test12_4"))]
@@ -1356,7 +1358,7 @@ class TestReportEngines(TestAccountReportsCommon):
             ("test12_1", moves[1].line_ids[:3]),
         ]
         for report_line_name, expected_amls in expected_amls_to_test:
-            report_line = report.line_ids.filtered(lambda x: x.name == report_line_name)
+            report_line = report.line_ids.filtered(lambda x: x.name == report_line_name)  # noqa: B023
             report_line_dict = [
                 x for x in report_lines if x["name"] == report_line.name
             ][0]
@@ -1474,7 +1476,7 @@ class TestReportEngines(TestAccountReportsCommon):
 
         main_report_line_5 = self._prepare_test_report_line(
             self._prepare_test_expression_aggregation(
-                "main_report_line_1.balance + main_report_line_2.balance + main_report_line_3.balance + main_report_line_4.balance",
+                "main_report_line_1.balance + main_report_line_2.balance + main_report_line_3.balance + main_report_line_4.balance",  # noqa: E501
             ),
             name="main_report_line_5",
             code="main_report_line_5",
@@ -1482,7 +1484,7 @@ class TestReportEngines(TestAccountReportsCommon):
 
         main_report_line_6 = self._prepare_test_report_line(
             self._prepare_test_expression_aggregation(
-                "main_report_line_1.balance + main_report_line_2.balance + main_report_line_3.balance + main_report_line_4.balance",
+                "main_report_line_1.balance + main_report_line_2.balance + main_report_line_3.balance + main_report_line_4.balance",  # noqa: E501
             ),
             name="main_report_line_6",
             code="main_report_line_6",
@@ -1544,7 +1546,7 @@ class TestReportEngines(TestAccountReportsCommon):
 
         for report_line_name, expected_amls in expected_amls_to_test:
             report_line = main_report.line_ids.filtered(
-                lambda x: x.name == report_line_name
+                lambda x: x.name == report_line_name  # noqa: B023
             )
             report_line_dict = [
                 x for x in main_report_lines if x["name"] == report_line.name
@@ -1905,7 +1907,7 @@ class TestReportEngines(TestAccountReportsCommon):
         def lock_via_tax_closing(non_tax_report, tax_report, report_options_map):
             tax_closing_action = (
                 self.env["account.tax.report.handler"]
-                .with_context({"override_tax_closing_warning": True})
+                .with_context(override_tax_closing_warning=True)
                 .action_periodic_vat_entries(report_options_map[tax_report])
             )
             closing_move_id = tax_closing_action["res_id"]
@@ -2068,7 +2070,8 @@ class TestReportEngines(TestAccountReportsCommon):
 
     def test_change_expression_engine_to_tax_tags(self):
         """
-        Ensure that tax tags are created when switching the expression engine to tax tags if formula is unchanged.
+        Ensure that tax tags are created when switching the expression engine to tax
+        tags if formula is unchanged.
         """
         formula = "dudu"
         test_line_1 = self._prepare_test_report_line(
@@ -2172,7 +2175,8 @@ class TestReportEngines(TestAccountReportsCommon):
             up_options,
         )
 
-        # In file export mode, the rounding should always be applied, even if it was previously disabled
+        # In file export mode, the rounding should always be applied, even if it was
+        # previously disabled
         print_mode_options = self._generate_options(
             report,
             "2023-01-01",
@@ -2245,7 +2249,8 @@ class TestReportEngines(TestAccountReportsCommon):
             ]
         )
 
-        # To ensure that the lines are shown when hide_0_lines isn't toggled and vice versa, we test both scenarios.
+        # To ensure that the lines are shown when hide_0_lines isn't toggled and vice
+        # versa, we test both scenarios.
         options_not_hide = self._generate_options(
             report,
             "2020-01-01",
@@ -2287,7 +2292,7 @@ class TestReportEngines(TestAccountReportsCommon):
         )
 
     def test_column_blank_if_zero(self):
-        """account.report.column's `blank_if_zero` option should only impacts number figure types"""
+        """account.report.column's `blank_if_zero` option should only impacts number figure types"""  # noqa: E501
         test_line = self._prepare_test_report_line(
             self._prepare_test_expression_external(
                 "most_recent", [], label="monetary", figure_type="monetary"
@@ -2393,7 +2398,7 @@ class TestReportEngines(TestAccountReportsCommon):
                     Command.create(
                         {
                             "field_name": "partner_id",
-                            "domain": f"[('id', 'in', {(self.partner_a + self.partner_b).ids})]",
+                            "domain": f"[('id', 'in', {(self.partner_a + self.partner_b).ids})]",  # noqa: E501
                         }
                     ),
                 ],
@@ -2421,17 +2426,18 @@ class TestReportEngines(TestAccountReportsCommon):
             action_dict = report.action_audit_cell(col_group_options, audit_params)
 
             expected_amls = move.line_ids.filtered(
-                lambda x: x.partner_id == expected_partner
+                lambda x: x.partner_id == expected_partner  # noqa: B023
             )
             audit_result_amls = move.line_ids.filtered_domain(action_dict["domain"])
             self.assertEqual(
                 audit_result_amls,
                 expected_amls,
-                f"Wrong audit result for partner {expected_partner.name}: {audit_result_amls}",
+                f"Wrong audit result for partner {expected_partner.name}: {audit_result_amls}",  # noqa: E501
             )
 
     def test_account_codes_load_more_limit_groupby(self):
-        """The account_codes engine performs an additional groupby in its SQL query. This tests makes sure this does not break the behavior
+        """The account_codes engine performs an additional groupby in its SQL query.
+        This tests makes sure this does not break the behavior
         of the load_more_limit when grouping.
         """
         partner_a, partner_b, partner_c = self.env["res.partner"].create(
@@ -2452,7 +2458,7 @@ class TestReportEngines(TestAccountReportsCommon):
             load_more_limit=2,
         )
 
-        move = self._create_test_account_moves(
+        _move = self._create_test_account_moves(
             [
                 self._prepare_test_account_move_line(
                     10, account_code="11", partner_id=partner_a.id

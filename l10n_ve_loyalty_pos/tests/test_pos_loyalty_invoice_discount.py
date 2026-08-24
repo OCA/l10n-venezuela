@@ -2,6 +2,7 @@
 
 from odoo import fields
 from odoo.tests import tagged
+
 from odoo.addons.l10n_ve_seniat.tests.common import L10nVeSeniatCommon
 
 
@@ -315,7 +316,9 @@ class TestPosLoyaltyInvoiceGlobalDiscount(L10nVeSeniatCommon):
             refund_amount,
             usd,
             self.env.company,
-            order.date_order.date() if order.date_order else fields.Date.context_today(order),
+            order.date_order.date()
+            if order.date_order
+            else fields.Date.context_today(order),
         )
         order._l10n_ve_credit_ewallet_from_pay_later_refund()
         card = self.env["loyalty.card"].search(
@@ -585,5 +588,6 @@ class TestPosLoyaltyInvoiceGlobalDiscount(L10nVeSeniatCommon):
         refund._l10n_ve_credit_ewallet_from_pay_later_refund()
         self.assertAlmostEqual(card.points, cash_amount, places=2)
         self.assertTrue(refund.l10n_ve_ewallet_credit_done)
-        self.assertAlmostEqual(refund.l10n_ve_ewallet_credited_amount, cash_amount, places=2)
-
+        self.assertAlmostEqual(
+            refund.l10n_ve_ewallet_credited_amount, cash_amount, places=2
+        )

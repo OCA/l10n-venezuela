@@ -10,15 +10,21 @@
                 <field name="l10n_ve_fiscal_country_code" invisible="1" />
             </xpath>
             <xpath expr="//field[@name='journal_id']" position="attributes">
-                <attribute name="readonly">l10n_ve_fiscal_country_code == 'VE'</attribute>
+                <attribute
+                    name="readonly"
+                >l10n_ve_fiscal_country_code == 'VE'</attribute>
             </xpath>
             <xpath expr="//field[@name='date']" position="attributes">
-                <attribute name="readonly">l10n_ve_fiscal_country_code == 'VE'</attribute>
+                <attribute
+                    name="readonly"
+                >l10n_ve_fiscal_country_code == 'VE'</attribute>
             </xpath>
             <xpath expr="//field[@name='reason']" position="attributes">
                 <attribute name="required">move_type != 'entry'</attribute>
             </xpath>
-            <xpath expr="//button[@name='modify_moves']" position="replace" />
+            <xpath expr="//button[@name='modify_moves']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
         </field>
     </record>
 </odoo>

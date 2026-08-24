@@ -122,7 +122,6 @@ class ResCompany(models.Model):
             "use_barcode": bool(self.l10n_ve_fiscal_use_barcode),
             "footer_lines": self._l10n_ve_fiscal_footer_lines(),
             "payment_methods": [
-                {"code": method.code, "name": method.name or ""}
-                for method in methods
+                {"code": method.code, "name": method.name or ""} for method in methods
             ],
         }

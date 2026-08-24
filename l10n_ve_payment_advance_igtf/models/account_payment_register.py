@@ -6,13 +6,15 @@ class AccountPaymentRegister(models.TransientModel):
 
     @api.depends("l10n_ve_apply_advance")
     def _compute_l10n_ve_apply_igtf(self):
-        super()._compute_l10n_ve_apply_igtf()
+        result = super()._compute_l10n_ve_apply_igtf()
         self.filtered("l10n_ve_apply_advance").l10n_ve_apply_igtf = False
+        return result
 
     @api.depends("l10n_ve_apply_advance")
     def _compute_l10n_ve_show_apply_igtf(self):
-        super()._compute_l10n_ve_show_apply_igtf()
+        result = super()._compute_l10n_ve_show_apply_igtf()
         self.filtered("l10n_ve_apply_advance").l10n_ve_show_apply_igtf = False
+        return result
 
     def _l10n_ve_get_igtf_amounts_for_wizard(self):
         self.ensure_one()
@@ -36,12 +38,10 @@ class AccountPaymentRegister(models.TransientModel):
             amount_currency = line_vals.get("amount_currency", 0.0)
             balance = line_vals.get("balance", 0.0)
             line_vals["amount_currency"] = (
-                (1.0 if amount_currency >= 0.0 else -1.0)
-                * max(abs(amount_currency) - igtf_currency, 0.0)
-            )
-            line_vals["balance"] = (
-                (1.0 if balance >= 0.0 else -1.0)
-                * max(abs(balance) - igtf_company, 0.0)
+                1.0 if amount_currency >= 0.0 else -1.0
+            ) * max(abs(amount_currency) - igtf_currency, 0.0)
+            line_vals["balance"] = (1.0 if balance >= 0.0 else -1.0) * max(
+                abs(balance) - igtf_company, 0.0
             )
         return vals
 

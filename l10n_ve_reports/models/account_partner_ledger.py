@@ -70,8 +70,10 @@ class PartnerLedgerCustomHandler(models.AbstractModel):
                 and not partner
                 and not accept_unknown_in_filter
             ):
-                # When printing and searching for a specific partner, make it so we only show its lines, not the 'Unknown Partner' one, that would be
-                # shown in case a misc entry with no partner was reconciled with one of the target partner's entries.
+                # When printing and searching for a specific partner, make it so we only
+                # show its lines, not the 'Unknown Partner' one, that would be
+                # shown in case a misc entry with no partner was reconciled with one of
+                # the target partner's entries.
                 continue
 
             partner_values = defaultdict(dict)
@@ -161,7 +163,7 @@ class PartnerLedgerCustomHandler(models.AbstractModel):
         }
 
     def _custom_options_initializer(self, report, options, previous_options):
-        super()._custom_options_initializer(
+        result = super()._custom_options_initializer(
             report, options, previous_options=previous_options
         )
         domain = []
@@ -247,6 +249,7 @@ class PartnerLedgerCustomHandler(models.AbstractModel):
                     "always_show": True,
                 }
             )
+        return result
 
     def _custom_unfold_all_batch_data_generator(
         self, report, options, lines_to_expand_by_function
@@ -276,7 +279,8 @@ class PartnerLedgerCustomHandler(models.AbstractModel):
             )
             partner_prefix_domains.append([("name", "=ilike", f"{prefix}%")])
 
-            # amls without partners are regrouped "Unknown Partner", which is also used to create prefix groups
+            # amls without partners are regrouped "Unknown Partner", which is also used
+            # to create prefix groups
             if no_partner_line_label.startswith(prefix):
                 partner_ids_to_expand.append(None)
 
@@ -294,8 +298,10 @@ class PartnerLedgerCustomHandler(models.AbstractModel):
             )
             if partner_ids_to_expand
             else {},
-            # load_more_limit cannot be passed to this call, otherwise it won't be applied per partner but on the whole result.
-            # We gain perf from batching, but load every result, even if the limit restricts them later.
+            # load_more_limit cannot be passed to this call, otherwise it won't be
+            # applied per partner but on the whole result.
+            # We gain perf from batching, but load every result, even if the limit
+            # restricts them later.
             "aml_values": self._get_aml_values(options, partner_ids_to_expand)
             if partner_ids_to_expand
             else {},
@@ -348,14 +354,20 @@ class PartnerLedgerCustomHandler(models.AbstractModel):
 
     def _query_partners(self, report, options):
         """Executes the queries and performs all the computation.
-        :return:        A list of tuple (partner, column_group_values) sorted by the table's model _order:
+        :return:        A list of tuple (partner, column_group_values) sorted by the
+        table's model _order:
                         - partner is a res.parter record.
-                        - column_group_values is a dict(column_group_key, fetched_values), where
-                            - column_group_key is a string identifying a column group, like in options['column_groups']
+                        - column_group_values is a dict(column_group_key,
+                        fetched_values), where
+                            - column_group_key is a string identifying a column group,
+                            like in options['column_groups']
                             - fetched_values is a dictionary containing:
-                                - sum:                              {'debit': float, 'credit': float, 'balance': float}
-                                - (optional) initial_balance:       {'debit': float, 'credit': float, 'balance': float}
-                                - (optional) lines:                 [line_vals_1, line_vals_2, ...]
+                                - sum:                              {'debit': float,
+                                'credit': float, 'balance': float}
+                                - (optional) initial_balance:       {'debit': float,
+                                'credit': float, 'balance': float}
+                                - (optional) lines:                 [line_vals_1,
+                                line_vals_2, ...]
         """
 
         def assign_sum(row):
@@ -382,7 +394,8 @@ class PartnerLedgerCustomHandler(models.AbstractModel):
         for res in self._cr.dictfetchall():
             assign_sum(res)
 
-        # Correct the sums per partner, for the lines without partner reconciled with a line having a partner
+        # Correct the sums per partner, for the lines without partner reconciled with a
+        # line having a partner
         query = self._get_sums_without_partner(options)
 
         self._cr.execute(query)
@@ -404,7 +417,8 @@ class PartnerLedgerCustomHandler(models.AbstractModel):
             assign_sum(row)
 
         if None in groupby_partners:
-            # Debit/credit are inverted for the unknown partner as the computation is made regarding the balance of the known partner
+            # Debit/credit are inverted for the unknown partner as the computation is
+            # made regarding the balance of the known partner
             for column_group_key in options["column_groups"]:
                 groupby_partners[None][column_group_key]["debit"] += totals["credit"][
                     column_group_key
@@ -446,7 +460,8 @@ class PartnerLedgerCustomHandler(models.AbstractModel):
         ]
 
     def _get_query_sums(self, report, options) -> SQL:
-        """Construct a query retrieving all the aggregated sums to build the report. It includes:
+        """Construct a query retrieving all the aggregated sums to build the report. It
+        includes:
         - sums for all partners.
         - sums for the initial balances.
         :param options:             The report options.
@@ -574,7 +589,8 @@ class PartnerLedgerCustomHandler(models.AbstractModel):
         The resulting dates domain will be:
         [('date' <= options['date_from'] - 1)]
         :param options: The report options.
-        :return:        A copy of the options, modified to match the dates to use to get the initial balances.
+        :return:        A copy of the options, modified to match the dates to use to get
+        the initial balances.
         """
         new_date_to = fields.Date.from_string(options["date"]["date_from"]) - timedelta(
             days=1
@@ -585,8 +601,10 @@ class PartnerLedgerCustomHandler(models.AbstractModel):
         return dict(options, date=new_date_options)
 
     def _get_sums_without_partner(self, options):
-        """Get the sum of lines without partner reconciled with a line with a partner, grouped by partner. Those lines
-        should be considered as belonging to the partner for the reconciled amount as it may clear some of the partner
+        """Get the sum of lines without partner reconciled with a line with a partner,
+        grouped by partner. Those lines
+        should be considered as belonging to the partner for the reconciled amount as it
+        may clear some of the partner
         invoice/bill and they have to be accounted in the partner balance."""
         queries = []
         report = self.env.ref("l10n_ve_reports.partner_ledger_report")
@@ -607,9 +625,11 @@ class PartnerLedgerCustomHandler(models.AbstractModel):
                     SUM(%(balance_select)s)     AS balance
                 FROM %(table_references)s
                 JOIN account_partial_reconcile partial
-                    ON account_move_line.id = partial.debit_move_id OR account_move_line.id = partial.credit_move_id
+                    ON account_move_line.id = partial.debit_move_id OR
+                    account_move_line.id = partial.credit_move_id
                 JOIN account_move_line aml_with_partner ON
-                    (aml_with_partner.id = partial.debit_move_id OR aml_with_partner.id = partial.credit_move_id)
+                    (aml_with_partner.id = partial.debit_move_id OR aml_with_partner.id
+                    = partial.credit_move_id)
                     AND aml_with_partner.partner_id IS NOT NULL
                 %(currency_table_join)s
                 WHERE partial.max_date <= %(date_to)s AND %(search_condition)s
@@ -619,12 +639,12 @@ class PartnerLedgerCustomHandler(models.AbstractModel):
                     column_group_key=column_group_key,
                     debit_select=report._currency_table_apply_rate(
                         SQL(
-                            "CASE WHEN aml_with_partner.balance > 0 THEN 0 ELSE partial.amount END"
+                            "CASE WHEN aml_with_partner.balance > 0 THEN 0 ELSE partial.amount END"  # noqa: E501
                         )
                     ),
                     credit_select=report._currency_table_apply_rate(
                         SQL(
-                            "CASE WHEN aml_with_partner.balance < 0 THEN 0 ELSE partial.amount END"
+                            "CASE WHEN aml_with_partner.balance < 0 THEN 0 ELSE partial.amount END"  # noqa: E501
                         )
                     ),
                     balance_select=report._currency_table_apply_rate(
@@ -659,7 +679,7 @@ class PartnerLedgerCustomHandler(models.AbstractModel):
             )
 
         prefix_groups_count = 0
-        for markup, dummy1, dummy2 in report._parse_line_id(line_dict_id):
+        for markup, dummy1, dummy2 in report._parse_line_id(line_dict_id):  # noqa: B007
             if isinstance(markup, dict) and "groupby_prefix_group" in markup:
                 prefix_groups_count += 1
         level_shift = prefix_groups_count * 2
@@ -687,7 +707,8 @@ class PartnerLedgerCustomHandler(models.AbstractModel):
             if initial_balance_line:
                 lines.append(initial_balance_line)
 
-                # For the first expansion of the line, the initial balance line gives the progress
+                # For the first expansion of the line, the initial balance line gives
+                # the progress
                 progress = self._init_load_more_progress(options, initial_balance_line)
 
         limit_to_load = (
@@ -748,7 +769,8 @@ class PartnerLedgerCustomHandler(models.AbstractModel):
         next_progress = progress
         for result in aml_results:
             if self._is_report_limit_reached(report, options, treated_results_count):
-                # We loaded one more than the limit on purpose: this way we know we need a "load more" line
+                # We loaded one more than the limit on purpose: this way we know we need
+                # a "load more" line
                 has_more = True
                 break
 
@@ -834,7 +856,8 @@ class PartnerLedgerCustomHandler(models.AbstractModel):
                     """
                 SELECT
                     account_move_line.id,
-                    COALESCE(account_move_line.date_maturity, account_move_line.date) AS date_maturity,
+                    COALESCE(account_move_line.date_maturity, account_move_line.date) AS
+                    date_maturity,
                     account_move_line.name,
                     account_move_line.ref,
                     account_move_line.company_id,
@@ -845,26 +868,43 @@ class PartnerLedgerCustomHandler(models.AbstractModel):
                     account_move_line.amount_currency,
                     account_move_line.matching_number,
                     %(additional_columns)s
-                    COALESCE(account_move_line.invoice_date, account_move_line.date) AS invoice_date,
-                    %(debit_select)s                                                 AS debit,
-                    %(credit_select)s                                                AS credit,
-                    %(balance_select)s                                               AS amount,
-                    %(balance_select)s                                               AS balance,
-                    account_move.name                                                AS move_name,
-                    account_move.move_type                                           AS move_type,
-                    %(account_code)s                                                 AS account_code,
-                    %(account_name)s                                                 AS account_name,
-                    journal.code                                                     AS journal_code,
-                    %(journal_name)s                                                 AS journal_name,
-                    %(column_group_key)s                                             AS column_group_key,
-                    'directly_linked_aml'                                            AS key,
-                    0                                                                AS partial_id
+                    COALESCE(account_move_line.invoice_date, account_move_line.date) AS
+                    invoice_date,
+                    %(debit_select)s                                                 AS
+                    debit,
+                    %(credit_select)s                                                AS
+                    credit,
+                    %(balance_select)s                                               AS
+                    amount,
+                    %(balance_select)s                                               AS
+                    balance,
+                    account_move.name                                                AS
+                    move_name,
+                    account_move.move_type                                           AS
+                    move_type,
+                    %(account_code)s                                                 AS
+                    account_code,
+                    %(account_name)s                                                 AS
+                    account_name,
+                    journal.code                                                     AS
+                    journal_code,
+                    %(journal_name)s                                                 AS
+                    journal_name,
+                    %(column_group_key)s                                             AS
+                    column_group_key,
+                    'directly_linked_aml'                                            AS
+                    key,
+                    0                                                                AS
+                    partial_id
                 FROM %(table_references)s
                 JOIN account_move ON account_move.id = account_move_line.move_id
                 %(currency_table_join)s
-                LEFT JOIN res_company company               ON company.id = account_move_line.company_id
-                LEFT JOIN res_partner partner               ON partner.id = account_move_line.partner_id
-                LEFT JOIN account_journal journal           ON journal.id = account_move_line.journal_id
+                LEFT JOIN res_company company               ON company.id =
+                account_move_line.company_id
+                LEFT JOIN res_partner partner               ON partner.id =
+                account_move_line.partner_id
+                LEFT JOIN account_journal journal           ON journal.id =
+                account_move_line.journal_id
                 WHERE %(search_condition)s AND %(directly_linked_aml_partner_clause)s
                 ORDER BY %(order_by)s
                 """,
@@ -885,18 +925,20 @@ class PartnerLedgerCustomHandler(models.AbstractModel):
                     table_references=query.from_clause,
                     currency_table_join=report._currency_table_aml_join(group_options),
                     search_condition=query.where_clause,
-                    directly_linked_aml_partner_clause=directly_linked_aml_partner_clause,
+                    directly_linked_aml_partner_clause=directly_linked_aml_partner_clause,  # noqa: E501
                     order_by=order_by,
                 )
             )
 
-            # For the move lines linked to no partner, but reconciled with this partner. They will appear in grey in the report
+            # For the move lines linked to no partner, but reconciled with this partner.
+            # They will appear in grey in the report
             queries.append(
                 SQL(
                     """
                 SELECT
                     account_move_line.id,
-                    COALESCE(account_move_line.date_maturity, account_move_line.date) AS date_maturity,
+                    COALESCE(account_move_line.date_maturity, account_move_line.date) AS
+                    date_maturity,
                     account_move_line.name,
                     account_move_line.ref,
                     account_move_line.company_id,
@@ -907,20 +949,34 @@ class PartnerLedgerCustomHandler(models.AbstractModel):
                     account_move_line.amount_currency,
                     account_move_line.matching_number,
                     %(additional_columns)s
-                    COALESCE(account_move_line.invoice_date, account_move_line.date) AS invoice_date,
-                    %(debit_select)s                                                 AS debit,
-                    %(credit_select)s                                                AS credit,
-                    %(balance_select)s                                               AS amount,
-                    %(balance_select)s                                               AS balance,
-                    account_move.name                                                AS move_name,
-                    account_move.move_type                                           AS move_type,
-                    %(account_code)s                                                 AS account_code,
-                    %(account_name)s                                                 AS account_name,
-                    journal.code                                                     AS journal_code,
-                    %(journal_name)s                                                 AS journal_name,
-                    %(column_group_key)s                                             AS column_group_key,
-                    'indirectly_linked_aml'                                          AS key,
-                    partial.id                                                       AS partial_id
+                    COALESCE(account_move_line.invoice_date, account_move_line.date) AS
+                    invoice_date,
+                    %(debit_select)s                                                 AS
+                    debit,
+                    %(credit_select)s                                                AS
+                    credit,
+                    %(balance_select)s                                               AS
+                    amount,
+                    %(balance_select)s                                               AS
+                    balance,
+                    account_move.name                                                AS
+                    move_name,
+                    account_move.move_type                                           AS
+                    move_type,
+                    %(account_code)s                                                 AS
+                    account_code,
+                    %(account_name)s                                                 AS
+                    account_name,
+                    journal.code                                                     AS
+                    journal_code,
+                    %(journal_name)s                                                 AS
+                    journal_name,
+                    %(column_group_key)s                                             AS
+                    column_group_key,
+                    'indirectly_linked_aml'                                          AS
+                    key,
+                    partial.id                                                       AS
+                    partial_id
                 FROM %(table_references)s
                     %(currency_table_join)s,
                     account_partial_reconcile partial,
@@ -928,10 +984,12 @@ class PartnerLedgerCustomHandler(models.AbstractModel):
                     account_move_line aml_with_partner,
                     account_journal journal
                 WHERE
-                    (account_move_line.id = partial.debit_move_id OR account_move_line.id = partial.credit_move_id)
+                    (account_move_line.id = partial.debit_move_id OR
+                    account_move_line.id = partial.credit_move_id)
                     AND account_move_line.partner_id IS NULL
                     AND account_move.id = account_move_line.move_id
-                    AND (aml_with_partner.id = partial.debit_move_id OR aml_with_partner.id = partial.credit_move_id)
+                    AND (aml_with_partner.id = partial.debit_move_id OR
+                    aml_with_partner.id = partial.credit_move_id)
                     AND %(indirectly_linked_aml_partner_clause)s
                     AND journal.id = account_move_line.journal_id
                     AND %(account_alias)s.id = account_move_line.account_id
@@ -942,12 +1000,12 @@ class PartnerLedgerCustomHandler(models.AbstractModel):
                     additional_columns=additional_columns,
                     debit_select=report._currency_table_apply_rate(
                         SQL(
-                            "CASE WHEN aml_with_partner.balance > 0 THEN 0 ELSE partial.amount END"
+                            "CASE WHEN aml_with_partner.balance > 0 THEN 0 ELSE partial.amount END"  # noqa: E501
                         )
                     ),
                     credit_select=report._currency_table_apply_rate(
                         SQL(
-                            "CASE WHEN aml_with_partner.balance < 0 THEN 0 ELSE partial.amount END"
+                            "CASE WHEN aml_with_partner.balance < 0 THEN 0 ELSE partial.amount END"  # noqa: E501
                         )
                     ),
                     balance_select=report._currency_table_apply_rate(
@@ -959,7 +1017,7 @@ class PartnerLedgerCustomHandler(models.AbstractModel):
                     column_group_key=column_group_key,
                     table_references=query.from_clause,
                     currency_table_join=report._currency_table_aml_join(group_options),
-                    indirectly_linked_aml_partner_clause=indirectly_linked_aml_partner_clause,
+                    indirectly_linked_aml_partner_clause=indirectly_linked_aml_partner_clause,  # noqa: E501
                     account_alias=SQL.identifier(account_alias),
                     search_condition=query.where_clause,
                     date_from=group_options["date"]["date_from"],
@@ -983,7 +1041,8 @@ class PartnerLedgerCustomHandler(models.AbstractModel):
                 if aml_result["partner_id"] in rslt:
                     rslt[aml_result["partner_id"]].append(aml_result)
 
-                # Balance it with an additional line in the Unknown Partner section but having reversed amounts.
+                # Balance it with an additional line in the Unknown Partner section but
+                # having reversed amounts.
                 if None in rslt:
                     rslt[None].append(
                         {
@@ -1052,8 +1111,10 @@ class PartnerLedgerCustomHandler(models.AbstractModel):
 
     @api.model
     def _format_aml_name(self, line_name, move_ref, move_name=None):
-        """Format the display of an account.move.line record. As its very costly to fetch the account.move.line
-        records, only line_name, move_ref, move_name are passed as parameters to deal with sql-queries more easily.
+        """Format the display of an account.move.line record. As its very costly to
+        fetch the account.move.line
+        records, only line_name, move_ref, move_name are passed as parameters to deal
+        with sql-queries more easily.
 
         :param line_name:   The name of the account.move.line record.
         :param move_ref:    The reference of the account.move record.

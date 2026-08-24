@@ -2,22 +2,28 @@
     <record id="view_move_form_l10n_ve_edi_tfhka" model="ir.ui.view">
         <field name="name">account.move.form.l10n.ve.edi.tfhka</field>
         <field name="model">account.move</field>
-        <field name="inherit_id" ref="l10n_ve_edi.view_move_form_l10n_ve_edi"/>
+        <field name="inherit_id" ref="l10n_ve_edi.view_move_form_l10n_ve_edi" />
         <field name="arch" type="xml">
             <xpath expr="//page[@name='l10n_ve_edi_tab']/group[1]" position="before">
-                <field name="l10n_ve_edi_tfhka_show_sent_link_buttons" invisible="1"/>
-                <field name="l10n_ve_edi_tfhka_sent_pdf_url" invisible="1"/>
-                <field name="l10n_ve_edi_tfhka_sent_invoice_url" invisible="1"/>
-                <group string="Documento transmitido (TFHKA)"
+                <field name="l10n_ve_edi_tfhka_show_sent_link_buttons" invisible="1" />
+                <field name="l10n_ve_edi_tfhka_sent_pdf_url" invisible="1" />
+                <field name="l10n_ve_edi_tfhka_sent_invoice_url" invisible="1" />
+                <group
+                    string="Documento transmitido (TFHKA)"
                     name="l10n_ve_edi_tfhka_sent_links"
                     invisible="not l10n_ve_edi_tfhka_show_sent_link_buttons"
                 >
-                    <button name="action_l10n_ve_edi_tfhka_open_sent_document_url" type="object"
+                    <button
+                        name="action_l10n_ve_edi_tfhka_open_sent_document_url"
+                        type="object"
                         string="Abrir URL del documento fiscal"
                         icon="fa-arrow-right"
                         class="btn-secondary"
                     />
-                    <div colspan="2" class="alert alert-light mb-0 py-2" role="status"
+                    <div
+                        colspan="2"
+                        class="alert alert-light mb-0 py-2"
+                        role="status"
                         invisible="l10n_ve_edi_tfhka_sent_pdf_url or l10n_ve_edi_tfhka_sent_invoice_url"
                     >
                         No se detectaron enlaces (urlPdf, urlDocumento, etc.) en la respuesta guardada; revise el bloque JSON de respuesta o use Imprimir y valide el mensaje si falta la URL.

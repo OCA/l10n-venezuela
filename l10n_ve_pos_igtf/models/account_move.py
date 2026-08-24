@@ -13,11 +13,7 @@ class AccountMove(models.Model):
         orders = self.sudo().pos_order_ids
         if orders:
             return orders
-        return (
-            self.env["pos.order"]
-            .sudo()
-            .search([("account_move", "=", self.id)])
-        )
+        return self.env["pos.order"].sudo().search([("account_move", "=", self.id)])
 
     def _l10n_ve_pos_igtf_pos_payments_for_move(self):
         self.ensure_one()
@@ -26,8 +22,10 @@ class AccountMove(models.Model):
             pay = orders.payment_ids
             if pay:
                 return pay
-        return self.env["pos.payment"].sudo().search(
-            [("pos_order_id.account_move", "=", self.id)]
+        return (
+            self.env["pos.payment"]
+            .sudo()
+            .search([("pos_order_id.account_move", "=", self.id)])
         )
 
     def _l10n_ve_igtf_get_display_tax_group_amounts_from_pos(self):
@@ -39,9 +37,7 @@ class AccountMove(models.Model):
         igtf_sum = sum(orders.mapped("igtf_amount"))
         if self.currency_id.is_zero(igtf_sum):
             igtf_sum = sum(
-                payments.mapped(
-                    lambda p: p._l10n_ve_pos_get_effective_igtf_amount()
-                )
+                payments.mapped(lambda p: p._l10n_ve_pos_get_effective_igtf_amount())
             )
         if self.currency_id.is_zero(igtf_sum):
             _logger.info(
@@ -98,9 +94,7 @@ class AccountMove(models.Model):
         igtf_sum = sum(orders.mapped("igtf_amount"))
         if self.currency_id.is_zero(igtf_sum):
             igtf_sum = sum(
-                payments.mapped(
-                    lambda p: p._l10n_ve_pos_get_effective_igtf_amount()
-                )
+                payments.mapped(lambda p: p._l10n_ve_pos_get_effective_igtf_amount())
             )
         return not self.currency_id.is_zero(abs(self.currency_id.round(igtf_sum)))
 
@@ -134,8 +128,9 @@ class AccountMove(models.Model):
         "pos_order_ids.account_move",
     )
     def _compute_tax_totals(self):
-        super()._compute_tax_totals()
+        result = super()._compute_tax_totals()
         for move in self:
             merged = move._l10n_ve_igtf_tax_totals_merge_igtf_row()
             if merged is not False:
                 move.tax_totals = merged
+        return result

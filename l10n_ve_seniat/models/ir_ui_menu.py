@@ -27,14 +27,20 @@ class IrUiMenu(models.Model):
     def _l10n_ve_emission_medium_menus_blacklist(self):
         company = self.env.company.sudo()
         blacklist = []
-        for emission_code, menu_xmlids in self._l10n_ve_emission_medium_menu_rules().items():
+        for (
+            emission_code,
+            menu_xmlids,
+        ) in self._l10n_ve_emission_medium_menu_rules().items():
             if company._l10n_ve_has_emission_medium(emission_code):
                 continue
             blacklist.extend(self._l10n_ve_menu_ids_for_xmlids(menu_xmlids))
         return blacklist
 
     def _load_menus_blacklist(self):
-        return super()._load_menus_blacklist() + self._l10n_ve_emission_medium_menus_blacklist()
+        return (
+            super()._load_menus_blacklist()
+            + self._l10n_ve_emission_medium_menus_blacklist()
+        )
 
     @api.model
     def load_menus(self, debug):

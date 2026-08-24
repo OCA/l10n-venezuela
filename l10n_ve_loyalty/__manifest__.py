@@ -1,7 +1,9 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 {
     "name": "Venezuela - Loyalty & Discounts",
-    "summary": "Descuentos globales SENIAT y adaptacion de Coupons & Loyalty para Venezuela",
+    "summary": (
+        "Descuentos globales SENIAT y adaptacion de Coupons & Loyalty " "para Venezuela"
+    ),
     "website": "https://github.com/OCA/l10n-venezuela",
     "icon": "/poweredbyandy_saas/static/description/icon.png",
     "countries": ["ve"],
@@ -28,7 +30,7 @@
     ],
     "assets": {
         "web.assets_backend": [
-            "l10n_ve_loyalty/static/src/components/tax_totals/tax_totals.js",
+            "l10n_ve_loyalty/static/src/components/tax_totals/tax_totals.esm.js",
             "l10n_ve_loyalty/static/src/components/tax_totals/tax_totals_global_discount.xml",
             "l10n_ve_loyalty/static/src/components/tax_totals/tax_totals.scss",
         ],

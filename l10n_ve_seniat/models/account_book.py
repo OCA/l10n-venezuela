@@ -158,11 +158,17 @@ class AccountBook(models.Model):
     )
     def _check_l10n_ve_max_lines_positive(self):
         for book in self:
-            if book.l10n_ve_max_invoice_lines is not None and book.l10n_ve_max_invoice_lines < 1:
+            if (
+                book.l10n_ve_max_invoice_lines is not None
+                and book.l10n_ve_max_invoice_lines < 1
+            ):
                 raise ValidationError(
                     _("El máximo de líneas por factura debe ser al menos 1.")
                 )
-            if book.l10n_ve_max_picking_lines is not None and book.l10n_ve_max_picking_lines < 1:
+            if (
+                book.l10n_ve_max_picking_lines is not None
+                and book.l10n_ve_max_picking_lines < 1
+            ):
                 raise ValidationError(
                     _("El máximo de líneas por guía de despacho debe ser al menos 1.")
                 )
@@ -172,9 +178,15 @@ class AccountBook(models.Model):
                     raise ValidationError(
                         _("Las líneas de margen ESC/P deben estar entre 0 y 127.")
                     )
-            if book.l10n_ve_invoice_header_spacing is not None and book.l10n_ve_invoice_header_spacing < 0:
+            if (
+                book.l10n_ve_invoice_header_spacing is not None
+                and book.l10n_ve_invoice_header_spacing < 0
+            ):
                 raise ValidationError(
-                    _("El espaciado de encabezado de la factura PDF debe ser positivo o cero.")
+                    _(
+                        "El espaciado de encabezado de la factura PDF debe ser "
+                        "positivo o cero."
+                    )
                 )
 
     @api.model_create_multi
@@ -799,8 +811,8 @@ class AccountBookDocument(models.Model):
     def _compute_l10n_ve_control_number(self):
         for line in self:
             if line.book_id and line.number:
-                line.l10n_ve_control_number = line.book_id._l10n_ve_format_control_number(
-                    line.number
+                line.l10n_ve_control_number = (
+                    line.book_id._l10n_ve_format_control_number(line.number)
                 )
             else:
                 line.l10n_ve_control_number = False
@@ -811,9 +823,7 @@ class AccountBookDocument(models.Model):
         for line in self:
             if line.res_model == void_model and line.res_id:
                 void = self.env[void_model].browse(line.res_id)
-                line.l10n_ve_correlative_label = (
-                    void.reason if void.exists() else ""
-                )
+                line.l10n_ve_correlative_label = void.reason if void.exists() else ""
             elif line.source_record:
                 line.l10n_ve_correlative_label = line.source_record.display_name
             else:
@@ -965,7 +975,9 @@ class AccountBookDocument(models.Model):
                         "l10n_ve_control_number": (
                             False
                             if clear
-                            else line.book_id._l10n_ve_format_control_number(line.number)
+                            else line.book_id._l10n_ve_format_control_number(
+                                line.number
+                            )
                         )
                     }
                 )
@@ -977,7 +989,9 @@ class AccountBookDocument(models.Model):
             docs = self.with_context(l10n_ve_allow_book_document_admin_edit=True)
             res = super(AccountBookDocument, docs).write(vals)
             self._l10n_ve_sync_source_control_number()
-            (sections | self.mapped("section_id"))._l10n_ve_refresh_sequence_number_next()
+            (
+                sections | self.mapped("section_id")
+            )._l10n_ve_refresh_sequence_number_next()
             return res
         return super().write(vals)
 

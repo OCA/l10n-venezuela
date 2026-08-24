@@ -1,37 +1,32 @@
-import os
-import logging
-import time
-import serial
-import serial.tools.list_ports
-import operator
+# ruff: noqa
+# pylint: skip-file
 import datetime
-import sys
-import json
-import glob
-import urllib3
+import logging
+import operator
+import os
 import platform
-from functools import reduce
-import traceback
 import subprocess
+import sys
+import time
+import traceback
 from collections import defaultdict
 from datetime import datetime
-from odoo.exceptions import UserError
+from functools import reduce
+
+import serial
+import serial.tools.list_ports
+
 # import clr
-from odoo import http, _
+from odoo import _, http
+from odoo.exceptions import UserError
 from odoo.tools.misc import file_path
-from odoo.addons.hw_drivers.main import iot_devices
-from odoo.addons.hw_drivers.event_manager import event_manager
-from odoo.addons.hw_drivers.tools import helpers
+
 from odoo.addons.hw_drivers.controllers.driver import DriverController
+from odoo.addons.hw_drivers.event_manager import event_manager
 from odoo.addons.hw_drivers.iot_handlers.drivers.SerialBaseDriver import (
     SerialDriver,
     SerialProtocol,
-    serial_connection,
 )
-
-from odoo.http import Response
-
-import json
 
 FLAG_21 = {
     "30": {
@@ -82,6 +77,7 @@ TAX = {
     "2": '"',
     "3": "#",
 }
+
 
 class BinauralDriverController(DriverController):
     @http.route(
@@ -142,6 +138,7 @@ FiscalProtocol = SerialProtocol(
     emptyAnswerValid=False,
 )
 
+
 def install_package(package_name):
     try:
         # Intenta importar el paquete para verificar si ya está instalado
@@ -151,17 +148,20 @@ def install_package(package_name):
         print("'%s' no está instalado. Instalando...", package_name)
         # Instala el paquete usando pip
         try:
-            subprocess.check_call([sys.executable, "-m", "pip", "install", package_name, "--user"])
+            subprocess.check_call(
+                [sys.executable, "-m", "pip", "install", package_name, "--user"]
+            )
         except subprocess.CalledProcessError as e:
             print("Error al instalar el paquete: %s", e)
+
 
 try:
     import clr
 except:
     install_package("pythonnet")
-    
+
+
 class SerialFiscalDriver(SerialDriver):
-    
     connection_type = "serial"
     priority = 0
     _protocol = FiscalProtocol
@@ -169,7 +169,7 @@ class SerialFiscalDriver(SerialDriver):
     ##
 
     def __init__(self, identifier, device):
-        super(SerialFiscalDriver, self).__init__(identifier, device)
+        super().__init__(identifier, device)
         self.device_manufacturer = "HKA"
         self.identifier = identifier
         self.device_type = "fiscal_data_module"
@@ -184,7 +184,7 @@ class SerialFiscalDriver(SerialDriver):
     def supported(cls, device):
         try:
             condition = False
-            
+
             try:
                 dll_path = file_path("hw_drivers/iot_handlers/lib/TfhkaNet.dll")
                 if not os.path.exists(dll_path):
@@ -203,23 +203,26 @@ class SerialFiscalDriver(SerialDriver):
                 _logger.error("Error al cargar la DLL: %s", e)
                 _logger.error("Problema de la clase Tfhka: %s", Tfhka)
 
-
             if platform.system() == "Windows":
-                
-                _logger.info("Verificando en Linux - Identificador del dispositivo: %s", device['identifier'])
-                
+                _logger.info(
+                    "Verificando en Linux - Identificador del dispositivo: %s",
+                    device["identifier"],
+                )
+
                 device_manager.CloseFpCtrl()
                 condition = device_manager.OpenFpCtrl(device["identifier"])
                 check = device_manager.CheckFPrinter()
 
             elif platform.system() == "Linux":
-                
-                _logger.info("Verificando en Linux - Identificador del dispositivo: %s", device['identifier'])
-                
+                _logger.info(
+                    "Verificando en Linux - Identificador del dispositivo: %s",
+                    device["identifier"],
+                )
+
                 condition = device["identifier"].__contains__(DEVICE_NAME) or device[
                     "identifier"
                 ].__contains__(DEVICE_SHORT_NAME)
-                
+
                 _logger.info("Resultado de condition: %s", condition)
 
             if condition and check:
@@ -246,14 +249,15 @@ class SerialFiscalDriver(SerialDriver):
         """
         Carga la librería TfhkaNet.dll.
         """
-        self.dll_path = file_path(f'hw_drivers/iot_handlers/lib/TfhkaNet.dll')
+        self.dll_path = file_path("hw_drivers/iot_handlers/lib/TfhkaNet.dll")
         if not os.path.exists(self.dll_path):
             _logger.error("No se encontró la DLL en la ruta: %s", self.dll_path)
             return
 
         try:
             from clr import AddReference
-            AddReference('TfhkaNet')
+
+            AddReference("TfhkaNet")
             from TfhkaNet.IF.VE import Tfhka
         except Exception as e:
             _logger.error("Error al cargar la DLL o importar Tfhka: %s", e)
@@ -261,7 +265,7 @@ class SerialFiscalDriver(SerialDriver):
 
         self.tfhka = Tfhka()
         _logger.info("DLL TfhkaNet cargada correctamente.")
-        
+
     def connect(self, port):
         """
         Establece conexión con la impresora fiscal.
@@ -270,7 +274,7 @@ class SerialFiscalDriver(SerialDriver):
             _logger.error("No se pudo abrir el puerto: %s", port)
         self.port = port
         _logger.info("Conexión exitosa al puerto %s", port)
-    
+
     def disconnect(self):
         """Cierra la conexión con la impresora fiscal."""
         try:
@@ -304,29 +308,37 @@ class SerialFiscalDriver(SerialDriver):
                 "print_debit_note": self.print_debit_note,
             }
         )
-        
+
     def _do_action(self, data):
-            """Helper function that calls a specific action method on the device.
+        """Helper function that calls a specific action method on the device.
 
-            :param data: the `_actions` key mapped to the action method we want to call
-            :type data: string
-            """
+        :param data: the `_actions` key mapped to the action method we want to call
+        :type data: string
+        """
 
-            with self._device_lock:
-                try:
-                    result = self._actions[data['action']](data)
-                    time.sleep(self._protocol.commandDelay)
-                    
-                    return result 
-                
-                except Exception:
-                    msg =(f'An error occurred while performing action "{data}" on "{self.device_name}"')
-                    _logger.exception(msg)
-                    self._status = {'status': self.STATUS_ERROR, 'message_title': msg, 'message_body': traceback.format_exc()}
-                    self._push_status()
-                self._status = {'status': self.STATUS_CONNECTED, 'message_title': '', 'message_body': ''}
-                self.data['status'] = self._status
-        
+        with self._device_lock:
+            try:
+                result = self._actions[data["action"]](data)
+                time.sleep(self._protocol.commandDelay)
+
+                return result
+
+            except Exception:
+                msg = f'An error occurred while performing action "{data}" on "{self.device_name}"'
+                _logger.exception(msg)
+                self._status = {
+                    "status": self.STATUS_ERROR,
+                    "message_title": msg,
+                    "message_body": traceback.format_exc(),
+                }
+                self._push_status()
+            self._status = {
+                "status": self.STATUS_CONNECTED,
+                "message_title": "",
+                "message_body": "",
+            }
+            self.data["status"] = self._status
+
     def action(self, data):
         """
         Establece conexión, ejecuta la acción y desconecta.
@@ -337,11 +349,7 @@ class SerialFiscalDriver(SerialDriver):
         finally:
             self.disconnect()  # Desconecta después de la acción
 
-        return {
-            "jsonrpc": "2.0",
-            "id": None,
-            "result": result
-        }
+        return {"jsonrpc": "2.0", "id": None, "result": result}
 
     def run(self):
         self._status["status"] = self.STATUS_CONNECTED
@@ -400,12 +408,12 @@ class SerialFiscalDriver(SerialDriver):
         try:
             if not self.tfhka:
                 _logger.error("El objeto tfhka no está inicializado.")
-                
+
             elif not self.tfhka.CheckFPrinter():
                 _logger.error("No hay impresora conectada.")
             else:
                 _logger.error("El objeto e=si existe.")
-            
+
             status = self.ReadFpStatus(True)
             if status["data"]["error"]["code"] != "0":
                 raise Exception(status["data"]["error"]["msg"])
@@ -413,26 +421,33 @@ class SerialFiscalDriver(SerialDriver):
                 raise Exception(status["data"]["status"]["msg"])
 
             sv_data = self.tfhka.GetSVPrinterData()
-            
+
             if sv_data:
                 model = getattr(sv_data, "Model", "Modelo desconocido")
                 country = getattr(sv_data, "Country", "País desconocido")
             else:
                 model = "Modelo desconocido"
                 country = "País desconocido"
-            
-            estado_s1 = status["result"] 
-            
+
+            estado_s1 = status["result"]
+
             if estado_s1:
-                machine_number = estado_s1.RegisteredMachineNumber 
-                self.device_name = "Impresora TFHKA: %s - %s - %s", model, country, machine_number
+                machine_number = estado_s1.RegisteredMachineNumber
+                self.device_name = (
+                    "Impresora TFHKA: %s - %s - %s",
+                    model,
+                    country,
+                    machine_number,
+                )
             else:
-                self.device_name = "Impresora TFHKA: {model} - {country} - Registro desconocido", 
+                self.device_name = (
+                    "Impresora TFHKA: {model} - {country} - Registro desconocido",
+                )
 
             self.device_manufacturer = "The Factory HKA"
 
             _logger.info(" Nombre del dispositivo establecido: %s", self.device_name)
-        
+
         except Exception as e:
             _logger.error("Error al establecer el nombre del dispositivo: %s", e)
             self.device_name = "Desconocido - Impresora Fiscal HKAs"
@@ -444,16 +459,19 @@ class SerialFiscalDriver(SerialDriver):
                 raise Exception(status["data"]["error"]["msg"])
             if status["data"]["status"]["code"] not in ["1", "4"]:
                 raise Exception(status["data"]["status"]["msg"])
-            
+
             self.send_command("7")
             self.send_command("800")
             self.send_command("80$Binaural Test")
             self.send_command("80!Documento de pruebas")
             self.send_command("810")
-            self.data["value"] = {"valid": True, "message": "Test impreso correctamente."}
+            self.data["value"] = {
+                "valid": True,
+                "message": "Test impreso correctamente.",
+            }
             event_manager.device_changed(self)
             _logger.info(" Test command executed successfully.")
-            
+
             # self.get_z_number(data)
         except Exception as e:
             _logger.error("Error executing test command: %s", e)
@@ -485,11 +503,14 @@ class SerialFiscalDriver(SerialDriver):
                 _logger.info("Cierre: %s", z_counter)
                 return {"valid": True, "data": {"report_z": z_counter}}
             else:
-                return {"valid": False, "message": "No se pudo obtener el número de la última factura Z."}
+                return {
+                    "valid": False,
+                    "message": "No se pudo obtener el número de la última factura Z.",
+                }
         except Exception as e:
             _logger.error("Error al obtener el número de la última factura Z: %s", e)
             return {"valid": False, "message": str(e)}
-        
+
     def logger(self, data):
         try:
             status = self.ReadFpStatus(True)
@@ -497,7 +518,7 @@ class SerialFiscalDriver(SerialDriver):
                 raise Exception(status["data"]["error"]["msg"])
             if status["data"]["status"]["code"] not in ["1", "4"]:
                 raise Exception(status["data"]["status"]["msg"])
-            
+
             self.send_command(str(data["data"]))
             _logger.info(data["data"])
             self.data["value"] = {"valid": "true"}
@@ -514,47 +535,50 @@ class SerialFiscalDriver(SerialDriver):
             self.send_command(str(line))
         self.data["value"] = {"valid": True}
         event_manager.device_changed(self)
-        
-    def print_out_invoice(self, invoice):  
+
+    def print_out_invoice(self, invoice):
         """Procesa e imprime la factura."""
-        
+
         self.data = {"value": {"valid": False, "message": "No se ha completado"}}
-        
+
         retorno = self._validate_invoice_parameter(invoice)
-        
+
         if not retorno.get("valid", False):
             self.data["value"] = retorno
         else:
+            self.data["value"] = self.prepare_invoice_data(invoice)
 
-            self.data["value"] = self.prepare_invoice_data(invoice)  
-            
             if self.data["value"].get("valid"):
                 send_result = self.send_invoice_commands(self.data["value"])
                 if not send_result.get("valid", False):
                     self.data["value"] = send_result
                     event_manager.device_changed(self)
                     return send_result
-                
+
                 result = self.finalize_invoice(True)
                 self.data["value"] = result
 
         event_manager.device_changed(self)
         return result
 
-    def format_invoice_line(self, item, max_amount_decimal, max_qty_decimal, max_amount_int, max_qty_int):
+    def format_invoice_line(
+        self, item, max_amount_decimal, max_qty_decimal, max_amount_int, max_qty_int
+    ):
         """Formatea una línea de la factura."""
         tax_value = TAX.get(str(item.get("tax", "")), "")
-        
+
         # Manejo de descuento (precio negativo)
         price_unit = item.get("price_unit", 0)
         if price_unit < 0:
             return None, abs(price_unit)
-        
+
         code = f'|{item["default_code"]}|' if item.get("default_code") else ""
-        
-        amount_i, amount_d = self.split_amount(round(price_unit, max_amount_decimal), max_amount_decimal)
+
+        amount_i, amount_d = self.split_amount(
+            round(price_unit, max_amount_decimal), max_amount_decimal
+        )
         qty_i, qty_d = self.split_amount(item.get("quantity", 0), max_qty_decimal)
-        
+
         formatted_line = (
             f"{tax_value}"
             f"{amount_i.rjust(max_amount_int, '0')}{amount_d.rjust(max_amount_decimal, '0')}"
@@ -562,7 +586,7 @@ class SerialFiscalDriver(SerialDriver):
             f"{code}"
             f"{item.get('name', '')[:127].strip().replace('Ñ', 'N').replace('ñ', 'n')}"
         )
-        
+
         return formatted_line, None
 
     def group_payments(self, payment_lines):
@@ -571,7 +595,10 @@ class SerialFiscalDriver(SerialDriver):
         grouped_payments = defaultdict(float)
         for payment in payment_lines:
             grouped_payments[payment["payment_method"]] += payment["amount"]
-        return [{"payment_method": method, "amount": abs(amount)} for method, amount in grouped_payments.items()]
+        return [
+            {"payment_method": method, "amount": abs(amount)}
+            for method, amount in grouped_payments.items()
+        ]
 
     def prepare_invoice_data(self, invoice):
         """
@@ -582,20 +609,35 @@ class SerialFiscalDriver(SerialDriver):
         try:
             cmd = []
             invoice_data = invoice.get("data", {})
-            
+
             if not invoice_data:
                 _logger.error("No se encontró 'data' en la factura.")
-                return {"valid": False, "message": "No se encontró 'data' en la factura."}
-            
+                return {
+                    "valid": False,
+                    "message": "No se encontró 'data' en la factura.",
+                }
+
             flag_21_config = FLAG_21[invoice_data["flag_21"]]
-            max_amount_int, max_amount_decimal = flag_21_config["max_amount_int"], flag_21_config["max_amount_decimal"]
-            max_qty_int, max_qty_decimal = flag_21_config["max_qty_int"], flag_21_config["max_qty_decimal"]
-            max_payment_amount_int, max_payment_amount_decimal =  flag_21_config["max_payment_amount_int"], flag_21_config["max_payment_amount_decimal"]
-            disc_int, disc_decimal =  flag_21_config["disc_int"], flag_21_config["disc_decimal"]
+            max_amount_int, max_amount_decimal = (
+                flag_21_config["max_amount_int"],
+                flag_21_config["max_amount_decimal"],
+            )
+            max_qty_int, max_qty_decimal = (
+                flag_21_config["max_qty_int"],
+                flag_21_config["max_qty_decimal"],
+            )
+            max_payment_amount_int, max_payment_amount_decimal = (
+                flag_21_config["max_payment_amount_int"],
+                flag_21_config["max_payment_amount_decimal"],
+            )
+            disc_int, disc_decimal = (
+                flag_21_config["disc_int"],
+                flag_21_config["disc_decimal"],
+            )
 
             cmd.append(f"iR*{invoice_data['partner_id']['vat']}")
             cmd.append(f"iS*{invoice_data['partner_id']['name']}")
-            
+
             next_index = 0
             if invoice_data["partner_id"]["address"]:
                 address = invoice_data["partner_id"]["address"]
@@ -610,7 +652,9 @@ class SerialFiscalDriver(SerialDriver):
                     next_index += 1
 
             if invoice_data["partner_id"]["phone"]:
-                cmd.append(f"i{next_index:02d}Telefono:{invoice_data['partner_id']['phone']}")
+                cmd.append(
+                    f"i{next_index:02d}Telefono:{invoice_data['partner_id']['phone']}"
+                )
                 next_index += 1
 
             for info in invoice_data.get("info", []):
@@ -618,24 +662,29 @@ class SerialFiscalDriver(SerialDriver):
                 next_index += 1
 
             discount = 0
-            
+
             for item in invoice_data["invoice_lines"]:
                 line_cmd, line_discount = self.format_invoice_line(
-                    item, max_amount_decimal, max_qty_decimal, max_amount_int, max_qty_int
+                    item,
+                    max_amount_decimal,
+                    max_qty_decimal,
+                    max_amount_int,
+                    max_qty_int,
                 )
-                
-                cmd.append(line_cmd)            
-            
+
+                cmd.append(line_cmd)
+
             cmd.append("3")
-            
+
             payment_lines = self.group_payments(invoice_data["payment_lines"])
- 
+
             for item in payment_lines:
                 if item["amount"] > 0 and item["payment_method"] != "01":
-                    
-                    amount_i, amount_d = self.split_amount(item["amount"], dec=max_payment_amount_decimal)
+                    amount_i, amount_d = self.split_amount(
+                        item["amount"], dec=max_payment_amount_decimal
+                    )
                     amount_i_filled = amount_i.zfill(max_payment_amount_int)
-                    
+
                     payment_command = str(
                         "2"
                         + str(item["payment_method"])
@@ -645,20 +694,22 @@ class SerialFiscalDriver(SerialDriver):
                     cmd.append(payment_command)
                 else:
                     continue
-            
+
             if invoice_data.get("has_cashbox", False):
                 cmd.append("w")
-            
-            cmd.append(str("101"))
-            
+
+            cmd.append("101")
+
             if len(invoice_data.get("aditional_lines", [])) > 0:
-                for index, aditional_lines in enumerate(invoice_data.get("aditional_lines")):
+                for index, aditional_lines in enumerate(
+                    invoice_data.get("aditional_lines")
+                ):
                     cmd.append(f"i{str(index).zfill(2)}{aditional_lines}")
-                                
-            cmd.append(str("199"))
-            
+
+            cmd.append("199")
+
             self.data["value"] = {"valid": True, "data": cmd}
-            
+
             return {
                 "valid": True,
                 "cmd": cmd,
@@ -669,7 +720,7 @@ class SerialFiscalDriver(SerialDriver):
         except Exception as _e:
             _logger.error("Error al preparar los datos de la factura: %s", _e)
             return {"valid": False, "message": str(_e)}
-        
+
     def send_invoice_commands(self, cmd):
         """
         Envía los comandos de la factura a la impresora.
@@ -685,23 +736,23 @@ class SerialFiscalDriver(SerialDriver):
                 raise Exception(status["data"]["error"]["msg"])
             if status["data"]["status"]["code"] not in ["1", "4"]:
                 raise Exception(status["data"]["status"]["msg"])
-            
+
             for command in cmd:
                 result = self.send_command(command)
-                
-                if not result and command not in ["101","199"]:
-                    msg.append("Fallo al enviar comando: %s",command)
+
+                if not result and command not in ["101", "199"]:
+                    msg.append("Fallo al enviar comando: %s", command)
                     self.send_command("199")
                     return {"valid": False, "message": msg}
 
             self.data["value"] = {"valid": True, "msg": msg, "continue": True}
-            
+
             return self.data["value"]
 
         except Exception as _e:
             _logger.error("Error al enviar los comandos de la factura: %s", _e)
             return {"valid": False, "message": str(_e), "continue": False}
-        
+
     def finalize_invoice(self, data):
         """
         Finaliza el proceso de impresión y devuelve el resultado.
@@ -709,32 +760,35 @@ class SerialFiscalDriver(SerialDriver):
         """
         msg = "Factura impresa correctamente"
         estado_s1 = self.get_s1_printer_data()
-        
+
         if estado_s1:
             number = estado_s1.LastInvoiceNumber
             machine_number = estado_s1.RegisteredMachineNumber
             number_z = estado_s1.DailyClosureCounter + 1
-            
-            return{
+
+            return {
                 "valid": True,
                 "data": {
                     "sequence": number,
                     "serial_machine": machine_number,
-                    "mf_reportz": number_z
+                    "mf_reportz": number_z,
                 },
-                "message": msg
+                "message": msg,
             }
-            
+
         else:
-            self.data["value"] = {"valid": False, "message": "No se pudo obtener el número de la última factura."}
+            self.data["value"] = {
+                "valid": False,
+                "message": "No se pudo obtener el número de la última factura.",
+            }
             event_manager.device_changed(self)
-            
+
             return self.data["value"]
-        
+
     def get_status(self):
         """
         Obtiene el estado de la impresora.
-        """        
+        """
         try:
             status = self.tfhka.GetPrinterStatus()
             _logger.info("Estado de la impresora: %s", status.PrinterStatusDescription)
@@ -742,8 +796,8 @@ class SerialFiscalDriver(SerialDriver):
         except Exception as e:
             _logger.error("Error al obtener estado de la impresora: %s", e)
             raise UserError("Error al obtener estado de la impresora: %s", e)
-    
-    def print_out_refund(self, invoice):        
+
+    def print_out_refund(self, invoice):
         self.data["value"] = {"valid": False, "message": "No se ha completado"}
         _invoice = invoice.get("data", False)
         if _invoice:
@@ -760,22 +814,25 @@ class SerialFiscalDriver(SerialDriver):
         self.data["value"] = self._print_out_refund(invoice)
         event_manager.device_changed(self)
         return self.data["value"]
-    
+
     def print_debit_note(self, invoice):
         estado_s1 = self.get_s1_printer_data()
         machine_number = estado_s1.RegisteredMachineNumber
-        
+
         if invoice["data"]["invoice_affected"]["serial_machine"] != machine_number:
-            raise UserError(_(
-                "¡Error de impresora fiscal! "
-                "La impresora fiscal actual no coincide con la usada en la factura original. "
-                "Serial de la factura: %s. "
-                "Serial de la impresora conectada: %s."
-            ) % (
-                invoice['data']['invoice_affected']['serial_machine'],
-                machine_number,
-            ))
-        
+            raise UserError(
+                _(
+                    "¡Error de impresora fiscal! "
+                    "La impresora fiscal actual no coincide con la usada en la factura original. "
+                    "Serial de la factura: %s. "
+                    "Serial de la impresora conectada: %s."
+                )
+                % (
+                    invoice["data"]["invoice_affected"]["serial_machine"],
+                    machine_number,
+                )
+            )
+
         self.data["value"] = {"valid": False, "message": "No se ha completado"}
         _invoice = invoice.get("data", False)
         if _invoice:
@@ -792,7 +849,7 @@ class SerialFiscalDriver(SerialDriver):
         self.data["value"] = self._print_debit_note(invoice)
         event_manager.device_changed(self)
         return self.data["value"]
-    
+
     def _print_debit_note(self, invoice):
         valid = True
         cmd = []
@@ -800,7 +857,9 @@ class SerialFiscalDriver(SerialDriver):
         max_amount_int = FLAG_21[invoice["flag_21"]]["max_amount_int"]
         max_amount_decimal = FLAG_21[invoice["flag_21"]]["max_amount_decimal"]
         max_payment_amount_int = FLAG_21[invoice["flag_21"]]["max_payment_amount_int"]
-        max_payment_amount_decimal = FLAG_21[invoice["flag_21"]]["max_payment_amount_decimal"]
+        max_payment_amount_decimal = FLAG_21[invoice["flag_21"]][
+            "max_payment_amount_decimal"
+        ]
         max_qty_int = FLAG_21[invoice["flag_21"]]["max_qty_int"]
         max_qty_decimal = FLAG_21[invoice["flag_21"]]["max_qty_decimal"]
         disc_int = FLAG_21[invoice["flag_21"]]["disc_int"]
@@ -821,7 +880,7 @@ class SerialFiscalDriver(SerialDriver):
             cmd.append(str("iF*" + invoice["invoice_affected"]["number"]))
             cmd.append(str("iI*" + invoice["invoice_affected"]["serial_machine"]))
             cmd.append(str("iD*" + invoice["invoice_affected"]["date"]))
-            
+
             next_index = 0
             if invoice["partner_id"]["address"]:
                 address = invoice["partner_id"]["address"]
@@ -836,7 +895,9 @@ class SerialFiscalDriver(SerialDriver):
                     next_index += 1
 
             if invoice["partner_id"]["phone"]:
-                cmd.append(f"i{next_index:02d}Telefono:{invoice['partner_id']['phone']}")
+                cmd.append(
+                    f"i{next_index:02d}Telefono:{invoice['partner_id']['phone']}"
+                )
 
             if len(invoice.get("info", [])) > 0:
                 for index, info in enumerate(invoice.get("info")):
@@ -869,7 +930,10 @@ class SerialFiscalDriver(SerialDriver):
                             + qty_i.zfill(max_qty_int)
                             + qty_d.zfill(max_qty_decimal)
                             + f"{code}"
-                            + item["name"][0:127].strip().replace("Ñ", "N").replace("ñ", "n")
+                            + item["name"][0:127]
+                            .strip()
+                            .replace("Ñ", "N")
+                            .replace("ñ", "n")
                         )
                     )
                 # else:
@@ -896,16 +960,18 @@ class SerialFiscalDriver(SerialDriver):
                     )
                     cmd.append(f"p-{amount_i.zfill(2)}{amount_d.zfill(2)}")
                 if len(invoice.get("barcode", [])) > 0:
-                 number = invoice.get("barcode")
-                 numberint = number[0]
-                 cmd.append(str("y" + str(numberint)))
-            cmd.append(str("3"))  # sub total en factura
+                    number = invoice.get("barcode")
+                    numberint = number[0]
+                    cmd.append(str("y" + str(numberint)))
+            cmd.append("3")  # sub total en factura
 
             if discount_amount > 0:
                 amount_i, amount_d = self.split_amount(
                     round(discount_amount, disc_decimal), dec=disc_decimal
                 )
-                cmd.append("q-" + amount_i.zfill(disc_int) + amount_d.zfill(disc_decimal))
+                cmd.append(
+                    "q-" + amount_i.zfill(disc_int) + amount_d.zfill(disc_decimal)
+                )
 
             def filter_unique_type_method(payment):
                 return payment["payment_method"] == "20"
@@ -928,7 +994,10 @@ class SerialFiscalDriver(SerialDriver):
             for item in new_payment_lines:
                 item["amount"] = abs(item["amount"])
 
-            if len(invoice["payment_lines"]) == 1 or invoice["payment_lines"][0]["amount"] == 0:
+            if (
+                len(invoice["payment_lines"]) == 1
+                or invoice["payment_lines"][0]["amount"] == 0
+            ):
                 cmd.append("1" + str(invoice["payment_lines"][0]["payment_method"]))
             elif len(invoice["payment_lines"]) > 1 and len(
                 list(filter(filter_unique_type_method, invoice["payment_lines"]))
@@ -949,11 +1018,11 @@ class SerialFiscalDriver(SerialDriver):
                         )
                     )
 
-            cmd.append(str("101"))
+            cmd.append("101")
             if len(invoice.get("aditional_lines", [])) > 0:
                 for index, aditional_lines in enumerate(invoice.get("aditional_lines")):
                     cmd.append(f"i{str(index).zfill(2)}{aditional_lines}")
-            cmd.append(str("199"))
+            cmd.append("199")
 
             for command in cmd:
                 self.send_command(command)
@@ -964,8 +1033,7 @@ class SerialFiscalDriver(SerialDriver):
             number = res.LastDebitNoteNumber
             number_z = res.DailyClosureCounter
             machine_number = res.RegisteredMachineNumber
-            
-            
+
             if number == last_number:
                 return {"valid": False, "message": "No se imprimio el documento"}
 
@@ -991,7 +1059,9 @@ class SerialFiscalDriver(SerialDriver):
 
         return response
 
-    def format_refund_line(self, item, max_amount_int, max_amount_decimal, max_qty_int, max_qty_decimal):
+    def format_refund_line(
+        self, item, max_amount_int, max_amount_decimal, max_qty_int, max_qty_decimal
+    ):
         """
         Formatea una línea de nota de crédito (refund) para impresión fiscal.
         """
@@ -1006,7 +1076,9 @@ class SerialFiscalDriver(SerialDriver):
         tax_code = str(item.get("tax", ""))
         tax_value = TAX.get(tax_code, tax_code)
 
-        amount_i, amount_d = self.split_amount(round(price_unit, max_amount_decimal), max_amount_decimal)
+        amount_i, amount_d = self.split_amount(
+            round(price_unit, max_amount_decimal), max_amount_decimal
+        )
         qty_i, qty_d = self.split_amount(item.get("quantity", 0), max_qty_decimal)
 
         formatted_line = (
@@ -1026,58 +1098,89 @@ class SerialFiscalDriver(SerialDriver):
         try:
             max_amount_int = FLAG_21[invoice["flag_21"]]["max_amount_int"]
             max_amount_decimal = FLAG_21[invoice["flag_21"]]["max_amount_decimal"]
-            max_payment_amount_int = FLAG_21[invoice["flag_21"]]["max_payment_amount_int"]
-            max_payment_amount_decimal = FLAG_21[invoice["flag_21"]]["max_payment_amount_decimal"]
+            max_payment_amount_int = FLAG_21[invoice["flag_21"]][
+                "max_payment_amount_int"
+            ]
+            max_payment_amount_decimal = FLAG_21[invoice["flag_21"]][
+                "max_payment_amount_decimal"
+            ]
             max_qty_int = FLAG_21[invoice["flag_21"]]["max_qty_int"]
             max_qty_decimal = FLAG_21[invoice["flag_21"]]["max_qty_decimal"]
             disc_int = FLAG_21[invoice["flag_21"]]["disc_int"]
             disc_decimal = FLAG_21[invoice["flag_21"]]["disc_decimal"]
 
-            number_invoice_affected = invoice.get('invoice_affected', {}).get('number', '')
-            
+            number_invoice_affected = invoice.get("invoice_affected", {}).get(
+                "number", ""
+            )
+
             if number_invoice_affected:
                 number_invoice = str(number_invoice_affected)
                 number_invoice_formateado = number_invoice.zfill(8)
                 cmd_number_invoice_affected = f"iF*{number_invoice_formateado}"
             else:
-                _logger.error("Fecha de factura afectada no encontrada en la nota de crédito.")
-                return {"valid": False, "message": "No se encontró la fecha de la factura afectada."}
-                        
-            fecha_afectada = invoice.get('invoice_affected', {}).get('date', '')
-            
+                _logger.error(
+                    "Fecha de factura afectada no encontrada en la nota de crédito."
+                )
+                return {
+                    "valid": False,
+                    "message": "No se encontró la fecha de la factura afectada.",
+                }
+
+            fecha_afectada = invoice.get("invoice_affected", {}).get("date", "")
+
             if fecha_afectada:
-                fecha_validada = datetime.strptime(fecha_afectada, "%d/%m/%Y").strftime("%d/%m/%Y")
+                fecha_validada = datetime.strptime(fecha_afectada, "%d/%m/%Y").strftime(
+                    "%d/%m/%Y"
+                )
                 cmd_fecha = f"iD*{fecha_validada}"
             else:
-                _logger.error("Fecha de factura afectada no encontrada en la nota de crédito.")
-                return {"valid": False, "message": "No se encontró la fecha de la factura afectada."}
-            
-            serial_machine = invoice.get('invoice_affected', {}).get('serial_machine', '')
+                _logger.error(
+                    "Fecha de factura afectada no encontrada en la nota de crédito."
+                )
+                return {
+                    "valid": False,
+                    "message": "No se encontró la fecha de la factura afectada.",
+                }
+
+            serial_machine = invoice.get("invoice_affected", {}).get(
+                "serial_machine", ""
+            )
 
             if serial_machine:
                 cmd_serial = f"iI*{serial_machine}"
             else:
-                _logger.error("Serial de la máquina fiscal no encontrado en la factura afectada.")
-                return {"valid": False, "message": "No se encontró el serial de la máquina fiscal de la factura afectada."}
-            
-            document_partnet = invoice.get('partner_id', {}).get('vat', '')
+                _logger.error(
+                    "Serial de la máquina fiscal no encontrado en la factura afectada."
+                )
+                return {
+                    "valid": False,
+                    "message": "No se encontró el serial de la máquina fiscal de la factura afectada.",
+                }
+
+            document_partnet = invoice.get("partner_id", {}).get("vat", "")
 
             if document_partnet:
                 cmd_vat = f"iR*{document_partnet}"
             else:
-                return {"valid": False, "message": "No se encontró el serial de la máquina fiscal de la factura afectada."}
-            
-            name_partnet = invoice.get('partner_id', {}).get('name', '')
+                return {
+                    "valid": False,
+                    "message": "No se encontró el serial de la máquina fiscal de la factura afectada.",
+                }
+
+            name_partnet = invoice.get("partner_id", {}).get("name", "")
 
             if name_partnet:
                 cmd_name = f"iS*{name_partnet}"
             else:
-                return {"valid": False, "message": "No se encontró el serial de la máquina fiscal de la factura afectada."}
-            
+                return {
+                    "valid": False,
+                    "message": "No se encontró el serial de la máquina fiscal de la factura afectada.",
+                }
+
             aditional_lines = []
-                        
-            address_partner = invoice.get('partner_id', {}).get('address', '')
-            
+
+            address_partner = invoice.get("partner_id", {}).get("address", "")
+
             if address_partner:
                 first_line = address_partner[:30]
                 aditional_lines.append(f"i01Direccion:{first_line}")
@@ -1086,7 +1189,7 @@ class SerialFiscalDriver(SerialDriver):
                 if remaining:
                     aditional_lines.append(f"i02{remaining}")
 
-            invoice_lines = invoice.get('invoice_lines', [])
+            invoice_lines = invoice.get("invoice_lines", [])
             product_lines = []
             for line in invoice_lines:
                 formatted_line, discount = self.format_refund_line(
@@ -1094,30 +1197,39 @@ class SerialFiscalDriver(SerialDriver):
                     max_amount_int,
                     max_amount_decimal,
                     max_qty_int,
-                    max_qty_decimal
+                    max_qty_decimal,
                 )
                 if formatted_line:
-                    product_lines.append(formatted_line)          
+                    product_lines.append(formatted_line)
 
             payment_lines = self.group_payments(invoice.get("payment_lines", []))
             payment_commands = []
             for item in payment_lines:
                 _logger.info("ITEM : %s", item)
                 if item["amount"] > 0 and item["payment_method"] != "01":
-                    amount_i, amount_d = self.split_amount(item["amount"], dec=2)  
-                    amount_i_filled = amount_i.zfill(10)  
-                    payment_command = f"2{item['payment_method']}{amount_i_filled}{amount_d}"
+                    amount_i, amount_d = self.split_amount(item["amount"], dec=2)
+                    amount_i_filled = amount_i.zfill(10)
+                    payment_command = (
+                        f"2{item['payment_method']}{amount_i_filled}{amount_d}"
+                    )
                     payment_commands.append(payment_command)
 
-            cmd2 = [
-                    'PH01Encabezado 1',
+            cmd2 = (
+                [
+                    "PH01Encabezado 1",
                     cmd_number_invoice_affected,
-                    cmd_fecha, 
+                    cmd_fecha,
                     cmd_serial,
                     cmd_vat,
-                    cmd_name
-                ] + aditional_lines + product_lines + ['3'] + payment_commands + ['101', '199']
-            
+                    cmd_name,
+                ]
+                + aditional_lines
+                + product_lines
+                + ["3"]
+                + payment_commands
+                + ["101", "199"]
+            )
+
             status = self.ReadFpStatus(True)
             if status["data"]["error"]["code"] != "0":
                 raise Exception(status["data"]["error"]["msg"])
@@ -1125,24 +1237,31 @@ class SerialFiscalDriver(SerialDriver):
                 raise Exception(status["data"]["status"]["msg"])
 
             for command in cmd2:
-                result = self.send_command(command) 
-                
+                result = self.send_command(command)
+
                 if not result:
                     _logger.error("Fallo al enviar comando: %s", command)
 
             estado_s1 = self.get_s1_printer_data()
-            
+
             if estado_s1:
                 number = estado_s1.LastCreditNoteNumber
                 machine_number = estado_s1.RegisteredMachineNumber
                 number_z = estado_s1.DailyClosureCounter + 1
                 return {
                     "valid": True,
-                    "data": {"sequence": number, "serial_machine": machine_number, "mf_reportz": number_z},
-                    "message": "Nota de crédito impresa correctamente"
+                    "data": {
+                        "sequence": number,
+                        "serial_machine": machine_number,
+                        "mf_reportz": number_z,
+                    },
+                    "message": "Nota de crédito impresa correctamente",
                 }
             else:
-                return {"valid": False, "message": "No se pudo obtener el número de la última nota de crédito."}
+                return {
+                    "valid": False,
+                    "message": "No se pudo obtener el número de la última nota de crédito.",
+                }
 
         except Exception as _e:
             _logger.error("Error al imprimir la nota de crédito: %s", _e)
@@ -1159,8 +1278,10 @@ class SerialFiscalDriver(SerialDriver):
                 raise Exception(status["data"]["error"]["msg"])
             if status["data"]["status"]["code"] not in ["1", "4"]:
                 raise Exception(status["data"]["status"]["msg"])
-            
-            self.send_command("I2S" + str(data["resume_range_from"] + data["resume_range_to"]))
+
+            self.send_command(
+                "I2S" + str(data["resume_range_from"] + data["resume_range_to"])
+            )
             self.data["value"] = {"valid": True, "message": "MENSAJE"}
             event_manager.device_changed(self)
             return self.data["value"]
@@ -1183,11 +1304,12 @@ class SerialFiscalDriver(SerialDriver):
                 raise Exception(status["data"]["error"]["msg"])
             if status["data"]["status"]["code"] not in ["1", "4"]:
                 raise Exception(status["data"]["status"]["msg"])
-            
+
             self.send_command(
                 mode
                 + str(
-                    data["reprint_range_from"].zfill(7) + data["reprint_range_to"].zfill(7)
+                    data["reprint_range_from"].zfill(7)
+                    + data["reprint_range_to"].zfill(7)
                 )
             )
             self.data["value"] = {"valid": True, "message": "MENSAJE"}
@@ -1212,7 +1334,7 @@ class SerialFiscalDriver(SerialDriver):
                 raise Exception(status["data"]["error"]["msg"])
             if status["data"]["status"]["code"] not in ["1", "4"]:
                 raise Exception(status["data"]["status"]["msg"])
-            
+
             self.send_command(
                 mode
                 + str(
@@ -1237,9 +1359,9 @@ class SerialFiscalDriver(SerialDriver):
 
     def reprint(self, data):
         self.data["value"] = {"valid": False, "message": "No se ha completado"}
-        
+
         data = data.get("data") or data
-            
+
         doc_type = data.get("reprint_document_type") or data.get("type")
         mode = ""
         if doc_type == "debit_note":
@@ -1252,10 +1374,10 @@ class SerialFiscalDriver(SerialDriver):
             self.data["value"] = {"valid": False, "message": "Datos no validos"}
             event_manager.device_changed(self)
             return self.data["value"]
-        
+
         number = self._normalize_reprint_number(data.get("mf_number"))
         command = mode + number + number
-        
+
         try:
             status = self.ReadFpStatus(True)
             if status["data"]["error"]["code"] != "0":
@@ -1264,10 +1386,10 @@ class SerialFiscalDriver(SerialDriver):
                 raise Exception(status["data"]["status"]["msg"])
 
             result = self.send_command(command)
-            
+
             self.data["value"] = {"valid": result}
             event_manager.device_changed(self)
-            return{"valid": result}
+            return {"valid": result}
         except Exception as _e:
             _logger.error("Error al imprimir la reimpresión: %s", _e)
             self.data["value"] = {"valid": False, "message": str(_e)}
@@ -1291,10 +1413,15 @@ class SerialFiscalDriver(SerialDriver):
             machine_number = estado_s1.RegisteredMachineNumber
             number = estado_s1.LastCreditNoteNumber
             number_z = estado_s1.DailyClosureCounter + 1
-            
+
             response = {
                 "valid": True,
-                "data": {"sequence": number, "serial_machine": machine_number, "number":number, "report_z": number_z},
+                "data": {
+                    "sequence": number,
+                    "serial_machine": machine_number,
+                    "number": number,
+                    "report_z": number_z,
+                },
             }
 
             self.data["value"] = response
@@ -1311,17 +1438,22 @@ class SerialFiscalDriver(SerialDriver):
                 raise Exception(status["data"]["error"]["msg"])
             if status["data"]["status"]["code"] not in ["1", "4"]:
                 raise Exception(status["data"]["status"]["msg"])
-            
+
             estado_s1 = status["result"]
-            
+
             if estado_s1:
                 machine_number = estado_s1.RegisteredMachineNumber
                 number = estado_s1.LastInvoiceNumber
                 number_z = estado_s1.DailyClosureCounter + 1
-                            
+
             response = {
                 "valid": True,
-                "data": {"sequence": number, "serial_machine": machine_number, "number":number, "report_z": number_z},
+                "data": {
+                    "sequence": number,
+                    "serial_machine": machine_number,
+                    "number": number,
+                    "report_z": number_z,
+                },
             }
 
             self.data["value"] = response
@@ -1351,75 +1483,75 @@ class SerialFiscalDriver(SerialDriver):
 
         invoice_keys = invoice.keys()
 
-        if not "company_id" in invoice_keys:
+        if "company_id" not in invoice_keys:
             msg.append("No se encontro la empresa")
             valid = False
-        if not "partner_id" in invoice_keys:
+        if "partner_id" not in invoice_keys:
             msg.append("No se recibio informacion del cliente")
             return False, msg
-        if not "invoice_affected" in invoice_keys:
+        if "invoice_affected" not in invoice_keys:
             msg.append("No se recibio informacion de la factura afectada")
             return False, msg
 
         partner = invoice["partner_id"].keys()
 
-        if not "vat" in partner or invoice["partner_id"]["vat"] == "":
+        if "vat" not in partner or invoice["partner_id"]["vat"] == "":
             msg.append("El cliente no tiene cedula")
             valid = False
-        if not "name" in partner or invoice["partner_id"]["name"] == "":
+        if "name" not in partner or invoice["partner_id"]["name"] == "":
             msg.append("El cliente no tiene nombre")
             valid = False
 
         invoice_affected = invoice["invoice_affected"].keys()
-        
+
         if (
-            not "number" in invoice_affected
+            "number" not in invoice_affected
             or invoice["invoice_affected"]["number"] == ""
         ):
             msg.append("No se recibio una factura afectada")
             valid = False
         if (
-            not "serial_machine" in invoice_affected
+            "serial_machine" not in invoice_affected
             or invoice["invoice_affected"]["serial_machine"] == ""
         ):
             msg.append("No se recibio el serial de la maquina fiscal")
             valid = False
-        if not "date" in invoice_affected or invoice["invoice_affected"]["date"] == "":
+        if "date" not in invoice_affected or invoice["invoice_affected"]["date"] == "":
             msg.append("No se recibio la fecha de la factura afectada")
             valid = False
 
-        if not "invoice_lines" in invoice_keys or len(invoice["invoice_lines"]) == 0:
+        if "invoice_lines" not in invoice_keys or len(invoice["invoice_lines"]) == 0:
             msg.append("No se recibio informacion de los productos")
             valid = False
             return valid, msg
 
         for line in invoice["invoice_lines"]:
             line_keys = line.keys()
-            if not "price_unit" in line_keys:
+            if "price_unit" not in line_keys:
                 msg.append("No se encontro el precio del producto")
                 valid = False
-            if not "quantity" in line_keys:
+            if "quantity" not in line_keys:
                 msg.append("No se encontro la cantidad del producto")
                 valid = False
-            if not "tax" in line_keys or int(line["tax"]) < 0 and int(line["tax"]) > 4:
+            if "tax" not in line_keys or int(line["tax"]) < 0 and int(line["tax"]) > 4:
                 msg.append("El impuesto no es valido")
                 valid = False
-            if not "name" in line_keys:
+            if "name" not in line_keys:
                 msg.append("No se encontro el nombre del producto")
                 valid = False
 
-        if not "payment_lines" in invoice_keys or len(invoice["payment_lines"]) == 0:
+        if "payment_lines" not in invoice_keys or len(invoice["payment_lines"]) == 0:
             msg.append("No se recibio informacion de los pagos")
             valid = False
             return valid, msg
 
         for line in invoice["payment_lines"]:
             line_keys = line.keys()
-            if not "amount" in line_keys:
+            if "amount" not in line_keys:
                 msg.append("No se recibio el monto del pago")
                 valid = False
             if (
-                not "payment_method" in line_keys
+                "payment_method" not in line_keys
                 or int(line["payment_method"]) < 1
                 and int(line["payment_method"]) > 24
             ):
@@ -1429,7 +1561,7 @@ class SerialFiscalDriver(SerialDriver):
         return valid, msg
 
     def _validate_invoice_parameter(self, invoice):
-        try:        
+        try:
             msg = []
             valid = True
 
@@ -1440,15 +1572,15 @@ class SerialFiscalDriver(SerialDriver):
             invoice_data = invoice.get("data", {})
             if not invoice_data:
                 msg.append("No se encontró 'data' en la factura")
-                return {"valid": False, "message": msg}            
-            
+                return {"valid": False, "message": msg}
+
             required_fields = {
                 "company_id": "No se encontró la empresa",
                 "partner_id": "No se recibió información del cliente",
                 "invoice_lines": "No se recibió información de los productos",
-                "payment_lines": "No se recibió información de los pagos"
+                "payment_lines": "No se recibió información de los pagos",
             }
-            
+
             for field, error_msg in required_fields.items():
                 if not invoice_data.get(field):
                     msg.append(error_msg)
@@ -1457,22 +1589,21 @@ class SerialFiscalDriver(SerialDriver):
             partner = invoice_data.get("partner_id", {})
             partner_required = {
                 "vat": "El cliente no tiene cédula",
-                "name": "El cliente no tiene nombre"
+                "name": "El cliente no tiene nombre",
             }
-            
+
             for field, error_msg in partner_required.items():
                 if not partner.get(field):
                     msg.append(error_msg)
                     valid = False
-            
+
             for line in invoice_data.get("invoice_lines", []):
                 line_required = {
                     "price_unit": "No se encontró el precio del producto",
                     "quantity": "No se encontró la cantidad del producto",
                     "tax": "El impuesto no es válido",
-                    "name": "No se encontró el nombre del producto"
-                }            
-                
+                    "name": "No se encontró el nombre del producto",
+                }
 
             for field, error_msg in line_required.items():
                 if field not in line:
@@ -1487,7 +1618,7 @@ class SerialFiscalDriver(SerialDriver):
                     except (ValueError, TypeError):
                         msg.append("El impuesto no es un número válido")
                         valid = False
-            
+
             for line in invoice_data.get("payment_lines", []):
                 if "amount" not in line:
                     msg.append("No se recibió el monto del pago")
@@ -1500,19 +1631,21 @@ class SerialFiscalDriver(SerialDriver):
                     try:
                         payment_method = int(line["payment_method"])
                         if not (1 <= payment_method <= 24):
-                            msg.append("El método de pago no es aceptado o no se recibió")
+                            msg.append(
+                                "El método de pago no es aceptado o no se recibió"
+                            )
                             valid = False
                     except (ValueError, TypeError):
                         msg.append("El método de pago no es un número válido")
                         valid = False
-            
+
             result = {"valid": valid, "message": msg}
-            
+
             return result
-        
+
         except Exception as e:
             raise UserError("Error al validar factura: %s", e)
-    
+
     def programacion(self, data):
         try:
             status = self.ReadFpStatus(True)
@@ -1522,12 +1655,18 @@ class SerialFiscalDriver(SerialDriver):
                 raise Exception(status["data"]["status"]["msg"])
 
             result = self.send_command("D")
-            
+
             if result:
-                self.data["value"] = {"valid": True, "message": "Programación impresa correctamente."}
+                self.data["value"] = {
+                    "valid": True,
+                    "message": "Programación impresa correctamente.",
+                }
                 _logger.info("Programación impresa correctamente.")
             else:
-                self.data["value"] = {"valid": False, "message": "Error al imprimir la programación."}
+                self.data["value"] = {
+                    "valid": False,
+                    "message": "Error al imprimir la programación.",
+                }
                 _logger.error("Error al imprimir la programación.")
 
             event_manager.device_changed(self)
@@ -1652,10 +1791,13 @@ class SerialFiscalDriver(SerialDriver):
                 raise Exception(status["data"]["error"]["msg"])
             if status["data"]["status"]["code"] not in ["1", "4"]:
                 raise Exception(status["data"]["status"]["msg"])
-            
+
             status = status["status"]
             _logger.info("Estado de la impresora: %s", status.PrinterStatusDescription)
-            self.data["value"] = {"valid": True, "message": "Estado de la impresora: " + status.PrinterStatusDescription}
+            self.data["value"] = {
+                "valid": True,
+                "message": "Estado de la impresora: " + status.PrinterStatusDescription,
+            }
             event_manager.device_changed(self)
 
             return status
@@ -1667,12 +1809,13 @@ class SerialFiscalDriver(SerialDriver):
 
     def ReadFpStatus(self, data):
         try:
-
             result = self.get_s1_printer_data()
             if result:
                 status_obj = self.tfhka.GetPrinterStatus()
 
-                status = self._GetStatusError(status_obj.PrinterStatusCode, status_obj.PrinterErrorCode)
+                status = self._GetStatusError(
+                    status_obj.PrinterStatusCode, status_obj.PrinterErrorCode
+                )
 
                 return {
                     "valid": True,
@@ -1873,7 +2016,7 @@ class SerialFiscalDriver(SerialDriver):
         except serial.SerialException:
             m = None
         return m
-    
+
     def get_s1_printer_data(self):
         """
         Obtiene los datos del estado S1.
@@ -2026,8 +2169,8 @@ class SerialFiscalDriver(SerialDriver):
             self.trama = self._UploadDataReport("U0Z")
             self.ReportData = self.tfhka.ReportData(self.trama)
         return self.ReportData
-    
-    def PrintXReport(self,data):
+
+    def PrintXReport(self, data):
         """
         Imprime un reporte X.
         """
@@ -2037,10 +2180,13 @@ class SerialFiscalDriver(SerialDriver):
                 raise Exception(status["data"]["error"]["msg"])
             if status["data"]["status"]["code"] not in ["1", "4"]:
                 raise Exception(status["data"]["status"]["msg"])
-            
+
             self.tfhka.PrintXReport()
             _logger.info("Reporte X impreso correctamente.")
-            self.data["value"] = {"valid": True, "message": "Reporte X impreso correctamente."}
+            self.data["value"] = {
+                "valid": True,
+                "message": "Reporte X impreso correctamente.",
+            }
             event_manager.device_changed(self)
             return {"valid": True, "message": "Reporte X impreso correctamente."}
 
@@ -2049,7 +2195,7 @@ class SerialFiscalDriver(SerialDriver):
             self.data["value"] = {"valid": False, "message": str(e)}
             event_manager.device_changed(self)
             return {"valid": False, "message": str(e)}
-        
+
     def PrintZReport(self, data, *items):
         try:
             status = self.ReadFpStatus(True)
@@ -2057,10 +2203,13 @@ class SerialFiscalDriver(SerialDriver):
                 raise Exception(status["data"]["error"]["msg"])
             if status["data"]["status"]["code"] not in ["1", "4"]:
                 raise Exception(status["data"]["status"]["msg"])
-            
+
             self.tfhka.PrintZReport()
             _logger.info("Reporte Z impreso correctamente.")
-            self.data["value"] = {"valid": True, "message": "Reporte Z impreso correctamente."}
+            self.data["value"] = {
+                "valid": True,
+                "message": "Reporte Z impreso correctamente.",
+            }
             event_manager.device_changed(self)
             return {"valid": True, "message": "Reporte Z impreso correctamente."}
         except Exception as e:
@@ -2070,37 +2219,62 @@ class SerialFiscalDriver(SerialDriver):
             return {"valid": False, "message": str(e)}
 
     def _GetStatusError(self, st, er):
-
-
         status_codes = {
-            0:  {"msg": "Estado desconocido.", "code": "0"},
-            1:  {"msg": "En modo prueba y en espera.", "code": "1"},
-            2:  {"msg": "En modo prueba y emisión de documentos.", "code": "2"},
-            3:  {"msg": "En modo prueba y emisión de documentos no fiscales.", "code": "3"},
-            4:  {"msg": "En modo fiscal y en espera.", "code": "4"},
-            5:  {"msg": "En modo fiscal y emisión de documentos fiscales.", "code": "5"},
-            6:  {"msg": "En modo fiscal y emisión de documentos no fiscales.", "code": "6"},
-            7:  {"msg": "En modo fiscal, cercana carga completa de la memoria fiscal y en espera.", "code": "7"},
-            8:  {"msg": "En modo fiscal, cercana carga completa de la memoria fiscal y en emisión de documentos fiscales.", "code": "8"},
-            9:  {"msg": "En modo fiscal, cercana carga completa de la memoria fiscal y en emisión de documentos no fiscales.", "code": "9"},
-            10: {"msg": "En modo fiscal, carga completa de la memoria fiscal y en espera.", "code": "10"},
-            11: {"msg": "En modo fiscal, carga completa de la memoria fiscal y en emisión de documentos fiscales.", "code": "11"},
-            12: {"msg": "En modo fiscal, carga completa de la memoria fiscal y en emisión de documentos no fiscales.", "code": "12"},
+            0: {"msg": "Estado desconocido.", "code": "0"},
+            1: {"msg": "En modo prueba y en espera.", "code": "1"},
+            2: {"msg": "En modo prueba y emisión de documentos.", "code": "2"},
+            3: {
+                "msg": "En modo prueba y emisión de documentos no fiscales.",
+                "code": "3",
+            },
+            4: {"msg": "En modo fiscal y en espera.", "code": "4"},
+            5: {"msg": "En modo fiscal y emisión de documentos fiscales.", "code": "5"},
+            6: {
+                "msg": "En modo fiscal y emisión de documentos no fiscales.",
+                "code": "6",
+            },
+            7: {
+                "msg": "En modo fiscal, cercana carga completa de la memoria fiscal y en espera.",
+                "code": "7",
+            },
+            8: {
+                "msg": "En modo fiscal, cercana carga completa de la memoria fiscal y en emisión de documentos fiscales.",
+                "code": "8",
+            },
+            9: {
+                "msg": "En modo fiscal, cercana carga completa de la memoria fiscal y en emisión de documentos no fiscales.",
+                "code": "9",
+            },
+            10: {
+                "msg": "En modo fiscal, carga completa de la memoria fiscal y en espera.",
+                "code": "10",
+            },
+            11: {
+                "msg": "En modo fiscal, carga completa de la memoria fiscal y en emisión de documentos fiscales.",
+                "code": "11",
+            },
+            12: {
+                "msg": "En modo fiscal, carga completa de la memoria fiscal y en emisión de documentos no fiscales.",
+                "code": "12",
+            },
         }
 
         error_codes = {
-            0:   {"msg": "No hay error.", "code": "0"},
-            1:   {"msg": "Fin en la entrega de papel.", "code": "1"},
-            2:   {"msg": "Error de índole mecánico en la entrega de papel.", "code": "2"},
-            3:   {"msg": "Fin en la entrega de papel y error mecánico.", "code": "3"},
-            80:  {"msg": "Comando inválido o valor inválido.", "code": "80"},
-            84:  {"msg": "Tasa inválida.", "code": "84"},
-            88:  {"msg": "No hay asignadas directivas.", "code": "88"},
-            92:  {"msg": "Comando inválido.", "code": "92"},
-            96:  {"msg": "Error fiscal.", "code": "96"},
+            0: {"msg": "No hay error.", "code": "0"},
+            1: {"msg": "Fin en la entrega de papel.", "code": "1"},
+            2: {"msg": "Error de índole mecánico en la entrega de papel.", "code": "2"},
+            3: {"msg": "Fin en la entrega de papel y error mecánico.", "code": "3"},
+            80: {"msg": "Comando inválido o valor inválido.", "code": "80"},
+            84: {"msg": "Tasa inválida.", "code": "84"},
+            88: {"msg": "No hay asignadas directivas.", "code": "88"},
+            92: {"msg": "Comando inválido.", "code": "92"},
+            96: {"msg": "Error fiscal.", "code": "96"},
             100: {"msg": "Error de la memoria fiscal.", "code": "100"},
             108: {"msg": "Memoria fiscal llena.", "code": "108"},
-            112: {"msg": "Buffer completo. (debe enviar el comando de reinicio)", "code": "112"},
+            112: {
+                "msg": "Buffer completo. (debe enviar el comando de reinicio)",
+                "code": "112",
+            },
             128: {"msg": "Error en la comunicación.", "code": "128"},
             137: {"msg": "No hay respuesta.", "code": "137"},
             144: {"msg": "Error LRC.", "code": "144"},

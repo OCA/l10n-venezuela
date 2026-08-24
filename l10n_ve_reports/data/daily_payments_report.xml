@@ -26,7 +26,10 @@
                 <field name="expression_label">line_date</field>
                 <field name="figure_type">date</field>
             </record>
-            <record id="daily_payments_report_invoice_documents" model="account.report.column">
+            <record
+                id="daily_payments_report_invoice_documents"
+                model="account.report.column"
+            >
                 <field name="name">Documentos</field>
                 <field name="expression_label">invoice_documents</field>
                 <field name="figure_type">string</field>

@@ -15,7 +15,8 @@ class AccountTaxReportHandler(models.AbstractModel):
     _inherit = "account.report.custom.handler.oca"
     _description = "Account Report Handler for Tax Reports"
 
-    # This model is needed for the Closing Entry button to be available for all reports, including the generic one
+    # This model is needed for the Closing Entry button to be available for all reports,
+    # including the generic one
     # With this, custom tax reports don't need to inherit from the generic tax report
 
     def _custom_options_initializer(self, report, options, previous_options):
@@ -72,7 +73,8 @@ class AccountTaxReportHandler(models.AbstractModel):
         self, report, options, all_column_groups_expression_totals, warnings
     ):
         if "l10n_ve_reports.common_warning_draft_in_period" in warnings:
-            # Recompute the warning 'common_warning_draft_in_period' to not include tax closing entries in the banner of unposted moves
+            # Recompute the warning 'common_warning_draft_in_period' to not include tax
+            # closing entries in the banner of unposted moves
             if not self.env["account.move"].search_count(
                 [
                     ("state", "=", "draft"),
@@ -129,11 +131,11 @@ class AccountTaxReportHandler(models.AbstractModel):
                 or not (report.country_id and options["available_tax_units"])
             ):
                 message = _(
-                    "You're about the generate the closing entries of multiple companies at once. Each of them will be created in accordance with its company tax periodicity."
+                    "You're about the generate the closing entries of multiple companies at once. Each of them will be created in accordance with its company tax periodicity."  # noqa: E501
                 )
             else:
                 message = _(
-                    "The currently selected dates don't match a tax period. The closing entry will be created for the closest-matching period according to your periodicity setup."
+                    "The currently selected dates don't match a tax period. The closing entry will be created for the closest-matching period according to your periodicity setup."  # noqa: E501
                 )
 
             return {
@@ -142,8 +144,8 @@ class AccountTaxReportHandler(models.AbstractModel):
                 "target": "new",
                 "params": {
                     "depending_action": self.with_context(
-                        {"override_tax_closing_warning": True}
-                    ).action_periodic_vat_entries(options),
+                        override_tax_closing_warning=True
+                    ).action_periodic_vat_entries(options),  # noqa: E501
                     "message": message,
                     "button_text": _("Proceed"),
                 },
@@ -173,7 +175,8 @@ class AccountTaxReportHandler(models.AbstractModel):
     def _get_periodic_vat_entries(self, options, from_post=False):
         report = self.env["account.report"].browse(options["report_id"])
 
-        # When integer_rounding is available, we always want it for tax closing (as it means it's a legal requirement)
+        # When integer_rounding is available, we always want it for tax closing (as it
+        # means it's a legal requirement)
         if options.get("integer_rounding"):
             options["integer_rounding_enabled"] = True
 
@@ -204,20 +207,28 @@ class AccountTaxReportHandler(models.AbstractModel):
         """Generates and/or updates VAT closing entries.
 
         This method computes the content of the tax closing in the following way:
-        - Search on all tax lines in the given period, group them by tax_group (each tax group might have its own
+        - Search on all tax lines in the given period, group them by tax_group (each tax
+        group might have its own
         tax receivable/payable account).
-        - Create a move line that balances each tax account and add the difference in the correct receivable/payable
-        account. Also take into account amounts already paid via advance tax payment account.
+        - Create a move line that balances each tax account and add the difference in
+        the correct receivable/payable
+        account. Also take into account amounts already paid via advance tax payment
+        account.
 
-        The tax closing is done so that an individual move is created per available VAT number: so, one for each
-        foreign vat fiscal position (each with fiscal_position_id set to this fiscal position), and one for the domestic
-        position (with fiscal_position_id = None). The moves created by this function hence depends on the content of the
+        The tax closing is done so that an individual move is created per available VAT
+        number: so, one for each
+        foreign vat fiscal position (each with fiscal_position_id set to this fiscal
+        position), and one for the domestic
+        position (with fiscal_position_id = None). The moves created by this function
+        hence depends on the content of the
         options dictionary, and what fiscal positions are accepted by it.
 
         :param options: the tax report options dict to use to make the closing.
         :param closing_moves: If provided, closing moves to update the content from.
-                              They need to be compatible with the provided options (if they have a fiscal_position_id, for example).
-        :param companies: optional params, the companies given will be used instead of taking all the companies impacting
+                              They need to be compatible with the provided options (if
+                              they have a fiscal_position_id, for example).
+        :param companies: optional params, the companies given will be used instead of
+        taking all the companies impacting
                           the report.
         :return: The closing moves.
         """
@@ -262,14 +273,16 @@ class AccountTaxReportHandler(models.AbstractModel):
                 else:
                     countries |= company.account_fiscal_country_id
 
-            # Check the tax groups from the company for any misconfiguration in these countries
+            # Check the tax groups from the company for any misconfiguration in these
+            # countries
             if self.env["account.tax.group"]._check_misconfigured_tax_groups(
                 company, countries
             ):
                 self._redirect_to_misconfigured_tax_groups(company, countries)
 
             for move in company_closing_moves:
-                # When coming from post and that the current move is the closing of the current company we don't want to
+                # When coming from post and that the current move is the closing of the
+                # current company we don't want to
                 # write on it again
                 if from_post and move == closing_moves_by_company.get(self.env.company):
                     continue
@@ -302,12 +315,16 @@ class AccountTaxReportHandler(models.AbstractModel):
     def _get_tax_closing_entries_for_closed_period(
         self, report, options, companies, posted_only=True
     ):
-        """Fetch the closing entries related to the given companies for the currently selected tax report period.
-        Only used when the selected period already has a tax lock date impacting it, and assuming that these periods
+        """Fetch the closing entries related to the given companies for the currently
+        selected tax report period.
+        Only used when the selected period already has a tax lock date impacting it, and
+        assuming that these periods
         all have a tax closing entry.
         :param report: The tax report for which we are getting the closing entries.
-        :param options: the tax report options dict needed to get the period end date and fiscal position info.
-        :param companies: a recordset of companies for which the period has already been closed.
+        :param options: the tax report options dict needed to get the period end date
+        and fiscal position info.
+        :param companies: a recordset of companies for which the period has already been
+        closed.
         :return: The closing moves.
         """
         closing_moves = self.env["account.move"]
@@ -341,7 +358,8 @@ class AccountTaxReportHandler(models.AbstractModel):
     def _compute_vat_closing_entry(self, company, options):
         """Compute the VAT closing entry.
 
-        This method returns the one2many commands to balance the tax accounts for the selected period, and
+        This method returns the one2many commands to balance the tax accounts for the
+        selected period, and
         a dictionnary that will help balance the different accounts set per tax group.
         """
         self = self.with_company(
@@ -383,7 +401,8 @@ class AccountTaxReportHandler(models.AbstractModel):
         new_options = report.with_context(allowed_company_ids=company.ids).get_options(
             previous_options=new_options
         )
-        # Force the use of the fiscal position from the original options (_get_options sets the fiscal
+        # Force the use of the fiscal position from the original options (_get_options
+        # sets the fiscal
         # position to 'all' when the report is the generic tax report)
         new_options["fiscal_position"] = options["fiscal_position"]
 
@@ -393,7 +412,8 @@ class AccountTaxReportHandler(models.AbstractModel):
             domain=self._get_vat_closing_entry_additional_domain(),
         )
 
-        # Check whether it is multilingual, in order to get the translation from the JSON value if present
+        # Check whether it is multilingual, in order to get the translation from the
+        # JSON value if present
         tax_name = self.env["account.tax"]._field_to_sql("tax", "name")
 
         query = SQL(
@@ -403,12 +423,14 @@ class AccountTaxReportHandler(models.AbstractModel):
                     %(tax_name)s as tax_name,
                     "account_move_line".account_id,
                     COALESCE(SUM("account_move_line".balance), 0) as amount
-            FROM account_tax tax, account_tax_repartition_line repartition, %(table_references)s
+            FROM account_tax tax, account_tax_repartition_line repartition,
+            %(table_references)s
             WHERE %(search_condition)s
               AND tax.id = "account_move_line".tax_line_id
               AND repartition.id = "account_move_line".tax_repartition_line_id
               AND repartition.use_in_tax_closing
-            GROUP BY tax.tax_group_id, "account_move_line".tax_line_id, tax.name, "account_move_line".account_id
+            GROUP BY tax.tax_group_id, "account_move_line".tax_line_id, tax.name,
+            "account_move_line".account_id
             """,
             tax_name=tax_name,
             table_references=query.from_clause,
@@ -436,7 +458,8 @@ class AccountTaxReportHandler(models.AbstractModel):
         # then loop on previous results to
         #    * add the lines that will balance their sum per account
         #    * make the total per tax group's account triplet
-        # (if 2 tax groups share the same 3 accounts, they should consolidate in the vat closing entry)
+        # (if 2 tax groups share the same 3 accounts, they should consolidate in the vat
+        # closing entry)
         move_vals_lines = []
         tax_group_subtotal = {}
         currency = self.env.company.currency_id
@@ -445,7 +468,7 @@ class AccountTaxReportHandler(models.AbstractModel):
             # ignore line that have no property defined on tax group
             if not tg.tax_receivable_account_id or not tg.tax_payable_account_id:
                 continue
-            for dummy, value in values.items():
+            for _dummy, value in values.items():
                 for v in value:
                     tax_name, account_id, amt = v
                     # Line to balance
@@ -476,7 +499,8 @@ class AccountTaxReportHandler(models.AbstractModel):
                 else:
                     tax_group_subtotal[key] = total
 
-        # If the tax report is completely empty, we add two 0-valued lines, using the first in in and out
+        # If the tax report is completely empty, we add two 0-valued lines, using the
+        # first in in and out
         # account id we find on the taxes.
         if len(move_vals_lines) == 0:
             rep_ln_in = self.env["account.tax.repartition.line"].search(
@@ -530,14 +554,16 @@ class AccountTaxReportHandler(models.AbstractModel):
         return []
 
     def _postprocess_vat_closing_entry_results(self, company, options, results):
-        # Override this to, for example, apply a rounding to the lines of the closing entry
+        # Override this to, for example, apply a rounding to the lines of the closing
+        # entry
         return results
 
     def _vat_closing_entry_results_rounding(
         self, company, options, results, rounding_accounts, vat_results_summary
     ):
         """
-        Apply the rounding from the tax report by adding a line to the end of the query results
+        Apply the rounding from the tax report by adding a line to the end of the query
+        results
         representing the sum of the roundings on each line of the tax report.
         """
         # Ignore if the rounding accounts cannot be found
@@ -574,9 +600,11 @@ class AccountTaxReportHandler(models.AbstractModel):
                         continue
 
                     # We accept 3 types of operations:
-                    # 1) due and 2) deductible - This is used for reports that have lines for the payable vat and
+                    # 1) due and 2) deductible - This is used for reports that have
+                    # lines for the payable vat and
                     # lines for the reclaimable vat.
-                    # 3) total - This is used for reports that have a single line with the payable/reclaimable vat.
+                    # 3) total - This is used for reports that have a single line with
+                    # the payable/reclaimable vat.
                     if operation_type in {"due", "total"}:
                         total_amount += column["no_format"]
                     elif operation_type == "deductible":
@@ -601,9 +629,11 @@ class AccountTaxReportHandler(models.AbstractModel):
 
     @api.model
     def _add_tax_group_closing_items(self, tax_group_subtotal, closing_move):
-        """Transform the parameter tax_group_subtotal dictionnary into one2many commands.
+        """Transform the parameter tax_group_subtotal dictionnary into one2many
+        commands.
 
-        Used to balance the tax group accounts for the creation of the vat closing entry.
+        Used to balance the tax group accounts for the creation of the vat closing
+        entry.
         """
 
         def _add_line(account, name, company_currency):
@@ -646,7 +676,8 @@ class AccountTaxReportHandler(models.AbstractModel):
               AND aml.company_id = %s
         """
         line_ids_vals = []
-        # keep track of already balanced account, as one can be used in several tax group
+        # keep track of already balanced account, as one can be used in several tax
+        # group
         account_already_balanced = []
         for key, value in tax_group_subtotal.items():
             total = value
@@ -684,8 +715,10 @@ class AccountTaxReportHandler(models.AbstractModel):
 
     @api.model
     def _redirect_to_misconfigured_tax_groups(self, company, countries):
-        """Raises a RedirectWarning informing the user his tax groups are missing configuration
-        for a given company, redirecting him to the list view of account.tax.group, filtered
+        """Raises a RedirectWarning informing the user his tax groups are missing
+        configuration
+        for a given company, redirecting him to the list view of account.tax.group,
+        filtered
         accordingly to the provided countries.
         """
         need_config_action = {
@@ -711,8 +744,10 @@ class AccountTaxReportHandler(models.AbstractModel):
         """Returns the fiscal positions information to use to generate the tax closing
         for this company, with the provided options.
 
-        :return: (include_domestic, fiscal_positions), where fiscal positions is a recordset
-                 and include_domestic is a boolean telling whether or not the domestic closing
+        :return: (include_domestic, fiscal_positions), where fiscal positions is a
+        recordset
+                 and include_domestic is a boolean telling whether or not the domestic
+                 closing
                  (i.e. the one without any fiscal position) must also be performed
         """
         if options["fiscal_position"] == "domestic":
@@ -778,11 +813,12 @@ class GenericTaxReportCustomHandler(models.AbstractModel):
         return parent_config
 
     def _custom_options_initializer(self, report, options, previous_options=None):
-        super()._custom_options_initializer(
+        result = super()._custom_options_initializer(
             report, options, previous_options=previous_options
         )
 
-        # We are on the generic tax report (no country) and the user can not change the fiscal position so we show them all.
+        # We are on the generic tax report (no country) and the user can not change the
+        # fiscal position so we show them all.
         if (
             not report.country_id
             and len(options["available_vat_fiscal_positions"])
@@ -791,6 +827,7 @@ class GenericTaxReportCustomHandler(models.AbstractModel):
         ):
             options["allow_domestic"] = False
             options["fiscal_position"] = "all"
+        return result
 
     def _dynamic_lines_generator(
         self, report, options, all_column_groups_expression_totals, warnings=None
@@ -840,8 +877,10 @@ class GenericTaxReportCustomHandler(models.AbstractModel):
                 report, options, options_by_column_group
             )
 
-        # Fetch involved records in order to ensure all lines are sorted according the comodel order.
-        # To do so, we compute 'sorting_map_list' allowing to retrieve each record by id and the order
+        # Fetch involved records in order to ensure all lines are sorted according the
+        # comodel order.
+        # To do so, we compute 'sorting_map_list' allowing to retrieve each record by id
+        # and the order
         # to be used.
         record_ids_gb = [set() for dummy in groupby_fields]
 
@@ -900,11 +939,12 @@ class GenericTaxReportCustomHandler(models.AbstractModel):
     # -------------------------------------------------------------------------
 
     @api.model
-    def _read_generic_tax_report_amounts_no_tax_details(
+    def _read_generic_tax_report_amounts_no_tax_details(  # noqa: C901
         self, report, options, options_by_column_group
     ):
         # Fetch the group of taxes.
-        # If all child taxes have a 'none' type_tax_use, all amounts are aggregated and only the group appears on the report.
+        # If all child taxes have a 'none' type_tax_use, all amounts are aggregated and
+        # only the group appears on the report.
         company_ids = report.get_report_company_ids(options)
         company_domain = self.env["account.tax"]._check_company_domain(company_ids)
         company_where_query = (
@@ -1003,10 +1043,13 @@ class GenericTaxReportCustomHandler(models.AbstractModel):
                     src_tax.type_tax_use AS src_tax_type_tax_use,
                     SUM(account_move_line.balance) AS base_amount
                 FROM %(table_references)s
-                JOIN account_move_line_account_tax_rel tax_rel ON account_move_line.id = tax_rel.account_move_line_id
+                JOIN account_move_line_account_tax_rel tax_rel ON account_move_line.id =
+                tax_rel.account_move_line_id
                 JOIN account_tax tax ON tax.id = tax_rel.account_tax_id
-                LEFT JOIN account_tax src_tax ON src_tax.id = account_move_line.tax_line_id
-                LEFT JOIN account_tax src_group_tax ON src_group_tax.id = account_move_line.group_tax_id
+                LEFT JOIN account_tax src_tax ON src_tax.id =
+                account_move_line.tax_line_id
+                LEFT JOIN account_tax src_group_tax ON src_group_tax.id =
+                account_move_line.group_tax_id
                 WHERE %(search_condition)s
                     AND (
                         /* CABA */
@@ -1031,7 +1074,8 @@ class GenericTaxReportCustomHandler(models.AbstractModel):
                         )
                     )
                 GROUP BY tax.id, src_group_tax.id, src_tax.id
-                ORDER BY src_group_tax.sequence, src_group_tax.id, src_tax.sequence, src_tax.id, tax.sequence, tax.id
+                ORDER BY src_group_tax.sequence, src_group_tax.id, src_tax.sequence,
+                src_tax.id, tax.sequence, tax.id
                 """,
                     table_references=query.from_clause,
                     search_condition=query.where_clause,
@@ -1051,18 +1095,25 @@ class GenericTaxReportCustomHandler(models.AbstractModel):
                         in group_of_taxes_info[row["src_group_tax_id"]]["child_tax_ids"]
                     ):
                         # Suppose a base of 1000 with a group of taxes 20% affect + 10%.
-                        # The base of the group of taxes must be 1000, not 1200 because the group of taxes is not
-                        # expanded. So the tax lines affecting the base of its own group of taxes are ignored.
+                        # The base of the group of taxes must be 1000, not 1200 because
+                        # the group of taxes is not
+                        # expanded. So the tax lines affecting the base of its own group
+                        # of taxes are ignored.
                         pass
                     elif row[
                         "tax_type_tax_use"
                     ] == "none" and child_to_group_of_taxes.get(row["tax_id"]):
-                        # The tax line is affecting the base of a 'none' tax belonging to a group of taxes.
-                        # In that case, the amount is accounted as an extra base for that group. However, we need to
+                        # The tax line is affecting the base of a 'none' tax belonging
+                        # to a group of taxes.
+                        # In that case, the amount is accounted as an extra base for
+                        # that group. However, we need to
                         # account it only once.
-                        # For example, suppose a tax 10% affect base of subsequent followed by a group of taxes
-                        # 20% + 30%. On a base of 1000.0, the tax line for 10% will affect the base of 20% + 30%.
-                        # However, this extra base must be accounted only once since the base of the group of taxes
+                        # For example, suppose a tax 10% affect base of subsequent
+                        # followed by a group of taxes
+                        # 20% + 30%. On a base of 1000.0, the tax line for 10% will
+                        # affect the base of 20% + 30%.
+                        # However, this extra base must be accounted only once since the
+                        # base of the group of taxes
                         # must be 1100.0 and not 1200.0.
                         group_tax_id = child_to_group_of_taxes[row["tax_id"]]
                         if group_tax_id not in group_of_taxes_with_extra_base_amount:
@@ -1084,7 +1135,8 @@ class GenericTaxReportCustomHandler(models.AbstractModel):
                         row["tax_id"] in group_of_taxes_info
                         and group_of_taxes_info[row["tax_id"]]["to_expand"]
                     ):
-                        # Expand the group of taxes since it contains at least one tax with a type != 'none'.
+                        # Expand the group of taxes since it contains at least one tax
+                        # with a type != 'none'.
                         group_info = group_of_taxes_info[row["tax_id"]]
                         for child_tax_id in group_info["child_tax_ids"]:
                             results[group_info["type_tax_use"]]["children"][
@@ -1099,10 +1151,13 @@ class GenericTaxReportCustomHandler(models.AbstractModel):
 
             select_deductible = join_deductible = group_by_deductible = SQL()
             if options.get("account_journal_report_tax_deductibility_columns"):
-                select_deductible = SQL(""", repartition.use_in_tax_closing AS trl_tax_closing
-                                           , SIGN(repartition.factor_percent) AS trl_factor""")
+                select_deductible = SQL(""", repartition.use_in_tax_closing AS
+                trl_tax_closing
+                                           , SIGN(repartition.factor_percent) AS
+                                           trl_factor""")
                 join_deductible = SQL("""JOIN account_tax_repartition_line repartition
-                                           ON account_move_line.tax_repartition_line_id = repartition.id""")
+                                           ON account_move_line.tax_repartition_line_id
+                                           = repartition.id""")
                 group_by_deductible = SQL(
                     ", repartition.use_in_tax_closing, SIGN(repartition.factor_percent)"
                 )
@@ -1120,7 +1175,8 @@ class GenericTaxReportCustomHandler(models.AbstractModel):
                 FROM %(table_references)s
                 JOIN account_tax tax ON tax.id = account_move_line.tax_line_id
                 %(join_deductible)s
-                LEFT JOIN account_tax group_tax ON group_tax.id = account_move_line.group_tax_id
+                LEFT JOIN account_tax group_tax ON group_tax.id =
+                account_move_line.group_tax_id
                 WHERE %(search_condition)s
                     AND (
                         /* CABA */
@@ -1129,9 +1185,11 @@ class GenericTaxReportCustomHandler(models.AbstractModel):
                         OR tax.tax_exigibility != 'on_payment'
                     )
                     AND (
-                        (group_tax.id IS NULL AND tax.type_tax_use IN ('sale', 'purchase'))
+                        (group_tax.id IS NULL AND tax.type_tax_use IN ('sale',
+                        'purchase'))
                         OR
-                        (group_tax.id IS NOT NULL AND group_tax.type_tax_use IN ('sale', 'purchase'))
+                        (group_tax.id IS NOT NULL AND group_tax.type_tax_use IN ('sale',
+                        'purchase'))
                     )
                 GROUP BY tax.id, group_tax.id %(group_by_deductible)s
                 """,
@@ -1145,7 +1203,8 @@ class GenericTaxReportCustomHandler(models.AbstractModel):
 
             for row in self._cr.dictfetchall():
                 # Manage group of taxes.
-                # In case the group of taxes is mixing multiple taxes having a type_tax_use != 'none', consider
+                # In case the group of taxes is mixing multiple taxes having a
+                # type_tax_use != 'none', consider
                 # them instead of the group.
                 tax_id = row["tax_id"]
                 if row["group_tax_id"]:
@@ -1194,12 +1253,15 @@ class GenericTaxReportCustomHandler(models.AbstractModel):
         """Read the tax details to compute the tax amounts.
 
         :param options_list:    The list of report options, one for each period.
-        :param groupby_fields:  A list of tuple (alias, field) representing the way the amounts must be grouped.
-        :return:                A dictionary mapping each groupby key (e.g. a tax_id) to a sub dictionary containing:
+        :param groupby_fields:  A list of tuple (alias, field) representing the way the
+        amounts must be grouped.
+        :return:                A dictionary mapping each groupby key (e.g. a tax_id) to
+        a sub dictionary containing:
 
             base_amount:    The tax base amount expressed in company's currency.
             tax_amount      The tax amount expressed in company's currency.
-            children:       The children nodes following the same pattern as the current dictionary.
+            children:       The children nodes following the same pattern as the current
+            dictionary.
         """
         fetch_group_of_taxes = False
 
@@ -1215,7 +1277,8 @@ class GenericTaxReportCustomHandler(models.AbstractModel):
             )
             groupby_query_list.append(SQL.identifier(alias, field))
 
-            # Fetch both info from the originator tax and the child tax to manage the group of taxes.
+            # Fetch both info from the originator tax and the child tax to manage the
+            # group of taxes.
             if alias == "src_tax":
                 select_clause_list.append(
                     SQL(
@@ -1228,7 +1291,8 @@ class GenericTaxReportCustomHandler(models.AbstractModel):
                 fetch_group_of_taxes = True
 
         # Fetch the group of taxes.
-        # If all children taxes are 'none', all amounts are aggregated and only the group will appear on the report.
+        # If all children taxes are 'none', all amounts are aggregated and only the
+        # group will appear on the report.
         # If some children taxes are not 'none', the children are displayed.
         group_of_taxes_to_expand = set()
         if fetch_group_of_taxes:
@@ -1248,7 +1312,8 @@ class GenericTaxReportCustomHandler(models.AbstractModel):
                 query.from_clause, query.where_clause
             )
 
-            # Avoid adding multiple times the same base amount sharing the same grouping_key.
+            # Avoid adding multiple times the same base amount sharing the same
+            # grouping_key.
             # It could happen when dealing with group of taxes for example.
             row_keys = set()
 
@@ -1258,17 +1323,20 @@ class GenericTaxReportCustomHandler(models.AbstractModel):
                 SELECT
                     %(select_clause)s,
                     trl.document_type = 'refund' AS is_refund,
-                    SUM(CASE WHEN tdr.display_type = 'rounding' THEN 0 ELSE tdr.base_amount END) AS base_amount,
+                    SUM(CASE WHEN tdr.display_type = 'rounding' THEN 0 ELSE
+                    tdr.base_amount END) AS base_amount,
                     SUM(tdr.tax_amount) AS tax_amount
                 FROM (%(tax_details_query)s) AS tdr
-                JOIN account_tax_repartition_line trl ON trl.id = tdr.tax_repartition_line_id
+                JOIN account_tax_repartition_line trl ON trl.id =
+                tdr.tax_repartition_line_id
                 JOIN account_tax tax ON tax.id = tdr.tax_id
                 JOIN account_tax src_tax ON
                     src_tax.id = COALESCE(tdr.group_tax_id, tdr.tax_id)
                     AND src_tax.type_tax_use IN ('sale', 'purchase')
                 JOIN account_account account ON account.id = tdr.base_account_id
                 WHERE tdr.tax_exigible
-                GROUP BY tdr.tax_repartition_line_id, trl.document_type, %(groupby_query)s
+                GROUP BY tdr.tax_repartition_line_id, trl.document_type,
+                %(groupby_query)s
                 ORDER BY src_tax.sequence, src_tax.id, tax.sequence, tax.id
                 """,
                     select_clause=SQL(",").join(select_clause_list),
@@ -1280,21 +1348,25 @@ class GenericTaxReportCustomHandler(models.AbstractModel):
             for row in self._cr.dictfetchall():
                 node = res
 
-                # tuple of values used to prevent adding multiple times the same base amount.
+                # tuple of values used to prevent adding multiple times the same base
+                # amount.
                 cumulated_row_key = [row["is_refund"]]
 
                 for alias, field in groupby_fields:
                     grouping_key = f"{alias}_{field}"
 
                     # Manage group of taxes.
-                    # In case the group of taxes is mixing multiple taxes having a type_tax_use != 'none', consider
+                    # In case the group of taxes is mixing multiple taxes having a
+                    # type_tax_use != 'none', consider
                     # them instead of the group.
                     if (
                         grouping_key == "src_tax_id"
                         and row["src_tax_id"] in group_of_taxes_to_expand
                     ):
-                        # Add the originator group to the grouping key, to make sure that its base amount is not
-                        # treated twice, for hybrid cases where a tax is both used in a group and independently.
+                        # Add the originator group to the grouping key, to make sure
+                        # that its base amount is not
+                        # treated twice, for hybrid cases where a tax is both used in a
+                        # group and independently.
                         cumulated_row_key.append(row[grouping_key])
 
                         # Ensure the child tax is used instead of the group.
@@ -1343,15 +1415,20 @@ class GenericTaxReportCustomHandler(models.AbstractModel):
         parent_line_id=None,
         warnings=None,
     ):
-        """Populate the list of report lines passed as parameter recursively. At this point, every amounts is already
+        """Populate the list of report lines passed as parameter recursively. At this
+        point, every amounts is already
         fetched for every periods and every groupby.
 
         :param options:             The report options.
         :param lines:               The list of report lines to populate.
-        :param sorting_map_list:    A list of dictionary mapping each encountered key with a weight to sort the results.
-        :param index:               The index of the current element to process (also equals to the level into the hierarchy).
-        :param groupby_fields:      A list of tuple <alias, field> defining in which way tax amounts should be grouped.
-        :param values_node:         The node containing the amounts and children into the hierarchy.
+        :param sorting_map_list:    A list of dictionary mapping each encountered key
+        with a weight to sort the results.
+        :param index:               The index of the current element to process (also
+        equals to the level into the hierarchy).
+        :param groupby_fields:      A list of tuple <alias, field> defining in which way
+        tax amounts should be grouped.
+        :param values_node:         The node containing the amounts and children into
+        the hierarchy.
         :param type_tax_use:        The type_tax_use of the tax.
         :param parent_line_id:      The line id of the parent line (if any)
         :param warnings             The warnings dictionnary.
@@ -1367,7 +1444,8 @@ class GenericTaxReportCustomHandler(models.AbstractModel):
         sorted_keys = sorted(list(values_node.keys()), key=lambda x: sorting_map[x][1])
 
         for key in sorted_keys:
-            # Compute 'type_tax_use' with the first grouping since 'src_tax_type_tax_use' is always
+            # Compute 'type_tax_use' with the first grouping since
+            # 'src_tax_type_tax_use' is always
             # the first one.
             if groupby_key == "src_tax_type_tax_use":
                 type_tax_use = key
@@ -1473,7 +1551,8 @@ class GenericTaxReportCustomHandler(models.AbstractModel):
         :param default_vals:    The pre-computed report line values.
         :param groupby_key:     The grouping_key record.
         :param value:           The value that could be a record.
-        :param parent_line_id   The line id of the parent line (if any, can be None otherwise)
+        :param parent_line_id   The line id of the parent line (if any, can be None
+        otherwise)
         :param warnings:        The warnings dictionary.
         :return:                A python dictionary.
         """
@@ -1539,7 +1618,7 @@ class GenericTaxReportCustomHandler(models.AbstractModel):
 
         for (
             column_group_key,
-            column_group_options,
+            column_group_options,  # noqa: B007
         ) in report._split_options_per_column_group(options).items():
             net_value = next(
                 (

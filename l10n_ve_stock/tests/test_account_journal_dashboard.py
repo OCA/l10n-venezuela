@@ -28,7 +28,7 @@ class TestL10nVeSeniatInvoiceDashboardDispatch(TestL10nVeStockDispatchGuide):
             "l10n_ve_stock.stock_picking_unfactured_dispatch_guide_tree"
         )
         view_id = action.get("view_id")
-        if isinstance(view_id, (list, tuple)):
+        if isinstance(view_id, list | tuple):
             view_id = view_id[0]
         if view_id:
             self.assertEqual(view_id, list_view.id)

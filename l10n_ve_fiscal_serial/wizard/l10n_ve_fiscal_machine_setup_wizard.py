@@ -156,10 +156,7 @@ class L10nVeFiscalMachineSetupWizard(models.TransientModel):
             wizard.requires_manual_identification = (
                 wizard.detect_state == "done"
                 and wizard.enq_status == 64
-                and (
-                    not wizard.registered_serial
-                    or not wizard.fiscal_rif
-                )
+                and (not wizard.registered_serial or not wizard.fiscal_rif)
             )
 
     def apply_detect_result(self, payload):
@@ -234,15 +231,20 @@ class L10nVeFiscalMachineSetupWizard(models.TransientModel):
             if self.enq_status == 64:
                 raise UserError(
                     _(
-                        "En modo entrenamiento la impresora no devuelve el serial fiscal. "
-                        "Indíquelo manualmente antes de guardar."
+                        "En modo entrenamiento la impresora no devuelve "
+                        "el serial fiscal. Indíquelo manualmente antes de guardar."
                     )
                 )
             raise UserError(
-                _("No se detectó el serial fiscal de la impresora. Indíquelo manualmente.")
+                _(
+                    "No se detectó el serial fiscal de la impresora. "
+                    "Indíquelo manualmente."
+                )
             )
         machine_model = self.env["l10n.ve.fiscal.machine"]
-        machine_id = machine_model.create_from_detect_payload(self._get_detect_payload())
+        machine_id = machine_model.create_from_detect_payload(
+            self._get_detect_payload()
+        )
         machine = machine_model.browse(machine_id)
         return {
             "type": "ir.actions.act_window",

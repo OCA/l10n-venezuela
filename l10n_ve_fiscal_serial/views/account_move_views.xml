@@ -1,11 +1,14 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <odoo>
     <record id="view_move_form_l10n_ve_fiscal_serial" model="ir.ui.view">
         <field name="name">account.move.form.l10n.ve.fiscal.serial</field>
         <field name="model">account.move</field>
         <field name="inherit_id" ref="l10n_ve_seniat.view_move_form" />
         <field name="arch" type="xml">
-            <xpath expr="(//header//button[@name='action_post'])[last()]" position="after">
+            <xpath
+                expr="(//header//button[@name='action_post'])[last()]"
+                position="after"
+            >
                 <widget
                     name="l10n_ve_fiscal_serial_button"
                     action="print_out_invoice"
@@ -27,7 +30,10 @@
                     invisible="country_code != 'VE' or l10n_ve_journal_emission_medium != 'fiscal_machine' or move_type not in ('out_invoice', 'out_refund') or state != 'posted' or not l10n_ve_invoice_number"
                 />
             </xpath>
-            <xpath expr="//header//button[@name='action_print_pdf'][1]" position="attributes">
+            <xpath
+                expr="//header//button[@name='action_print_pdf'][1]"
+                position="attributes"
+            >
                 <attribute name="invisible">
                     state != 'posted' or is_being_sent or invoice_pdf_report_id or move_type == 'entry' or (
                     country_code == 'VE' and move_type in ('out_invoice', 'out_refund') and l10n_ve_hide_invoice_print_pdf
@@ -37,7 +43,10 @@
                     )
                 </attribute>
             </xpath>
-            <xpath expr="//header//button[@name='action_print_pdf'][2]" position="attributes">
+            <xpath
+                expr="//header//button[@name='action_print_pdf'][2]"
+                position="attributes"
+            >
                 <attribute name="invisible">
                     state != 'posted' or (not is_being_sent and not invoice_pdf_report_id) or (
                     country_code == 'VE' and move_type in ('out_invoice', 'out_refund') and l10n_ve_hide_invoice_print_pdf
@@ -49,7 +58,7 @@
             </xpath>
             <xpath expr="//field[@name='l10n_ve_serial_number']" position="attributes">
                 <attribute name="readonly">1</attribute>
-                <attribute name="placeholder"></attribute>
+                <attribute name="placeholder" />
                 <attribute name="invisible">
                     not l10n_ve_serial_number and l10n_ve_fiscal_serial_number_placeholder
                 </attribute>
@@ -65,7 +74,7 @@
             </xpath>
             <xpath expr="//field[@name='l10n_ve_invoice_number']" position="attributes">
                 <attribute name="readonly">1</attribute>
-                <attribute name="placeholder"></attribute>
+                <attribute name="placeholder" />
                 <attribute name="invisible">
                     not l10n_ve_invoice_number and l10n_ve_fiscal_invoice_number_placeholder
                 </attribute>
@@ -81,7 +90,7 @@
             </xpath>
             <xpath expr="//field[@name='l10n_ve_report_z']" position="attributes">
                 <attribute name="readonly">1</attribute>
-                <attribute name="placeholder"></attribute>
+                <attribute name="placeholder" />
                 <attribute name="invisible">
                     not l10n_ve_report_z and l10n_ve_fiscal_report_z_placeholder
                 </attribute>

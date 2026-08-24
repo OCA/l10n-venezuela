@@ -20,9 +20,7 @@ class TestAccountMovePostDiscount(L10nVeLoyaltyCommon):
                 "vat": "J12345680",
             }
         )
-        cls._l10n_ve_configure_journal_free(
-            cls.company_data["default_journal_sale"]
-        )
+        cls._l10n_ve_configure_journal_free(cls.company_data["default_journal_sale"])
         cls.reason_early = cls.env.ref(
             "l10n_ve_loyalty.l10n_ve_discount_reason_early_payment",
             raise_if_not_found=False,
@@ -53,7 +51,9 @@ class TestAccountMovePostDiscount(L10nVeLoyaltyCommon):
                             "name": "Product line",
                             "quantity": 1.0,
                             "price_unit": price_unit,
-                            "account_id": self.company_data["default_account_revenue"].id,
+                            "account_id": self.company_data[
+                                "default_account_revenue"
+                            ].id,
                             "tax_ids": [Command.set(tax_ids)],
                         }
                     )
@@ -206,9 +206,7 @@ class TestAccountMovePostDiscount(L10nVeLoyaltyCommon):
                                 "default_account_revenue"
                             ].id,
                             "tax_ids": [
-                                Command.set(
-                                    [self.company_data["default_tax_sale"].id]
-                                )
+                                Command.set([self.company_data["default_tax_sale"].id])
                             ],
                         }
                     ),
@@ -221,9 +219,7 @@ class TestAccountMovePostDiscount(L10nVeLoyaltyCommon):
                                 "default_account_revenue"
                             ].id,
                             "tax_ids": [
-                                Command.set(
-                                    [self.company_data["default_tax_sale"].id]
-                                )
+                                Command.set([self.company_data["default_tax_sale"].id])
                             ],
                         }
                     ),

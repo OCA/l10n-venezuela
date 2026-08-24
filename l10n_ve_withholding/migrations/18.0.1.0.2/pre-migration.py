@@ -57,9 +57,7 @@ def _cleanup_res_config_settings(cr):
     )
     for view_id, view_name, module_name, xmlid_name in cr.fetchall():
         xmlid = (
-            f"{module_name}.{xmlid_name}"
-            if module_name and xmlid_name
-            else "no_xmlid"
+            f"{module_name}.{xmlid_name}" if module_name and xmlid_name else "no_xmlid"
         )
         if xmlid == "no_xmlid":
             cr.execute(
@@ -71,7 +69,8 @@ def _cleanup_res_config_settings(cr):
                 (view_id,),
             )
             _logger.warning(
-                "Desactivada vista huerfana de res.config.settings con account_tax_periodicity: id=%s name=%s",
+                "Desactivada vista huerfana de res.config.settings "
+                "con account_tax_periodicity: id=%s name=%s",
                 view_id,
                 view_name,
             )
@@ -94,7 +93,8 @@ def _cleanup_res_config_settings(cr):
             continue
         changed = False
         for node in arch.xpath(
-            ".//field[starts-with(@name, 'account_tax_periodicity') or @name='totals_below_sections']"
+            ".//field[starts-with(@name, 'account_tax_periodicity') "
+            "or @name='totals_below_sections']"
         ):
             setting = node.xpath("ancestor::setting[1]")
             if setting:
@@ -111,7 +111,8 @@ def _cleanup_res_config_settings(cr):
             new_arch = etree.tostring(arch, encoding="unicode")
             _write_arch(cr, view_id, new_arch)
             _logger.warning(
-                "Removido account_tax_periodicity de vista res.config.settings: %s (%s)",
+                "Removido account_tax_periodicity de vista "
+                "res.config.settings: %s (%s)",
                 view_name,
                 xmlid,
             )
@@ -135,9 +136,7 @@ def _cleanup_res_company(cr):
     )
     for view_id, view_name, module_name, xmlid_name in cr.fetchall():
         xmlid = (
-            f"{module_name}.{xmlid_name}"
-            if module_name and xmlid_name
-            else "no_xmlid"
+            f"{module_name}.{xmlid_name}" if module_name and xmlid_name else "no_xmlid"
         )
         if xmlid == "no_xmlid":
             cr.execute(
@@ -149,7 +148,8 @@ def _cleanup_res_company(cr):
                 (view_id,),
             )
             _logger.warning(
-                "Desactivada vista huerfana de res.company con account_display_representative_field: id=%s name=%s",
+                "Desactivada vista huerfana de res.company "
+                "con account_display_representative_field: id=%s name=%s",
                 view_id,
                 view_name,
             )
@@ -172,7 +172,8 @@ def _cleanup_res_company(cr):
             continue
         changed = False
         for node in arch.xpath(
-            ".//field[starts-with(@name, 'account_representative') or starts-with(@name, 'account_display_representative')]"
+            ".//field[starts-with(@name, 'account_representative') "
+            "or starts-with(@name, 'account_display_representative')]"
         ):
             parent = node.getparent()
             if parent is not None:
@@ -182,7 +183,8 @@ def _cleanup_res_company(cr):
             new_arch = etree.tostring(arch, encoding="unicode")
             _write_arch(cr, view_id, new_arch)
             _logger.warning(
-                "Removido account_display_representative_field de vista res.company: %s (%s)",
+                "Removido account_display_representative_field "
+                "de vista res.company: %s (%s)",
                 view_name,
                 xmlid,
             )
