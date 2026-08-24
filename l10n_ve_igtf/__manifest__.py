@@ -2,12 +2,11 @@
     "name": "Venezuela IGTF",
     "version": "18.0.1.0.0",
     "website": "https://github.com/OCA/l10n-venezuela",
-    "icon": "/poweredbyandy_saas/static/description/icon.png",
     "countries": ["ve"],
     "author": "andyengit, Odoo Community Association (OCA)",
     "maintainers": ["andyengit"],
     "category": "Accounting/Localizations",
-    "depends": ["web", "account", "l10n_ve_seniat", "currency_account"],
+    "depends": ["web", "account", "l10n_ve_seniat"],
     "data": [
         "security/ir.model.access.csv",
         "views/account_move_views.xml",
@@ -20,8 +19,8 @@
         "web.assets_backend": [
             "l10n_ve_igtf/static/src/components/account_payment_field/account_payment.xml",
             "l10n_ve_igtf/static/src/components/account_payment_field/account_payment_field_patch.esm.js",
+            "l10n_ve_igtf/static/src/components/tax_totals/tax_totals_igtf.esm.js",
             "l10n_ve_igtf/static/src/components/tax_totals/tax_totals_igtf.xml",
-            "l10n_ve_igtf/static/src/components/tax_totals/tax_totals_company_currency_igtf.xml",
         ],
     },
     "license": "AGPL-3",

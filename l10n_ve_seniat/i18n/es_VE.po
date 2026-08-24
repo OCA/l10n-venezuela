@@ -2614,6 +2614,11 @@ msgstr ""
 "Planned: Future actividades."
 
 #. module: l10n_ve_seniat
+#: model:ir.model.fields,field_description:l10n_ve_seniat.field_account_move_line__price_subtotal_currency
+msgid "Subtotal in Company Currency"
+msgstr "Subtotal en moneda de la compañía"
+
+#. module: l10n_ve_seniat
 #: model:ir.model.fields,field_description:l10n_ve_seniat.field_account_move_line__subtotal_company_currency
 msgid "Subtotal Company Currency"
 msgstr "Subtotal moneda de la empresa"

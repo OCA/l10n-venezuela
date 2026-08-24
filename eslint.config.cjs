@@ -196,6 +196,16 @@ const config = [{
     languageOptions: {
         ecmaVersion: 2024,
         sourceType: "module",
+        globals: {
+            console: "readonly",
+            document: "readonly",
+            DOMParser: "readonly",
+            fetch: "readonly",
+            localStorage: "readonly",
+            location: "readonly",
+            window: "readonly",
+            XMLSerializer: "readonly",
+        },
     },
 }];
 

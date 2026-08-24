@@ -113,6 +113,9 @@ class TestAccountMoveLine(L10nVeSeniatCommon):
         line = move.line_ids.filtered(lambda aml: aml.display_type == "product")
         self.assertEqual(len(line), 1)
         self.assertGreater(line.subtotal_company_currency, 0)
+        self.assertAlmostEqual(
+            line.price_subtotal_currency, abs(line.balance), places=2
+        )
 
     def test_put_unique_tax_per_line_purchase_adds_default_tax(self):
         supplier = self.env["res.partner"].create(

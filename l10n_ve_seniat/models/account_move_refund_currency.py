@@ -14,10 +14,7 @@ class AccountMove(models.Model):
         return bool(self.journal_id.l10n_ve_emission_medium)
 
     def _l10n_ve_company_price_unit_from_origin_line(self, line):
-        if "price_subtotal_currency" in line._fields and line.price_subtotal_currency:
-            subtotal = abs(line.price_subtotal_currency)
-        else:
-            subtotal = abs(line.balance)
+        subtotal = abs(line.price_subtotal_currency or line.balance)
         quantity = abs(line.quantity) or 1.0
         discount_factor = 1.0 - (line.discount or 0.0) / 100.0
         if discount_factor <= 0.0:

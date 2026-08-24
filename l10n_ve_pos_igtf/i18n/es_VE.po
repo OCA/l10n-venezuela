@@ -126,14 +126,43 @@ msgid "Point of Sale Orders"
 msgstr "Órdenes del punto de venta"
 
 #. module: l10n_ve_pos_igtf
+#: model:ir.model,name:l10n_ve_pos_igtf.model_pos_payment_method
+msgid "Point of Sale Payment Methods"
+msgstr "Métodos de pago del punto de venta"
+
+#. module: l10n_ve_pos_igtf
 #: model:ir.model,name:l10n_ve_pos_igtf.model_pos_payment
 msgid "Point of Sale Payments"
 msgstr "Pagos en punto de venta"
 
 #. module: l10n_ve_pos_igtf
+#: model:ir.model.fields,field_description:l10n_ve_pos_igtf.field_pos_payment__payment_currency_id
+#: model:ir.model.fields,field_description:l10n_ve_pos_igtf.field_pos_payment_method__payment_currency_id
+msgid "Payment Currency"
+msgstr "Moneda de pago"
+
+#. module: l10n_ve_pos_igtf
 #: model:ir.model,name:l10n_ve_pos_igtf.model_pos_session
 msgid "Point of Sale Session"
 msgstr "Sesión del punto de venta"
+
+#. module: l10n_ve_pos_igtf
+#. odoo-python
+#: code:addons/l10n_ve_pos_igtf/models/pos_config.py:0
+msgid "The default pricelist must be included in the available pricelists."
+msgstr ""
+"La lista de precios predeterminada debe estar incluida en las listas "
+"disponibles."
+
+#. module: l10n_ve_pos_igtf
+#. odoo-python
+#: code:addons/l10n_ve_pos_igtf/models/pos_config.py:0
+msgid ""
+"The invoice journal must be in the same currency as the Sales Journal or the "
+"company currency if that is not set."
+msgstr ""
+"El diario de facturas debe estar en la misma moneda que el diario de ventas "
+"o la moneda de la compañía si no está definida."
 
 #. module: l10n_ve_pos_igtf
 #. odoo-javascript

@@ -1,7 +1,6 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 {
     "name": "Venezuelan Reports - Stock Inventory Book",
-    "icon": "/poweredbyandy_saas/static/description/icon.png",
     "summary": "Libro de Inventario para reportes SENIAT",
     "category": "Inventory/Inventory",
     "author": "andyengit, Odoo Community Association (OCA)",

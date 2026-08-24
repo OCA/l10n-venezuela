@@ -17,6 +17,16 @@
                             style="font-weight: 600; white-space: nowrap;"
                         />
                     </td>
+                    <td
+                        t-if="totals.display_in_company_currency"
+                        class="o_list_monetary ps-5"
+                    >
+                        <span
+                            name="l10n_ve_igtf_total_without_igtf_company"
+                            t-out="formatMonetaryCompany(totals.l10n_ve_igtf_total_without_igtf)"
+                            style="font-weight: 600; white-space: nowrap;"
+                        />
+                    </td>
                 </tr>
                 <tr>
                     <td class="o_td_label">
@@ -32,6 +42,17 @@
                             style="font-size: 1.3em; font-weight: bold; white-space: nowrap;"
                         />
                     </td>
+                    <td
+                        t-if="totals.display_in_company_currency"
+                        class="o_list_monetary ps-5"
+                    >
+                        <span
+                            name="amount_total_company"
+                            t-att-class="{'oe_subtotal_footer_separator': totals.has_tax_groups}"
+                            t-out="formatMonetaryCompany(totals.total_amount)"
+                            style="font-size: 1.3em; font-weight: bold; white-space: nowrap;"
+                        />
+                    </td>
                 </tr>
             </t>
             <t t-else="">
@@ -44,6 +65,17 @@
                             name="amount_total"
                             t-att-class="{'oe_subtotal_footer_separator': totals.has_tax_groups}"
                             t-out="formatMonetary(totals.total_amount_currency)"
+                            style="font-size: 1.3em; font-weight: bold; white-space: nowrap;"
+                        />
+                    </td>
+                    <td
+                        t-if="totals.display_in_company_currency"
+                        class="o_list_monetary ps-5"
+                    >
+                        <span
+                            name="amount_total_company"
+                            t-att-class="{'oe_subtotal_footer_separator': totals.has_tax_groups}"
+                            t-out="formatMonetaryCompany(totals.total_amount)"
                             style="font-size: 1.3em; font-weight: bold; white-space: nowrap;"
                         />
                     </td>

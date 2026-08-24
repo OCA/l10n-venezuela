@@ -1,7 +1,5 @@
 /** @odoo-module **/
 
-/* eslint-disable no-undef */
-
 import {_t} from "@web/core/l10n/translation";
 import {createFiscalSerialAuditLogger} from "./fiscal_serial_audit";
 import {TfhkaWebSerialTransport} from "./tfhka_transport_webserial";

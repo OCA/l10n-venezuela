@@ -3,7 +3,6 @@
     "name": "Venezuela SENIAT - Sale Loyalty",
     "summary": "Descuentos globales SENIAT en pedidos de venta",
     "website": "https://github.com/OCA/l10n-venezuela",
-    "icon": "/poweredbyandy_saas/static/description/icon.png",
     "countries": ["ve"],
     "author": "andyengit, Odoo Community Association (OCA)",
     "maintainers": ["andyengit"],

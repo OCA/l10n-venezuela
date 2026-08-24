@@ -20,7 +20,7 @@ class ResCurrency(models.Model):
             .mapped("currency_id")
             .ids
         )
-        # currency_pos (and similar) may already load all active currencies.
+        # Other POS modules may already load all active currencies.
         if domain and domain[0][0] == "active":
             return domain
 

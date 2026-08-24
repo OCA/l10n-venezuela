@@ -1,7 +1,5 @@
 /** @odoo-module **/
 
-/* eslint-disable no-undef */
-
 import {_t} from "@web/core/l10n/translation";
 import {ConfirmationDialog} from "@web/core/confirmation_dialog/confirmation_dialog";
 import {createFiscalSerialAuditLogger} from "./fiscal_serial_audit";

@@ -5,7 +5,6 @@
         "Descuentos globales SENIAT y adaptacion de Coupons & Loyalty " "para Venezuela"
     ),
     "website": "https://github.com/OCA/l10n-venezuela",
-    "icon": "/poweredbyandy_saas/static/description/icon.png",
     "countries": ["ve"],
     "version": "18.0.1.0.16",
     "author": "andyengit, Odoo Community Association (OCA)",
@@ -15,7 +14,6 @@
         "account",
         "loyalty",
         "web",
-        "currency_account",
         "l10n_ve_seniat",
     ],
     "data": [

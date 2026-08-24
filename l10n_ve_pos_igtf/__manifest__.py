@@ -13,9 +13,9 @@
     "depends": [
         "l10n_ve_pos",
         "l10n_ve_igtf",
-        "currency_pos",
     ],
     "data": [
+        "views/pos_payment_method_views.xml",
         "views/pos_payment_views.xml",
         "views/pos_order_views.xml",
     ],

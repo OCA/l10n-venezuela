@@ -1,7 +1,5 @@
 /** @odoo-module **/
 
-/* eslint-disable no-undef */
-
 import {Component, xml} from "@odoo/owl";
 import {registry} from "@web/core/registry";
 import {useService} from "@web/core/utils/hooks";

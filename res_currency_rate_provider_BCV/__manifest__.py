@@ -16,7 +16,7 @@
     "website": "https://github.com/OCA/l10n-venezuela",
     "license": "AGPL-3",
     "application": False,
-    "installable": True,
+    "installable": False,
     "depends": ["currency_rate_update"],
     "data": [
         "views/res_currency_rate_update_wizard_views.xml",

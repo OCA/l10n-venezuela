@@ -1,6 +1,5 @@
 {
     "name": "Venezuela  - Tasas de Cambio en Tooltip",
-    "icon": "/poweredbyandy_saas/static/description/icon.png",
     "version": "18.0.1.0.1",
     "category": "Extra Tools",
     "author": "Andyengit,Odoo Community Association (OCA)",

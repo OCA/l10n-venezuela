@@ -1,4 +1,4 @@
-from odoo import _, fields, models
+from odoo import _, api, fields, models
 from odoo.tools import float_is_zero, float_round
 
 
@@ -8,6 +8,18 @@ class PosPayment(models.Model):
     include_igtf = fields.Boolean()
     igtf_amount = fields.Float()
     foreign_igtf_amount = fields.Float()
+    payment_currency_id = fields.Many2one(
+        related="payment_method_id.payment_currency_id",
+        string="Payment Currency",
+        store=True,
+    )
+
+    @api.model
+    def _load_pos_data_fields(self, config_id):
+        fields_list = super()._load_pos_data_fields(config_id)
+        if fields_list and "payment_currency_id" not in fields_list:
+            return list(fields_list) + ["payment_currency_id"]
+        return fields_list
 
     def _l10n_ve_pos_payment_applies_igtf_by_currency(self):
         self.ensure_one()

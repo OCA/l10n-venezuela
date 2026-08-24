@@ -1166,3 +1166,13 @@ class TestIgtfPaymentFlows(TestL10nVeIgtfCommon):
         )
         igtf_line = self._get_payment_igtf_line(payment)
         self.assertTrue(igtf_line)
+
+    def test_tax_totals_display_in_company_currency_flag(self):
+        usd_invoice = self._create_customer_invoice(amount=100.0, currency=self.usd)
+        ves_invoice = self._create_customer_invoice(amount=100.0, currency=self.ves)
+        self.assertTrue(usd_invoice.tax_totals.get("display_in_company_currency"))
+        self.assertEqual(
+            usd_invoice.tax_totals.get("company_currency_id"),
+            usd_invoice.company_currency_id.id,
+        )
+        self.assertFalse(ves_invoice.tax_totals.get("display_in_company_currency"))

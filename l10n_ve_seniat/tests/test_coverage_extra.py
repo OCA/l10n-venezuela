@@ -348,13 +348,7 @@ class TestCoverageExtraAccountMove(L10nVeSeniatCommon):
         )
         inv_line.ensure_one()
         cred_line.ensure_one()
-        if (
-            "price_subtotal_currency" in inv_line._fields
-            and inv_line.price_subtotal_currency
-        ):
-            expected_subtotal = abs(inv_line.price_subtotal_currency)
-        else:
-            expected_subtotal = abs(inv_line.balance)
+        expected_subtotal = abs(inv_line.price_subtotal_currency)
         expected_pu = expected_subtotal / (abs(inv_line.quantity) or 1.0)
         self.assertEqual(cred_line.price_unit, expected_pu)
 

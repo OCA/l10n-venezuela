@@ -6,7 +6,6 @@ import {patch} from "@web/core/utils/patch";
 import {usePopover} from "@web/core/popover/popover_hook";
 import {useService} from "@web/core/utils/hooks";
 import {Component} from "@odoo/owl";
-import {registry} from "@web/core/registry";
 
 class L10nVeGlobalDiscountDetailsPopover extends Component {
     static template = "l10n_ve_loyalty.GlobalDiscountDetailsPopover";
@@ -132,30 +131,3 @@ const l10nVeGlobalDiscountTaxTotalsPatch = {
 };
 
 patch(TaxTotalsComponent.prototype, l10nVeGlobalDiscountTaxTotalsPatch);
-
-const PATCHED_COMPANY_CURRENCY = new WeakSet();
-
-function patchCompanyCurrencyTaxTotalsWidget() {
-    const companyCurrencyField = registry
-        .category("fields")
-        .get("tax_totals_company_currency_widget", null);
-    const component = companyCurrencyField?.component;
-    if (!component || PATCHED_COMPANY_CURRENCY.has(component)) {
-        return Boolean(component);
-    }
-    patch(component.prototype, l10nVeGlobalDiscountTaxTotalsPatch);
-    PATCHED_COMPANY_CURRENCY.add(component);
-    return true;
-}
-
-if (!patchCompanyCurrencyTaxTotalsWidget()) {
-    const fieldsRegistry = registry.category("fields");
-    const originalAdd = fieldsRegistry.add.bind(fieldsRegistry);
-    fieldsRegistry.add = (key, value, ...args) => {
-        const result = originalAdd(key, value, ...args);
-        if (key === "tax_totals_company_currency_widget") {
-            patchCompanyCurrencyTaxTotalsWidget();
-        }
-        return result;
-    };
-}

@@ -4,7 +4,6 @@
         Módulo de Retenciones Venezuela
     """,
     "license": "AGPL-3",
-    "icon": "/poweredbyandy_saas/static/description/icon.png",
     "countries": ["ve"],
     "author": "BinauralDev, Anderson Armeya, Odoo Community Association (OCA)",
     "website": "https://github.com/OCA/l10n-venezuela",

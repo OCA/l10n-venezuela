@@ -1493,8 +1493,19 @@ class AccountMove(models.Model):
         result = super()._compute_tax_totals()
         for move in self:
             merged = move._l10n_ve_igtf_tax_totals_merge_igtf_row()
-            if merged is not False:
-                move.tax_totals = merged
+            totals = merged if merged is not False else move.tax_totals
+            if not totals:
+                continue
+            totals = dict(totals)
+            company_currency = move.company_currency_id
+            totals["display_in_company_currency"] = bool(
+                move.currency_id
+                and company_currency
+                and move.currency_id != company_currency
+            )
+            if company_currency and not totals.get("company_currency_id"):
+                totals["company_currency_id"] = company_currency.id
+            move.tax_totals = totals
         return result
 
     @api.depends(
