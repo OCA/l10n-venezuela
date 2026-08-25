@@ -17,7 +17,11 @@ l10n-venezuela
 
 [//]: # (addons)
 
-This part will be replaced when running the oca-gen-addons-table script from OCA/maintainer-tools.
+Available addons
+----------------
+addon | version | maintainers | summary
+--- | --- | --- | ---
+[currency_rate_update_bcv](currency_rate_update_bcv/) | 18.0.1.0.0 | <a href='https://github.com/lapinzon'><img src='https://github.com/lapinzon.png' width='32' height='32' style='border-radius:50%;' alt='lapinzon'/></a> <a href='https://github.com/andyengit'><img src='https://github.com/andyengit.png' width='32' height='32' style='border-radius:50%;' alt='andyengit'/></a> | Currency rate provider for BCV (Banco Central de Venezuela)
 
 [//]: # (end addons)
 
