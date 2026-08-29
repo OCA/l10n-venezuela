@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Copyright 2026 BWEALTHICS LLC
+     License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl). -->
+<odoo>
+    <record id="view_account_payment_register_form" model="ir.ui.view">
+        <field name="name">account.payment.register.form.inherit.l10n.ve.igtf</field>
+        <field name="model">account.payment.register</field>
+        <field name="inherit_id" ref="account.view_account_payment_register_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='amount_div']" position="after">
+                <field name="l10n_ve_igtf_available" invisible="1" />
+                <field
+                    name="l10n_ve_igtf_apply"
+                    invisible="not can_edit_wizard or not l10n_ve_igtf_available"
+                />
+                <field name="l10n_ve_igtf_rate" invisible="1" />
+                <field name="l10n_ve_igtf_amount" invisible="not l10n_ve_igtf_apply" />
+            </xpath>
+        </field>
+    </record>
+</odoo>
