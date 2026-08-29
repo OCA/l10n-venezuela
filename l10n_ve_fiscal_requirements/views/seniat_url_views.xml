@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_seniat_url_tree" model="ir.ui.view">
+        <field name="name">seniat.url.tree</field>
+        <field name="model">seniat.url</field>
+        <field name="arch" type="xml">
+            <tree string="SENIAT URLs">
+                <field name="name"/>
+                <field name="url_seniat"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_seniat_url_form" model="ir.ui.view">
+        <field name="name">seniat.url.form</field>
+        <field name="model">seniat.url</field>
+        <field name="arch" type="xml">
+            <form string="SENIAT URL Configuration">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="url_seniat"/>
+                        <field name="url_seniat2"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_seniat_url" model="ir.actions.act_window">
+        <field name="name">SENIAT URLs</field>
+        <field name="res_model">seniat.url</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+</odoo>

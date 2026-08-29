@@ -1,0 +1,7 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_l10n_ut_user,l10n.ut.user,model_l10n_ut,account.group_account_invoice,1,0,0,0
+access_l10n_ut_manager,l10n.ut.manager,model_l10n_ut,account.group_account_manager,1,1,1,1
+access_seniat_url_user,seniat.url.user,model_seniat_url,account.group_account_invoice,1,0,0,0
+access_seniat_url_manager,seniat.url.manager,model_seniat_url,account.group_account_manager,1,1,1,1
+access_search_info_partner_seniat,search.info.partner.seniat,model_search_info_partner_seniat,account.group_account_invoice,1,1,1,1
+access_wizard_invoice_nro_ctrl,wizard.invoice.nro.ctrl,model_wizard_invoice_nro_ctrl,account.group_account_invoice,1,1,1,1
