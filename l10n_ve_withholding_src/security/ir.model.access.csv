@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_account_wh_src_user,account.wh.src.user,model_account_wh_src,account.group_account_invoice,1,1,1,0
+access_account_wh_src_manager,account.wh.src.manager,model_account_wh_src,account.group_account_manager,1,1,1,1
