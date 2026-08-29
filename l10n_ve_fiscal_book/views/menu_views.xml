@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_fiscal_book_purchase"
+              name="Purchase Fiscal Books"
+              parent="account.menu_finance_reports"
+              action="action_fiscal_book_purchase"
+              sequence="90"/>
+
+    <menuitem id="menu_fiscal_book_sale"
+              name="Sale Fiscal Books"
+              parent="account.menu_finance_reports"
+              action="action_fiscal_book_sale"
+              sequence="91"/>
+
+    <menuitem id="menu_wizard_fiscal_book"
+              name="Generate Fiscal Book Wizard"
+              parent="account.menu_finance_reports"
+              action="action_wizard_fiscal_book"
+              sequence="92"/>
+</odoo>

@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_fiscal_book_tree" model="ir.ui.view">
+        <field name="name">fiscal.book.tree</field>
+        <field name="model">fiscal.book</field>
+        <field name="arch" type="xml">
+            <tree string="Fiscal Books" decoration-info="state == 'draft'" decoration-success="state == 'done'">
+                <field name="name"/>
+                <field name="type"/>
+                <field name="date_start"/>
+                <field name="date_end"/>
+                <field name="total_amount"/>
+                <field name="total_base_general"/>
+                <field name="total_tax_general"/>
+                <field name="state" widget="badge"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_fiscal_book_form" model="ir.ui.view">
+        <field name="name">fiscal.book.form</field>
+        <field name="model">fiscal.book</field>
+        <field name="arch" type="xml">
+            <form string="Fiscal Book">
+                <header>
+                    <button name="action_update_book" states="draft" string="Update Book Data" type="object" class="oe_highlight"/>
+                    <button name="action_confirm" states="draft" string="Confirm" type="object" class="oe_highlight"/>
+                    <button name="action_done" states="confirmed" string="Post" type="object" class="oe_highlight"/>
+                    <button name="action_draft" states="cancel,confirmed" string="Set to Draft" type="object"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,confirmed,done"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="type" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                        <group>
+                            <field name="date_start" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                            <field name="date_end" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Fiscal Operations">
+                            <field name="line_ids" readonly="1">
+                                <tree>
+                                    <field name="rank"/>
+                                    <field name="doc_date"/>
+                                    <field name="partner_vat"/>
+                                    <field name="partner_id"/>
+                                    <field name="invoice_number"/>
+                                    <field name="nro_ctrl"/>
+                                    <field name="total_amount"/>
+                                    <field name="exempt_amount"/>
+                                    <field name="base_general"/>
+                                    <field name="tax_general"/>
+                                    <field name="vat_withheld"/>
+                                </tree>
+                            </field>
+                            <group class="oe_subtotal_footer oe_right">
+                                <field name="total_amount"/>
+                                <field name="total_exempt"/>
+                                <field name="total_base_general"/>
+                                <field name="total_tax_general"/>
+                                <field name="total_vat_withheld" class="oe_subtotal_footer_separator"/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_fiscal_book_purchase" model="ir.actions.act_window">
+        <field name="name">Purchase Fiscal Books</field>
+        <field name="res_model">fiscal.book</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('type', '=', 'purchase')]</field>
+    </record>
+
+    <record id="action_fiscal_book_sale" model="ir.actions.act_window">
+        <field name="name">Sale Fiscal Books</field>
+        <field name="res_model">fiscal.book</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('type', '=', 'sale')]</field>
+    </record>
+</odoo>
