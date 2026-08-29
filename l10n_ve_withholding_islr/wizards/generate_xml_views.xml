@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_generate_xml_wh_islr_form" model="ir.ui.view">
+        <field name="name">generate.xml.wh.islr.form</field>
+        <field name="model">generate.xml.wh.islr</field>
+        <field name="arch" type="xml">
+            <form string="Generate XML SENIAT for ISLR Withholdings">
+                <sheet>
+                    <div attrs="{'invisible': [('state', '=', 'done')]}">
+                        <group>
+                            <field name="date_start"/>
+                            <field name="date_end"/>
+                        </group>
+                    </div>
+                    <div attrs="{'invisible': [('state', '!=', 'done')]}">
+                        <group>
+                            <field name="xml_filename" invisible="1"/>
+                            <field name="xml_file" filename="xml_filename"/>
+                        </group>
+                    </div>
+                    <field name="state" invisible="1"/>
+                </sheet>
+                <footer>
+                    <button name="action_generate_xml" string="Generate XML" type="object" class="btn-primary" attrs="{'invisible': [('state', '=', 'done')]}"/>
+                    <button string="Close" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_generate_xml_wh_islr" model="ir.actions.act_window">
+        <field name="name">Generate XML SENIAT (ISLR)</field>
+        <field name="res_model">generate.xml.wh.islr</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+</odoo>

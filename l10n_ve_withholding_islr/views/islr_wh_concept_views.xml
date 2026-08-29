@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_islr_wh_concept_tree" model="ir.ui.view">
+        <field name="name">islr.wh.concept.tree</field>
+        <field name="model">islr.wh.concept</field>
+        <field name="arch" type="xml">
+            <tree string="ISLR Concepts">
+                <field name="code"/>
+                <field name="name"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_islr_wh_concept_form" model="ir.ui.view">
+        <field name="name">islr.wh.concept.form</field>
+        <field name="model">islr.wh.concept</field>
+        <field name="arch" type="xml">
+            <form string="ISLR Concept">
+                <sheet>
+                    <group>
+                        <field name="code"/>
+                        <field name="name"/>
+                    </group>
+                    <notebook>
+                        <page string="Rates Breakdown">
+                            <field name="withholding_rate_ids">
+                                <tree editable="bottom">
+                                    <field name="person_type"/>
+                                    <field name="nature"/>
+                                    <field name="base_percentage"/>
+                                    <field name="wh_percentage"/>
+                                    <field name="subtract_ut"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_islr_wh_concept" model="ir.actions.act_window">
+        <field name="name">ISLR Concepts</field>
+        <field name="res_model">islr.wh.concept</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+</odoo>

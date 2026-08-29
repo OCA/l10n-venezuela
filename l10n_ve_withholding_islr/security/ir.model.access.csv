@@ -1,0 +1,10 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_islr_wh_concept_user,islr.wh.concept.user,model_islr_wh_concept,account.group_account_invoice,1,0,0,0
+access_islr_wh_concept_manager,islr.wh.concept.manager,model_islr_wh_concept,account.group_account_manager,1,1,1,1
+access_islr_wh_rates_user,islr.wh.rates.user,model_islr_wh_rates,account.group_account_invoice,1,0,0,0
+access_islr_wh_rates_manager,islr.wh.rates.manager,model_islr_wh_rates,account.group_account_manager,1,1,1,1
+access_account_wh_islr_doc_user,account.wh.islr.doc.user,model_account_wh_islr_doc,account.group_account_invoice,1,1,1,0
+access_account_wh_islr_doc_manager,account.wh.islr.doc.manager,model_account_wh_islr_doc,account.group_account_manager,1,1,1,1
+access_account_wh_islr_doc_line_user,account.wh.islr.doc.line.user,model_account_wh_islr_doc_line,account.group_account_invoice,1,1,1,0
+access_account_wh_islr_doc_line_manager,account.wh.islr.doc.line.manager,model_account_wh_islr_doc_line,account.group_account_manager,1,1,1,1
+access_generate_xml_wh_islr,generate.xml.wh.islr,model_generate_xml_wh_islr,account.group_account_invoice,1,1,1,1

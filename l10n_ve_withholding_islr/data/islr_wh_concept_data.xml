@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="concept_honorarios_prof" model="islr.wh.concept">
+        <field name="name">Honorarios Profesionales No Mercantiles</field>
+        <field name="code">001</field>
+    </record>
+
+    <record id="rate_honorarios_pjdo" model="islr.wh.rates">
+        <field name="concept_id" ref="concept_honorarios_prof"/>
+        <field name="person_type">pjdo</field>
+        <field name="nature">fees</field>
+        <field name="wh_percentage">5.0</field>
+        <field name="subtract_ut">0.0</field>
+    </record>
+
+    <record id="rate_honorarios_pnre" model="islr.wh.rates">
+        <field name="concept_id" ref="concept_honorarios_prof"/>
+        <field name="person_type">pnre</field>
+        <field name="nature">fees</field>
+        <field name="wh_percentage">3.0</field>
+        <field name="subtract_ut">83.3334</field>
+    </record>
+
+    <record id="concept_servicios_gen" model="islr.wh.concept">
+        <field name="name">Ejecución de Obras o Prestación de Servicios</field>
+        <field name="code">002</field>
+    </record>
+
+    <record id="rate_servicios_pjdo" model="islr.wh.rates">
+        <field name="concept_id" ref="concept_servicios_gen"/>
+        <field name="person_type">pjdo</field>
+        <field name="nature">service</field>
+        <field name="wh_percentage">2.0</field>
+        <field name="subtract_ut">0.0</field>
+    </record>
+
+    <record id="rate_servicios_pnre" model="islr.wh.rates">
+        <field name="concept_id" ref="concept_servicios_gen"/>
+        <field name="person_type">pnre</field>
+        <field name="nature">service</field>
+        <field name="wh_percentage">1.0</field>
+        <field name="subtract_ut">83.3334</field>
+    </record>
+
+    <record id="concept_fletes" model="islr.wh.concept">
+        <field name="name">Fletes y Transporte Nacional de Carga</field>
+        <field name="code">003</field>
+    </record>
+
+    <record id="rate_fletes_pjdo" model="islr.wh.rates">
+        <field name="concept_id" ref="concept_fletes"/>
+        <field name="person_type">pjdo</field>
+        <field name="nature">service</field>
+        <field name="wh_percentage">3.0</field>
+        <field name="subtract_ut">0.0</field>
+    </record>
+
+    <record id="concept_arrendamiento_inmueble" model="islr.wh.concept">
+        <field name="name">Arrendamiento de Bienes Inmuebles</field>
+        <field name="code">004</field>
+    </record>
+
+    <record id="rate_arrendamiento_pjdo" model="islr.wh.rates">
+        <field name="concept_id" ref="concept_arrendamiento_inmueble"/>
+        <field name="person_type">pjdo</field>
+        <field name="nature">lease</field>
+        <field name="wh_percentage">5.0</field>
+        <field name="subtract_ut">0.0</field>
+    </record>
+</odoo>
