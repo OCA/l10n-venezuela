@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_customs_declaration_tree" model="ir.ui.view">
+        <field name="name">customs.declaration.tree</field>
+        <field name="model">customs.declaration</field>
+        <field name="arch" type="xml">
+            <tree string="Customs Declarations">
+                <field name="name"/>
+                <field name="date"/>
+                <field name="customs_code"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="action_customs_declaration" model="ir.actions.act_window">
+        <field name="name">Customs Declarations</field>
+        <field name="res_model">customs.declaration</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+</odoo>
