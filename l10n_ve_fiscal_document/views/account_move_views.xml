@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Copyright 2026 BWEALTHICS LLC
+     License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl). -->
+<odoo>
+    <record id="account_move_view_form" model="ir.ui.view">
+        <field name="name">account.move.form.l10n.ve.fiscal.document</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_move_form" />
+        <field name="arch" type="xml">
+            <xpath
+                expr="//group[@id='header_right_group']/field[@name='date']"
+                position="after"
+            >
+                <field name="l10n_ve_fiscal_data_locked" invisible="1" />
+                <field
+                    name="l10n_ve_emission_medium"
+                    invisible="(country_code != 'VE' and not l10n_ve_fiscal_data_locked) or move_type not in ('out_invoice', 'out_refund', 'out_receipt')"
+                />
+                <field
+                    name="l10n_ve_control_number"
+                    invisible="country_code != 'VE' and not l10n_ve_fiscal_data_locked or move_type == 'entry'"
+                    readonly="l10n_ve_fiscal_data_locked"
+                />
+                <field
+                    name="l10n_ve_control_date"
+                    invisible="country_code != 'VE' and not l10n_ve_fiscal_data_locked or move_type == 'entry'"
+                    readonly="l10n_ve_fiscal_data_locked"
+                />
+            </xpath>
+        </field>
+    </record>
+</odoo>
