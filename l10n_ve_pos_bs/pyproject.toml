@@ -1,0 +1,6 @@
+[tool.odoo-lint]
+strict = true
+
+[build-system]
+requires = ["whool"]
+build-backend = "whool.buildapi"

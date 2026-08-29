@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Copyright 2026 BWEALTHICS LLC -->
+<!-- License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl). -->
+<odoo>
+    <record id="pos_payment_method_view_form" model="ir.ui.view">
+        <field name="name">pos.payment.method.form.l10n.ve.pos.bs</field>
+        <field name="model">pos.payment.method</field>
+        <field name="inherit_id" ref="point_of_sale.pos_payment_method_view_form" />
+        <field name="arch" type="xml">
+            <field name="journal_id" position="after">
+                <field name="l10n_ve_ves_tender" />
+                <field
+                    name="l10n_ve_require_reference"
+                    invisible="not l10n_ve_ves_tender"
+                />
+            </field>
+        </field>
+    </record>
+</odoo>
