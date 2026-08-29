@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="seq_account_wh_iva" model="ir.sequence">
+        <field name="name">VAT Withholding Voucher Sequence</field>
+        <field name="code">account.wh.iva</field>
+        <field name="padding">8</field>
+        <field name="number_next">1</field>
+        <field name="number_increment">1</field>
+    </record>
+</odoo>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_move_form_wh_iva_inherit" model="ir.ui.view">
+        <field name="name">account.move.form.wh.iva.inherit</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_move_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <button name="action_generate_wh_iva" string="Generate VAT Retention" type="object" class="oe_highlight" attrs="{'invisible': ['|', ('state', '!=', 'posted'), ('wh_iva_id', '!=', False)]}"/>
+            </xpath>
+            <xpath expr="//field[@name='ref']" position="after">
+                <field name="wh_iva_id" readonly="1" attrs="{'invisible': [('wh_iva_id', '=', False)]}"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

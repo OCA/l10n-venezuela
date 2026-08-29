@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_report_wh_iva" model="ir.actions.report">
+        <field name="name">Comprobante de Retención de IVA</field>
+        <field name="model">account.wh.iva</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">l10n_ve_withholding_iva.report_wh_iva_document</field>
+        <field name="report_file">l10n_ve_withholding_iva.report_wh_iva_document</field>
+        <field name="binding_model_id" ref="model_account_wh_iva"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <template id="report_wh_iva_document">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <div class="row text-center mb-4">
+                            <h3><strong>COMPROBANTE DE RETENCIÓN DEL IMPUESTO AL VALOR AGREGADO (IVA)</strong></h3>
+                            <p>(Ley de IVA - Art. 11: Serán responsables del pago del impuesto en calidad de agentes de retención...)</p>
+                        </div>
+                        <table class="table table-bordered mb-4">
+                            <tr>
+                                <td><strong>N° Comprobante:</strong> <span t-field="o.name"/></td>
+                                <td><strong>Fecha Emisión:</strong> <span t-field="o.date"/></td>
+                                <td><strong>Período Fiscal:</strong> <span t-field="o.period_date" t-options="{'format': 'yyyy-MM'}"/></td>
+                            </tr>
+                            <tr>
+                                <td colspan="2"><strong>Agente de Retención:</strong> <span t-field="o.company_id.name"/></td>
+                                <td><strong>RIF:</strong> <span t-field="o.company_id.partner_id.vat"/></td>
+                            </tr>
+                            <tr>
+                                <td colspan="2"><strong>Sujeto Retenido:</strong> <span t-field="o.partner_id.name"/></td>
+                                <td><strong>RIF / C.I.:</strong> <span t-field="o.partner_id.vat"/></td>
+                            </tr>
+                        </table>
+
+                        <table class="table table-sm table-striped">
+                            <thead>
+                                <tr>
+                                    <th>N° Factura</th>
+                                    <th>N° Control</th>
+                                    <th>Fecha Doc.</th>
+                                    <th class="text-right">Total Factura</th>
+                                    <th class="text-right">Base Imponible</th>
+                                    <th class="text-right">Impuesto IVA</th>
+                                    <th class="text-right">% Ret.</th>
+                                    <th class="text-right">IVA Retenido</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-foreach="o.line_ids" t-as="l">
+                                    <tr>
+                                        <td><span t-field="l.move_id.name"/></td>
+                                        <td><span t-field="l.move_id.nro_ctrl"/></td>
+                                        <td><span t-field="l.move_id.invoice_date"/></td>
+                                        <td class="text-right"><span t-field="l.move_id.amount_total"/></td>
+                                        <td class="text-right"><span t-field="l.base_amount"/></td>
+                                        <td class="text-right"><span t-field="l.tax_amount"/></td>
+                                        <td class="text-right"><span t-field="l.wh_rate"/>%</td>
+                                        <td class="text-right"><span t-field="l.amount_ret"/></td>
+                                    </tr>
+                                </t>
+                            </tbody>
+                        </table>
+
+                        <div class="row mt-4">
+                            <div class="col-6 text-center">
+                                ___________________________________<br/>
+                                <strong>Firma Agente de Retención</strong>
+                            </div>
+                            <div class="col-6 text-center">
+                                ___________________________________<br/>
+                                <strong>Firma Sujeto Retenido</strong>
+                            </div>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>
