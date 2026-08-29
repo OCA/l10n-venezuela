@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Copyright 2026 BWEALTHICS LLC
+     License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl). -->
+<odoo>
+    <record id="view_l10n_ve_municipal_tax_wizard_form" model="ir.ui.view">
+        <field name="name">l10n.ve.municipal.tax.wizard.form</field>
+        <field name="model">l10n.ve.municipal.tax.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Municipal Tax (VE)">
+                <field name="is_computed" invisible="1" />
+                <field name="currency_id" invisible="1" />
+                <field name="ves_currency_id" invisible="1" />
+                <group>
+                    <group string="Period">
+                        <field
+                            name="company_id"
+                            groups="base.group_multi_company"
+                            options="{'no_create': True}"
+                        />
+                        <field name="month" />
+                        <field name="year" />
+                    </group>
+                    <group string="Configuration">
+                        <field name="municipality" />
+                        <field name="rate" />
+                        <field name="minimum_mmv" />
+                        <field name="tcmmv" />
+                    </group>
+                </group>
+                <group string="Calculation" invisible="not is_computed">
+                    <group>
+                        <field name="base_amount" />
+                        <field name="computed_tax" />
+                    </group>
+                    <group>
+                        <field name="minimum_amount" />
+                        <field name="tax_amount" class="fw-bold" />
+                        <field name="amount_bs" invisible="not amount_bs" />
+                    </group>
+                </group>
+                <footer>
+                    <button
+                        name="action_compute"
+                        type="object"
+                        string="Compute"
+                        class="btn-primary"
+                        data-hotkey="q"
+                    />
+                    <button
+                        name="action_generate_entry"
+                        type="object"
+                        string="Generate Entry"
+                        class="btn-primary"
+                        invisible="not is_computed"
+                    />
+                    <button string="Cancel" special="cancel" data-hotkey="x" />
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_l10n_ve_municipal_tax_wizard" model="ir.actions.act_window">
+        <field name="name">Municipal Tax (VE)</field>
+        <field name="res_model">l10n.ve.municipal.tax.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field
+            name="group_ids"
+            eval="[(6, 0, [ref('account.group_account_manager')])]"
+        />
+    </record>
+
+    <menuitem
+        id="menu_l10n_ve_municipal_tax_wizard"
+        name="Municipal Tax (VE)"
+        parent="account.menu_finance"
+        action="action_l10n_ve_municipal_tax_wizard"
+        groups="account.group_account_manager"
+        sequence="15"
+    />
+</odoo>

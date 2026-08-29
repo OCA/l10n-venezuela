@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Copyright 2026 BWEALTHICS LLC
+     License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl). -->
+<odoo>
+    <record id="res_config_settings_view_form" model="ir.ui.view">
+        <field
+            name="name"
+        >res.config.settings.view.form.inherit.l10n.ve.municipal.tax</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="account.res_config_settings_view_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//app[@name='account']" position="inside">
+                <block
+                    title="Venezuela - Municipal Tax"
+                    name="l10n_ve_municipal_tax_block"
+                    invisible="country_code != 'VE'"
+                >
+                    <setting
+                        id="l10n_ve_municipal_tax_setting"
+                        string="Municipal Economic Activities Tax"
+                        company_dependent="1"
+                        help="Estimate the monthly tax and create a draft provision entry. Validate all parameters against the applicable municipal ordinance."
+                    >
+                        <div class="content-group">
+                            <div class="row mt8">
+                                <label
+                                    for="l10n_ve_municipal_name"
+                                    class="col-lg-5 o_light_label"
+                                />
+                                <field name="l10n_ve_municipal_name" />
+                            </div>
+                            <div class="row">
+                                <label
+                                    for="l10n_ve_municipal_rate"
+                                    class="col-lg-5 o_light_label"
+                                />
+                                <field name="l10n_ve_municipal_rate" />
+                            </div>
+                            <div class="row">
+                                <label
+                                    for="l10n_ve_municipal_minimum"
+                                    class="col-lg-5 o_light_label"
+                                />
+                                <field name="l10n_ve_municipal_minimum" />
+                            </div>
+                            <div class="row">
+                                <label
+                                    for="l10n_ve_municipal_minimum_mmv"
+                                    class="col-lg-5 o_light_label"
+                                />
+                                <field name="l10n_ve_municipal_minimum_mmv" />
+                            </div>
+                            <div class="row">
+                                <label
+                                    for="l10n_ve_municipal_tcmmv"
+                                    class="col-lg-5 o_light_label"
+                                />
+                                <field name="l10n_ve_municipal_tcmmv" />
+                            </div>
+                            <div class="row">
+                                <label
+                                    for="l10n_ve_municipal_taxable_account_ids"
+                                    class="col-lg-5 o_light_label"
+                                />
+                                <field
+                                    name="l10n_ve_municipal_taxable_account_ids"
+                                    widget="many2many_tags"
+                                    domain="[('internal_group', '=', 'income'), ('company_ids', 'parent_of', company_id)]"
+                                />
+                            </div>
+                            <div class="row">
+                                <label
+                                    for="l10n_ve_municipal_expense_account_id"
+                                    class="col-lg-5 o_light_label"
+                                />
+                                <field
+                                    name="l10n_ve_municipal_expense_account_id"
+                                    domain="[('internal_group', '=', 'expense'), ('company_ids', 'parent_of', company_id)]"
+                                />
+                            </div>
+                            <div class="row">
+                                <label
+                                    for="l10n_ve_municipal_payable_account_id"
+                                    class="col-lg-5 o_light_label"
+                                />
+                                <field
+                                    name="l10n_ve_municipal_payable_account_id"
+                                    domain="[('internal_group', '=', 'liability'), ('company_ids', 'parent_of', company_id)]"
+                                />
+                            </div>
+                            <div class="row">
+                                <label
+                                    for="l10n_ve_municipal_journal_id"
+                                    class="col-lg-5 o_light_label"
+                                />
+                                <field
+                                    name="l10n_ve_municipal_journal_id"
+                                    domain="[('type', '=', 'general'), ('company_id', 'parent_of', company_id)]"
+                                />
+                            </div>
+                        </div>
+                    </setting>
+                </block>
+            </xpath>
+        </field>
+    </record>
+</odoo>
