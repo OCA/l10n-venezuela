@@ -1,0 +1,661 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+#	* l10n_ve_withholding_muni
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 14.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-08-28 16:10+0000\n"
+"PO-Revision-Date: 2026-08-28 16:10+0000\n"
+"Last-Translator: Xavier Orlov <166637850+xavikveg@users.noreply.github.com>\n"
+"Language-Team: Spanish (es)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: es\n"
+"X-Generator: Poedit 2.3\n"
+
+#. module: l10n_ve_withholding_muni
+msgid "Accounting Entry"
+msgstr "Asiento Contable"
+
+#. module: l10n_ve_withholding_muni
+msgid "Aliquot Type"
+msgstr "Tipo de Alícuota"
+
+#. module: l10n_ve_withholding_muni
+msgid "Amount"
+msgstr "Monto"
+
+#. module: l10n_ve_withholding_muni
+msgid "Amount of the tax unit in Bs"
+msgstr "Monto de la unidad tributaria en Bs."
+
+#. module: l10n_ve_withholding_muni
+msgid "Amount to Write Off"
+msgstr "Monto a Desincorporar"
+
+#. module: l10n_ve_withholding_muni
+msgid "Assign"
+msgstr "Asignar"
+
+#. module: l10n_ve_withholding_muni
+msgid "Assign Control Number"
+msgstr "Asignar Número de Control"
+
+#. module: l10n_ve_withholding_muni
+msgid "Base Additional (31%)"
+msgstr "Base Imponible Adicional (31%)"
+
+#. module: l10n_ve_withholding_muni
+msgid "Base Amount"
+msgstr "Monto Base"
+
+#. module: l10n_ve_withholding_muni
+msgid "Base General (16%)"
+msgstr "Base Imponible General (16%)"
+
+#. module: l10n_ve_withholding_muni
+msgid "Base Percentage (%)"
+msgstr "Porcentaje Base (%)"
+
+#. module: l10n_ve_withholding_muni
+msgid "Base Reduced (8%)"
+msgstr "Base Imponible Reducida (8%)"
+
+#. module: l10n_ve_withholding_muni
+msgid "Book Type"
+msgstr "Tipo de Libro"
+
+#. module: l10n_ve_withholding_muni
+msgid "Cancel"
+msgstr "Cancelar"
+
+#. module: l10n_ve_withholding_muni
+msgid "Cancelled"
+msgstr "Cancelado"
+
+#. module: l10n_ve_withholding_muni
+msgid "Close"
+msgstr "Cerrar"
+
+#. module: l10n_ve_withholding_muni
+msgid "Company"
+msgstr "Compañía"
+
+#. module: l10n_ve_withholding_muni
+msgid "Concept Code"
+msgstr "Código del Concepto"
+
+#. module: l10n_ve_withholding_muni
+msgid "Concept Name"
+msgstr "Nombre del Concepto"
+
+#. module: l10n_ve_withholding_muni
+msgid "Confirm"
+msgstr "Confirmar"
+
+#. module: l10n_ve_withholding_muni
+msgid "Confirmed"
+msgstr "Confirmado"
+
+#. module: l10n_ve_withholding_muni
+msgid "Consult & Save"
+msgstr "Consultar y Guardar"
+
+#. module: l10n_ve_withholding_muni
+msgid "Consult Partner in SENIAT"
+msgstr "Consultar Contribuyente en el SENIAT"
+
+#. module: l10n_ve_withholding_muni
+msgid "Control Number"
+msgstr "Número de Control"
+
+#. module: l10n_ve_withholding_muni
+msgid "Currency"
+msgstr "Moneda"
+
+#. module: l10n_ve_withholding_muni
+msgid "Customer ISLR Withholdings"
+msgstr "Retenciones de ISLR de Clientes"
+
+#. module: l10n_ve_withholding_muni
+msgid "Customer Invoice"
+msgstr "Factura de Cliente"
+
+#. module: l10n_ve_withholding_muni
+msgid "Customer Refund"
+msgstr "Nota de Crédito de Cliente"
+
+#. module: l10n_ve_withholding_muni
+msgid "Customer VAT Withholdings"
+msgstr "Retenciones de IVA de Clientes"
+
+#. module: l10n_ve_withholding_muni
+msgid "Customs Declarations"
+msgstr "Declaraciones de Aduanas"
+
+#. module: l10n_ve_withholding_muni
+msgid "Customs Office Code"
+msgstr "Código de Aduana"
+
+#. module: l10n_ve_withholding_muni
+msgid "Damaged Invoices"
+msgstr "Facturas Anuladas/Dañadas"
+
+#. module: l10n_ve_withholding_muni
+msgid "Damaged Invoices Account"
+msgstr "Cuenta de Facturas Anuladas/Dañadas"
+
+#. module: l10n_ve_withholding_muni
+msgid "Damaged Invoices Journal"
+msgstr "Diario de Facturas Anuladas/Dañadas"
+
+#. module: l10n_ve_withholding_muni
+msgid "Date of Voucher"
+msgstr "Fecha del Comprobante"
+
+#. module: l10n_ve_withholding_muni
+msgid "Date on which goes into effect the new Tax Unit"
+msgstr "Fecha de entrada en vigencia de la nueva Unidad Tributaria"
+
+#. module: l10n_ve_withholding_muni
+msgid "Declaration Date"
+msgstr "Fecha de Declaración"
+
+#. module: l10n_ve_withholding_muni
+msgid "Declaration Number (DUA)"
+msgstr "Número de Declaración (DUA)"
+
+#. module: l10n_ve_withholding_muni
+msgid "Default ISLR Concept"
+msgstr "Concepto de ISLR por Defecto"
+
+#. module: l10n_ve_withholding_muni
+msgid "Default ISLR Withholding Account"
+msgstr "Cuenta de Retenciones de ISLR por Defecto"
+
+#. module: l10n_ve_withholding_muni
+msgid "Default ISLR Withholding Journal"
+msgstr "Diario de Retenciones de ISLR por Defecto"
+
+#. module: l10n_ve_withholding_muni
+msgid "Default VAT Withholding Account"
+msgstr "Cuenta de Retenciones de IVA por Defecto"
+
+#. module: l10n_ve_withholding_muni
+msgid "Default VAT Withholding Journal"
+msgstr "Diario de Retenciones de IVA por Defecto"
+
+#. module: l10n_ve_withholding_muni
+msgid "Document Date"
+msgstr "Fecha del Documento"
+
+#. module: l10n_ve_withholding_muni
+msgid "Draft"
+msgstr "Borrador"
+
+#. module: l10n_ve_withholding_muni
+msgid "End Date"
+msgstr "Fecha de Fin"
+
+#. module: l10n_ve_withholding_muni
+msgid "Exclude from Fiscal Book"
+msgstr "Excluir del Libro Fiscal"
+
+#. module: l10n_ve_withholding_muni
+msgid "Exempt"
+msgstr "Exento"
+
+#. module: l10n_ve_withholding_muni
+msgid "Fiscal Book"
+msgstr "Libro Fiscal"
+
+#. module: l10n_ve_withholding_muni
+msgid "Fiscal Book Line"
+msgstr "Línea de Libro Fiscal"
+
+#. module: l10n_ve_withholding_muni
+msgid "Fiscal Book Tax Summary"
+msgstr "Resumen de Impuestos de Libro Fiscal"
+
+#. module: l10n_ve_withholding_muni
+msgid "Fiscal Books"
+msgstr "Libros Fiscales"
+
+#. module: l10n_ve_withholding_muni
+msgid "Fiscal Operations"
+msgstr "Operaciones Fiscales"
+
+#. module: l10n_ve_withholding_muni
+msgid "Fiscal Period Date"
+msgstr "Fecha del Período Fiscal"
+
+#. module: l10n_ve_withholding_muni
+msgid "Fiscal Printer Info"
+msgstr "Información de Impresora Fiscal"
+
+#. module: l10n_ve_withholding_muni
+msgid "Fiscal Printer Invoice Number"
+msgstr "Número de Factura de Impresora Fiscal"
+
+#. module: l10n_ve_withholding_muni
+msgid "Fiscal Printer Serial"
+msgstr "Serial de Impresora Fiscal"
+
+#. module: l10n_ve_withholding_muni
+msgid "Fiscal Printers"
+msgstr "Impresoras Fiscales"
+
+#. module: l10n_ve_withholding_muni
+msgid "General + Additional Aliquot"
+msgstr "Alícuota General + Adicional"
+
+#. module: l10n_ve_withholding_muni
+msgid "General Aliquot"
+msgstr "Alícuota General"
+
+#. module: l10n_ve_withholding_muni
+msgid "Generate Book"
+msgstr "Generar Libro"
+
+#. module: l10n_ve_withholding_muni
+msgid "Generate Fiscal Book"
+msgstr "Generar Libro Fiscal"
+
+#. module: l10n_ve_withholding_muni
+msgid "Generate Fiscal Book Wizard"
+msgstr "Asistente para Generar Libro Fiscal"
+
+#. module: l10n_ve_withholding_muni
+msgid "Generate ISLR Retention"
+msgstr "Generar Retención de ISLR"
+
+#. module: l10n_ve_withholding_muni
+msgid "Generate TXT"
+msgstr "Generar TXT"
+
+#. module: l10n_ve_withholding_muni
+msgid "Generate TXT SENIAT (IVA)"
+msgstr "Generar TXT SENIAT (IVA)"
+
+#. module: l10n_ve_withholding_muni
+msgid "Generate VAT Retention"
+msgstr "Generar Retención de IVA"
+
+#. module: l10n_ve_withholding_muni
+msgid "Generate XML"
+msgstr "Generar XML"
+
+#. module: l10n_ve_withholding_muni
+msgid "Generate XML SENIAT (ISLR)"
+msgstr "Generar XML SENIAT (ISLR)"
+
+#. module: l10n_ve_withholding_muni
+msgid "Goods / Sales"
+msgstr "Bienes / Ventas"
+
+#. module: l10n_ve_withholding_muni
+msgid "ISLR Concepts & Rates"
+msgstr "Conceptos y Tarifas de ISLR"
+
+#. module: l10n_ve_withholding_muni
+msgid "ISLR Withholding Configuration"
+msgstr "Configuración de Retención de ISLR"
+
+#. module: l10n_ve_withholding_muni
+msgid "ISLR Withholdings"
+msgstr "Retenciones de ISLR"
+
+#. module: l10n_ve_withholding_muni
+msgid "IVA Retention Rate (%)"
+msgstr "Porcentaje de Retención IVA (%)"
+
+#. module: l10n_ve_withholding_muni
+msgid "Invoice"
+msgstr "Factura"
+
+#. module: l10n_ve_withholding_muni
+msgid "Invoice / Move"
+msgstr "Factura / Asiento"
+
+#. module: l10n_ve_withholding_muni
+msgid "Invoice Number"
+msgstr "Número de Factura"
+
+#. module: l10n_ve_withholding_muni
+msgid "Journal"
+msgstr "Diario"
+
+#. module: l10n_ve_withholding_muni
+msgid "Leasing / Rentals"
+msgstr "Arrendamiento / Alquileres"
+
+#. module: l10n_ve_withholding_muni
+msgid "Legal Entity Domiciled (PJDO)"
+msgstr "Persona Jurídica Domiciliada (PJDO)"
+
+#. module: l10n_ve_withholding_muni
+msgid "Legal Entity Non Domiciled (PJND)"
+msgstr "Persona Jurídica No Domiciliada (PJND)"
+
+#. module: l10n_ve_withholding_muni
+msgid "Manages Fiscal Printer"
+msgstr "Maneja Impresora Fiscal"
+
+#. module: l10n_ve_withholding_muni
+#: model:ir.actions.act_window,name:l10n_ve_withholding_muni.action_account_wh_muni
+#: model:ir.ui.menu,name:l10n_ve_withholding_muni.menu_account_wh_muni
+#: model_terms:ir.ui.view,arch_db:l10n_ve_withholding_muni.view_account_wh_muni_tree
+msgid "Municipal Withholdings"
+msgstr "Retenciones Municipales"
+
+#. module: l10n_ve_withholding_muni
+msgid "Natural Person Non Resident (PNNR)"
+msgstr "Persona Natural No Residente (PNNR)"
+
+#. module: l10n_ve_withholding_muni
+msgid "Natural Person Resident (PNRE)"
+msgstr "Persona Natural Residente (PNRE)"
+
+#. module: l10n_ve_withholding_muni
+msgid "Nature"
+msgstr "Naturaleza"
+
+#. module: l10n_ve_withholding_muni
+msgid "Not Withheld"
+msgstr "No Retenido"
+
+#. module: l10n_ve_withholding_muni
+msgid "Not entitled to tax credit (SDCF)"
+msgstr "Sin Derecho a Crédito Fiscal (SDCF)"
+
+#. module: l10n_ve_withholding_muni
+msgid "Operation N°"
+msgstr "Operación N°"
+
+#. module: l10n_ve_withholding_muni
+msgid "Partially Withheld"
+msgstr "Parcialmente Retenido"
+
+#. module: l10n_ve_withholding_muni
+msgid "Partner"
+msgstr "Empresa / Contacto"
+
+#. module: l10n_ve_withholding_muni
+msgid "Person Type"
+msgstr "Tipo de Persona"
+
+#. module: l10n_ve_withholding_muni
+msgid "Post Accounting"
+msgstr "Generar Asiento Contable"
+
+#. module: l10n_ve_withholding_muni
+msgid "Posted"
+msgstr "Publicado"
+
+#. module: l10n_ve_withholding_muni
+msgid "Pre-printed invoice control number required by SENIAT"
+msgstr "Número de control preimpreso exigido por el SENIAT"
+
+#. module: l10n_ve_withholding_muni
+msgid "Professional Fees"
+msgstr "Honorarios Profesionales"
+
+#. module: l10n_ve_withholding_muni
+msgid "Purchase Book"
+msgstr "Libro de Compras"
+
+#. module: l10n_ve_withholding_muni
+msgid "Purchase Fiscal Books"
+msgstr "Libros de Compras Fiscales"
+
+#. module: l10n_ve_withholding_muni
+msgid "Rates Breakdown"
+msgstr "Desglose de Tarifas"
+
+#. module: l10n_ve_withholding_muni
+msgid "Reason"
+msgstr "Motivo"
+
+#. module: l10n_ve_withholding_muni
+msgid "Reduced Aliquot"
+msgstr "Alícuota Reducida"
+
+#. module: l10n_ve_withholding_muni
+msgid "Reference Number"
+msgstr "Número de Referencia"
+
+#. module: l10n_ve_withholding_muni
+msgid "Reference number"
+msgstr "Número de Referencia"
+
+#. module: l10n_ve_withholding_muni
+msgid "Report Z"
+msgstr "Reporte Z"
+
+#. module: l10n_ve_withholding_muni
+msgid "Retention Percentage (%)"
+msgstr "Porcentaje de Retención (%)"
+
+#. module: l10n_ve_withholding_muni
+msgid "Retention Rate (%)"
+msgstr "Porcentaje de Retención (%)"
+
+#. module: l10n_ve_withholding_muni
+msgid "SENIAT Config URL"
+msgstr "Configuración de URLs del SENIAT"
+
+#. module: l10n_ve_withholding_muni
+msgid "SENIAT URLs"
+msgstr "URLs del SENIAT"
+
+#. module: l10n_ve_withholding_muni
+msgid "SRC Withholdings"
+msgstr "Retenciones de Responsabilidad Social (SRC)"
+
+#. module: l10n_ve_withholding_muni
+msgid "Sale Book"
+msgstr "Libro de Ventas"
+
+#. module: l10n_ve_withholding_muni
+msgid "Sale Fiscal Books"
+msgstr "Libros de Ventas Fiscales"
+
+#. module: l10n_ve_withholding_muni
+msgid "Salesman"
+msgstr "Responsable"
+
+#. module: l10n_ve_withholding_muni
+msgid "Save"
+msgstr "Guardar"
+
+#. module: l10n_ve_withholding_muni
+msgid "Seniat Updated"
+msgstr "Actualizado desde SENIAT"
+
+#. module: l10n_ve_withholding_muni
+msgid "Services"
+msgstr "Servicios"
+
+#. module: l10n_ve_withholding_muni
+msgid "Set to Draft"
+msgstr "Cambiar a Borrador"
+
+#. module: l10n_ve_withholding_muni
+msgid "Split Parent Invoice"
+msgstr "Factura Matriz Dividida"
+
+#. module: l10n_ve_withholding_muni
+msgid "Start Date"
+msgstr "Fecha de Inicio"
+
+#. module: l10n_ve_withholding_muni
+msgid "State"
+msgstr "Estado"
+
+#. module: l10n_ve_withholding_muni
+msgid "Subtraction Amount"
+msgstr "Monto del Sustraendo"
+
+#. module: l10n_ve_withholding_muni
+msgid "Subtraction in UT"
+msgstr "Sustraendo en UT"
+
+#. module: l10n_ve_withholding_muni
+msgid "Supplier Invoice Number"
+msgstr "Número de Factura del Proveedor"
+
+#. module: l10n_ve_withholding_muni
+msgid "TXT File"
+msgstr "Archivo TXT"
+
+#. module: l10n_ve_withholding_muni
+msgid "Tax Additional (31%)"
+msgstr "IVA Adicional (31%)"
+
+#. module: l10n_ve_withholding_muni
+msgid "Tax Amount"
+msgstr "Monto del Impuesto"
+
+#. module: l10n_ve_withholding_muni
+msgid "Tax General (16%)"
+msgstr "IVA General (16%)"
+
+#. module: l10n_ve_withholding_muni
+msgid "Tax Reduced (8%)"
+msgstr "IVA Reducido (8%)"
+
+#. module: l10n_ve_withholding_muni
+msgid "Tax Unit"
+msgstr "Unidad Tributaria"
+
+#. module: l10n_ve_withholding_muni
+msgid "Tax Unit (Unidad Tributaria)"
+msgstr "Unidad Tributaria (UT)"
+
+#. module: l10n_ve_withholding_muni
+msgid "Tax Units (UT)"
+msgstr "Unidades Tributarias (UT)"
+
+#. module: l10n_ve_withholding_muni
+msgid "Taxes Breakdown"
+msgstr "Desglose de Impuestos"
+
+#. module: l10n_ve_withholding_muni
+msgid "Total Base"
+msgstr "Total Base Imponible"
+
+#. module: l10n_ve_withholding_muni
+msgid "Total Base Tax"
+msgstr "Total Base Imponible"
+
+#. module: l10n_ve_withholding_muni
+msgid "Total Exempt"
+msgstr "Total Exento"
+
+#. module: l10n_ve_withholding_muni
+msgid "Total ISLR Retained"
+msgstr "Total ISLR Retenido"
+
+#. module: l10n_ve_withholding_muni
+msgid "Total Operations"
+msgstr "Total Operaciones"
+
+#. module: l10n_ve_withholding_muni
+msgid "Total Retained Amount"
+msgstr "Total Monto Retenido"
+
+#. module: l10n_ve_withholding_muni
+msgid "Total VAT Withheld"
+msgstr "Total IVA Retenido"
+
+#. module: l10n_ve_withholding_muni
+msgid "Type"
+msgstr "Tipo"
+
+#. module: l10n_ve_withholding_muni
+msgid "URL Seniat for CI/Passport"
+msgstr "URL del SENIAT para C.I./Pasaporte"
+
+#. module: l10n_ve_withholding_muni
+msgid "URL Seniat for Partner Information"
+msgstr "URL del SENIAT para Datos de Contribuyente"
+
+#. module: l10n_ve_withholding_muni
+msgid "URL Seniat for Retention Rate"
+msgstr "URL del SENIAT para Tasa de Retención"
+
+#. module: l10n_ve_withholding_muni
+msgid "Update Book Data"
+msgstr "Actualizar Datos del Libro"
+
+#. module: l10n_ve_withholding_muni
+msgid "VAT / RIF"
+msgstr "RIF / Cédula"
+
+#. module: l10n_ve_withholding_muni
+msgid "VAT Withholding Configuration"
+msgstr "Configuración de Retención de IVA"
+
+#. module: l10n_ve_withholding_muni
+msgid "VAT Withholdings"
+msgstr "Retenciones de IVA"
+
+#. module: l10n_ve_withholding_muni
+msgid "VAT Write Offs"
+msgstr "Ajustes de Crédito Fiscal"
+
+#. module: l10n_ve_withholding_muni
+msgid "Vendor Bill"
+msgstr "Factura de Proveedor"
+
+#. module: l10n_ve_withholding_muni
+msgid "Vendor ISLR Withholdings"
+msgstr "Retenciones de ISLR de Proveedores"
+
+#. module: l10n_ve_withholding_muni
+msgid "Vendor Refund"
+msgstr "Nota de Crédito de Proveedor"
+
+#. module: l10n_ve_withholding_muni
+msgid "Vendor VAT Withholdings"
+msgstr "Retenciones de IVA de Proveedores"
+
+#. module: l10n_ve_withholding_muni
+msgid "Venezuelan Localization"
+msgstr "Localización Venezolana"
+
+#. module: l10n_ve_withholding_muni
+#: model:ir.model.fields,field_description:l10n_ve_withholding_muni.field_account_wh_muni__name
+msgid "Voucher Number"
+msgstr "Número de Comprobante"
+
+#. module: l10n_ve_withholding_muni
+msgid "Wh. IVA Agent"
+msgstr "Agente de Retención IVA"
+
+#. module: l10n_ve_withholding_muni
+msgid "Withheld"
+msgstr "Retenido"
+
+#. module: l10n_ve_withholding_muni
+msgid "Withheld Amount"
+msgstr "Monto Retenido"
+
+#. module: l10n_ve_withholding_muni
+msgid "Withheld ISLR"
+msgstr "ISLR Retenido"
+
+#. module: l10n_ve_withholding_muni
+msgid "Withholding Lines"
+msgstr "Líneas de Retención"
+
+#. module: l10n_ve_withholding_muni
+msgid "Withholding State"
+msgstr "Estado de Retención"
+
+#. module: l10n_ve_withholding_muni
+msgid "XML File"
+msgstr "Archivo XML"
