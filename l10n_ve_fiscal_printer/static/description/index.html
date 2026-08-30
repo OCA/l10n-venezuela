@@ -1,0 +1,543 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils: https://docutils.sourceforge.io/" />
+<title>README.rst</title>
+<style type="text/css">
+
+/*
+:Author: David Goodger (goodger@python.org)
+:Id: $Id: html4css1.css 9511 2024-01-13 09:50:07Z milde $
+:Copyright: This stylesheet has been placed in the public domain.
+
+Default cascading style sheet for the HTML output of Docutils.
+Despite the name, some widely supported CSS2 features are used.
+
+See https://docutils.sourceforge.io/docs/howto/html-stylesheets.html for how to
+customize this style sheet.
+*/
+
+/* used to remove borders from tables and images */
+.borderless, table.borderless td, table.borderless th {
+  border: 0 }
+
+table.borderless td, table.borderless th {
+  /* Override padding for "table.docutils td" with "! important".
+     The right padding separates the table cells. */
+  padding: 0 0.5em 0 0 ! important }
+
+.first {
+  /* Override more specific margin styles with "! important". */
+  margin-top: 0 ! important }
+
+.last, .with-subtitle {
+  margin-bottom: 0 ! important }
+
+.hidden {
+  display: none }
+
+.subscript {
+  vertical-align: sub;
+  font-size: smaller }
+
+.superscript {
+  vertical-align: super;
+  font-size: smaller }
+
+a.toc-backref {
+  text-decoration: none ;
+  color: black }
+
+blockquote.epigraph {
+  margin: 2em 5em ; }
+
+dl.docutils dd {
+  margin-bottom: 0.5em }
+
+object[type="image/svg+xml"], object[type="application/x-shockwave-flash"] {
+  overflow: hidden;
+}
+
+/* Uncomment (and remove this text!) to get bold-faced definition list terms
+dl.docutils dt {
+  font-weight: bold }
+*/
+
+div.abstract {
+  margin: 2em 5em }
+
+div.abstract p.topic-title {
+  font-weight: bold ;
+  text-align: center }
+
+div.admonition, div.attention, div.caution, div.danger, div.error,
+div.hint, div.important, div.note, div.tip, div.warning {
+  margin: 2em ;
+  border: medium outset ;
+  padding: 1em }
+
+div.admonition p.admonition-title, div.hint p.admonition-title,
+div.important p.admonition-title, div.note p.admonition-title,
+div.tip p.admonition-title {
+  font-weight: bold ;
+  font-family: sans-serif }
+
+div.attention p.admonition-title, div.caution p.admonition-title,
+div.danger p.admonition-title, div.error p.admonition-title,
+div.warning p.admonition-title, .code .error {
+  color: red ;
+  font-weight: bold ;
+  font-family: sans-serif }
+
+/* Uncomment (and remove this text!) to get reduced vertical space in
+   compound paragraphs.
+div.compound .compound-first, div.compound .compound-middle {
+  margin-bottom: 0.5em }
+
+div.compound .compound-last, div.compound .compound-middle {
+  margin-top: 0.5em }
+*/
+
+div.dedication {
+  margin: 2em 5em ;
+  text-align: center ;
+  font-style: italic }
+
+div.dedication p.topic-title {
+  font-weight: bold ;
+  font-style: normal }
+
+div.figure {
+  margin-left: 2em ;
+  margin-right: 2em }
+
+div.footer, div.header {
+  clear: both;
+  font-size: smaller }
+
+div.line-block {
+  display: block ;
+  margin-top: 1em ;
+  margin-bottom: 1em }
+
+div.line-block div.line-block {
+  margin-top: 0 ;
+  margin-bottom: 0 ;
+  margin-left: 1.5em }
+
+div.sidebar {
+  margin: 0 0 0.5em 1em ;
+  border: medium outset ;
+  padding: 1em ;
+  background-color: #ffffee ;
+  width: 40% ;
+  float: right ;
+  clear: right }
+
+div.sidebar p.rubric {
+  font-family: sans-serif ;
+  font-size: medium }
+
+div.system-messages {
+  margin: 5em }
+
+div.system-messages h1 {
+  color: red }
+
+div.system-message {
+  border: medium outset ;
+  padding: 1em }
+
+div.system-message p.system-message-title {
+  color: red ;
+  font-weight: bold }
+
+div.topic {
+  margin: 2em }
+
+h1.section-subtitle, h2.section-subtitle, h3.section-subtitle,
+h4.section-subtitle, h5.section-subtitle, h6.section-subtitle {
+  margin-top: 0.4em }
+
+h1.title {
+  text-align: center }
+
+h2.subtitle {
+  text-align: center }
+
+hr.docutils {
+  width: 75% }
+
+img.align-left, .figure.align-left, object.align-left, table.align-left {
+  clear: left ;
+  float: left ;
+  margin-right: 1em }
+
+img.align-right, .figure.align-right, object.align-right, table.align-right {
+  clear: right ;
+  float: right ;
+  margin-left: 1em }
+
+img.align-center, .figure.align-center, object.align-center {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+table.align-center {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.align-left {
+  text-align: left }
+
+.align-center {
+  clear: both ;
+  text-align: center }
+
+.align-right {
+  text-align: right }
+
+/* reset inner alignment in figures */
+div.align-right {
+  text-align: inherit }
+
+/* div.align-center * { */
+/*   text-align: left } */
+
+.align-top    {
+  vertical-align: top }
+
+.align-middle {
+  vertical-align: middle }
+
+.align-bottom {
+  vertical-align: bottom }
+
+ol.simple, ul.simple {
+  margin-bottom: 1em }
+
+ol.arabic {
+  list-style: decimal }
+
+ol.loweralpha {
+  list-style: lower-alpha }
+
+ol.upperalpha {
+  list-style: upper-alpha }
+
+ol.lowerroman {
+  list-style: lower-roman }
+
+ol.upperroman {
+  list-style: upper-roman }
+
+p.attribution {
+  text-align: right ;
+  margin-left: 50% }
+
+p.caption {
+  font-style: italic }
+
+p.credits {
+  font-style: italic ;
+  font-size: smaller }
+
+p.label {
+  white-space: nowrap }
+
+p.rubric {
+  font-weight: bold ;
+  font-size: larger ;
+  color: maroon ;
+  text-align: center }
+
+p.sidebar-title {
+  font-family: sans-serif ;
+  font-weight: bold ;
+  font-size: larger }
+
+p.sidebar-subtitle {
+  font-family: sans-serif ;
+  font-weight: bold }
+
+p.topic-title {
+  font-weight: bold }
+
+pre.address {
+  margin-bottom: 0 ;
+  margin-top: 0 ;
+  font: inherit }
+
+pre.literal-block, pre.doctest-block, pre.math, pre.code {
+  margin-left: 2em ;
+  margin-right: 2em }
+
+pre.code .ln { color: gray; } /* line numbers */
+pre.code, code { background-color: #eeeeee }
+pre.code .comment, code .comment { color: #5C6576 }
+pre.code .keyword, code .keyword { color: #3B0D06; font-weight: bold }
+pre.code .literal.string, code .literal.string { color: #0C5404 }
+pre.code .name.builtin, code .name.builtin { color: #352B84 }
+pre.code .deleted, code .deleted { background-color: #DEB0A1}
+pre.code .inserted, code .inserted { background-color: #A3D289}
+
+span.classifier {
+  font-family: sans-serif ;
+  font-style: oblique }
+
+span.classifier-delimiter {
+  font-family: sans-serif ;
+  font-weight: bold }
+
+span.interpreted {
+  font-family: sans-serif }
+
+span.option {
+  white-space: nowrap }
+
+span.pre {
+  white-space: pre }
+
+span.problematic, pre.problematic {
+  color: red }
+
+span.section-subtitle {
+  /* font-size relative to parent (h1..h6 element) */
+  font-size: 80% }
+
+table.citation {
+  border-left: solid 1px gray;
+  margin-left: 1px }
+
+table.docinfo {
+  margin: 2em 4em }
+
+table.docutils {
+  margin-top: 0.5em ;
+  margin-bottom: 0.5em }
+
+table.footnote {
+  border-left: solid 1px black;
+  margin-left: 1px }
+
+table.docutils td, table.docutils th,
+table.docinfo td, table.docinfo th {
+  padding-left: 0.5em ;
+  padding-right: 0.5em ;
+  vertical-align: top }
+
+table.docutils th.field-name, table.docinfo th.docinfo-name {
+  font-weight: bold ;
+  text-align: left ;
+  white-space: nowrap ;
+  padding-left: 0 }
+
+/* "booktabs" style (no vertical lines) */
+table.docutils.booktabs {
+  border: 0px;
+  border-top: 2px solid;
+  border-bottom: 2px solid;
+  border-collapse: collapse;
+}
+table.docutils.booktabs * {
+  border: 0px;
+}
+table.docutils.booktabs th {
+  border-bottom: thin solid;
+  text-align: left;
+}
+
+h1 tt.docutils, h2 tt.docutils, h3 tt.docutils,
+h4 tt.docutils, h5 tt.docutils, h6 tt.docutils {
+  font-size: 100% }
+
+ul.auto-toc {
+  list-style-type: none }
+
+</style>
+</head>
+<body>
+<div class="document">
+
+
+<a class="reference external image-reference" href="https://odoo-community.org/get-involved?utm_source=readme">
+<img alt="Odoo Community Association" src="https://odoo-community.org/readme-banner-image" />
+</a>
+<div class="section" id="venezuela-fiscal-printer">
+<h1>Venezuela - Fiscal Printer</h1>
+<!-- !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!! This file is generated by oca-gen-addon-readme !!
+!! changes will be overwritten.                   !!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!! source digest: sha256:694e4bca1a631cb000e19a78232f2201d651979b2a878e1d164083f06c4c448e
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! -->
+<p><a class="reference external image-reference" href="https://odoo-community.org/page/development-status"><img alt="Beta" src="https://img.shields.io/badge/maturity-Beta-yellow.png" /></a> <a class="reference external image-reference" href="http://www.gnu.org/licenses/lgpl-3.0-standalone.html"><img alt="License: LGPL-3" src="https://img.shields.io/badge/license-LGPL--3-blue.png" /></a> <a class="reference external image-reference" href="https://github.com/OCA/l10n-venezuela/tree/19.0/l10n_ve_fiscal_printer"><img alt="OCA/l10n-venezuela" src="https://img.shields.io/badge/github-OCA%2Fl10n--venezuela-lightgray.png?logo=github" /></a> <a class="reference external image-reference" href="https://translation.odoo-community.org/projects/l10n-venezuela-19-0/l10n-venezuela-19-0-l10n_ve_fiscal_printer"><img alt="Translate me on Weblate" src="https://img.shields.io/badge/weblate-Translate%20me-F47D42.png" /></a> <a class="reference external image-reference" href="https://runboat.odoo-community.org/builds?repo=OCA/l10n-venezuela&amp;target_branch=19.0"><img alt="Try me on Runboat" src="https://img.shields.io/badge/runboat-Try%20me-875A7B.png" /></a></p>
+<p>This addon connects the Odoo 19 Point of Sale and customer invoice form
+to an external local bridge controlling a Venezuelan fiscal machine.</p>
+<p>It provides:</p>
+<ul class="simple">
+<li>POS fiscal invoices and credit notes, including affected-document
+references.</li>
+<li>Browser-side bridge calls with a 90-second timeout.</li>
+<li>Recovery after an ambiguous invoice timeout, using the order UUID, the
+last fiscal ticket total, and an explicit cashier confirmation when
+needed.</li>
+<li>Fiscal number, machine serial, local timestamp, document type, and Z
+report capture.</li>
+<li>Backend fiscal printing for posted customer invoices and credit notes.</li>
+<li>Safe propagation of the fiscal number to the control-number fields
+supplied by <tt class="docutils literal">l10n_ve_fiscal_document</tt>.</li>
+<li>Optional POS payload enrichment when another installed addon exposes
+the <tt class="docutils literal">l10n_ve_is_spe</tt>, <tt class="docutils literal">l10n_ve_igtf_pct</tt>, and
+<tt class="docutils literal">l10n_ve_igtf_applies</tt> fields. No IGTF addon is required.</li>
+</ul>
+<p>The fiscal printer bridge is external software and is not distributed
+with this addon. Odoo’s server never connects directly to the fiscal
+machine.</p>
+<p>Paper batches, free-form stationery, and manual contingency books are
+not part of this core addon. Those workflows require paper-range
+ownership, duplicate controls, dedicated journals, and fiscal-book
+reporting and belong in a separate integration addon depending on the
+corresponding fiscal-books module.</p>
+<p><strong>Table of contents</strong></p>
+<div class="contents local topic" id="contents">
+<ul class="simple">
+<li><a class="reference internal" href="#configuration" id="toc-entry-1">Configuration</a><ul>
+<li><a class="reference internal" href="#bridge-contract" id="toc-entry-2">Bridge contract</a></li>
+<li><a class="reference internal" href="#browser-and-network-requirements" id="toc-entry-3">Browser and network requirements</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#usage" id="toc-entry-4">Usage</a></li>
+<li><a class="reference internal" href="#bug-tracker" id="toc-entry-5">Bug Tracker</a></li>
+<li><a class="reference internal" href="#credits" id="toc-entry-6">Credits</a><ul>
+<li><a class="reference internal" href="#authors" id="toc-entry-7">Authors</a></li>
+<li><a class="reference internal" href="#contributors" id="toc-entry-8">Contributors</a></li>
+<li><a class="reference internal" href="#maintainers" id="toc-entry-9">Maintainers</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="configuration">
+<h2><a class="toc-backref" href="#toc-entry-1">Configuration</a></h2>
+<ol class="arabic simple">
+<li>Set the sales journal’s <strong>Emission Medium</strong> to <strong>Fiscal machine</strong>
+before posting documents that will be printed through the bridge.</li>
+<li>Open Point of Sale settings and set the bridge URL, shared token,
+fiscal machine serial, and default backend payment code.</li>
+<li>Set each POS payment method’s HKA payment code.</li>
+</ol>
+<p>Only one POS bridge can be configured per company for backend printing.
+Since the usual URL points to <tt class="docutils literal">localhost</tt>, the backend invoice form
+cannot safely choose between multiple physical machines. POS printing is
+not subject to this restriction because each register uses its own
+loaded configuration.</p>
+<div class="section" id="bridge-contract">
+<h3><a class="toc-backref" href="#toc-entry-2">Bridge contract</a></h3>
+<p>All endpoints use <tt class="docutils literal">POST</tt>, JSON bodies,
+<tt class="docutils literal"><span class="pre">Content-Type:</span> application/json</tt>, and an <tt class="docutils literal"><span class="pre">X-Bridge-Token</span></tt> header.
+The token must be a random shared secret configured on both sides and
+must never be embedded in source code.</p>
+<p>Required endpoints are:</p>
+<ul class="simple">
+<li><tt class="docutils literal"><span class="pre">/claim-terminal</span></tt>: accepts <tt class="docutils literal">{ &quot;uuid&quot;: &quot;&lt;order uuid&gt;&quot; }</tt>.</li>
+<li><tt class="docutils literal"><span class="pre">/release-terminal</span></tt>: accepts <tt class="docutils literal">{ &quot;uuid&quot;: &quot;&lt;order uuid&gt;&quot; }</tt>.</li>
+<li><tt class="docutils literal"><span class="pre">/print-invoice</span></tt>: accepts the fiscal payload described below.</li>
+<li><tt class="docutils literal"><span class="pre">/print-credit-note</span></tt>: accepts the fiscal payload plus
+<tt class="docutils literal">numero_factura_afectada</tt>, <tt class="docutils literal">serial_afectada</tt>, and
+<tt class="docutils literal">fecha_afectada</tt> in <tt class="docutils literal">DDMMYYYY</tt> format.</li>
+<li><tt class="docutils literal"><span class="pre">/check-last-invoice</span></tt>: accepts <tt class="docutils literal">{}</tt> and returns the last invoice
+UUID, fiscal number, total, and serial.</li>
+<li><tt class="docutils literal"><span class="pre">/report-x</span></tt>: accepts <tt class="docutils literal">{}</tt>.</li>
+<li><tt class="docutils literal"><span class="pre">/report-z</span></tt>: accepts <tt class="docutils literal">{}</tt> and returns <tt class="docutils literal">numero_reporte_z</tt>.</li>
+</ul>
+<p>The invoice payload contains <tt class="docutils literal">uuid</tt>, <tt class="docutils literal">cliente_nombre</tt>,
+<tt class="docutils literal">cliente_rif</tt>, <tt class="docutils literal">serial_impresora</tt>, <tt class="docutils literal">tasa_dolar</tt>, <tt class="docutils literal">monto_total</tt>,
+<tt class="docutils literal">monto_igtf</tt>, <tt class="docutils literal">items</tt>, and <tt class="docutils literal">pagos</tt>. Each item contains
+<tt class="docutils literal">descripcion</tt>, <tt class="docutils literal">precio</tt>, <tt class="docutils literal">cantidad</tt>, and <tt class="docutils literal">iva_porcentaje</tt>. Each
+payment contains <tt class="docutils literal">metodo</tt>, <tt class="docutils literal">monto</tt>, and, from the POS, the optional
+<tt class="docutils literal">divisa</tt> flag.</p>
+<p>A successful response must include <tt class="docutils literal">estado: &quot;exito&quot;</tt>. Print responses
+also include <tt class="docutils literal">numero_factura_fiscal</tt> and preferably the real
+<tt class="docutils literal">serial</tt> returned by the machine. Error responses use a non-success
+<tt class="docutils literal">estado</tt> and may provide <tt class="docutils literal">mensaje</tt>.</p>
+<p>The bridge must remember the last successfully printed invoice UUID and
+echo it from <tt class="docutils literal"><span class="pre">/check-last-invoice</span></tt>; this is the primary anti-duplicate
+proof after a browser timeout.</p>
+</div>
+<div class="section" id="browser-and-network-requirements">
+<h3><a class="toc-backref" href="#toc-entry-3">Browser and network requirements</a></h3>
+<p>Calls originate in the cashier’s or accounting user’s browser. A bridge
+bound to loopback should expose only the required endpoints and validate
+the shared token on every request.</p>
+<p>The bridge must answer CORS and Private Network Access preflights for
+the exact Odoo origin. At minimum, its <tt class="docutils literal">OPTIONS</tt> response must allow
+<tt class="docutils literal">POST</tt>, <tt class="docutils literal"><span class="pre">Content-Type</span></tt>, and <tt class="docutils literal"><span class="pre">X-Bridge-Token</span></tt>. Browsers requiring
+Private Network Access also expect
+<tt class="docutils literal"><span class="pre">Access-Control-Allow-Private-Network:</span> true</tt>. Do not use a wildcard
+origin together with credentials. HTTPS Odoo deployments must be tested
+with the chosen browser’s loopback and mixed-content policy.</p>
+<p>Automated tests mock the bridge. They do not open a serial port, ship
+the Windows/HKA bridge, or certify a physical printer model.</p>
+</div>
+</div>
+<div class="section" id="usage">
+<h2><a class="toc-backref" href="#toc-entry-4">Usage</a></h2>
+<p>When a bridge URL is configured, POS validation first prints the fiscal
+document. The order is not finalized until a fiscal number is returned.</p>
+<p>If an invoice request times out, the next attempt checks the bridge’s
+last invoice. A matching UUID is recovered automatically. A different
+UUID or total is reprinted. If an older bridge cannot return a UUID but
+the total matches, the cashier must inspect the physical ticket and
+explicitly choose whether to recover its number or print again. Credit
+notes are never retried blindly after an ambiguous timeout.</p>
+<p>Use <strong>X Report</strong> and <strong>Z Report</strong> from the POS control buttons. Z
+printing asks for confirmation and stores the returned report number on
+the POS session.</p>
+<p>For backend printing, open a posted customer invoice or credit note
+issued with the <strong>Fiscal machine</strong> emission medium and click <strong>Print
+Fiscal Document</strong> from the computer running the local bridge.</p>
+</div>
+<div class="section" id="bug-tracker">
+<h2><a class="toc-backref" href="#toc-entry-5">Bug Tracker</a></h2>
+<p>Bugs are tracked on <a class="reference external" href="https://github.com/OCA/l10n-venezuela/issues">GitHub Issues</a>.
+In case of trouble, please check there if your issue has already been reported.
+If you spotted it first, help us to smash it by providing a detailed and welcomed
+<a class="reference external" href="https://github.com/OCA/l10n-venezuela/issues/new?body=module:%20l10n_ve_fiscal_printer%0Aversion:%2019.0%0A%0A**Steps%20to%20reproduce**%0A-%20...%0A%0A**Current%20behavior**%0A%0A**Expected%20behavior**">feedback</a>.</p>
+<p>Do not contact contributors directly about support or help with technical issues.</p>
+</div>
+<div class="section" id="credits">
+<h2><a class="toc-backref" href="#toc-entry-6">Credits</a></h2>
+<div class="section" id="authors">
+<h3><a class="toc-backref" href="#toc-entry-7">Authors</a></h3>
+<ul class="simple">
+<li>BWEALTHICS LLC</li>
+</ul>
+</div>
+<div class="section" id="contributors">
+<h3><a class="toc-backref" href="#toc-entry-8">Contributors</a></h3>
+<ul class="simple">
+<li>BWEALTHICS LLC</li>
+</ul>
+</div>
+<div class="section" id="maintainers">
+<h3><a class="toc-backref" href="#toc-entry-9">Maintainers</a></h3>
+<p>This module is maintained by the OCA.</p>
+<a class="reference external image-reference" href="https://odoo-community.org">
+<img alt="Odoo Community Association" src="https://odoo-community.org/logo.png" />
+</a>
+<p>OCA, or the Odoo Community Association, is a nonprofit organization whose
+mission is to support the collaborative development of Odoo features and
+promote its widespread use.</p>
+<p>Current <a class="reference external" href="https://odoo-community.org/page/maintainer-role">maintainer</a>:</p>
+<p><a class="reference external image-reference" href="https://github.com/bwealthics"><img alt="bwealthics" src="https://github.com/bwealthics.png?size=40px" /></a></p>
+<p>This module is part of the <a class="reference external" href="https://github.com/OCA/l10n-venezuela/tree/19.0/l10n_ve_fiscal_printer">OCA/l10n-venezuela</a> project on GitHub.</p>
+<p>You are welcome to contribute. To learn how please visit <a class="reference external" href="https://odoo-community.org/page/Contribute">https://odoo-community.org/page/Contribute</a>.</p>
+</div>
+</div>
+</div>
+</div>
+</body>
+</html>

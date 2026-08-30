@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Copyright 2026 BWEALTHICS LLC
+     License LGPL-3.0 or later (https://www.gnu.org/licenses/lgpl). -->
+<odoo>
+    <record id="account_move_view_form" model="ir.ui.view">
+        <field name="name">account.move.form.l10n.ve.fiscal.printer</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="l10n_ve_fiscal_document.account_move_view_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <button
+                    name="action_l10n_ve_print_fiscal"
+                    type="object"
+                    string="Print Fiscal Document"
+                    help="Print from a browser running on the computer connected to the local bridge."
+                    invisible="move_type not in ('out_invoice', 'out_refund') or state != 'posted' or l10n_ve_emission_medium != 'fiscal_machine' or l10n_ve_fiscal_number or l10n_ve_control_number"
+                />
+            </xpath>
+            <xpath expr="//field[@name='l10n_ve_control_number']" position="after">
+                <field
+                    name="l10n_ve_fiscal_number"
+                    invisible="move_type not in ('out_invoice', 'out_refund')"
+                />
+                <field
+                    name="l10n_ve_fiscal_machine_serial"
+                    invisible="not l10n_ve_fiscal_number"
+                />
+                <field
+                    name="l10n_ve_fiscal_date"
+                    invisible="not l10n_ve_fiscal_number"
+                />
+                <field
+                    name="l10n_ve_fiscal_doc_type"
+                    invisible="not l10n_ve_fiscal_number"
+                />
+            </xpath>
+        </field>
+    </record>
+</odoo>

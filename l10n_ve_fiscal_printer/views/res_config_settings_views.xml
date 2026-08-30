@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Copyright 2026 BWEALTHICS LLC
+     License LGPL-3.0 or later (https://www.gnu.org/licenses/lgpl). -->
+<odoo>
+    <record id="res_config_settings_view_form" model="ir.ui.view">
+        <field name="name">res.config.settings.form.l10n.ve.fiscal.printer</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="point_of_sale.res_config_settings_view_form" />
+        <field name="arch" type="xml">
+            <xpath
+                expr="//block[@id='pos_connected_devices_section']"
+                position="inside"
+            >
+                <setting
+                    id="l10n_ve_fiscal_printer_bridge"
+                    string="Venezuelan fiscal printer"
+                    help="Use a local browser bridge to print on a fiscal machine."
+                >
+                    <div class="content-group mt16">
+                        <div class="row">
+                            <label
+                                for="pos_l10n_ve_bridge_url"
+                                class="col-lg-4 o_light_label"
+                            />
+                            <field
+                                name="pos_l10n_ve_bridge_url"
+                                placeholder="http://localhost:5001"
+                            />
+                        </div>
+                        <div class="row">
+                            <label
+                                for="pos_l10n_ve_bridge_token"
+                                class="col-lg-4 o_light_label"
+                            />
+                            <field name="pos_l10n_ve_bridge_token" password="True" />
+                        </div>
+                        <div class="row">
+                            <label
+                                for="pos_l10n_ve_machine_serial"
+                                class="col-lg-4 o_light_label"
+                            />
+                            <field name="pos_l10n_ve_machine_serial" />
+                        </div>
+                        <div class="row">
+                            <label
+                                for="pos_l10n_ve_default_payment_code"
+                                class="col-lg-4 o_light_label"
+                            />
+                            <field name="pos_l10n_ve_default_payment_code" />
+                        </div>
+                    </div>
+                </setting>
+            </xpath>
+        </field>
+    </record>
+</odoo>
