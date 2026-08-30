@@ -1,7 +1,7 @@
 # Copyright 2026 BWEALTHICS LLC
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
 
-from datetime import date
+from datetime import date, datetime
 
 from odoo import Command, fields
 from odoo.exceptions import UserError
@@ -88,6 +88,103 @@ class TestL10nVeFiscalDocument(AccountTestInvoicingCommon):
         ):
             with self.subTest(field_name=field_name), self.assertRaises(UserError):
                 invoice.write({field_name: value})
+        with self.assertRaises(UserError):
+            invoice.with_context(l10n_ve_fiscal_document_control_assignment=True).write(
+                {"l10n_ve_control_number": "00-00000001"}
+            )
+
+    def test_assign_control_data_for_automatic_emission(self):
+        control_date = date(2026, 8, 30)
+        for index, medium in enumerate(("digital", "fiscal_machine"), start=1):
+            with self.subTest(medium=medium):
+                self.sale_journal.l10n_ve_emission_medium = medium
+                invoice = self._create_invoice()
+                invoice.action_post()
+
+                invoice._l10n_ve_assign_control_data(f"00-0000000{index}", control_date)
+
+                self.assertEqual(invoice.l10n_ve_control_number, f"00-0000000{index}")
+                self.assertEqual(invoice.l10n_ve_control_date, control_date)
+
+    def test_assign_control_data_rejects_manual_emission(self):
+        for medium in ("free", "contingency"):
+            with self.subTest(medium=medium):
+                self.sale_journal.l10n_ve_emission_medium = medium
+                invoice = self._create_invoice()
+                invoice.action_post()
+
+                with self.assertRaises(UserError):
+                    invoice._l10n_ve_assign_control_data("00-00000001")
+
+    def test_assign_control_data_rejects_different_value(self):
+        self.sale_journal.l10n_ve_emission_medium = "digital"
+        invoice = self._create_invoice()
+        invoice.action_post()
+        invoice._l10n_ve_assign_control_data("00-00000001", date(2026, 8, 29))
+
+        with self.assertRaises(UserError):
+            invoice._l10n_ve_assign_control_data("00-00000002")
+        with self.assertRaises(UserError):
+            invoice._l10n_ve_assign_control_data("00-00000001", date(2026, 8, 30))
+
+        self.assertEqual(invoice.l10n_ve_control_number, "00-00000001")
+        self.assertEqual(invoice.l10n_ve_control_date, date(2026, 8, 29))
+
+    def test_assign_control_data_is_idempotent(self):
+        self.sale_journal.l10n_ve_emission_medium = "fiscal_machine"
+        invoice = self._create_invoice()
+        invoice.action_post()
+
+        invoice._l10n_ve_assign_control_data("00-00000001", date(2026, 8, 29))
+        invoice._l10n_ve_assign_control_data("00-00000001", date(2026, 8, 29))
+
+        self.assertEqual(invoice.l10n_ve_control_number, "00-00000001")
+        self.assertEqual(invoice.l10n_ve_control_date, date(2026, 8, 29))
+
+    def test_assign_control_data_after_fiscal_country_change(self):
+        self.sale_journal.l10n_ve_emission_medium = "digital"
+        invoice = self._create_invoice()
+        invoice.action_post()
+        self.company.account_fiscal_country_id = self.env.ref("base.us")
+
+        invoice._l10n_ve_assign_control_data("00-00000001", date(2026, 8, 29))
+
+        self.assertEqual(invoice.l10n_ve_control_number, "00-00000001")
+        self.assertEqual(invoice.l10n_ve_control_date, date(2026, 8, 29))
+
+    def test_assign_control_data_rejects_non_date_values(self):
+        self.sale_journal.l10n_ve_emission_medium = "digital"
+        invoice = self._create_invoice()
+        invoice.action_post()
+
+        for control_date in (datetime(2026, 8, 29), "2026-08-29", False):
+            with self.subTest(control_date=control_date), self.assertRaises(UserError):
+                invoice._l10n_ve_assign_control_data("00-00000001", control_date)
+
+        self.assertFalse(invoice.l10n_ve_control_number)
+        self.assertFalse(invoice.l10n_ve_control_date)
+
+    def test_assign_control_data_requires_number(self):
+        self.sale_journal.l10n_ve_emission_medium = "digital"
+        invoice = self._create_invoice()
+        invoice.action_post()
+
+        for control_number in (False, "", "   "):
+            with (
+                self.subTest(control_number=control_number),
+                self.assertRaises(UserError),
+            ):
+                invoice._l10n_ve_assign_control_data(control_number)
+
+    def test_assign_control_data_requires_posted_customer_document(self):
+        self.sale_journal.l10n_ve_emission_medium = "digital"
+        draft_invoice = self._create_invoice()
+        vendor_bill = self._create_invoice("in_invoice")
+        vendor_bill.action_post()
+
+        for move in (draft_invoice, vendor_bill):
+            with self.subTest(move_type=move.move_type), self.assertRaises(UserError):
+                move._l10n_ve_assign_control_data("00-00000001")
 
     def test_fiscal_document_cannot_be_reset_cancelled_or_deleted(self):
         invoice = self._create_invoice()

@@ -1,6 +1,8 @@
 # Copyright 2026 BWEALTHICS LLC
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
 
+from datetime import date, datetime
+
 from odoo import api, fields, models
 from odoo.exceptions import UserError
 
@@ -8,6 +10,12 @@ from .account_journal import EMISSION_MEDIUM_SELECTION
 
 _INTERNAL_OPERATION = object()
 _INTERNAL_OPERATION_CONTEXT_KEY = "l10n_ve_fiscal_document_posting"
+_CONTROL_DATA_ASSIGNMENT = object()
+_CONTROL_DATA_ASSIGNMENT_CONTEXT_KEY = "l10n_ve_fiscal_document_control_assignment"
+_CONTROL_DATA_FIELDS = {
+    "l10n_ve_control_number",
+    "l10n_ve_control_date",
+}
 _TECHNICAL_FIELDS = {
     "l10n_ve_emission_medium",
     "l10n_ve_fiscal_data_locked",
@@ -59,6 +67,15 @@ class AccountMove(models.Model):
             self.env.context.get(_INTERNAL_OPERATION_CONTEXT_KEY) is _INTERNAL_OPERATION
         )
 
+    def _l10n_ve_get_protected_fields(self):
+        return _TECHNICAL_FIELDS | _CONTROL_DATA_FIELDS
+
+    def _l10n_ve_is_control_data_assignment(self, vals):
+        return set(vals) <= _CONTROL_DATA_FIELDS and (
+            self.env.context.get(_CONTROL_DATA_ASSIGNMENT_CONTEXT_KEY)
+            is _CONTROL_DATA_ASSIGNMENT
+        )
+
     def _l10n_ve_lock_fiscal_data(self, emission_medium=False):
         values = {"l10n_ve_fiscal_data_locked": True}
         if emission_medium:
@@ -66,6 +83,62 @@ class AccountMove(models.Model):
         return self.with_context(
             **{_INTERNAL_OPERATION_CONTEXT_KEY: _INTERNAL_OPERATION}
         ).write(values)
+
+    def _l10n_ve_assign_control_data(self, control_number, control_date=None):
+        self.ensure_one()
+        if not isinstance(control_number, str) or not control_number.strip():
+            raise UserError(self.env._("A fiscal control number is required."))
+        control_number = control_number.strip()
+        if control_date is not None and (
+            not isinstance(control_date, date) or isinstance(control_date, datetime)
+        ):
+            raise UserError(self.env._("The fiscal control date must be a date."))
+        if (
+            self.state != "posted"
+            or not self.is_sale_document(include_receipts=True)
+            or not self.l10n_ve_fiscal_data_locked
+        ):
+            raise UserError(
+                self.env._(
+                    "Control data can only be assigned to posted, locked Venezuelan "
+                    "customer documents."
+                )
+            )
+        if self.l10n_ve_emission_medium not in {"digital", "fiscal_machine"}:
+            raise UserError(
+                self.env._(
+                    "Control data can only be assigned after posting digital or "
+                    "fiscal machine documents."
+                )
+            )
+        if (
+            self.l10n_ve_control_number
+            and self.l10n_ve_control_number != control_number
+        ):
+            raise UserError(
+                self.env._("A different fiscal control number is already assigned.")
+            )
+        if (
+            control_date
+            and self.l10n_ve_control_date
+            and self.l10n_ve_control_date != control_date
+        ):
+            raise UserError(
+                self.env._("A different fiscal control date is already assigned.")
+            )
+
+        values = {}
+        if not self.l10n_ve_control_number:
+            values["l10n_ve_control_number"] = control_number
+        if control_date and not self.l10n_ve_control_date:
+            values["l10n_ve_control_date"] = control_date
+        if values:
+            self.with_context(
+                **{
+                    _CONTROL_DATA_ASSIGNMENT_CONTEXT_KEY: _CONTROL_DATA_ASSIGNMENT,
+                }
+            ).write(values)
+        return True
 
     @api.model_create_multi
     def create(self, vals_list):
@@ -91,11 +164,10 @@ class AccountMove(models.Model):
                     "automatically."
                 )
             )
-        protected_fields = _TECHNICAL_FIELDS | {
-            "l10n_ve_control_number",
-            "l10n_ve_control_date",
-        }
-        if protected_fields.intersection(vals) or "state" in vals:
+        protected_fields = self._l10n_ve_get_protected_fields()
+        if (
+            protected_fields.intersection(vals) or "state" in vals
+        ) and not self._l10n_ve_is_control_data_assignment(vals):
             self._l10n_ve_check_fiscal_document_locked()
         if vals.get("state") == "posted" and not self._l10n_ve_is_internal_operation():
             fiscal_documents = self.filtered(
@@ -120,26 +192,8 @@ class AccountMove(models.Model):
         return super().button_draft()
 
     def _l10n_ve_set_control_number(self, control_number, control_date=False):
-        """Assign the control number after posting.
-
-        A fiscal machine or an authorized digital printing house only
-        returns the control number once the document is already posted and
-        totalled, so this is the sole supported way for such a connector to
-        write it back: the fiscal lock otherwise makes
-        ``l10n_ve_control_number``/``l10n_ve_control_date`` immutable once
-        posted (see ``_l10n_ve_check_fiscal_document_locked``). It refuses to
-        overwrite a number already assigned, keeping the same immutability
-        this addon enforces everywhere else.
-        """
+        """Compatibility wrapper for the original connector API."""
         self.ensure_one()
-        if not self.l10n_ve_fiscal_data_locked:
-            raise UserError(
-                self.env._(
-                    "%(document)s is not posted yet: set the control number "
-                    "directly on the draft document instead.",
-                    document=self.display_name,
-                )
-            )
         if self.l10n_ve_control_number:
             raise UserError(
                 self.env._(
@@ -147,15 +201,9 @@ class AccountMove(models.Model):
                     document=self.display_name,
                 )
             )
-        return self.with_context(
-            **{_INTERNAL_OPERATION_CONTEXT_KEY: _INTERNAL_OPERATION}
-        ).write(
-            {
-                "l10n_ve_control_number": control_number,
-                "l10n_ve_control_date": (
-                    control_date or fields.Date.context_today(self)
-                ),
-            }
+        return self._l10n_ve_assign_control_data(
+            control_number,
+            control_date or fields.Date.context_today(self),
         )
 
     def _post(self, soft=True):
