@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Copyright 2026 BWEALTHICS LLC -->
+<odoo>
+    <record id="islr_voucher_company_rule" model="ir.rule">
+        <field name="name">ISLR voucher multi-company</field>
+        <field name="model_id" ref="model_l10n_ve_islr_voucher" />
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+</odoo>

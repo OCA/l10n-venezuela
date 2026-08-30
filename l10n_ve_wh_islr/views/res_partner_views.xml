@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Copyright 2026 BWEALTHICS LLC -->
+<odoo>
+    <record id="view_partner_property_form_islr" model="ir.ui.view">
+        <field name="name">res.partner.view.form.inherit.l10n.ve.wh.islr</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="account.view_partner_property_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='accounting']" position="inside">
+                <group string="Retención ISLR (Venezuela)" name="l10n_ve_islr">
+                    <field name="l10n_ve_person_type" />
+                    <field
+                        name="l10n_ve_islr_concept_id"
+                        options="{'no_create': True}"
+                    />
+                    <field name="l10n_ve_islr_rate" />
+                </group>
+            </xpath>
+        </field>
+    </record>
+</odoo>

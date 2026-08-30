@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Copyright 2026 BWEALTHICS LLC -->
+<odoo>
+    <record id="action_report_islr_voucher" model="ir.actions.report">
+        <field name="name">Comprobante de Retención ISLR</field>
+        <field name="model">l10n.ve.islr.voucher</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">l10n_ve_wh_islr.report_islr_voucher</field>
+        <field name="report_file">l10n_ve_wh_islr.report_islr_voucher</field>
+        <field
+            name="print_report_name"
+        >'Comprobante ISLR - %s' % (object.number)</field>
+        <field name="binding_model_id" ref="model_l10n_ve_islr_voucher" />
+        <field name="binding_type">report</field>
+    </record>
+    <template id="report_islr_voucher">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <div class="text-center mb-3">
+                            <h3>Comprobante de Retención de Impuesto sobre la Renta</h3>
+                            <p class="mb-0">
+                                Artículo 24 del Reglamento Parcial de la Ley de ISLR en Materia de Retenciones (Decreto N° 1.808)
+                            </p>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-4">
+                                <strong>N° de Comprobante:</strong>
+                                <br />
+                                <span t-field="o.number" />
+                            </div>
+                            <div class="col-4">
+                                <strong>Fecha de Emisión:</strong>
+                                <br />
+                                <span t-field="o.date" />
+                            </div>
+                            <div class="col-4">
+                                <strong>Período Fiscal:</strong>
+                                <br />
+                                <span t-out="o.period" />
+                            </div>
+                        </div>
+                        <table class="table table-sm table-bordered">
+                            <tr>
+                                <th class="w-50">Agente de Retención</th>
+                                <th class="w-50">Sujeto Retenido</th>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <span t-field="o.company_id.name" />
+                                    <br />
+                                    RIF: <span t-out="o.company_vat or ''" />
+                                    <br />
+                                    <span
+                                    t-out="o.company_id.partner_id.contact_address or ''"
+                                />
+                                </td>
+                                <td>
+                                    <span t-field="o.partner_id.name" />
+                                    <br />
+                                    RIF: <span t-out="o.partner_vat or ''" />
+                                    <br />
+                                    <span t-out="o.partner_id.contact_address or ''" />
+                                </td>
+                            </tr>
+                        </table>
+                        <h5 class="mt-4">Facturas Afectadas</h5>
+                        <table class="table table-sm table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Documento</th>
+                                    <th>Referencia</th>
+                                    <th>Fecha</th>
+                                    <th class="text-end">Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr t-foreach="o.move_ids" t-as="move">
+                                    <td>
+                                        <span t-field="move.name" />
+                                    </td>
+                                    <td>
+                                        <span t-field="move.ref" />
+                                    </td>
+                                    <td>
+                                        <span t-field="move.invoice_date" />
+                                    </td>
+                                    <td class="text-end">
+                                        <span
+                                            t-field="move.amount_total"
+                                            t-options="{'widget': 'monetary', 'display_currency': move.currency_id}"
+                                        />
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <h5 class="mt-4">Detalle de la Retención</h5>
+                        <table class="table table-sm table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Concepto</th>
+                                    <th>Código</th>
+                                    <th class="text-end">Base</th>
+                                    <th class="text-end">% Retención</th>
+                                    <th class="text-end">Sustraendo</th>
+                                    <th class="text-end">Monto Retenido</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <span t-field="o.concept_id.name" />
+                                    </td>
+                                    <td>
+                                        <span
+                                            t-out="o.concept_id._get_seniat_code(o.person_type)"
+                                        />
+                                    </td>
+                                    <td class="text-end">
+                                        <span
+                                            t-field="o.base"
+                                            t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"
+                                        />
+                                    </td>
+                                    <td class="text-end">
+                                        <span t-out="'%.2f' % o.rate" />
+                                    </td>
+                                    <td class="text-end">
+                                        <span
+                                            t-field="o.subtrahend"
+                                            t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"
+                                        />
+                                    </td>
+                                    <td class="text-end">
+                                        <span
+                                            t-field="o.amount"
+                                            t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"
+                                        />
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <p class="mt-4 small">
+                            Comprobante emitido conforme al artículo 24 del Decreto N° 1.808
+                            (G.O. 36.203 del 12/05/1997). El impuesto retenido fue o será enterado
+                            en una Oficina Receptora de Fondos Nacionales dentro de los plazos legales.
+                        </p>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>
