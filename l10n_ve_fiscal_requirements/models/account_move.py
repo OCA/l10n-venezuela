@@ -48,7 +48,11 @@ class AccountMove(models.Model):
     @api.constrains("nro_ctrl", "partner_id", "move_type")
     def _check_unique_nro_ctrl(self):
         for move in self:
-            if move.is_invoice() and move.move_type in ["in_invoice", "in_refund"] and move.nro_ctrl:
+            if (
+                move.is_invoice()
+                and move.move_type in ["in_invoice", "in_refund"]
+                and move.nro_ctrl
+            ):
                 domain = [
                     ("id", "!=", move.id),
                     ("partner_id", "=", move.partner_id.id),
@@ -57,7 +61,9 @@ class AccountMove(models.Model):
                 ]
                 if self.search_count(domain):
                     raise ValidationError(
-                        _("The Control Number %s has already been registered for partner %s.")
+                        _(
+                            "The Control Number %s has already been registered for partner %s."
+                        )
                         % (move.nro_ctrl, move.partner_id.display_name)
                     )
 

@@ -22,7 +22,11 @@ class AccountWhIvaLineTax(models.Model):
     base_amount = fields.Float(string="Base Amount")
     tax_amount = fields.Float(string="Tax Amount")
     wh_rate = fields.Float(string="Retention Rate (%)", default=75.0)
-    amount_ret = fields.Float(string="Withheld Amount", compute="_compute_ret", store=True)
+    amount_ret = fields.Float(
+        string="Withheld Amount",
+        compute="_compute_ret",
+        store=True,
+    )
 
     @api.depends("tax_amount", "wh_rate")
     def _compute_ret(self):

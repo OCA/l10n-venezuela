@@ -43,7 +43,10 @@ class ResPartner(models.Model):
                     ("vat", "=", partner.vat),
                 ]
                 if self.search_count(domain):
-                    raise ValidationError(_("The VAT / RIF %s is already assigned to another partner.") % partner.vat)
+                    raise ValidationError(
+                        _("The VAT / RIF %s is already assigned to another partner.")
+                        % partner.vat
+                    )
 
     def action_update_from_seniat(self):
         self.ensure_one()
@@ -51,11 +54,16 @@ class ResPartner(models.Model):
             raise ValidationError(_("Please provide a VAT / RIF number first."))
         info = self.env["seniat.url"].get_seniat_partner_info(self.vat)
         if info:
-            self.write({
-                "name": info.get("name") or self.name,
-                "wh_iva_agent": info.get("wh_iva_agent", False),
-                "wh_iva_rate": info.get("wh_iva_rate", 0.0),
-                "seniat_updated": True,
-            })
+            self.write(
+                {
+                    "name": info.get("name") or self.name,
+                    "wh_iva_agent": info.get("wh_iva_agent", False),
+                    "wh_iva_rate": info.get("wh_iva_rate", 0.0),
+                    "seniat_updated": True,
+                }
+            )
         else:
-            raise ValidationError(_("Could not retrieve partner information from SENIAT for VAT: %s") % self.vat)
+            raise ValidationError(
+                _("Could not retrieve partner information from SENIAT for VAT: %s")
+                % self.vat
+            )

@@ -1,26 +1,34 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <odoo>
-    <menuitem id="menu_islr_wh_concept"
-              name="ISLR Concepts &amp; Rates"
-              parent="l10n_ve_fiscal_requirements.menu_venezuela_localization_root"
-              action="action_islr_wh_concept"
-              sequence="30"/>
+    <menuitem
+        id="menu_islr_wh_concept"
+        name="ISLR Concepts &amp; Rates"
+        parent="l10n_ve_fiscal_requirements.menu_venezuela_localization_root"
+        action="action_islr_wh_concept"
+        sequence="30"
+    />
 
-    <menuitem id="menu_account_wh_islr_supplier"
-              name="Vendor ISLR Withholdings"
-              parent="account.menu_finance_payables"
-              action="action_account_wh_islr_doc_supplier"
-              sequence="35"/>
+    <menuitem
+        id="menu_account_wh_islr_supplier"
+        name="Vendor ISLR Withholdings"
+        parent="account.menu_finance_payables"
+        action="action_account_wh_islr_doc_supplier"
+        sequence="35"
+    />
 
-    <menuitem id="menu_account_wh_islr_customer"
-              name="Customer ISLR Withholdings"
-              parent="account.menu_finance_receivables"
-              action="action_account_wh_islr_doc_customer"
-              sequence="35"/>
+    <menuitem
+        id="menu_account_wh_islr_customer"
+        name="Customer ISLR Withholdings"
+        parent="account.menu_finance_receivables"
+        action="action_account_wh_islr_doc_customer"
+        sequence="35"
+    />
 
-    <menuitem id="menu_generate_xml_wh_islr"
-              name="Generate XML SENIAT (ISLR)"
-              parent="account.menu_finance_reports"
-              action="action_generate_xml_wh_islr"
-              sequence="85"/>
+    <menuitem
+        id="menu_generate_xml_wh_islr"
+        name="Generate XML SENIAT (ISLR)"
+        parent="account.menu_finance_reports"
+        action="action_generate_xml_wh_islr"
+        sequence="85"
+    />
 </odoo>

@@ -16,14 +16,20 @@ class FiscalBookLine(models.Model):
         required=True,
     )
     rank = fields.Integer(string="Operation N°", default=1)
-    move_id = fields.Many2one(comodel_name="account.move", string="Invoice / Move", required=True)
+    move_id = fields.Many2one(
+        comodel_name="account.move", string="Invoice / Move", required=True
+    )
     partner_id = fields.Many2one(comodel_name="res.partner", string="Partner")
     partner_vat = fields.Char(string="RIF / CI")
     doc_date = fields.Date(string="Doc Date")
     invoice_number = fields.Char(string="Invoice Number")
     nro_ctrl = fields.Char(string="Control Number")
-    doc_type = fields.Selection([("01", "Invoice"), ("02", "Debit Note"), ("03", "Credit Note")], string="Doc Type", default="01")
-    
+    doc_type = fields.Selection(
+        [("01", "Invoice"), ("02", "Debit Note"), ("03", "Credit Note")],
+        string="Doc Type",
+        default="01",
+    )
+
     total_amount = fields.Float(string="Total Amount")
     exempt_amount = fields.Float(string="Exempt Amount")
     base_general = fields.Float(string="Base General")

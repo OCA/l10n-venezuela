@@ -36,7 +36,9 @@ class L10nUt(models.Model):
     def get_amount_ut(self, date=False):
         """Return the value of the tax unit for the specified date or current date."""
         target_date = date or fields.Date.context_today(self)
-        ut_record = self.search([("date", "<=", target_date)], order="date desc", limit=1)
+        ut_record = self.search(
+            [("date", "<=", target_date)], order="date desc", limit=1
+        )
         return ut_record.amount if ut_record else 0.0
 
     @api.model

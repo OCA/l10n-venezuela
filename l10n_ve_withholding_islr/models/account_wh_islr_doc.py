@@ -60,7 +60,8 @@ class AccountWhIslrDoc(models.Model):
         comodel_name="account.journal",
         string="Journal",
         required=True,
-        default=lambda self: self.env.company.wh_islr_journal_id or self.env["account.journal"].search([("type", "=", "general")], limit=1),
+        default=lambda self: self.env.company.wh_islr_journal_id
+        or self.env["account.journal"].search([("type", "=", "general")], limit=1),
     )
     date = fields.Date(
         string="Date of Voucher",
@@ -108,7 +109,10 @@ class AccountWhIslrDoc(models.Model):
                 raise ValidationError(_("Cannot confirm voucher without lines."))
             if rec.name == "/" or not rec.name:
                 date_str = (rec.date or fields.Date.today()).strftime("%Y%m")
-                seq = self.env["ir.sequence"].next_by_code("account.wh.islr.doc") or "00000001"
+                seq = (
+                    self.env["ir.sequence"].next_by_code("account.wh.islr.doc")
+                    or "00000001"
+                )
                 rec.name = f"ISLR-{date_str}{seq}"
             rec.write({"state": "confirmed"})
 
@@ -118,32 +122,47 @@ class AccountWhIslrDoc(models.Model):
                 partner_acc = rec.partner_id.property_account_payable_id.id
                 wh_acc = rec.company_id.wh_islr_account_id.id
                 if not wh_acc:
-                    raise UserError(_("Please configure default ISLR Withholding Account in Company Settings."))
-                
+                    raise UserError(
+                        _(
+                            "Please configure default ISLR Withholding Account "
+                            "in Company Settings."
+                        )
+                    )
+
                 amount = rec.total_ret_amount
                 lines = [
-                    (0, 0, {
-                        "name": _("ISLR Retention %s") % rec.name,
-                        "partner_id": rec.partner_id.id,
-                        "account_id": partner_acc,
-                        "debit": amount if rec.type == "in_invoice" else 0.0,
-                        "credit": amount if rec.type == "in_refund" else 0.0,
-                    }),
-                    (0, 0, {
-                        "name": _("ISLR Retention %s") % rec.name,
-                        "partner_id": rec.partner_id.id,
-                        "account_id": wh_acc,
-                        "debit": amount if rec.type == "in_refund" else 0.0,
-                        "credit": amount if rec.type == "in_invoice" else 0.0,
-                    }),
+                    (
+                        0,
+                        0,
+                        {
+                            "name": _("ISLR Retention %s") % rec.name,
+                            "partner_id": rec.partner_id.id,
+                            "account_id": partner_acc,
+                            "debit": (amount if rec.type == "in_invoice" else 0.0),
+                            "credit": (amount if rec.type == "in_refund" else 0.0),
+                        },
+                    ),
+                    (
+                        0,
+                        0,
+                        {
+                            "name": _("ISLR Retention %s") % rec.name,
+                            "partner_id": rec.partner_id.id,
+                            "account_id": wh_acc,
+                            "debit": (amount if rec.type == "in_refund" else 0.0),
+                            "credit": (amount if rec.type == "in_invoice" else 0.0),
+                        },
+                    ),
                 ]
-                move = self.env["account.move"].create({
-                    "journal_id": rec.journal_id.id,
-                    "date": rec.date,
-                    "ref": rec.name,
-                    "move_type": "entry",
-                    "line_ids": lines,
-                })
+                move = self.env["account.move"].create(
+                    {
+                        "journal_id": rec.journal_id.id,
+                        "date": rec.date,
+                        "ref": rec.name,
+                        "move_type": "entry",
+                        "line_ids": lines,
+                    }
+                )
                 move.action_post()
                 rec.move_id = move.id
             rec.write({"state": "done"})

@@ -18,7 +18,11 @@ class AccountWhIvaLine(models.Model):
         comodel_name="account.move",
         string="Invoice",
         required=True,
-        domain="[('partner_id', '=', parent.partner_id), ('move_type', 'in', ('out_invoice', 'in_invoice', 'out_refund', 'in_refund'))]",
+        domain=(
+            "[('partner_id', '=', parent.partner_id), "
+            "('move_type', 'in', "
+            "('out_invoice', 'in_invoice', 'out_refund', 'in_refund'))]"
+        ),
     )
     tax_line_ids = fields.One2many(
         comodel_name="account.wh.iva.line.tax",
@@ -53,7 +57,11 @@ class AccountWhIvaLine(models.Model):
         store=True,
     )
 
-    @api.depends("tax_line_ids.base_amount", "tax_line_ids.tax_amount", "tax_line_ids.amount_ret")
+    @api.depends(
+        "tax_line_ids.base_amount",
+        "tax_line_ids.tax_amount",
+        "tax_line_ids.amount_ret",
+    )
     def _compute_line_totals(self):
         for line in self:
             line.base_amount = sum(line.tax_line_ids.mapped("base_amount"))
@@ -66,16 +74,24 @@ class AccountWhIvaLine(models.Model):
             lines = []
             rate = self.wh_iva_id.partner_id.wh_iva_rate or 75.0
             self.wh_rate = rate
-            for tax_line in self.move_id.line_ids.filtered(lambda l: l.tax_line_id):
+            for tax_line in self.move_id.line_ids.filtered(
+                lambda t_line: t_line.tax_line_id
+            ):
                 tax = tax_line.tax_line_id
                 base = tax_line.tax_base_amount or abs(tax_line.balance)
                 tax_amt = abs(tax_line.balance)
-                ret_amt = (tax_amt * (rate / 100.0))
-                lines.append((0, 0, {
-                    "tax_id": tax.id,
-                    "base_amount": base,
-                    "tax_amount": tax_amt,
-                    "wh_rate": rate,
-                    "amount_ret": ret_amt,
-                }))
+                ret_amt = tax_amt * (rate / 100.0)
+                lines.append(
+                    (
+                        0,
+                        0,
+                        {
+                            "tax_id": tax.id,
+                            "base_amount": base,
+                            "tax_amount": tax_amt,
+                            "wh_rate": rate,
+                            "amount_ret": ret_amt,
+                        },
+                    )
+                )
             self.tax_line_ids = lines

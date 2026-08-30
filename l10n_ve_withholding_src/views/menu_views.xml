@@ -1,8 +1,10 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <odoo>
-    <menuitem id="menu_account_wh_src"
-              name="SRC Withholdings"
-              parent="account.menu_finance_payables"
-              action="action_account_wh_src"
-              sequence="45"/>
+    <menuitem
+        id="menu_account_wh_src"
+        name="SRC Withholdings"
+        parent="account.menu_finance_payables"
+        action="action_account_wh_src"
+        sequence="45"
+    />
 </odoo>

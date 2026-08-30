@@ -35,5 +35,7 @@ class IslrWhRates(models.Model):
         default="service",
     )
     base_percentage = fields.Float(string="Base Percentage (%)", default=100.0)
-    wh_percentage = fields.Float(string="Retention Percentage (%)", required=True, default=0.0)
+    wh_percentage = fields.Float(
+        string="Retention Percentage (%)", required=True, default=0.0
+    )
     subtract_ut = fields.Float(string="Subtraction in UT", default=0.0)

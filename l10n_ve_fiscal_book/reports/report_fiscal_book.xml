@@ -1,12 +1,16 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <odoo>
     <record id="action_report_fiscal_book" model="ir.actions.report">
         <field name="name">Libro Fiscal Legal (SENIAT)</field>
         <field name="model">fiscal.book</field>
         <field name="report_type">qweb-pdf</field>
-        <field name="report_name">l10n_ve_fiscal_book.report_fiscal_book_document</field>
-        <field name="report_file">l10n_ve_fiscal_book.report_fiscal_book_document</field>
-        <field name="binding_model_id" ref="model_fiscal_book"/>
+        <field
+            name="report_name"
+        >l10n_ve_fiscal_book.report_fiscal_book_document</field>
+        <field
+            name="report_file"
+        >l10n_ve_fiscal_book.report_fiscal_book_document</field>
+        <field name="binding_model_id" ref="model_fiscal_book" />
         <field name="binding_type">report</field>
     </record>
 
@@ -17,13 +21,23 @@
                     <div class="page" style="font-size: 10px;">
                         <div class="row text-center mb-3">
                             <h4>
-                                <strong t-if="o.type == 'purchase'">LIBRO DE COMPRAS FISCAL</strong>
-                                <strong t-if="o.type == 'sale'">LIBRO DE VENTAS FISCAL</strong>
+                                <strong
+                                    t-if="o.type == 'purchase'"
+                                >LIBRO DE COMPRAS FISCAL</strong>
+                                <strong
+                                    t-if="o.type == 'sale'"
+                                >LIBRO DE VENTAS FISCAL</strong>
                             </h4>
                             <p>
-                                <strong>Empresa:</strong> <span t-field="o.company_id.name"/> | 
-                                <strong>RIF:</strong> <span t-field="o.company_id.partner_id.vat"/> | 
-                                <strong>Período:</strong> <span t-field="o.date_start"/> al <span t-field="o.date_end"/>
+                                <strong>Empresa:</strong> <span
+                                    t-field="o.company_id.name"
+                                /> |
+                                <strong>RIF:</strong> <span
+                                    t-field="o.company_id.partner_id.vat"
+                                /> |
+                                <strong>Período:</strong> <span
+                                    t-field="o.date_start"
+                                /> al <span t-field="o.date_end" />
                             </p>
                         </div>
 
@@ -47,30 +61,50 @@
                             <tbody>
                                 <t t-foreach="o.line_ids" t-as="l">
                                     <tr>
-                                        <td><span t-field="l.rank"/></td>
-                                        <td><span t-field="l.doc_date"/></td>
-                                        <td><span t-field="l.partner_vat"/></td>
-                                        <td><span t-field="l.partner_id.name"/></td>
-                                        <td><span t-field="l.invoice_number"/></td>
-                                        <td><span t-field="l.nro_ctrl"/></td>
-                                        <td class="text-right"><span t-esc="'{0:,.2f}'.format(l.total_amount)"/></td>
-                                        <td class="text-right"><span t-esc="'{0:,.2f}'.format(l.exempt_amount)"/></td>
-                                        <td class="text-right"><span t-esc="'{0:,.2f}'.format(l.base_general)"/></td>
-                                        <td class="text-right"><span t-esc="'{0:,.2f}'.format(l.tax_general)"/></td>
-                                        <td class="text-right"><span t-esc="'{0:,.2f}'.format(l.vat_withheld)"/></td>
-                                        <td><span t-field="l.voucher_number"/></td>
+                                        <td><span t-field="l.rank" /></td>
+                                        <td><span t-field="l.doc_date" /></td>
+                                        <td><span t-field="l.partner_vat" /></td>
+                                        <td><span t-field="l.partner_id.name" /></td>
+                                        <td><span t-field="l.invoice_number" /></td>
+                                        <td><span t-field="l.nro_ctrl" /></td>
+                                        <td class="text-right"><span
+                                                t-esc="'{0:,.2f}'.format(l.total_amount)"
+                                            /></td>
+                                        <td class="text-right"><span
+                                                t-esc="'{0:,.2f}'.format(l.exempt_amount)"
+                                            /></td>
+                                        <td class="text-right"><span
+                                                t-esc="'{0:,.2f}'.format(l.base_general)"
+                                            /></td>
+                                        <td class="text-right"><span
+                                                t-esc="'{0:,.2f}'.format(l.tax_general)"
+                                            /></td>
+                                        <td class="text-right"><span
+                                                t-esc="'{0:,.2f}'.format(l.vat_withheld)"
+                                            /></td>
+                                        <td><span t-field="l.voucher_number" /></td>
                                     </tr>
                                 </t>
                             </tbody>
                             <tfoot>
                                 <tr class="font-weight-bold bg-light text-right">
                                     <td colspan="6" class="text-center">TOTALES</td>
-                                    <td><span t-esc="'{0:,.2f}'.format(o.total_amount)"/></td>
-                                    <td><span t-esc="'{0:,.2f}'.format(o.total_exempt)"/></td>
-                                    <td><span t-esc="'{0:,.2f}'.format(o.total_base_general)"/></td>
-                                    <td><span t-esc="'{0:,.2f}'.format(o.total_tax_general)"/></td>
-                                    <td><span t-esc="'{0:,.2f}'.format(o.total_vat_withheld)"/></td>
-                                    <td></td>
+                                    <td><span
+                                            t-esc="'{0:,.2f}'.format(o.total_amount)"
+                                        /></td>
+                                    <td><span
+                                            t-esc="'{0:,.2f}'.format(o.total_exempt)"
+                                        /></td>
+                                    <td><span
+                                            t-esc="'{0:,.2f}'.format(o.total_base_general)"
+                                        /></td>
+                                    <td><span
+                                            t-esc="'{0:,.2f}'.format(o.total_tax_general)"
+                                        /></td>
+                                    <td><span
+                                            t-esc="'{0:,.2f}'.format(o.total_vat_withheld)"
+                                        /></td>
+                                    <td />
                                 </tr>
                             </tfoot>
                         </table>

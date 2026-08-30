@@ -5,13 +5,13 @@
     "name": "Venezuelan Fiscal Requirements",
     "version": "14.0.1.0.0",
     "category": "Localization",
-    "author": "Vauxoo",
-        "maintainer": "Orlov Solutions LLC",
+    "author": "Vauxoo, Odoo Community Association (OCA)",
+    "maintainer": "Orlov Solutions LLC",
     "maintainers": [
         "xavikveg",  # Xavier Orlov
         "guillermm",  # Guillermo Montoya
     ],
-    "website": "http://vauxoo.com",
+    "website": "https://github.com/OCA/l10n-venezuela",
     "license": "AGPL-3",
     "depends": [
         "account",

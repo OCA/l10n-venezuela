@@ -1,13 +1,13 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <odoo>
     <record id="view_customs_declaration_tree" model="ir.ui.view">
         <field name="name">customs.declaration.tree</field>
         <field name="model">customs.declaration</field>
         <field name="arch" type="xml">
             <tree string="Customs Declarations">
-                <field name="name"/>
-                <field name="date"/>
-                <field name="customs_code"/>
+                <field name="name" />
+                <field name="date" />
+                <field name="customs_code" />
             </tree>
         </field>
     </record>

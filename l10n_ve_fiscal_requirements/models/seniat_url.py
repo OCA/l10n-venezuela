@@ -75,21 +75,43 @@ class SeniatUrl(models.Model):
         if not valid_rif:
             raise UserError(_("Invalid RIF format: %s") % rif)
         config = self.search([], limit=1)
-        base_url = config.name if config else "http://contribuyente.seniat.gob.ve/getContribuyente/getContribuyente?rif="
+        base_url = (
+            config.name
+            if config
+            else "http://contribuyente.seniat.gob.ve/getContribuyente/getContribuyente?rif="
+        )
         full_url = base_url + valid_rif
         try:
-            req = urllib.request.Request(full_url, headers={"User-Agent": "Mozilla/5.0"})
+            req = urllib.request.Request(
+                full_url, headers={"User-Agent": "Mozilla/5.0"}
+            )
             with urllib.request.urlopen(req, timeout=10) as response:
                 content = response.read().decode("utf-8", errors="ignore")
             dom = parseString(content)
             root = dom.childNodes[0]
-            name = root.childNodes[0].firstChild.data if root.childNodes[0].firstChild else ""
-            wh_agent = root.childNodes[1].firstChild.data.upper() == "SI" if root.childNodes[1].firstChild else False
-            vat_subjected = root.childNodes[2].firstChild.data.upper() == "SI" if root.childNodes[2].firstChild else False
-            rate_str = root.childNodes[3].firstChild.data if root.childNodes[3].firstChild else "0"
+            name = (
+                root.childNodes[0].firstChild.data
+                if root.childNodes[0].firstChild
+                else ""
+            )
+            wh_agent = (
+                root.childNodes[1].firstChild.data.upper() == "SI"
+                if root.childNodes[1].firstChild
+                else False
+            )
+            vat_subjected = (
+                root.childNodes[2].firstChild.data.upper() == "SI"
+                if root.childNodes[2].firstChild
+                else False
+            )
+            rate_str = (
+                root.childNodes[3].firstChild.data
+                if root.childNodes[3].firstChild
+                else "0"
+            )
             rate = float(rate_str.replace(",", "."))
             if "(" in name:
-                name = name[:name.index("(")].strip()
+                name = name[: name.index("(")].strip()
             return {
                 "name": name.strip(),
                 "vat": "VE" + valid_rif,

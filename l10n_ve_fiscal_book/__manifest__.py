@@ -5,20 +5,20 @@
     "name": "Fiscal Report For Venezuela (Libros Fiscales)",
     "version": "14.0.1.0.0",
     "category": "Localization",
-    "author": "Vauxoo",
-        "maintainer": "Orlov Solutions LLC",
+    "author": "Vauxoo, Odoo Community Association (OCA)",
+    "maintainer": "Orlov Solutions LLC",
     "maintainers": [
         "xavikveg",  # Xavier Orlov
         "guillermm",  # Guillermo Montoya
     ],
-    "website": "https://www.odoo.com",
+    "website": "https://github.com/OCA/l10n-venezuela",
     "license": "AGPL-3",
     "depends": [
         "account",
         "l10n_ve_fiscal_requirements",
         "l10n_ve_withholding_iva",
     ],
-        "data": [
+    "data": [
         "security/security.xml",
         "security/ir.model.access.csv",
         "reports/report_fiscal_book.xml",

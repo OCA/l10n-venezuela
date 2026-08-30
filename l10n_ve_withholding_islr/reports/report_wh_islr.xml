@@ -1,12 +1,16 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <odoo>
     <record id="action_report_wh_islr" model="ir.actions.report">
         <field name="name">Comprobante de Retención de ISLR</field>
         <field name="model">account.wh.islr.doc</field>
         <field name="report_type">qweb-pdf</field>
-        <field name="report_name">l10n_ve_withholding_islr.report_wh_islr_document</field>
-        <field name="report_file">l10n_ve_withholding_islr.report_wh_islr_document</field>
-        <field name="binding_model_id" ref="model_account_wh_islr_doc"/>
+        <field
+            name="report_name"
+        >l10n_ve_withholding_islr.report_wh_islr_document</field>
+        <field
+            name="report_file"
+        >l10n_ve_withholding_islr.report_wh_islr_document</field>
+        <field name="binding_model_id" ref="model_account_wh_islr_doc" />
         <field name="binding_type">report</field>
     </record>
 
@@ -16,22 +20,40 @@
                 <t t-call="web.external_layout">
                     <div class="page">
                         <div class="row text-center mb-4">
-                            <h3><strong>COMPROBANTE DE RETENCIÓN DE IMPUESTO SOBRE LA RENTA (ISLR)</strong></h3>
-                            <p>(Decreto N° 1.808 - Reglamento de Retenciones de ISLR)</p>
+                            <h3><strong
+                                >COMPROBANTE DE RETENCIÓN DE IMPUESTO SOBRE LA RENTA (ISLR)</strong></h3>
+                            <p
+                            >(Decreto N° 1.808 - Reglamento de Retenciones de ISLR)</p>
                         </div>
                         <table class="table table-bordered mb-4">
                             <tr>
-                                <td><strong>N° Comprobante:</strong> <span t-field="o.name"/></td>
-                                <td><strong>Fecha:</strong> <span t-field="o.date"/></td>
-                                <td><strong>Período:</strong> <span t-field="o.period_date" t-options="{'format': 'yyyy-MM'}"/></td>
+                                <td><strong>N° Comprobante:</strong> <span
+                                        t-field="o.name"
+                                    /></td>
+                                <td><strong>Fecha:</strong> <span
+                                        t-field="o.date"
+                                    /></td>
+                                <td><strong>Período:</strong> <span
+                                        t-field="o.period_date"
+                                        t-options="{'format': 'yyyy-MM'}"
+                                    /></td>
                             </tr>
                             <tr>
-                                <td colspan="2"><strong>Agente de Retención:</strong> <span t-field="o.company_id.name"/></td>
-                                <td><strong>RIF:</strong> <span t-field="o.company_id.partner_id.vat"/></td>
+                                <td colspan="2"><strong
+                                    >Agente de Retención:</strong> <span
+                                        t-field="o.company_id.name"
+                                    /></td>
+                                <td><strong>RIF:</strong> <span
+                                        t-field="o.company_id.partner_id.vat"
+                                    /></td>
                             </tr>
                             <tr>
-                                <td colspan="2"><strong>Beneficiario:</strong> <span t-field="o.partner_id.name"/></td>
-                                <td><strong>RIF / C.I.:</strong> <span t-field="o.partner_id.vat"/></td>
+                                <td colspan="2"><strong>Beneficiario:</strong> <span
+                                        t-field="o.partner_id.name"
+                                    /></td>
+                                <td><strong>RIF / C.I.:</strong> <span
+                                        t-field="o.partner_id.vat"
+                                    /></td>
                             </tr>
                         </table>
 
@@ -51,14 +73,24 @@
                             <tbody>
                                 <t t-foreach="o.line_ids" t-as="l">
                                     <tr>
-                                        <td><span t-field="l.move_id.name"/></td>
-                                        <td><span t-field="l.move_id.nro_ctrl"/></td>
-                                        <td><span t-field="l.move_id.invoice_date"/></td>
-                                        <td><span t-field="l.concept_id.name"/></td>
-                                        <td class="text-right"><span t-field="l.base_amount"/></td>
-                                        <td class="text-right"><span t-field="l.wh_percentage"/>%</td>
-                                        <td class="text-right"><span t-field="l.subtract_amount"/></td>
-                                        <td class="text-right"><span t-field="l.amount_ret"/></td>
+                                        <td><span t-field="l.move_id.name" /></td>
+                                        <td><span t-field="l.move_id.nro_ctrl" /></td>
+                                        <td><span
+                                                t-field="l.move_id.invoice_date"
+                                            /></td>
+                                        <td><span t-field="l.concept_id.name" /></td>
+                                        <td class="text-right"><span
+                                                t-field="l.base_amount"
+                                            /></td>
+                                        <td class="text-right"><span
+                                                t-field="l.wh_percentage"
+                                            />%</td>
+                                        <td class="text-right"><span
+                                                t-field="l.subtract_amount"
+                                            /></td>
+                                        <td class="text-right"><span
+                                                t-field="l.amount_ret"
+                                            /></td>
                                     </tr>
                                 </t>
                             </tbody>
@@ -66,11 +98,11 @@
 
                         <div class="row mt-4">
                             <div class="col-6 text-center">
-                                ___________________________________<br/>
+                                ___________________________________<br />
                                 <strong>Firma Agente de Retención</strong>
                             </div>
                             <div class="col-6 text-center">
-                                ___________________________________<br/>
+                                ___________________________________<br />
                                 <strong>Firma Beneficiario</strong>
                             </div>
                         </div>

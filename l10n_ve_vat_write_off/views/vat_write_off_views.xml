@@ -1,13 +1,13 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <odoo>
     <record id="view_vat_write_off_tree" model="ir.ui.view">
         <field name="name">vat.write.off.tree</field>
         <field name="model">vat.write.off</field>
         <field name="arch" type="xml">
             <tree string="VAT Write Offs">
-                <field name="name"/>
-                <field name="date"/>
-                <field name="amount"/>
+                <field name="name" />
+                <field name="date" />
+                <field name="amount" />
             </tree>
         </field>
     </record>

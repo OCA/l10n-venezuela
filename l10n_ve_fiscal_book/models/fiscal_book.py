@@ -1,8 +1,7 @@
 # Copyright 2011-2016 Vauxoo
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
-from odoo import _, api, fields, models
-from odoo.exceptions import UserError, ValidationError
+from odoo import api, fields, models
 
 
 class FiscalBook(models.Model):
@@ -18,12 +17,21 @@ class FiscalBook(models.Model):
         default="purchase",
     )
     state = fields.Selection(
-        selection=[("draft", "Draft"), ("confirmed", "Confirmed"), ("done", "Posted"), ("cancel", "Cancelled")],
+        selection=[
+            ("draft", "Draft"),
+            ("confirmed", "Confirmed"),
+            ("done", "Posted"),
+            ("cancel", "Cancelled"),
+        ],
         string="State",
         default="draft",
     )
-    date_start = fields.Date(string="Start Date", required=True, default=fields.Date.context_today)
-    date_end = fields.Date(string="End Date", required=True, default=fields.Date.context_today)
+    date_start = fields.Date(
+        string="Start Date", required=True, default=fields.Date.context_today
+    )
+    date_end = fields.Date(
+        string="End Date", required=True, default=fields.Date.context_today
+    )
     company_id = fields.Many2one(
         comodel_name="res.company",
         string="Company",
@@ -36,19 +44,49 @@ class FiscalBook(models.Model):
         string="Fiscal Book Lines",
         copy=True,
     )
-    
-    # Totals
-    total_amount = fields.Float(string="Total Operations", compute="_compute_book_totals", store=True)
-    total_exempt = fields.Float(string="Total Exempt", compute="_compute_book_totals", store=True)
-    total_base_general = fields.Float(string="Base General (16%)", compute="_compute_book_totals", store=True)
-    total_tax_general = fields.Float(string="Tax General (16%)", compute="_compute_book_totals", store=True)
-    total_base_reduced = fields.Float(string="Base Reduced (8%)", compute="_compute_book_totals", store=True)
-    total_tax_reduced = fields.Float(string="Tax Reduced (8%)", compute="_compute_book_totals", store=True)
-    total_base_additional = fields.Float(string="Base Additional (31%)", compute="_compute_book_totals", store=True)
-    total_tax_additional = fields.Float(string="Tax Additional (31%)", compute="_compute_book_totals", store=True)
-    total_vat_withheld = fields.Float(string="Total VAT Withheld", compute="_compute_book_totals", store=True)
 
-    @api.depends("line_ids.total_amount", "line_ids.exempt_amount", "line_ids.base_general", "line_ids.tax_general", "line_ids.vat_withheld")
+    # Totals
+    total_amount = fields.Float(
+        string="Total Operations", compute="_compute_book_totals", store=True
+    )
+    total_exempt = fields.Float(
+        string="Total Exempt", compute="_compute_book_totals", store=True
+    )
+    total_base_general = fields.Float(
+        string="Base General (16%)",
+        compute="_compute_book_totals",
+        store=True,
+    )
+    total_tax_general = fields.Float(
+        string="Tax General (16%)", compute="_compute_book_totals", store=True
+    )
+    total_base_reduced = fields.Float(
+        string="Base Reduced (8%)", compute="_compute_book_totals", store=True
+    )
+    total_tax_reduced = fields.Float(
+        string="Tax Reduced (8%)", compute="_compute_book_totals", store=True
+    )
+    total_base_additional = fields.Float(
+        string="Base Additional (31%)",
+        compute="_compute_book_totals",
+        store=True,
+    )
+    total_tax_additional = fields.Float(
+        string="Tax Additional (31%)",
+        compute="_compute_book_totals",
+        store=True,
+    )
+    total_vat_withheld = fields.Float(
+        string="Total VAT Withheld", compute="_compute_book_totals", store=True
+    )
+
+    @api.depends(
+        "line_ids.total_amount",
+        "line_ids.exempt_amount",
+        "line_ids.base_general",
+        "line_ids.tax_general",
+        "line_ids.vat_withheld",
+    )
     def _compute_book_totals(self):
         for rec in self:
             rec.total_amount = sum(rec.line_ids.mapped("total_amount"))
@@ -64,23 +102,30 @@ class FiscalBook(models.Model):
     def action_update_book(self):
         self.ensure_one()
         self.line_ids.unlink()
-        
-        move_types = ["in_invoice", "in_refund"] if self.type == "purchase" else ["out_invoice", "out_refund"]
-        moves = self.env["account.move"].search([
-            ("date", ">=", self.date_start),
-            ("date", "<=", self.date_end),
-            ("state", "=", "posted"),
-            ("move_type", "in", move_types),
-            ("company_id", "=", self.company_id.id),
-            ("sin_cred", "=", False),
-        ], order="invoice_date asc, name asc")
+
+        move_types = (
+            ["in_invoice", "in_refund"]
+            if self.type == "purchase"
+            else ["out_invoice", "out_refund"]
+        )
+        moves = self.env["account.move"].search(
+            [
+                ("date", ">=", self.date_start),
+                ("date", "<=", self.date_end),
+                ("state", "=", "posted"),
+                ("move_type", "in", move_types),
+                ("company_id", "=", self.company_id.id),
+                ("sin_cred", "=", False),
+            ],
+            order="invoice_date asc, name asc",
+        )
 
         rank = 1
         lines = []
         for m in moves:
             sign = -1 if m.move_type in ["in_refund", "out_refund"] else 1
             tot = abs(m.amount_total) * sign
-            
+
             base_gen = 0.0
             tax_gen = 0.0
             base_red = 0.0
@@ -88,8 +133,8 @@ class FiscalBook(models.Model):
             base_add = 0.0
             tax_add = 0.0
             exempt = 0.0
-            
-            for line in m.line_ids.filtered(lambda l: l.tax_line_id):
+
+            for line in m.line_ids.filtered(lambda rec_line: rec_line.tax_line_id):
                 t = line.tax_line_id
                 t_amt = abs(line.balance) * sign
                 t_base = (line.tax_base_amount or 0.0) * sign
@@ -104,9 +149,12 @@ class FiscalBook(models.Model):
                     tax_add += t_amt
                 elif t.appl_type in ["exento", "sdcf"]:
                     exempt += t_base
-            
+
             # Check lines without taxes (exempt lines)
-            untaxed_exempt = sum(m.invoice_line_ids.filtered(lambda l: not l.tax_ids).mapped("price_subtotal")) * sign
+            exempt_lines = m.invoice_line_ids.filtered(
+                lambda rec_line: not rec_line.tax_ids
+            )
+            untaxed_exempt = sum(exempt_lines.mapped("price_subtotal")) * sign
             exempt += untaxed_exempt
 
             wh_amt = 0.0
@@ -115,26 +163,32 @@ class FiscalBook(models.Model):
                 wh_amt = m.wh_iva_id.total_ret_amount
                 wh_num = m.wh_iva_id.name
 
-            lines.append((0, 0, {
-                "rank": rank,
-                "move_id": m.id,
-                "partner_id": m.partner_id.id,
-                "partner_vat": m.partner_id.vat or "",
-                "doc_date": m.invoice_date or m.date,
-                "invoice_number": m.supplier_invoice_number or m.name,
-                "nro_ctrl": m.nro_ctrl or "",
-                "doc_type": "03" if "refund" in m.move_type else "01",
-                "total_amount": tot,
-                "exempt_amount": exempt,
-                "base_general": base_gen,
-                "tax_general": tax_gen,
-                "base_reduced": base_red,
-                "tax_reduced": tax_red,
-                "base_additional": base_add,
-                "tax_additional": tax_add,
-                "vat_withheld": wh_amt,
-                "voucher_number": wh_num,
-            }))
+            lines.append(
+                (
+                    0,
+                    0,
+                    {
+                        "rank": rank,
+                        "move_id": m.id,
+                        "partner_id": m.partner_id.id,
+                        "partner_vat": m.partner_id.vat or "",
+                        "doc_date": m.invoice_date or m.date,
+                        "invoice_number": (m.supplier_invoice_number or m.name),
+                        "nro_ctrl": m.nro_ctrl or "",
+                        "doc_type": ("03" if "refund" in m.move_type else "01"),
+                        "total_amount": tot,
+                        "exempt_amount": exempt,
+                        "base_general": base_gen,
+                        "tax_general": tax_gen,
+                        "base_reduced": base_red,
+                        "tax_reduced": tax_red,
+                        "base_additional": base_add,
+                        "tax_additional": tax_add,
+                        "vat_withheld": wh_amt,
+                        "voucher_number": wh_num,
+                    },
+                )
+            )
             rank += 1
 
         self.write({"line_ids": lines})

@@ -18,7 +18,11 @@ class AccountWhIslrDocLine(models.Model):
         comodel_name="account.move",
         string="Invoice",
         required=True,
-        domain="[('partner_id', '=', parent.partner_id), ('move_type', 'in', ('out_invoice', 'in_invoice', 'out_refund', 'in_refund'))]",
+        domain=(
+            "[('partner_id', '=', parent.partner_id), "
+            "('move_type', 'in', "
+            "('out_invoice', 'in_invoice', 'out_refund', 'in_refund'))]"
+        ),
     )
     concept_id = fields.Many2one(
         comodel_name="islr.wh.concept",
@@ -53,7 +57,9 @@ class AccountWhIslrDocLine(models.Model):
     @api.depends("base_amount", "wh_percentage", "subtract_amount")
     def _compute_amount_ret(self):
         for line in self:
-            calc = (line.base_amount * (line.wh_percentage / 100.0)) - line.subtract_amount
+            calc = (
+                line.base_amount * (line.wh_percentage / 100.0)
+            ) - line.subtract_amount
             line.amount_ret = max(calc, 0.0)
 
     @api.onchange("move_id", "concept_id")
@@ -62,12 +68,17 @@ class AccountWhIslrDocLine(models.Model):
             self.base_amount = self.move_id.amount_untaxed
             if self.concept_id and self.islr_doc_id.partner_id:
                 pt = self.islr_doc_id.partner_id.person_type or "pjdo"
-                rate_rec = self.concept_id.withholding_rate_ids.filtered(lambda r: r.person_type == pt)
+                rate_rec = self.concept_id.withholding_rate_ids.filtered(
+                    lambda r: r.person_type == pt
+                )
                 if rate_rec:
                     rate = rate_rec[0]
                     self.wh_percentage = rate.wh_percentage
                     if rate.subtract_ut > 0:
-                        ut_val = self.env["l10n.ut"].get_amount_ut(self.islr_doc_id.date)
-                        self.subtract_amount = rate.subtract_ut * ut_val * (rate.wh_percentage / 100.0)
+                        ut_val = self.env["l10n.ut"].get_amount_ut(
+                            self.islr_doc_id.date
+                        )
+                        sub_ut = rate.subtract_ut * ut_val
+                        self.subtract_amount = sub_ut * (rate.wh_percentage / 100.0)
                     else:
                         self.subtract_amount = 0.0

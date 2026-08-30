@@ -9,6 +9,8 @@ class CustomsDeclaration(models.Model):
     _description = "Customs Declaration (DUA / DVI)"
 
     name = fields.Char(string="Declaration Number (DUA)", required=True)
-    date = fields.Date(string="Declaration Date", required=True, default=fields.Date.context_today)
+    date = fields.Date(
+        string="Declaration Date", required=True, default=fields.Date.context_today
+    )
     customs_code = fields.Char(string="Customs Office Code")
     move_ids = fields.Many2many(comodel_name="account.move", string="Invoices")
