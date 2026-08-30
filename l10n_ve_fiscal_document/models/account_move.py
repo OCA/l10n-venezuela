@@ -119,6 +119,45 @@ class AccountMove(models.Model):
         self._l10n_ve_check_fiscal_document_locked()
         return super().button_draft()
 
+    def _l10n_ve_set_control_number(self, control_number, control_date=False):
+        """Assign the control number after posting.
+
+        A fiscal machine or an authorized digital printing house only
+        returns the control number once the document is already posted and
+        totalled, so this is the sole supported way for such a connector to
+        write it back: the fiscal lock otherwise makes
+        ``l10n_ve_control_number``/``l10n_ve_control_date`` immutable once
+        posted (see ``_l10n_ve_check_fiscal_document_locked``). It refuses to
+        overwrite a number already assigned, keeping the same immutability
+        this addon enforces everywhere else.
+        """
+        self.ensure_one()
+        if not self.l10n_ve_fiscal_data_locked:
+            raise UserError(
+                self.env._(
+                    "%(document)s is not posted yet: set the control number "
+                    "directly on the draft document instead.",
+                    document=self.display_name,
+                )
+            )
+        if self.l10n_ve_control_number:
+            raise UserError(
+                self.env._(
+                    "%(document)s already has a control number assigned.",
+                    document=self.display_name,
+                )
+            )
+        return self.with_context(
+            **{_INTERNAL_OPERATION_CONTEXT_KEY: _INTERNAL_OPERATION}
+        ).write(
+            {
+                "l10n_ve_control_number": control_number,
+                "l10n_ve_control_date": (
+                    control_date or fields.Date.context_today(self)
+                ),
+            }
+        )
+
     def _post(self, soft=True):
         moves_to_post = self
         if soft:

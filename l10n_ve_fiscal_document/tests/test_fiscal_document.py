@@ -3,7 +3,7 @@
 
 from datetime import date
 
-from odoo import Command
+from odoo import Command, fields
 from odoo.exceptions import UserError
 from odoo.tests import tagged
 from odoo.tools import SQL
@@ -224,3 +224,43 @@ class TestL10nVeFiscalDocument(AccountTestInvoicingCommon):
 
         self.assertFalse(invoice.l10n_ve_emission_medium)
         self.assertFalse(invoice.l10n_ve_fiscal_data_locked)
+
+    def test_set_control_number_after_posting(self):
+        # The only supported integration point for a fiscal machine or an
+        # authorized digital printing house connector: they only learn the
+        # control number once the document is already posted and totalled.
+        self.sale_journal.l10n_ve_emission_medium = "digital"
+        invoice = self._create_invoice()
+        invoice.action_post()
+
+        invoice._l10n_ve_set_control_number("00-00001325", date(2026, 8, 29))
+
+        self.assertEqual(invoice.l10n_ve_control_number, "00-00001325")
+        self.assertEqual(invoice.l10n_ve_control_date, date(2026, 8, 29))
+
+    def test_set_control_number_defaults_date_to_today(self):
+        self.sale_journal.l10n_ve_emission_medium = "digital"
+        invoice = self._create_invoice()
+        invoice.action_post()
+
+        invoice._l10n_ve_set_control_number("00-00001325")
+
+        self.assertEqual(
+            invoice.l10n_ve_control_date, fields.Date.context_today(invoice)
+        )
+
+    def test_set_control_number_requires_posted_document(self):
+        self.sale_journal.l10n_ve_emission_medium = "digital"
+        invoice = self._create_invoice()
+
+        with self.assertRaises(UserError):
+            invoice._l10n_ve_set_control_number("00-00001325")
+
+    def test_set_control_number_does_not_overwrite(self):
+        self.sale_journal.l10n_ve_emission_medium = "digital"
+        invoice = self._create_invoice()
+        invoice.action_post()
+        invoice._l10n_ve_set_control_number("00-00001325")
+
+        with self.assertRaises(UserError):
+            invoice._l10n_ve_set_control_number("00-00009999")
