@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Copyright 2026 BWEALTHICS LLC -->
+<odoo noupdate="1">
+    <!-- Correlativo AAAAMM + 8 dígitos que REINICIA cada mes: use_date_range +
+         rangos mensuales creados por l10n.ve.islr.voucher al emitir.
+         Secuencia POR compañía (agente de retención): esta es la de la
+         compañía 1; para las demás se hace get-or-create en la emisión. -->
+    <record id="seq_islr_voucher" model="ir.sequence">
+        <field name="name">Comprobante de Retención ISLR</field>
+        <field name="code">l10n.ve.islr.voucher</field>
+        <field name="prefix">%(year)s%(month)s</field>
+        <field name="padding">8</field>
+        <field name="implementation">no_gap</field>
+        <field name="use_date_range" eval="True" />
+        <field name="company_id" ref="base.main_company" />
+    </record>
+</odoo>
