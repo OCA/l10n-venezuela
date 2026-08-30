@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Copyright 2026 BWEALTHICS LLC -->
+<odoo noupdate="1">
+    <record id="l10n_ve_iva_wh_voucher_company_rule" model="ir.rule">
+        <field name="name">Comprobante de Retención de IVA: multicompañía</field>
+        <field name="model_id" ref="model_l10n_ve_iva_wh_voucher" />
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="l10n_ve_iva_wh_voucher_adjustment_company_rule" model="ir.rule">
+        <field name="name">Ajuste de Retención de IVA: multicompañía</field>
+        <field name="model_id" ref="model_l10n_ve_iva_wh_voucher_adjustment" />
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+</odoo>
