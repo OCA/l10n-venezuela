@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="view_generate_txt_wh_iva_form" model="ir.ui.view">
+        <field name="name">generate.txt.wh.iva.form</field>
+        <field name="model">generate.txt.wh.iva</field>
+        <field name="arch" type="xml">
+            <form string="Generate TXT SENIAT for VAT Withholdings">
+                <sheet>
+                    <div attrs="{'invisible': [('state', '=', 'done')]}">
+                        <group>
+                            <field name="date_start" />
+                            <field name="date_end" />
+                        </group>
+                    </div>
+                    <div attrs="{'invisible': [('state', '!=', 'done')]}">
+                        <group>
+                            <field name="txt_filename" invisible="1" />
+                            <field name="txt_file" filename="txt_filename" />
+                        </group>
+                    </div>
+                    <field name="state" invisible="1" />
+                </sheet>
+                <footer>
+                    <button
+                        name="action_generate_txt"
+                        string="Generate TXT"
+                        type="object"
+                        class="btn-primary"
+                        attrs="{'invisible': [('state', '=', 'done')]}"
+                    />
+                    <button string="Close" class="btn-secondary" special="cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_generate_txt_wh_iva" model="ir.actions.act_window">
+        <field name="name">Generate TXT SENIAT (IVA)</field>
+        <field name="res_model">generate.txt.wh.iva</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+</odoo>

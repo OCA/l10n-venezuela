@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="view_account_wh_iva_tree" model="ir.ui.view">
+        <field name="name">account.wh.iva.tree</field>
+        <field name="model">account.wh.iva</field>
+        <field name="arch" type="xml">
+            <tree
+                string="VAT Withholdings"
+                decoration-info="state == 'draft'"
+                decoration-success="state == 'done'"
+                decoration-muted="state == 'cancel'"
+            >
+                <field name="name" />
+                <field name="partner_id" />
+                <field name="date" />
+                <field name="type" />
+                <field name="total_tax_amount" />
+                <field name="total_ret_amount" />
+                <field name="state" widget="badge" />
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_account_wh_iva_form" model="ir.ui.view">
+        <field name="name">account.wh.iva.form</field>
+        <field name="model">account.wh.iva</field>
+        <field name="arch" type="xml">
+            <form string="VAT Withholding Voucher">
+                <header>
+                    <button
+                        name="action_confirm"
+                        states="draft"
+                        string="Confirm"
+                        type="object"
+                        class="oe_highlight"
+                    />
+                    <button
+                        name="action_done"
+                        states="confirmed"
+                        string="Post Accounting"
+                        type="object"
+                        class="oe_highlight"
+                    />
+                    <button
+                        name="action_draft"
+                        states="cancel"
+                        string="Set to Draft"
+                        type="object"
+                    />
+                    <button
+                        name="action_cancel"
+                        states="draft,confirmed,done"
+                        string="Cancel"
+                        type="object"
+                    />
+                    <field
+                        name="state"
+                        widget="statusbar"
+                        statusbar_visible="draft,confirmed,done"
+                    />
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name" readonly="1" /></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field
+                                name="partner_id"
+                                attrs="{'readonly': [('state', '!=', 'draft')]}"
+                            />
+                            <field
+                                name="type"
+                                attrs="{'readonly': [('state', '!=', 'draft')]}"
+                            />
+                            <field
+                                name="journal_id"
+                                attrs="{'readonly': [('state', '!=', 'draft')]}"
+                            />
+                        </group>
+                        <group>
+                            <field
+                                name="date"
+                                attrs="{'readonly': [('state', '!=', 'draft')]}"
+                            />
+                            <field
+                                name="period_date"
+                                attrs="{'readonly': [('state', '!=', 'draft')]}"
+                            />
+                            <field name="move_id" readonly="1" />
+                            <field name="currency_id" invisible="1" />
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Invoices &amp; Taxes">
+                            <field
+                                name="line_ids"
+                                attrs="{'readonly': [('state', '!=', 'draft')]}"
+                            >
+                                <tree editable="bottom">
+                                    <field name="move_id" />
+                                    <field name="base_amount" />
+                                    <field name="tax_amount" />
+                                    <field name="wh_rate" />
+                                    <field name="amount_ret" />
+                                </tree>
+                            </field>
+                            <group class="oe_subtotal_footer oe_right">
+                                <field name="total_tax_amount" />
+                                <field
+                                    name="total_ret_amount"
+                                    class="oe_subtotal_footer_separator"
+                                />
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_account_wh_iva_customer" model="ir.actions.act_window">
+        <field name="name">Customer VAT Withholdings</field>
+        <field name="res_model">account.wh.iva</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('type', 'in', ('out_invoice', 'out_refund'))]</field>
+    </record>
+
+    <record id="action_account_wh_iva_supplier" model="ir.actions.act_window">
+        <field name="name">Vendor VAT Withholdings</field>
+        <field name="res_model">account.wh.iva</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('type', 'in', ('in_invoice', 'in_refund'))]</field>
+    </record>
+</odoo>

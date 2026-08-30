@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="view_company_form_inherit_ve" model="ir.ui.view">
+        <field name="name">res.company.form.inherit.ve</field>
+        <field name="model">res.company</field>
+        <field name="inherit_id" ref="base.view_company_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page name="ve_localization" string="Venezuelan Localization">
+                    <group name="ve_damaged_invoices" string="Damaged Invoices">
+                        <field name="jour_id" />
+                        <field name="acc_id" />
+                    </group>
+                    <group name="ve_fiscal_printers" string="Fiscal Printers">
+                        <field name="printer_fiscal" />
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

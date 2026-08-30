@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="view_move_form_wh_base_inherit" model="ir.ui.view">
+        <field name="name">account.move.form.wh.base.inherit</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_move_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='state']" position="before">
+                <field
+                    name="wh_state"
+                    widget="badge"
+                    decoration-info="wh_state == 'no_withheld'"
+                    decoration-warning="wh_state == 'partially_withheld'"
+                    decoration-success="wh_state == 'withheld'"
+                    attrs="{'invisible': [('move_type', 'not in', ('out_invoice', 'in_invoice', 'out_refund', 'in_refund'))]}"
+                />
+            </xpath>
+        </field>
+    </record>
+</odoo>

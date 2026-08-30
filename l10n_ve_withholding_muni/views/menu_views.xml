@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <menuitem
+        id="menu_account_wh_muni"
+        name="Municipal Withholdings"
+        parent="account.menu_finance_payables"
+        action="action_account_wh_muni"
+        sequence="40"
+    />
+</odoo>

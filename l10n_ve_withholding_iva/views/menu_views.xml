@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <menuitem
+        id="menu_venezuela_withholding_root"
+        name="Withholdings"
+        parent="account.menu_finance_configuration"
+        sequence="55"
+    />
+
+    <menuitem
+        id="menu_account_wh_iva_supplier"
+        name="Vendor VAT Withholdings"
+        parent="account.menu_finance_payables"
+        action="action_account_wh_iva_supplier"
+        sequence="30"
+    />
+
+    <menuitem
+        id="menu_account_wh_iva_customer"
+        name="Customer VAT Withholdings"
+        parent="account.menu_finance_receivables"
+        action="action_account_wh_iva_customer"
+        sequence="30"
+    />
+
+    <menuitem
+        id="menu_generate_txt_wh_iva"
+        name="Generate TXT SENIAT (IVA)"
+        parent="account.menu_finance_reports"
+        action="action_generate_txt_wh_iva"
+        sequence="80"
+    />
+</odoo>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+
+    <record id="view_account_wh_src_tree" model="ir.ui.view">
+        <field name="name">account.wh.src.tree</field>
+        <field name="model">account.wh.src</field>
+        <field name="arch" type="xml">
+            <tree string="SRC Withholdings">
+                <field name="name" />
+                <field name="partner_id" />
+                <field name="date" />
+                <field name="amount_total_ret" />
+                <field name="state" widget="badge" />
+            </tree>
+        </field>
+    </record>
+
+    <record id="action_account_wh_src" model="ir.actions.act_window">
+        <field name="name">SRC Withholdings</field>
+        <field name="res_model">account.wh.src</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+</odoo>

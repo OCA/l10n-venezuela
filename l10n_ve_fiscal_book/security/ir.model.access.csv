@@ -1,0 +1,8 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_fiscal_book_user,fiscal.book.user,model_fiscal_book,account.group_account_invoice,1,1,1,0
+access_fiscal_book_manager,fiscal.book.manager,model_fiscal_book,account.group_account_manager,1,1,1,1
+access_fiscal_book_line_user,fiscal.book.line.user,model_fiscal_book_line,account.group_account_invoice,1,1,1,0
+access_fiscal_book_line_manager,fiscal.book.line.manager,model_fiscal_book_line,account.group_account_manager,1,1,1,1
+access_fiscal_book_taxes_user,fiscal.book.taxes.user,model_fiscal_book_taxes,account.group_account_invoice,1,1,1,0
+access_fiscal_book_taxes_manager,fiscal.book.taxes.manager,model_fiscal_book_taxes,account.group_account_manager,1,1,1,1
+access_wizard_fiscal_book,wizard.fiscal.book,model_wizard_fiscal_book,account.group_account_invoice,1,1,1,1

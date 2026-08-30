@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="view_company_form_wh_iva_inherit" model="ir.ui.view">
+        <field name="name">res.company.form.wh.iva.inherit</field>
+        <field name="model">res.company</field>
+        <field name="inherit_id" ref="base.view_company_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page name="wh_iva_page" string="VAT Withholdings">
+                    <group>
+                        <group string="VAT Withholding Configuration">
+                            <field name="wh_iva_journal_id" />
+                            <field name="wh_iva_account_id" />
+                        </group>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

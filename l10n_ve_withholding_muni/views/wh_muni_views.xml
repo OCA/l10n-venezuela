@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="view_account_wh_muni_tree" model="ir.ui.view">
+        <field name="name">account.wh.muni.tree</field>
+        <field name="model">account.wh.muni</field>
+        <field name="arch" type="xml">
+            <tree string="Municipal Withholdings">
+                <field name="name" />
+                <field name="partner_id" />
+                <field name="date" />
+                <field name="amount_total_ret" />
+                <field name="state" widget="badge" />
+            </tree>
+        </field>
+    </record>
+
+    <record id="action_account_wh_muni" model="ir.actions.act_window">
+        <field name="name">Municipal Withholdings</field>
+        <field name="res_model">account.wh.muni</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+</odoo>

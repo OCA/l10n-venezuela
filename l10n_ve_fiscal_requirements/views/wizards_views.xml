@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="view_search_info_partner_seniat_form" model="ir.ui.view">
+        <field name="name">search.info.partner.seniat.form</field>
+        <field name="model">search.info.partner.seniat</field>
+        <field name="arch" type="xml">
+            <form string="Consult Partner in SENIAT">
+                <group>
+                    <field name="vat" placeholder="Ej: J123456789 o V12345678" />
+                </group>
+                <footer>
+                    <button
+                        name="action_search_seniat"
+                        string="Consult &amp; Save"
+                        type="object"
+                        class="btn-primary"
+                    />
+                    <button string="Cancel" class="btn-secondary" special="cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_search_info_partner_seniat" model="ir.actions.act_window">
+        <field name="name">Consult SENIAT Partner</field>
+        <field name="res_model">search.info.partner.seniat</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <record id="view_wizard_invoice_nro_ctrl_form" model="ir.ui.view">
+        <field name="name">wizard.invoice.nro.ctrl.form</field>
+        <field name="model">wizard.invoice.nro.ctrl</field>
+        <field name="arch" type="xml">
+            <form string="Assign Control Number">
+                <group>
+                    <field name="nro_ctrl" />
+                </group>
+                <footer>
+                    <button
+                        name="action_assign_nro_ctrl"
+                        string="Assign"
+                        type="object"
+                        class="btn-primary"
+                    />
+                    <button string="Cancel" class="btn-secondary" special="cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

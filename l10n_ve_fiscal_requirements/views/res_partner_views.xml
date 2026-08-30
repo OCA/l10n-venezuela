@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="view_partner_form_inherit_ve" model="ir.ui.view">
+        <field name="name">res.partner.form.inherit.ve</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='vat']" position="after">
+                <button
+                    name="action_update_from_seniat"
+                    string="Consult SENIAT"
+                    type="object"
+                    class="oe_link oe_inline"
+                    icon="fa-refresh"
+                    attrs="{'invisible': [('vat', '=', False)]}"
+                />
+                <field name="person_type" />
+                <field name="wh_iva_agent" />
+                <field
+                    name="wh_iva_rate"
+                    attrs="{'invisible': [('wh_iva_agent', '=', False)]}"
+                />
+                <field name="seniat_updated" readonly="1" />
+            </xpath>
+        </field>
+    </record>
+</odoo>

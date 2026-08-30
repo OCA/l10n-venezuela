@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo noupdate="1">
+    <record id="seniat_url_default" model="seniat.url">
+        <field
+            name="name"
+        >http://contribuyente.seniat.gob.ve/getContribuyente/getContribuyente?rif=</field>
+        <field
+            name="url_seniat"
+        >http://contribuyente.seniat.gob.ve/buscarrif/BuscarRif.do</field>
+        <field
+            name="url_seniat2"
+        >http://contribuyente.seniat.gob.ve/buscarrif/BuscarRif.do</field>
+    </record>
+</odoo>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo noupdate="1">
+    <record id="seq_account_wh_islr_doc" model="ir.sequence">
+        <field name="name">ISLR Withholding Voucher Sequence</field>
+        <field name="code">account.wh.islr.doc</field>
+        <field name="padding">8</field>
+        <field name="number_next">1</field>
+        <field name="number_increment">1</field>
+    </record>
+</odoo>

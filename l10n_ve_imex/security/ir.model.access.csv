@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_customs_declaration_user,customs.declaration.user,model_customs_declaration,account.group_account_invoice,1,1,1,0
+access_customs_declaration_manager,customs.declaration.manager,model_customs_declaration,account.group_account_manager,1,1,1,1

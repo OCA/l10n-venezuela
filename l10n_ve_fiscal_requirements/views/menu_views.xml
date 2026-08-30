@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <menuitem
+        id="menu_venezuela_localization_root"
+        name="Venezuelan Localization"
+        parent="account.menu_finance_configuration"
+        sequence="50"
+    />
+
+    <menuitem
+        id="menu_l10n_ut"
+        name="Tax Units (UT)"
+        parent="menu_venezuela_localization_root"
+        action="action_l10n_ut"
+        sequence="10"
+    />
+
+    <menuitem
+        id="menu_seniat_url"
+        name="SENIAT URLs"
+        parent="menu_venezuela_localization_root"
+        action="action_seniat_url"
+        sequence="20"
+    />
+
+    <menuitem
+        id="menu_search_seniat_partner"
+        name="Consult Partner in SENIAT"
+        parent="account.menu_finance_receivables"
+        action="action_search_info_partner_seniat"
+        sequence="110"
+    />
+</odoo>
