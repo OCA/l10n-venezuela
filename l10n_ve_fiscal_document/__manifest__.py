@@ -1,5 +1,5 @@
 # Copyright 2026 BWEALTHICS LLC
-# License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
+# License LGPL-3.0 or later (https://www.gnu.org/licenses/lgpl).
 
 {
     "name": "Venezuela - Fiscal Document",
@@ -9,7 +9,7 @@
     "website": "https://github.com/OCA/l10n-venezuela",
     "author": "BWEALTHICS LLC, Odoo Community Association (OCA)",
     "maintainers": ["bwealthics"],
-    "license": "AGPL-3",
+    "license": "LGPL-3",
     "development_status": "Beta",
     "depends": ["l10n_ve"],
     "data": [
