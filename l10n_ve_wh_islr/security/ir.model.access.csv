@@ -1,0 +1,9 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_l10n_ve_ut_user,l10n.ve.ut.user,model_l10n_ve_ut,account.group_account_invoice,1,1,0,0
+access_l10n_ve_ut_manager,l10n.ve.ut.manager,model_l10n_ve_ut,account.group_account_manager,1,1,1,1
+access_l10n_ve_islr_concept_user,l10n.ve.islr.concept.user,model_l10n_ve_islr_concept,account.group_account_invoice,1,1,0,0
+access_l10n_ve_islr_concept_manager,l10n.ve.islr.concept.manager,model_l10n_ve_islr_concept,account.group_account_manager,1,1,1,1
+access_l10n_ve_islr_voucher_user,l10n.ve.islr.voucher.user,model_l10n_ve_islr_voucher,account.group_account_invoice,1,1,0,0
+access_l10n_ve_islr_voucher_manager,l10n.ve.islr.voucher.manager,model_l10n_ve_islr_voucher,account.group_account_manager,1,1,1,1
+access_l10n_ve_islr_xml_export_user,l10n.ve.islr.xml.export.user,model_l10n_ve_islr_xml_export,account.group_account_invoice,1,1,1,1
+access_l10n_ve_islr_xml_export_manager,l10n.ve.islr.xml.export.manager,model_l10n_ve_islr_xml_export,account.group_account_manager,1,1,1,1

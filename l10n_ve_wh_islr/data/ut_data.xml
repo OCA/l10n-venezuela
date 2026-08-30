@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Copyright 2026 BWEALTHICS LLC -->
+<odoo noupdate="1">
+    <record id="ut_2025_06_02" model="l10n.ve.ut">
+        <field name="date_from">2025-06-02</field>
+        <field name="value">43.00</field>
+        <field name="gaceta">G.O. 43.140</field>
+    </record>
+</odoo>
