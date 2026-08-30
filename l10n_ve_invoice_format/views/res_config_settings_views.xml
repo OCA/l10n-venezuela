@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Copyright 2026 BWEALTHICS LLC
+     License LGPL-3.0 or later (https://www.gnu.org/licenses/lgpl). -->
+<odoo>
+    <record id="res_config_settings_view_form" model="ir.ui.view">
+        <field
+            name="name"
+        >res.config.settings.view.form.inherit.l10n.ve.invoice.format</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="account.res_config_settings_view_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//app[@name='account']" position="inside">
+                <block
+                    title="Venezuela - Authorized Printer"
+                    name="l10n_ve_invoice_format_printer_block"
+                >
+                    <setting
+                        id="l10n_ve_invoice_format_printer_setting"
+                        string="Authorized printer information"
+                        company_dependent="1"
+                        help="This information is printed on each Venezuelan fiscal document."
+                    >
+                        <div class="content-group">
+                            <div class="row mt8">
+                                <label
+                                    for="l10n_ve_printer_name"
+                                    string="Name"
+                                    class="col-lg-5 o_light_label"
+                                />
+                                <field name="l10n_ve_printer_name" />
+                            </div>
+                            <div class="row">
+                                <label
+                                    for="l10n_ve_printer_vat"
+                                    string="RIF"
+                                    class="col-lg-5 o_light_label"
+                                />
+                                <field name="l10n_ve_printer_vat" />
+                            </div>
+                            <div class="row">
+                                <label
+                                    for="l10n_ve_printer_auth_number"
+                                    string="Resolution Number"
+                                    class="col-lg-5 o_light_label"
+                                />
+                                <field name="l10n_ve_printer_auth_number" />
+                            </div>
+                            <div class="row">
+                                <label
+                                    for="l10n_ve_printer_auth_date"
+                                    string="Resolution Date"
+                                    class="col-lg-5 o_light_label"
+                                />
+                                <field name="l10n_ve_printer_auth_date" />
+                            </div>
+                            <div class="row">
+                                <label
+                                    for="l10n_ve_control_range_from"
+                                    string="Control Number From"
+                                    class="col-lg-5 o_light_label"
+                                />
+                                <field name="l10n_ve_control_range_from" />
+                            </div>
+                            <div class="row">
+                                <label
+                                    for="l10n_ve_control_range_to"
+                                    string="Control Number To"
+                                    class="col-lg-5 o_light_label"
+                                />
+                                <field name="l10n_ve_control_range_to" />
+                            </div>
+                        </div>
+                    </setting>
+                </block>
+                <block
+                    title="Venezuela - Fiscal Document"
+                    name="l10n_ve_invoice_format_document_block"
+                >
+                    <setting
+                        id="l10n_ve_invoice_format_bs_currency_setting"
+                        string="Bolivar equivalent"
+                        company_dependent="1"
+                        help="Show untaxed, tax, total, and outstanding amounts in this currency at the document date exchange rate. Leave empty to hide the block."
+                    >
+                        <div class="content-group">
+                            <div class="row mt8">
+                                <label
+                                    for="l10n_ve_bs_currency_id"
+                                    string="Currency"
+                                    class="col-lg-5 o_light_label"
+                                />
+                                <field
+                                    name="l10n_ve_bs_currency_id"
+                                    options="{'no_create': True, 'no_open': True}"
+                                />
+                            </div>
+                        </div>
+                    </setting>
+                    <setting
+                        id="l10n_ve_invoice_format_line_tax_detail_setting"
+                        company_dependent="1"
+                        help="Add untaxed and tax amount columns before the line total."
+                    >
+                        <field name="l10n_ve_show_line_tax_detail" />
+                    </setting>
+                </block>
+            </xpath>
+        </field>
+    </record>
+</odoo>
