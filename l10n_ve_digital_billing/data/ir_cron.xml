@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright 2026 BWEALTHICS LLC
+     License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl). -->
+<odoo>
+    <record id="ir_cron_l10n_ve_edoc" model="ir.cron">
+        <field name="name">VE Digital billing: send and query documents</field>
+        <field name="model_id" ref="account.model_account_move"/>
+        <field name="state">code</field>
+        <field name="code">model._l10n_ve_edoc_cron()</field>
+        <field name="interval_number">5</field>
+        <field name="interval_type">minutes</field>
+        <!-- Inactive out of the box: turn it on once a provider is under
+             contract and SENIAT has authorized the issuer. A cron calling an
+             API with no credentials only fills the log with errors. -->
+        <field name="active" eval="False"/>
+    </record>
+</odoo>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright 2026 BWEALTHICS LLC
+     License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl). -->
+<odoo>
+    <record id="view_move_form_l10n_ve_edoc" model="ir.ui.view">
+        <field name="name">account.move.form.l10n.ve.edoc</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="l10n_ve_fiscal_document.account_move_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='l10n_ve_control_date']" position="after">
+                <field name="l10n_ve_edoc_state"
+                       invisible="l10n_ve_emission_medium != 'digital'"/>
+                <field name="l10n_ve_edoc_external_id"
+                       invisible="not l10n_ve_edoc_external_id"/>
+                <field name="l10n_ve_edoc_error"
+                       invisible="l10n_ve_edoc_state != 'error'"/>
+            </xpath>
+            <xpath expr="//header" position="inside">
+                <button name="action_l10n_ve_edoc_send" type="object"
+                        string="Send to digital printing house" class="btn-primary"
+                        invisible="l10n_ve_emission_medium != 'digital' or state != 'posted' or l10n_ve_edoc_state in ('sent', 'assigned')"/>
+                <button name="action_l10n_ve_edoc_fetch" type="object"
+                        string="Query control number"
+                        invisible="l10n_ve_edoc_state != 'sent'"/>
+                <button name="action_l10n_ve_edoc_cancel" type="object"
+                        string="Cancel at the printing house"
+                        invisible="l10n_ve_edoc_state not in ('sent', 'assigned')"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

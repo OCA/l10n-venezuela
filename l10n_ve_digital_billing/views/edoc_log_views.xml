@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright 2026 BWEALTHICS LLC
+     License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl). -->
+<odoo>
+    <record id="view_l10n_ve_edoc_log_list" model="ir.ui.view">
+        <field name="name">l10n.ve.edoc.log.list</field>
+        <field name="model">l10n.ve.edoc.log</field>
+        <field name="arch" type="xml">
+            <list string="Digital printing house log" create="false">
+                <field name="create_date" string="Date"/>
+                <field name="move_id"/>
+                <field name="endpoint"/>
+                <field name="ok" widget="boolean_toggle" readonly="1"/>
+                <field name="create_uid" string="User"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_l10n_ve_edoc_log_form" model="ir.ui.view">
+        <field name="name">l10n.ve.edoc.log.form</field>
+        <field name="model">l10n.ve.edoc.log</field>
+        <field name="arch" type="xml">
+            <form string="Digital printing house call" create="false" edit="false">
+                <sheet>
+                    <group>
+                        <field name="move_id"/>
+                        <field name="endpoint"/>
+                        <field name="ok"/>
+                        <field name="create_date" string="Date"/>
+                        <field name="create_uid" string="User"/>
+                    </group>
+                    <group string="Sent">
+                        <field name="request" nolabel="1"/>
+                    </group>
+                    <group string="Response">
+                        <field name="response" nolabel="1"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_l10n_ve_edoc_log" model="ir.actions.act_window">
+        <field name="name">Digital printing house log</field>
+        <field name="res_model">l10n.ve.edoc.log</field>
+        <field name="view_mode">list,form</field>
+        <field name="group_ids" eval="[(4, ref('account.group_account_invoice'))]"/>
+    </record>
+
+    <menuitem id="menu_l10n_ve_edoc_log"
+              name="Digital printing house log"
+              parent="account.menu_finance_reports"
+              action="action_l10n_ve_edoc_log"
+              groups="account.group_account_invoice"
+              sequence="90"/>
+</odoo>
