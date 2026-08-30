@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Copyright 2026 BWEALTHICS LLC -->
+<odoo>
+    <record id="res_config_settings_view_form" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.l10n.ve.wh.iva</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="account.res_config_settings_view_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//app[@name='account']" position="inside">
+                <block
+                    title="Localización Venezuela - Retención de IVA"
+                    name="l10n_ve_wh_iva"
+                >
+                    <setting
+                        id="l10n_ve_spe_setting"
+                        string="Sujeto Pasivo Especial (SPE)"
+                        company_dependent="1"
+                        help="Designación de Sujeto Pasivo Especial notificada por el SENIAT. Activa la retención de IVA como agente."
+                    >
+                        <field name="l10n_ve_is_spe" />
+                        <div class="content-group" invisible="not l10n_ve_is_spe">
+                            <div class="row mt16">
+                                <label
+                                    for="l10n_ve_spe_date"
+                                    string="Fecha de designación"
+                                    class="col-lg-5 o_light_label"
+                                />
+                                <field name="l10n_ve_spe_date" />
+                            </div>
+                        </div>
+                    </setting>
+                    <setting
+                        id="l10n_ve_iva_wh_agent_account"
+                        string="Cuenta de retención como agente"
+                        help="Cuenta pasiva donde se acumula el IVA retenido a proveedores (Retenciones de IVA por Enterar, ej. 210303)."
+                    >
+                        <field name="l10n_ve_iva_wh_agent_account_id" />
+                    </setting>
+                    <setting
+                        id="l10n_ve_iva_wh_received_account"
+                        string="Cuenta de retenciones recibidas"
+                        help="Cuenta activa de los comprobantes de retención recibidos de clientes SPE (ej. 110302, Forma 30 casilla 66)."
+                    >
+                        <field name="l10n_ve_iva_wh_received_account_id" />
+                    </setting>
+                </block>
+            </xpath>
+        </field>
+    </record>
+</odoo>

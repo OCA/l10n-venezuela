@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_l10n_ve_iva_wh_voucher_user,l10n.ve.iva.wh.voucher user,model_l10n_ve_iva_wh_voucher,account.group_account_invoice,1,1,1,0
+access_l10n_ve_iva_wh_voucher_manager,l10n.ve.iva.wh.voucher manager,model_l10n_ve_iva_wh_voucher,account.group_account_manager,1,1,1,1
+access_l10n_ve_iva_wh_txt_export_user,l10n.ve.iva.wh.txt.export user,model_l10n_ve_iva_wh_txt_export,account.group_account_invoice,1,1,1,1
+access_l10n_ve_iva_wh_txt_export_manager,l10n.ve.iva.wh.txt.export manager,model_l10n_ve_iva_wh_txt_export,account.group_account_manager,1,1,1,1

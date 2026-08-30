@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Copyright 2026 BWEALTHICS LLC -->
+<odoo>
+    <record id="view_l10n_ve_iva_wh_voucher_list" model="ir.ui.view">
+        <field name="name">l10n.ve.iva.wh.voucher.list</field>
+        <field name="model">l10n.ve.iva.wh.voucher</field>
+        <field name="arch" type="xml">
+            <list string="Comprobantes de Retención de IVA">
+                <field name="number" />
+                <field name="date" />
+                <field name="partner_id" />
+                <field name="base_amount" optional="show" />
+                <field name="tax_amount" optional="show" />
+                <field name="withheld_amount" sum="Total Retenido" />
+                <field
+                    name="state"
+                    widget="badge"
+                    decoration-success="state == 'posted'"
+                    decoration-danger="state == 'cancel'"
+                />
+                <field name="currency_id" column_invisible="1" />
+                <field
+                    name="company_id"
+                    groups="base.group_multi_company"
+                    optional="hide"
+                />
+            </list>
+        </field>
+    </record>
+
+    <record id="view_l10n_ve_iva_wh_voucher_form" model="ir.ui.view">
+        <field name="name">l10n.ve.iva.wh.voucher.form</field>
+        <field name="model">l10n.ve.iva.wh.voucher</field>
+        <field name="arch" type="xml">
+            <form string="Comprobante de Retención de IVA">
+                <header>
+                    <button
+                        name="action_post"
+                        type="object"
+                        string="Emitir"
+                        class="btn-primary"
+                        invisible="state != 'draft'"
+                    />
+                    <button
+                        name="action_cancel"
+                        type="object"
+                        string="Anular"
+                        invisible="state != 'posted'"
+                        confirm="¿Anular este comprobante de retención? El correlativo no se reutiliza."
+                    />
+                    <button
+                        name="action_draft"
+                        type="object"
+                        string="Pasar a Borrador"
+                        invisible="state != 'cancel'"
+                    />
+                    <field
+                        name="state"
+                        widget="statusbar"
+                        statusbar_visible="draft,posted"
+                    />
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="number" placeholder="Se asigna al guardar" />
+                        </h1>
+                    </div>
+                    <group>
+                        <group name="main">
+                            <field name="partner_id" readonly="state != 'draft'" />
+                            <field name="payment_id" readonly="1" />
+                            <field name="date" readonly="state != 'draft'" />
+                            <field name="fiscal_period" />
+                        </group>
+                        <group name="amounts">
+                            <field name="base_amount" readonly="state != 'draft'" />
+                            <field name="tax_amount" readonly="state != 'draft'" />
+                            <field name="wh_rate" readonly="state != 'draft'" />
+                            <field name="withheld_amount" readonly="state != 'draft'" />
+                            <field name="exempt_amount" readonly="state != 'draft'" />
+                            <field name="currency_id" invisible="1" />
+                            <field
+                                name="company_id"
+                                groups="base.group_multi_company"
+                            />
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Documentos Retenidos" name="documents">
+                            <field name="move_ids" readonly="state != 'draft'">
+                                <list>
+                                    <field name="name" />
+                                    <field name="ref" optional="show" />
+                                    <field name="invoice_date" />
+                                    <field name="partner_id" />
+                                    <field name="amount_untaxed_signed" />
+                                    <field name="amount_total_signed" />
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_l10n_ve_iva_wh_voucher_search" model="ir.ui.view">
+        <field name="name">l10n.ve.iva.wh.voucher.search</field>
+        <field name="model">l10n.ve.iva.wh.voucher</field>
+        <field name="arch" type="xml">
+            <search string="Comprobantes de Retención de IVA">
+                <field name="number" />
+                <field name="partner_id" />
+                <filter
+                    string="Emitidos"
+                    name="posted"
+                    domain="[('state', '=', 'posted')]"
+                />
+                <filter
+                    string="Borradores"
+                    name="draft"
+                    domain="[('state', '=', 'draft')]"
+                />
+                <separator />
+                <filter string="Fecha" name="filter_date" date="date" />
+                <separator />
+                <filter
+                    string="Sujeto Retenido"
+                    name="group_partner"
+                    context="{'group_by': 'partner_id'}"
+                />
+                <filter
+                    string="Período"
+                    name="group_date"
+                    context="{'group_by': 'date:month'}"
+                />
+            </search>
+        </field>
+    </record>
+
+    <record id="action_l10n_ve_iva_wh_voucher" model="ir.actions.act_window">
+        <field name="name">Comprobantes Retención IVA</field>
+        <field name="res_model">l10n.ve.iva.wh.voucher</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_l10n_ve_iva_wh_voucher_search" />
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No hay comprobantes de retención de IVA
+            </p>
+            <p>
+                Se generan automáticamente al registrar pagos a proveedores cuando
+                la compañía actúa como agente de retención (PA SNAT/2025/000054).
+            </p>
+        </field>
+    </record>
+
+    <menuitem
+        id="menu_l10n_ve_iva_wh_voucher"
+        name="Comprobantes Retención IVA"
+        parent="account.menu_finance_payables"
+        action="action_l10n_ve_iva_wh_voucher"
+        groups="account.group_account_invoice"
+        sequence="90"
+    />
+</odoo>
