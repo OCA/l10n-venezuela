@@ -4,7 +4,7 @@
 {
     "name": "Venezuela - Digital Billing",
     "summary": "Connect Venezuelan customer documents to an authorized "
-                "digital printing house",
+    "digital printing house",
     "version": "19.0.1.0.0",
     "category": "Accounting/Localizations",
     "website": "https://github.com/OCA/l10n-venezuela",

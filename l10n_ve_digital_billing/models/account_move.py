@@ -2,7 +2,7 @@
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
 import re
 
-from odoo import _, fields, models
+from odoo import fields, models
 from odoo.exceptions import UserError
 
 
@@ -27,18 +27,24 @@ class AccountMove(models.Model):
     _inherit = "account.move"
 
     l10n_ve_edoc_state = fields.Selection(
-        [("to_send", "To send"),
-         ("sent", "Sent, control number pending"),
-         ("assigned", "Control number assigned"),
-         ("error", "Error"),
-         ("cancelled", "Cancelled at the digital printing house")],
+        [
+            ("to_send", "To send"),
+            ("sent", "Sent, control number pending"),
+            ("assigned", "Control number assigned"),
+            ("error", "Error"),
+            ("cancelled", "Cancelled at the digital printing house"),
+        ],
         string="Digital printing house status",
-        copy=False, readonly=True, tracking=True,
+        copy=False,
+        readonly=True,
+        tracking=True,
     )
     l10n_ve_edoc_external_id = fields.Char(
-        string="Digital printing house identifier", copy=False, readonly=True)
+        string="Digital printing house identifier", copy=False, readonly=True
+    )
     l10n_ve_edoc_error = fields.Text(
-        string="Last digital printing house error", copy=False, readonly=True)
+        string="Last digital printing house error", copy=False, readonly=True
+    )
 
     # ------------------------------------------------------------------
     # Fiscal payload -- fully writable without knowing the provider
@@ -57,30 +63,34 @@ class AccountMove(models.Model):
         buyer_type, buyer_number = _split_vat(partner.vat)
         lines = []
         for line in self.invoice_line_ids.filtered(
-                lambda ln: ln.display_type == "product"):
+            lambda ln: ln.display_type == "product"
+        ):
             rate = next((tax.amount for tax in line.tax_ids if tax.amount), 0.0)
-            lines.append({
-                # The digital printing house requires a product code (PLU)
-                # and a unit of measure; the adapter cannot invent them, so
-                # they travel from here.
-                "code": line.product_id.default_code or "",
-                "description": line.name or "",
-                "quantity": line.quantity,
-                "uom": line.product_uom_id.name or "",
-                "unit_price": line.price_unit,
-                "discount_pct": line.discount,
-                # Odoo's discount is a percentage; the printing house wants
-                # it as an AMOUNT.
-                "discount_amount": self.currency_id.round(
-                    line.quantity * line.price_unit * line.discount / 100.0),
-                "base": line.price_subtotal,
-                "rate": rate,
-                # price_total - price_subtotal = the line's taxes. Under the
-                # VE tax setup (only VAT on sales) that is the line's VAT.
-                "tax": line.price_total - line.price_subtotal,
-                "total": line.price_total,
-                "exempt": line._l10n_ve_edoc_is_exempt(),
-            })
+            lines.append(
+                {
+                    # The digital printing house requires a product code (PLU)
+                    # and a unit of measure; the adapter cannot invent them, so
+                    # they travel from here.
+                    "code": line.product_id.default_code or "",
+                    "description": line.name or "",
+                    "quantity": line.quantity,
+                    "uom": line.product_uom_id.name or "",
+                    "unit_price": line.price_unit,
+                    "discount_pct": line.discount,
+                    # Odoo's discount is a percentage; the printing house wants
+                    # it as an AMOUNT.
+                    "discount_amount": self.currency_id.round(
+                        line.quantity * line.price_unit * line.discount / 100.0
+                    ),
+                    "base": line.price_subtotal,
+                    "rate": rate,
+                    # price_total - price_subtotal = the line's taxes. Under the
+                    # VE tax setup (only VAT on sales) that is the line's VAT.
+                    "tax": line.price_total - line.price_subtotal,
+                    "total": line.price_total,
+                    "exempt": line._l10n_ve_edoc_is_exempt(),
+                }
+            )
         # The legal emission time is when the document is sent, not the
         # accounting date: it is fixed here so the log and the printing
         # house see the exact same value.
@@ -94,9 +104,13 @@ class AccountMove(models.Model):
             # Cash or credit based on the due date: this is what the
             # printing house labels as the sale type, and what decides the
             # default payment when there is no reconciled collection yet.
-            "sale_type": "credit" if (
-                self.invoice_date_due and self.invoice_date
-                and self.invoice_date_due > self.invoice_date) else "cash",
+            "sale_type": "credit"
+            if (
+                self.invoice_date_due
+                and self.invoice_date
+                and self.invoice_date_due > self.invoice_date
+            )
+            else "cash",
             "issuer": {
                 "vat": company.vat or "",
                 "name": company.name,
@@ -158,13 +172,17 @@ class AccountMove(models.Model):
         self.ensure_one()
         if not hasattr(self, "_get_reconciled_payments"):
             return []
-        return [{
-            "description": (payment.payment_method_line_id.name
-                            or payment.journal_id.name or ""),
-            "date": payment.date,
-            "amount": payment.amount,
-            "currency": payment.currency_id.name,
-        } for payment in self._get_reconciled_payments()]
+        return [
+            {
+                "description": (
+                    payment.payment_method_line_id.name or payment.journal_id.name or ""
+                ),
+                "date": payment.date,
+                "amount": payment.amount,
+                "currency": payment.currency_id.name,
+            }
+            for payment in self._get_reconciled_payments()
+        ]
 
     # ------------------------------------------------------------------
     # State machine
@@ -179,10 +197,12 @@ class AccountMove(models.Model):
         # time, so a later change to the journal's configuration never
         # reclassifies an already-posted document.
         for move in posted:
-            if (move.is_sale_document(include_receipts=True)
-                    and move.l10n_ve_emission_medium == "digital"
-                    and not move.l10n_ve_edoc_state
-                    and move.company_id.l10n_ve_edoc_provider):
+            if (
+                move.is_sale_document(include_receipts=True)
+                and move.l10n_ve_emission_medium == "digital"
+                and not move.l10n_ve_edoc_state
+                and move.company_id.l10n_ve_edoc_provider
+            ):
                 move.l10n_ve_edoc_state = "to_send"
         return posted
 
@@ -190,23 +210,32 @@ class AccountMove(models.Model):
         self.ensure_one()
         provider = self.company_id.l10n_ve_edoc_provider
         if not provider:
-            raise UserError(_(
-                "%s has no digital printing house provider configured.",
-                self.company_id.display_name))
+            raise UserError(
+                self.env._(
+                    "%(company)s has no digital printing house provider configured.",
+                    company=self.company_id.display_name,
+                )
+            )
         return self.env[provider]
 
     def action_l10n_ve_edoc_send(self):
         for move in self:
             if move.l10n_ve_emission_medium != "digital":
-                raise UserError(_(
-                    "%s is not on a digital billing journal.",
-                    move.display_name))
+                raise UserError(
+                    self.env._(
+                        "%(document)s is not on a digital billing journal.",
+                        document=move.display_name,
+                    )
+                )
             if move.state != "posted":
-                raise UserError(_("Only posted documents can be sent."))
+                raise UserError(self.env._("Only posted documents can be sent."))
             if move.l10n_ve_edoc_state in ("sent", "assigned"):
-                raise UserError(_(
-                    "%s was already sent to the digital printing house.",
-                    move.display_name))
+                raise UserError(
+                    self.env._(
+                        "%(document)s was already sent to the digital printing house.",
+                        document=move.display_name,
+                    )
+                )
             move._l10n_ve_edoc_do_send()
         return True
 
@@ -219,30 +248,40 @@ class AccountMove(models.Model):
         except Exception as error:  # noqa: BLE001 -- the provider's error is
             # logged and shown; it must never roll back the accounting entry.
             self._l10n_ve_edoc_log("send", vals, str(error), ok=False)
-            self.write({
-                "l10n_ve_edoc_state": "error",
-                "l10n_ve_edoc_error": str(error),
-            })
+            self.write(
+                {
+                    "l10n_ve_edoc_state": "error",
+                    "l10n_ve_edoc_error": str(error),
+                }
+            )
             return False
         self._l10n_ve_edoc_log("send", vals, result, ok=True)
         self._l10n_ve_edoc_apply(result)
         return True
 
     def _l10n_ve_edoc_apply(self, result):
-        """Apply the provider's response through the trusted write-back that
-        l10n_ve_fiscal_document exposes for exactly this: a digital printing
-        house is a legitimate source for the control number of an
-        already-posted document. Skips the write if a number is already on
-        file, so a retried fetch/cron cycle stays a harmless no-op."""
+        """Apply the provider's response through the control data assignment
+        API that l10n_ve_fiscal_document exposes for exactly this: a digital
+        printing house is a legitimate source for the control number of an
+        already-posted document. Skips the call once a number is on file, so
+        a retried fetch/cron cycle stays a harmless no-op.
+
+        The date is normalised to None rather than False: the assignment API
+        type-checks it and rejects anything that is not a date.
+        """
         self.ensure_one()
         number = result.get("control_number")
         if number and not self.l10n_ve_control_number:
-            self._l10n_ve_set_control_number(number, result.get("control_date"))
-        self.write({
-            "l10n_ve_edoc_external_id": result.get("external_id"),
-            "l10n_ve_edoc_error": False,
-            "l10n_ve_edoc_state": "assigned" if number else "sent",
-        })
+            self._l10n_ve_assign_control_data(
+                number, result.get("control_date") or None
+            )
+        self.write(
+            {
+                "l10n_ve_edoc_external_id": result.get("external_id"),
+                "l10n_ve_edoc_error": False,
+                "l10n_ve_edoc_state": "assigned" if number else "sent",
+            }
+        )
 
     def action_l10n_ve_edoc_fetch(self):
         """Query the control number of documents already sent.
@@ -267,12 +306,16 @@ class AccountMove(models.Model):
         """Open the cancellation wizard: the provider requires a reason."""
         self.ensure_one()
         if self.l10n_ve_edoc_state not in ("sent", "assigned"):
-            raise UserError(_(
-                "%s was not issued at the digital printing house: there is "
-                "nothing to cancel.", self.display_name))
+            raise UserError(
+                self.env._(
+                    "%(document)s was not issued at the digital printing "
+                    "house: there is nothing to cancel.",
+                    document=self.display_name,
+                )
+            )
         return {
             "type": "ir.actions.act_window",
-            "name": _("Cancel at the digital printing house"),
+            "name": self.env._("Cancel at the digital printing house"),
             "res_model": "l10n.ve.edoc.cancel.wizard",
             "view_mode": "form",
             "target": "new",
@@ -295,29 +338,35 @@ class AccountMove(models.Model):
             return False
         self._l10n_ve_edoc_log("cancel", request, result, ok=bool(result))
         if result:
-            self.write({
-                "l10n_ve_edoc_state": "cancelled",
-                "l10n_ve_edoc_error": False,
-            })
+            self.write(
+                {
+                    "l10n_ve_edoc_state": "cancelled",
+                    "l10n_ve_edoc_error": False,
+                }
+            )
         return bool(result)
 
     def _l10n_ve_edoc_log(self, endpoint, request, response, ok):
         self.ensure_one()
-        self.env["l10n.ve.edoc.log"].sudo().create({
-            "move_id": self.id,
-            "endpoint": endpoint,
-            "request": repr(request),
-            "response": repr(response),
-            "ok": ok,
-        })
+        self.env["l10n.ve.edoc.log"].sudo().create(
+            {
+                "move_id": self.id,
+                "endpoint": endpoint,
+                "request": repr(request),
+                "response": repr(response),
+                "ok": ok,
+            }
+        )
 
     def _l10n_ve_edoc_cron(self):
         """Send pending documents and query asynchronous ones. ONE cron for
         both: half the code and no ordering issue between them."""
         moves = self.search([("l10n_ve_edoc_state", "in", ("to_send", "sent"))])
         for move in moves.filtered(
-                lambda m: m.l10n_ve_edoc_state == "to_send"
-                and m.company_id.l10n_ve_edoc_provider):
+            lambda m: m.l10n_ve_edoc_state == "to_send"
+            and m.company_id.l10n_ve_edoc_provider
+        ):
             move._l10n_ve_edoc_do_send()
         moves.filtered(
-            lambda m: m.l10n_ve_edoc_state == "sent").action_l10n_ve_edoc_fetch()
+            lambda m: m.l10n_ve_edoc_state == "sent"
+        ).action_l10n_ve_edoc_fetch()

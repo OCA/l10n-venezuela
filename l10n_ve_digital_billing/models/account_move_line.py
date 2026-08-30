@@ -15,4 +15,5 @@ class AccountMoveLine(models.Model):
         """
         self.ensure_one()
         return self.display_type == "product" and not any(
-            tax.amount for tax in self.tax_ids)
+            tax.amount for tax in self.tax_ids
+        )

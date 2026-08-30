@@ -1,47 +1,78 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <!-- Copyright 2026 BWEALTHICS LLC
      License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl). -->
 <odoo>
     <record id="res_config_settings_view_form" model="ir.ui.view">
-        <field name="name">res.config.settings.view.form.inherit.l10n.ve.digital.billing</field>
+        <field
+            name="name"
+        >res.config.settings.view.form.inherit.l10n.ve.digital.billing</field>
         <field name="model">res.config.settings</field>
-        <field name="inherit_id" ref="account.res_config_settings_view_form"/>
+        <field name="inherit_id" ref="account.res_config_settings_view_form" />
         <field name="arch" type="xml">
             <xpath expr="//app[@name='account']" position="inside">
-                <block title="Venezuela - Digital Billing"
-                       name="l10n_ve_edoc_block">
-                    <setting id="l10n_ve_edoc_setting"
-                             string="Digital printing house connection"
-                             company_dependent="1"
-                             help="Credentials of the authorized provider that assigns the control number (SENIAT PA SNAT/2024/000102). Only used on journals whose emission medium is 'Digital billing'.">
+                <block title="Venezuela - Digital Billing" name="l10n_ve_edoc_block">
+                    <setting
+                        id="l10n_ve_edoc_setting"
+                        string="Digital printing house connection"
+                        company_dependent="1"
+                        help="Credentials of the authorized provider that assigns the control number (SENIAT PA SNAT/2024/000102). Only used on journals whose emission medium is 'Digital billing'."
+                    >
                         <div class="content-group">
                             <div class="row mt8">
-                                <label for="l10n_ve_edoc_provider" string="Provider" class="col-lg-5 o_light_label"/>
-                                <field name="l10n_ve_edoc_provider"/>
+                                <label
+                                    for="l10n_ve_edoc_provider"
+                                    string="Provider"
+                                    class="col-lg-5 o_light_label"
+                                />
+                                <field name="l10n_ve_edoc_provider" />
                             </div>
                             <div class="row">
-                                <label for="l10n_ve_edoc_url" string="URL (production)" class="col-lg-5 o_light_label"/>
-                                <field name="l10n_ve_edoc_url"/>
+                                <label
+                                    for="l10n_ve_edoc_url"
+                                    string="URL (production)"
+                                    class="col-lg-5 o_light_label"
+                                />
+                                <field name="l10n_ve_edoc_url" />
                             </div>
                             <div class="row">
-                                <label for="l10n_ve_edoc_user" string="Username" class="col-lg-5 o_light_label"/>
-                                <field name="l10n_ve_edoc_user"/>
+                                <label
+                                    for="l10n_ve_edoc_user"
+                                    string="Username"
+                                    class="col-lg-5 o_light_label"
+                                />
+                                <field name="l10n_ve_edoc_user" />
                             </div>
                             <div class="row">
-                                <label for="l10n_ve_edoc_password" string="Password" class="col-lg-5 o_light_label"/>
-                                <field name="l10n_ve_edoc_password" password="True"/>
+                                <label
+                                    for="l10n_ve_edoc_password"
+                                    string="Password"
+                                    class="col-lg-5 o_light_label"
+                                />
+                                <field name="l10n_ve_edoc_password" password="True" />
                             </div>
                             <div class="row">
-                                <label for="l10n_ve_edoc_serie" string="Series" class="col-lg-5 o_light_label"/>
-                                <field name="l10n_ve_edoc_serie"/>
+                                <label
+                                    for="l10n_ve_edoc_serie"
+                                    string="Series"
+                                    class="col-lg-5 o_light_label"
+                                />
+                                <field name="l10n_ve_edoc_serie" />
                             </div>
                             <div class="row">
-                                <label for="l10n_ve_edoc_sucursal" string="Branch" class="col-lg-5 o_light_label"/>
-                                <field name="l10n_ve_edoc_sucursal"/>
+                                <label
+                                    for="l10n_ve_edoc_sucursal"
+                                    string="Branch"
+                                    class="col-lg-5 o_light_label"
+                                />
+                                <field name="l10n_ve_edoc_sucursal" />
                             </div>
                             <div class="row">
-                                <label for="l10n_ve_edoc_test" string="Test environment" class="col-lg-5 o_light_label"/>
-                                <field name="l10n_ve_edoc_test"/>
+                                <label
+                                    for="l10n_ve_edoc_test"
+                                    string="Test environment"
+                                    class="col-lg-5 o_light_label"
+                                />
+                                <field name="l10n_ve_edoc_test" />
                             </div>
                         </div>
                     </setting>

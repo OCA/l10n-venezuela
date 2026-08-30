@@ -16,11 +16,10 @@ class L10nVeEdocLog(models.Model):
     _order = "id desc"
 
     move_id = fields.Many2one(
-        "account.move", string="Document", required=True,
-        ondelete="cascade", index=True)
+        "account.move", string="Document", required=True, ondelete="cascade", index=True
+    )
     endpoint = fields.Char(string="Operation", required=True)
     request = fields.Text(string="Sent")
-    response = fields.Text(string="Response")
+    response = fields.Text()
     ok = fields.Boolean(string="Successful")
-    company_id = fields.Many2one(
-        related="move_id.company_id", store=True, index=True)
+    company_id = fields.Many2one(related="move_id.company_id", store=True, index=True)

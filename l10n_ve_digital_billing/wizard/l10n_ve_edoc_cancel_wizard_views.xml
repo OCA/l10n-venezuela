@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <!-- Copyright 2026 BWEALTHICS LLC
      License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl). -->
 <odoo>
@@ -14,16 +14,26 @@
                     cancellation in Odoo is a separate step.
                 </div>
                 <group>
-                    <field name="move_id"/>
-                    <field name="reason"
-                           placeholder="E.g.: error in the buyer's data"/>
+                    <field name="move_id" />
+                    <field
+                        name="reason"
+                        placeholder="E.g.: error in the buyer's data"
+                    />
                 </group>
                 <footer>
-                    <button name="action_confirm" type="object"
-                            string="Cancel at the printing house"
-                            class="btn-danger" data-hotkey="q"/>
-                    <button string="Discard" class="btn-secondary"
-                            special="cancel" data-hotkey="x"/>
+                    <button
+                        name="action_confirm"
+                        type="object"
+                        string="Cancel at the printing house"
+                        class="btn-danger"
+                        data-hotkey="q"
+                    />
+                    <button
+                        string="Discard"
+                        class="btn-secondary"
+                        special="cancel"
+                        data-hotkey="x"
+                    />
                 </footer>
             </form>
         </field>

@@ -9,65 +9,97 @@ from odoo.addons.account.tests.common import AccountTestInvoicingCommon
 
 @tagged("post_install", "-at_install")
 class TestDigitalBilling(AccountTestInvoicingCommon):
-
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
         cls.company = cls.company_data["company"]
-        cls.company.country_id = cls.env.ref("base.ve")
-        cls.company.account_fiscal_country_id = cls.env.ref("base.ve")
+        cls.venezuela = cls.env.ref("base.ve")
+        cls.company.country_id = cls.venezuela
+        cls.company.account_fiscal_country_id = cls.venezuela
         cls.company.l10n_ve_edoc_provider = "l10n.ve.edoc.provider.dummy"
-        cls.tax_16 = cls.env["account.tax"].create({
-            "name": "VAT 16% - edoc test",
-            "amount": 16.0,
-            "amount_type": "percent",
-            "type_tax_use": "sale",
-            "company_id": cls.company.id,
-        })
-        cls.tax_exempt = cls.env["account.tax"].create({
-            "name": "Exempt - edoc test",
-            "amount": 0.0,
-            "amount_type": "percent",
-            "type_tax_use": "sale",
-            "company_id": cls.company.id,
-        })
-        cls.digital_journal = cls.env["account.journal"].create({
-            "name": "Digital Billing Sales",
-            "code": "DIGI",
-            "type": "sale",
-            "company_id": cls.company.id,
-            "l10n_ve_emission_medium": "digital",
-        })
+        # The taxes below default to the company's fiscal country (VE), and
+        # account.tax.tax_group_id is required and computed by (company,
+        # country): without a VE group in this database the compute finds
+        # nothing and the tax cannot be created.
+        cls.tax_group = cls.env["account.tax.group"].create(
+            {
+                "name": "VAT edoc test",
+                "company_id": cls.company.id,
+                "country_id": cls.venezuela.id,
+            }
+        )
+        cls.tax_16 = cls.env["account.tax"].create(
+            {
+                "name": "VAT 16% - edoc test",
+                "amount": 16.0,
+                "amount_type": "percent",
+                "type_tax_use": "sale",
+                "company_id": cls.company.id,
+                "country_id": cls.venezuela.id,
+                "tax_group_id": cls.tax_group.id,
+            }
+        )
+        cls.tax_exempt = cls.env["account.tax"].create(
+            {
+                "name": "Exempt - edoc test",
+                "amount": 0.0,
+                "amount_type": "percent",
+                "type_tax_use": "sale",
+                "company_id": cls.company.id,
+                "country_id": cls.venezuela.id,
+                "tax_group_id": cls.tax_group.id,
+            }
+        )
+        cls.digital_journal = cls.env["account.journal"].create(
+            {
+                "name": "Digital Billing Sales",
+                "code": "DIGI",
+                "type": "sale",
+                "company_id": cls.company.id,
+                "l10n_ve_emission_medium": "digital",
+            }
+        )
         cls.free_journal = cls.company_data["default_journal_sale"]
         cls.free_journal.l10n_ve_emission_medium = "free"
-        cls.partner = cls.env["res.partner"].with_context(
-            no_vat_validation=True).create({
-                "name": "Cliente Empresa, C.A.",
-                "vat": "J-98765432-1",
-                "street": "Av. Principal, Lecheria",
-            })
+        cls.partner = (
+            cls.env["res.partner"]
+            .with_context(no_vat_validation=True)
+            .create(
+                {
+                    "name": "Cliente Empresa, C.A.",
+                    "vat": "J-98765432-1",
+                    "street": "Av. Principal, Lecheria",
+                }
+            )
+        )
 
     def _invoice(self, journal=None):
-        move = self.env["account.move"].create({
-            "move_type": "out_invoice",
-            "partner_id": self.partner.id,
-            "invoice_date": fields.Date.to_date("2026-07-25"),
-            "journal_id": (journal or self.digital_journal).id,
-            "invoice_line_ids": [
-                Command.create({
-                    "name": "Taxed service",
-                    "quantity": 1.0,
-                    "price_unit": 100.0,
-                    "tax_ids": [Command.set(self.tax_16.ids)],
-                }),
-                Command.create({
-                    "name": "Exempt supply",
-                    "quantity": 2.0,
-                    "price_unit": 25.0,
-                    "tax_ids": [Command.set(self.tax_exempt.ids)],
-                }),
-            ],
-        })
+        move = self.env["account.move"].create(
+            {
+                "move_type": "out_invoice",
+                "partner_id": self.partner.id,
+                "invoice_date": fields.Date.to_date("2026-07-25"),
+                "journal_id": (journal or self.digital_journal).id,
+                "invoice_line_ids": [
+                    Command.create(
+                        {
+                            "name": "Taxed service",
+                            "quantity": 1.0,
+                            "price_unit": 100.0,
+                            "tax_ids": [Command.set(self.tax_16.ids)],
+                        }
+                    ),
+                    Command.create(
+                        {
+                            "name": "Exempt supply",
+                            "quantity": 2.0,
+                            "price_unit": 25.0,
+                            "tax_ids": [Command.set(self.tax_exempt.ids)],
+                        }
+                    ),
+                ],
+            }
+        )
         move.action_post()
         return move
 
@@ -108,20 +140,26 @@ class TestDigitalBilling(AccountTestInvoicingCommon):
         # A credit note must reference the number, date and amount of the
         # document it affects.
         invoice = self._invoice()
-        reversal = self.env["account.move.reversal"].with_context(
-            active_model="account.move", active_ids=invoice.ids,
-        ).create({
-            "journal_id": self.digital_journal.id,
-            "reason": "test",
-        })
-        refund = self.env["account.move"].browse(
-            reversal.reverse_moves()["res_id"])
+        reversal = (
+            self.env["account.move.reversal"]
+            .with_context(
+                active_model="account.move",
+                active_ids=invoice.ids,
+            )
+            .create(
+                {
+                    "journal_id": self.digital_journal.id,
+                    "reason": "test",
+                }
+            )
+        )
+        refund = self.env["account.move"].browse(reversal.reverse_moves()["res_id"])
         vals = refund._l10n_ve_edoc_document_vals()
         self.assertEqual(vals["doc_type"], "credit_note")
         self.assertEqual(vals["affected_document"]["number"], invoice.name)
         self.assertAlmostEqual(
-            vals["affected_document"]["amount"], invoice.amount_total,
-            places=2)
+            vals["affected_document"]["amount"], invoice.amount_total, places=2
+        )
 
     def test_debit_note_references_affected_document(self):
         # A debit note is an out_invoice with debit_origin_id: without this
@@ -131,22 +169,27 @@ class TestDigitalBilling(AccountTestInvoicingCommon):
         if "debit_origin_id" not in self.env["account.move"]._fields:
             self.skipTest("account_debit_note is not installed")
         invoice = self._invoice()
-        wizard = self.env["account.debit.note"].with_context(
-            active_model="account.move", active_ids=invoice.ids,
-        ).create({
-            "reason": "Late payment interest - test",
-            "copy_lines": True,
-        })
-        debit = self.env["account.move"].browse(
-            wizard.create_debit()["res_id"])
+        wizard = (
+            self.env["account.debit.note"]
+            .with_context(
+                active_model="account.move",
+                active_ids=invoice.ids,
+            )
+            .create(
+                {
+                    "reason": "Late payment interest - test",
+                    "copy_lines": True,
+                }
+            )
+        )
+        debit = self.env["account.move"].browse(wizard.create_debit()["res_id"])
         debit.action_post()
         vals = debit._l10n_ve_edoc_document_vals()
         self.assertEqual(vals["doc_type"], "debit_note")
         affected = vals["affected_document"]
         self.assertEqual(affected["number"], invoice.name)
         self.assertEqual(affected["date"], invoice.invoice_date)
-        self.assertAlmostEqual(
-            affected["amount"], invoice.amount_total, places=2)
+        self.assertAlmostEqual(affected["amount"], invoice.amount_total, places=2)
 
     def test_send_assigns_control_number_and_logs(self):
         move = self._invoice()
@@ -201,8 +244,7 @@ class TestDigitalBilling(AccountTestInvoicingCommon):
         def boom(self, move, vals):
             raise ValueError("the printing house is unreachable")
 
-        self.patch(
-            type(self.env["l10n.ve.edoc.provider.dummy"]), "_edoc_send", boom)
+        self.patch(type(self.env["l10n.ve.edoc.provider.dummy"]), "_edoc_send", boom)
         move.action_l10n_ve_edoc_send()
         self.assertEqual(move.l10n_ve_edoc_state, "error")
         self.assertIn("unreachable", move.l10n_ve_edoc_error)
@@ -218,14 +260,17 @@ class TestDigitalBilling(AccountTestInvoicingCommon):
     def test_cancel_wizard_marks_cancelled_and_logs(self):
         move = self._invoice()
         move.action_l10n_ve_edoc_send()
-        wizard = self.env["l10n.ve.edoc.cancel.wizard"].create({
-            "move_id": move.id,
-            "reason": "Error in the buyer's data - test",
-        })
+        wizard = self.env["l10n.ve.edoc.cancel.wizard"].create(
+            {
+                "move_id": move.id,
+                "reason": "Error in the buyer's data - test",
+            }
+        )
         wizard.action_confirm()
         self.assertEqual(move.l10n_ve_edoc_state, "cancelled")
-        log = self.env["l10n.ve.edoc.log"].search([
-            ("move_id", "=", move.id), ("endpoint", "=", "cancel")])
+        log = self.env["l10n.ve.edoc.log"].search(
+            [("move_id", "=", move.id), ("endpoint", "=", "cancel")]
+        )
         self.assertTrue(log)
         self.assertTrue(log[0].ok)
 
@@ -239,17 +284,17 @@ class TestDigitalBilling(AccountTestInvoicingCommon):
         def boom(self, move, reason):
             raise ValueError("the printing house rejects the cancellation")
 
-        self.patch(
-            type(self.env["l10n.ve.edoc.provider.dummy"]),
-            "_edoc_cancel", boom)
-        wizard = self.env["l10n.ve.edoc.cancel.wizard"].create({
-            "move_id": move.id, "reason": "test"})
+        self.patch(type(self.env["l10n.ve.edoc.provider.dummy"]), "_edoc_cancel", boom)
+        wizard = self.env["l10n.ve.edoc.cancel.wizard"].create(
+            {"move_id": move.id, "reason": "test"}
+        )
         result = wizard.action_confirm()
         self.assertEqual(result["tag"], "display_notification")
         self.assertEqual(move.l10n_ve_edoc_state, "assigned")
         self.assertIn("rejects", move.l10n_ve_edoc_error)
-        log = self.env["l10n.ve.edoc.log"].search([
-            ("move_id", "=", move.id), ("endpoint", "=", "cancel")])
+        log = self.env["l10n.ve.edoc.log"].search(
+            [("move_id", "=", move.id), ("endpoint", "=", "cancel")]
+        )
         self.assertFalse(log[0].ok)
 
     def test_hka_url_resolution(self):
@@ -258,11 +303,14 @@ class TestDigitalBilling(AccountTestInvoicingCommon):
         provider = self.env["l10n.ve.edoc.provider.hka"]
         self.company.l10n_ve_edoc_test = True
         self.company.l10n_ve_edoc_url = "https://prod.example.com/"
-        self.assertEqual(provider._hka_base_url(self.company),
-                         "https://demoemisionv2.thefactoryhka.com.ve")
+        self.assertEqual(
+            provider._hka_base_url(self.company),
+            "https://demoemisionv2.thefactoryhka.com.ve",
+        )
         self.company.l10n_ve_edoc_test = False
-        self.assertEqual(provider._hka_base_url(self.company),
-                         "https://prod.example.com")
+        self.assertEqual(
+            provider._hka_base_url(self.company), "https://prod.example.com"
+        )
         self.company.l10n_ve_edoc_url = False
         with self.assertRaises(UserError):
             provider._hka_base_url(self.company)
@@ -273,8 +321,7 @@ class TestDigitalBilling(AccountTestInvoicingCommon):
         # payment. This is the shape documented in the provider's wiki.
         move = self._invoice()
         vals = move._l10n_ve_edoc_document_vals()
-        payload = self.env["l10n.ve.edoc.provider.hka"]._hka_payload(
-            move, vals)
+        payload = self.env["l10n.ve.edoc.provider.hka"]._hka_payload(move, vals)
         doc = payload["documentoElectronico"]
         identification = doc["encabezado"]["identificacionDocumento"]
         self.assertEqual(identification["tipoDocumento"], "01")
@@ -289,10 +336,12 @@ class TestDigitalBilling(AccountTestInvoicingCommon):
         self.assertEqual(totals["totalIVA"], "16.00")
         self.assertEqual(totals["totalAPagar"], "166.00")
         self.assertEqual(
-            {tax["codigoTotalImp"] for tax in totals["impuestosSubtotal"]},
-            {"G", "E"})
-        self.assertTrue(totals["formasPago"],
-                        "with no reconciled payment, one travels for the total")
+            {tax["codigoTotalImp"] for tax in totals["impuestosSubtotal"]}, {"G", "E"}
+        )
+        self.assertTrue(
+            totals["formasPago"],
+            "with no reconciled payment, one travels for the total",
+        )
         self.assertEqual(totals["formasPago"][0]["monto"], "166.00")
         self.assertEqual(len(doc["detallesItems"]), 2)
         first_line = doc["detallesItems"][0]
@@ -303,19 +352,25 @@ class TestDigitalBilling(AccountTestInvoicingCommon):
 
     def test_hka_payload_credit_note_references_affected(self):
         invoice = self._invoice()
-        reversal = self.env["account.move.reversal"].with_context(
-            active_model="account.move", active_ids=invoice.ids,
-        ).create({
-            "journal_id": self.digital_journal.id,
-            "reason": "test partial cancellation",
-        })
-        refund = self.env["account.move"].browse(
-            reversal.reverse_moves()["res_id"])
+        reversal = (
+            self.env["account.move.reversal"]
+            .with_context(
+                active_model="account.move",
+                active_ids=invoice.ids,
+            )
+            .create(
+                {
+                    "journal_id": self.digital_journal.id,
+                    "reason": "test partial cancellation",
+                }
+            )
+        )
+        refund = self.env["account.move"].browse(reversal.reverse_moves()["res_id"])
         vals = refund._l10n_ve_edoc_document_vals()
-        payload = self.env["l10n.ve.edoc.provider.hka"]._hka_payload(
-            refund, vals)
+        payload = self.env["l10n.ve.edoc.provider.hka"]._hka_payload(refund, vals)
         identification = payload["documentoElectronico"]["encabezado"][
-            "identificacionDocumento"]
+            "identificacionDocumento"
+        ]
         self.assertEqual(identification["tipoDocumento"], "03")
         self.assertEqual(identification["numeroFacturaAfectada"], invoice.name)
         self.assertEqual(identification["montoFacturaAfectada"], "166.00")

@@ -9,6 +9,6 @@ Use "Cancel at the printing house" to void the document with the provider;
 this requires a reason and does not by itself cancel the journal entry or
 issue a credit note.
 
-Every call to the provider, successful or not, is recorded under Accounting
-> Reporting > Digital printing house log, together with the request sent and
+Every call to the provider, successful or not, is recorded under Accounting /
+Reporting / Digital printing house log, together with the request sent and
 the response received.
