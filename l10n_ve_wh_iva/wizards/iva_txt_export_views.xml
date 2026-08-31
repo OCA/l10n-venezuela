@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Copyright 2026 BWEALTHICS LLC -->
+<odoo>
+    <record id="view_l10n_ve_iva_wh_txt_export_form" model="ir.ui.view">
+        <field name="name">l10n.ve.iva.wh.txt.export.form</field>
+        <field name="model">l10n.ve.iva.wh.txt.export</field>
+        <field name="arch" type="xml">
+            <form string="Exportar TXT de Retenciones de IVA (Forma 99035)">
+                <group>
+                    <group>
+                        <field name="company_id" groups="base.group_multi_company" />
+                        <field name="date_from" />
+                        <field name="date_to" />
+                    </group>
+                    <group>
+                        <field name="file_name" invisible="1" />
+                        <field
+                            name="file_data"
+                            filename="file_name"
+                            readonly="1"
+                            invisible="not file_data"
+                        />
+                    </group>
+                </group>
+                <footer>
+                    <button
+                        name="action_generate"
+                        type="object"
+                        string="Generar TXT"
+                        class="btn-primary"
+                        data-hotkey="q"
+                    />
+                    <button
+                        string="Cerrar"
+                        special="cancel"
+                        class="btn-secondary"
+                        data-hotkey="x"
+                    />
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_l10n_ve_iva_wh_txt_export" model="ir.actions.act_window">
+        <field name="name">Exportar TXT Retenciones IVA (99035)</field>
+        <field name="res_model">l10n.ve.iva.wh.txt.export</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <menuitem
+        id="menu_l10n_ve_iva_wh_txt_export"
+        name="Exportar TXT Retenciones IVA (99035)"
+        parent="account.menu_finance_payables"
+        action="action_l10n_ve_iva_wh_txt_export"
+        groups="account.group_account_invoice"
+        sequence="91"
+    />
+</odoo>

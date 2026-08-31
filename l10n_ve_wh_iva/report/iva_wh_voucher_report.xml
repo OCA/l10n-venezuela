@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Copyright 2026 BWEALTHICS LLC -->
+<odoo>
+    <record id="action_report_iva_wh_voucher" model="ir.actions.report">
+        <field name="name">Comprobante de Retención de IVA</field>
+        <field name="model">l10n.ve.iva.wh.voucher</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">l10n_ve_wh_iva.report_iva_wh_voucher</field>
+        <field name="report_file">l10n_ve_wh_iva.report_iva_wh_voucher</field>
+        <field name="print_report_name">
+            'Comprobante Retencion IVA %s' % (object.number or '')
+        </field>
+        <field name="binding_model_id" ref="model_l10n_ve_iva_wh_voucher" />
+        <field name="binding_type">report</field>
+    </record>
+
+    <template id="report_iva_wh_voucher">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <h2 class="text-center">Comprobante de Retención de IVA</h2>
+                        <p class="text-center text-muted">
+                            Providencia Administrativa SNAT/2025/000054, artículo 16
+                        </p>
+                        <div class="row mb-3">
+                            <div class="col-4">
+                                <strong>Nº de Comprobante:</strong>
+                                <span t-field="o.number" />
+                            </div>
+                            <div class="col-4">
+                                <strong>Fecha de Emisión:</strong>
+                                <span t-field="o.date" />
+                            </div>
+                            <div class="col-4">
+                                <strong>Período Fiscal:</strong>
+                                <span t-field="o.fiscal_period" />
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-6">
+                                <strong>Agente de Retención</strong>
+                                <div
+                                    t-field="o.company_id.partner_id"
+                                    t-options='{"widget": "contact", "fields": ["name", "address"], "no_marker": True}'
+                                />
+                                <div>
+                                    <strong>RIF:</strong>
+                                    <span t-out="o.company_id.vat" />
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <strong>Sujeto Retenido</strong>
+                                <div
+                                    t-field="o.partner_id"
+                                    t-options='{"widget": "contact", "fields": ["name", "address"], "no_marker": True}'
+                                />
+                                <div>
+                                    <strong>RIF:</strong>
+                                    <span t-out="o.partner_id.vat" />
+                                </div>
+                            </div>
+                        </div>
+                        <table class="table table-sm table-bordered">
+                            <thead>
+                                <tr class="text-center">
+                                    <th>Fecha</th>
+                                    <th>Tipo Doc.</th>
+                                    <th>Nº Documento</th>
+                                    <th>Nº Control</th>
+                                    <th>Doc. Afectado</th>
+                                    <th class="text-end">Monto Total</th>
+                                    <th class="text-end">Monto Exento</th>
+                                    <th class="text-end">Base Imponible</th>
+                                    <th class="text-end">Alícuota %</th>
+                                    <th class="text-end">Impuesto Causado</th>
+                                    <th class="text-end">Impuesto Retenido</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr
+                                    t-foreach="o._l10n_ve_get_report_lines()"
+                                    t-as="line"
+                                >
+                                    <td>
+                                        <span
+                                            t-out="line['date'] and line['date'].strftime('%d/%m/%Y') or ''"
+                                        />
+                                    </td>
+                                    <td class="text-center">
+                                        <span t-out="line['doc_type']" />
+                                    </td>
+                                    <td>
+                                        <span t-out="line['doc_number']" />
+                                    </td>
+                                    <td>
+                                        <span t-out="line['control_number']" />
+                                    </td>
+                                    <td>
+                                        <span t-out="line['affected']" />
+                                    </td>
+                                    <td class="text-end">
+                                        <span
+                                            t-out="line['total']"
+                                            t-options='{"widget": "monetary", "display_currency": o.currency_id}'
+                                        />
+                                    </td>
+                                    <td class="text-end">
+                                        <span
+                                            t-out="line['exempt']"
+                                            t-options='{"widget": "monetary", "display_currency": o.currency_id}'
+                                        />
+                                    </td>
+                                    <td class="text-end">
+                                        <span
+                                            t-out="line['base']"
+                                            t-options='{"widget": "monetary", "display_currency": o.currency_id}'
+                                        />
+                                    </td>
+                                    <td class="text-end">
+                                        <span t-out="'%.2f' % line['rate']" />
+                                    </td>
+                                    <td class="text-end">
+                                        <span
+                                            t-out="line['tax']"
+                                            t-options='{"widget": "monetary", "display_currency": o.currency_id}'
+                                        />
+                                    </td>
+                                    <td class="text-end">
+                                        <span
+                                            t-out="line['withheld']"
+                                            t-options='{"widget": "monetary", "display_currency": o.currency_id}'
+                                        />
+                                    </td>
+                                </tr>
+                            </tbody>
+                            <tfoot>
+                                <tr class="fw-bold">
+                                    <td colspan="6" class="text-end">Totales</td>
+                                    <td class="text-end">
+                                        <span t-field="o.exempt_amount" />
+                                    </td>
+                                    <td class="text-end">
+                                        <span t-field="o.base_amount" />
+                                    </td>
+                                    <td class="text-end">
+                                        <span t-out="'%.2f' % o.wh_rate" /> (Ret.)
+                                    </td>
+                                    <td class="text-end">
+                                        <span t-field="o.tax_amount" />
+                                    </td>
+                                    <td class="text-end">
+                                        <span t-field="o.withheld_amount" />
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                        <div class="row mt-5">
+                            <div class="col-6 text-center">
+                                <div
+                                    style="border-top: 1px solid #000; margin-top: 40px"
+                                >
+                                    Agente de Retención (firma y sello)
+                                </div>
+                            </div>
+                            <div class="col-6 text-center">
+                                <div
+                                    style="border-top: 1px solid #000; margin-top: 40px"
+                                >
+                                    Sujeto Retenido (recepción)
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>
