@@ -1,0 +1,6 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_l10n_ve_fiscal_book_wizard_user,l10n.ve.fiscal.book.wizard user,model_l10n_ve_fiscal_book_wizard,account.group_account_invoice,1,1,1,1
+access_l10n_ve_fiscal_book_wizard_manager,l10n.ve.fiscal.book.wizard manager,model_l10n_ve_fiscal_book_wizard,account.group_account_manager,1,1,1,1
+access_l10n_ve_paper_batch_pos_user,l10n.ve.paper.batch pos user,model_l10n_ve_paper_batch,point_of_sale.group_pos_user,1,0,0,0
+access_l10n_ve_paper_batch_account_user,l10n.ve.paper.batch account user,model_l10n_ve_paper_batch,account.group_account_invoice,1,0,0,0
+access_l10n_ve_paper_batch_manager,l10n.ve.paper.batch manager,model_l10n_ve_paper_batch,account.group_account_manager,1,1,1,1
