@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Copyright 2026 BWEALTHICS LLC -->
+<odoo>
+    <record id="l10n_ve_islr_concept_view_list" model="ir.ui.view">
+        <field name="name">l10n.ve.islr.concept.view.list</field>
+        <field name="model">l10n.ve.islr.concept</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="seniat_code_pj" />
+                <field name="name" />
+                <field name="rate_pj_dom" />
+                <field name="rate_pn_res" />
+                <field name="seniat_code_pn" optional="hide" />
+                <field name="apply_subtrahend" />
+            </list>
+        </field>
+    </record>
+    <record id="l10n_ve_islr_concept_view_form" model="ir.ui.view">
+        <field name="name">l10n.ve.islr.concept.view.form</field>
+        <field name="model">l10n.ve.islr.concept</field>
+        <field name="arch" type="xml">
+            <form string="Concepto de Retención ISLR">
+                <sheet>
+                    <widget
+                        name="web_ribbon"
+                        title="Archivado"
+                        bg_color="text-bg-danger"
+                        invisible="active"
+                    />
+                    <group>
+                        <group string="Concepto">
+                            <field name="name" />
+                            <field name="active" invisible="1" />
+                            <field name="apply_subtrahend" />
+                        </group>
+                        <group string="Persona Jurídica Domiciliada">
+                            <field name="seniat_code_pj" />
+                            <field name="rate_pj_dom" />
+                        </group>
+                        <group string="Persona Natural Residente">
+                            <field name="seniat_code_pn" />
+                            <field name="rate_pn_res" />
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="action_l10n_ve_islr_concept" model="ir.actions.act_window">
+        <field name="name">Conceptos de Retención ISLR</field>
+        <field name="res_model">l10n.ve.islr.concept</field>
+        <field name="view_mode">list,form</field>
+    </record>
+    <menuitem
+        id="menu_l10n_ve_islr_concept"
+        name="Conceptos de Retención ISLR"
+        parent="account.menu_finance_configuration"
+        action="action_l10n_ve_islr_concept"
+        sequence="91"
+    />
+</odoo>
