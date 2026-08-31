@@ -51,6 +51,10 @@ jobs:
           - 5432:5432
     env:
       OCA_ENABLE_CHECKLOG_ODOO: "1"
+      # l10n_ve_compliance is excluded from CI until the confirmed auditlog
+      # 'full' rules stop crashing the Odoo 19 ORM during test setup
+      # (upstream issue). Remove this line when the upstream fix is released.
+      EXCLUDE: l10n_ve_compliance
     steps:
       - uses: actions/checkout@v4
         with:
