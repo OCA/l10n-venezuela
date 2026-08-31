@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Copyright 2026 BWEALTHICS LLC
+     License LGPL-3.0 or later (https://www.gnu.org/licenses/lgpl). -->
+<odoo>
+    <record id="account_move_view_form" model="ir.ui.view">
+        <field name="name">account.move.form.l10n.ve.fiscal.books</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="l10n_ve_fiscal_document.account_move_view_form" />
+        <field name="arch" type="xml">
+            <field name="l10n_ve_control_number" position="after">
+                <field
+                    name="l10n_ve_paper_number"
+                    invisible="l10n_ve_emission_medium != 'contingency' or move_type not in ('out_invoice', 'out_refund')"
+                />
+            </field>
+        </field>
+    </record>
+</odoo>
