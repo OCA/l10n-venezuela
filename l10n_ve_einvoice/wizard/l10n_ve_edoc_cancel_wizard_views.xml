@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Copyright 2026 BWEALTHICS LLC
+     License LGPL-3.0 or later (https://www.gnu.org/licenses/lgpl). -->
+<odoo>
+    <record id="l10n_ve_edoc_cancel_wizard_view_form" model="ir.ui.view">
+        <field name="name">l10n.ve.edoc.cancel.wizard.form</field>
+        <field name="model">l10n.ve.edoc.cancel.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Cancel Electronic Document">
+                <div class="alert alert-warning" role="alert">
+                    This cancels the document with the provider. It does not
+                    cancel the accounting entry in Odoo.
+                </div>
+                <group>
+                    <field name="move_id" />
+                    <field name="reason" />
+                </group>
+                <footer>
+                    <button
+                        name="action_confirm"
+                        type="object"
+                        string="Cancel with Provider"
+                        class="btn-danger"
+                        data-hotkey="q"
+                    />
+                    <button
+                        string="Discard"
+                        class="btn-secondary"
+                        special="cancel"
+                        data-hotkey="x"
+                    />
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

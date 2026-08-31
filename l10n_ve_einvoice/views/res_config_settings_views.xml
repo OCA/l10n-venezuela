@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Copyright 2026 BWEALTHICS LLC
+     License LGPL-3.0 or later (https://www.gnu.org/licenses/lgpl). -->
+<odoo>
+    <record id="res_config_settings_view_form" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.l10n.ve.edoc</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="account.res_config_settings_view_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//app[@name='account']" position="inside">
+                <block title="Venezuela Electronic Invoicing" name="l10n_ve_edoc_block">
+                    <setting
+                        id="l10n_ve_edoc_setting"
+                        string="Electronic document provider"
+                        company_dependent="1"
+                        help="Provider used for sales journals configured for digital billing."
+                    >
+                        <div class="content-group">
+                            <div class="row mt8">
+                                <label
+                                    for="l10n_ve_edoc_provider"
+                                    string="Provider"
+                                    class="col-lg-5 o_light_label"
+                                />
+                                <field name="l10n_ve_edoc_provider" />
+                            </div>
+                            <div class="row" groups="base.group_system">
+                                <label
+                                    for="l10n_ve_edoc_url"
+                                    string="URL"
+                                    class="col-lg-5 o_light_label"
+                                />
+                                <field name="l10n_ve_edoc_url" />
+                            </div>
+                            <div class="row" groups="base.group_system">
+                                <label
+                                    for="l10n_ve_edoc_user"
+                                    string="User"
+                                    class="col-lg-5 o_light_label"
+                                />
+                                <field name="l10n_ve_edoc_user" />
+                            </div>
+                            <div class="row" groups="base.group_system">
+                                <label
+                                    for="l10n_ve_edoc_password"
+                                    string="Password"
+                                    class="col-lg-5 o_light_label"
+                                />
+                                <field name="l10n_ve_edoc_password" password="1" />
+                            </div>
+                            <div class="row">
+                                <label
+                                    for="l10n_ve_edoc_serie"
+                                    string="Series"
+                                    class="col-lg-5 o_light_label"
+                                />
+                                <field name="l10n_ve_edoc_serie" />
+                            </div>
+                            <div class="row">
+                                <label
+                                    for="l10n_ve_edoc_sucursal"
+                                    string="Branch"
+                                    class="col-lg-5 o_light_label"
+                                />
+                                <field name="l10n_ve_edoc_sucursal" />
+                            </div>
+                            <div class="row">
+                                <label
+                                    for="l10n_ve_edoc_test"
+                                    string="Test environment"
+                                    class="col-lg-5 o_light_label"
+                                />
+                                <field name="l10n_ve_edoc_test" />
+                            </div>
+                        </div>
+                    </setting>
+                </block>
+            </xpath>
+        </field>
+    </record>
+</odoo>
