@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Copyright 2026 BWEALTHICS LLC -->
+<odoo>
+    <record id="view_account_payment_register_form_islr" model="ir.ui.view">
+        <field
+            name="name"
+        >account.payment.register.view.form.inherit.l10n.ve.wh.islr</field>
+        <field name="model">account.payment.register</field>
+        <field name="inherit_id" ref="account.view_account_payment_register_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='payment_date']" position="after">
+                <field name="payment_type" invisible="1" />
+                <field name="partner_type" invisible="1" />
+                <field name="can_edit_wizard" invisible="1" />
+                <field
+                    name="l10n_ve_islr_concept_id"
+                    options="{'no_create': True}"
+                    invisible="payment_type != 'outbound' or partner_type != 'supplier' or not can_edit_wizard"
+                />
+                <field
+                    name="l10n_ve_islr_rate"
+                    invisible="not l10n_ve_islr_concept_id"
+                />
+                <field
+                    name="l10n_ve_islr_base"
+                    invisible="not l10n_ve_islr_concept_id"
+                />
+                <field
+                    name="l10n_ve_islr_subtrahend"
+                    invisible="not l10n_ve_islr_concept_id"
+                />
+                <field
+                    name="l10n_ve_islr_amount"
+                    invisible="not l10n_ve_islr_concept_id"
+                />
+            </xpath>
+        </field>
+    </record>
+</odoo>

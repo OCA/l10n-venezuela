@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Copyright 2026 BWEALTHICS LLC
+     License LGPL-3.0 or later (https://www.gnu.org/licenses/lgpl). -->
+<odoo>
+    <record id="l10n_ve_paper_batch_view_list" model="ir.ui.view">
+        <field name="name">l10n.ve.paper.batch.list</field>
+        <field name="model">l10n.ve.paper.batch</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name" />
+                <field name="type" />
+                <field name="control_from" />
+                <field name="control_to" />
+                <field name="invoice_from" optional="show" />
+                <field name="invoice_to" optional="show" />
+                <field name="printer_name" optional="show" />
+                <field name="company_id" groups="base.group_multi_company" />
+            </list>
+        </field>
+    </record>
+
+    <record id="l10n_ve_paper_batch_view_form" model="ir.ui.view">
+        <field name="name">l10n.ve.paper.batch.form</field>
+        <field name="model">l10n.ve.paper.batch</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <widget
+                        name="web_ribbon"
+                        title="Archived"
+                        bg_color="text-bg-danger"
+                        invisible="active"
+                    />
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" readonly="1" />
+                        </h1>
+                    </div>
+                    <group>
+                        <group string="Batch">
+                            <field name="active" invisible="1" />
+                            <field name="type" />
+                            <field
+                                name="company_id"
+                                groups="base.group_multi_company"
+                            />
+                        </group>
+                        <group string="Authorized Printer">
+                            <field name="printer_name" />
+                            <field name="printer_vat" />
+                            <field name="printer_authorization" />
+                        </group>
+                        <group string="Control Number Range">
+                            <field name="control_from" />
+                            <field name="control_to" />
+                        </group>
+                        <group
+                            string="Booklet Invoice Number Range"
+                            invisible="type != 'talonario'"
+                        >
+                            <field name="invoice_from" />
+                            <field name="invoice_to" />
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="l10n_ve_paper_batch_action" model="ir.actions.act_window">
+        <field name="name">Venezuelan Fiscal Paper</field>
+        <field name="res_model">l10n.ve.paper.batch</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Register a booklet or a box of free-form fiscal paper
+            </p>
+            <p>
+                Each record represents a physical batch from an authorized
+                printer. It provides the next POS contingency numbers, duplicate
+                checks, and low-paper warnings.
+            </p>
+        </field>
+    </record>
+
+    <menuitem
+        id="l10n_ve_paper_batch_menu"
+        name="Venezuelan Fiscal Paper"
+        parent="account.menu_finance_configuration"
+        action="l10n_ve_paper_batch_action"
+        groups="account.group_account_manager"
+        sequence="90"
+    />
+</odoo>

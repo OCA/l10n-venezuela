@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Copyright 2026 BWEALTHICS LLC -->
+<odoo>
+    <record id="res_config_settings_view_form_islr" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.inherit.l10n.ve.wh.islr</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="account.res_config_settings_view_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//app[@name='account']" position="inside">
+                <block
+                    title="Localización Venezuela - Retención ISLR"
+                    name="l10n_ve_wh_islr"
+                >
+                    <setting
+                        string="Cuenta de Retenciones ISLR"
+                        help="Cuenta de pasivo donde se acumulan las retenciones de ISLR por enterar (ej. 210401)."
+                    >
+                        <field name="l10n_ve_islr_wh_account_id" />
+                    </setting>
+                </block>
+            </xpath>
+        </field>
+    </record>
+</odoo>

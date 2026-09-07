@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Copyright 2026 BWEALTHICS LLC -->
+<odoo>
+    <record id="view_account_payment_register_form" model="ir.ui.view">
+        <field name="name">account.payment.register.form.l10n.ve.wh.iva</field>
+        <field name="model">account.payment.register</field>
+        <field name="inherit_id" ref="account.view_account_payment_register_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='amount']" position="after">
+                <field name="payment_type" invisible="1" />
+                <field name="partner_type" invisible="1" />
+                <field name="l10n_ve_company_is_spe" invisible="1" />
+                <field
+                    name="l10n_ve_iva_wh_received_amount"
+                    invisible="payment_type != 'inbound' or partner_type != 'customer'"
+                />
+                <field
+                    name="l10n_ve_iva_wh_voucher_number"
+                    placeholder="AAAAMM + 8 dígitos"
+                    invisible="payment_type != 'inbound' or partner_type != 'customer' or not l10n_ve_iva_wh_received_amount"
+                    required="l10n_ve_iva_wh_received_amount != 0"
+                />
+                <field
+                    name="l10n_ve_iva_wh_amount"
+                    invisible="payment_type != 'outbound' or partner_type != 'supplier' or not l10n_ve_company_is_spe"
+                />
+            </xpath>
+        </field>
+    </record>
+</odoo>

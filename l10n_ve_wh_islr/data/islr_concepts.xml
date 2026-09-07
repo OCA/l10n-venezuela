@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Copyright 2026 BWEALTHICS LLC -->
+<odoo noupdate="1">
+    <!-- Códigos oficiales del Anexo 6.1 del Manual Técnico XML del SENIAT
+         (Decreto 1.808), columnas PN Residente / PJ Domiciliada.
+         El código 000 (Declaración Sin Operaciones) NO se seedea como concepto:
+         lo emite el wizard de export cuando el período no tiene comprobantes.
+         Conceptos solo-PJ dejan el código PN en el default '000' (el export
+         bloquea comprobantes con ese código). -->
+    <record id="islr_concept_honorarios" model="l10n.ve.islr.concept">
+        <field name="name">Honorarios Profesionales</field>
+        <field name="seniat_code_pj">003</field>
+        <field name="seniat_code_pn">002</field>
+        <field name="rate_pj_dom">5.0</field>
+        <field name="rate_pn_res">3.0</field>
+        <field name="apply_subtrahend" eval="True" />
+    </record>
+    <record id="islr_concept_comisiones" model="l10n.ve.islr.concept">
+        <field name="name">Comisiones Mercantiles</field>
+        <field name="seniat_code_pj">005</field>
+        <field name="seniat_code_pn">004</field>
+        <field name="rate_pj_dom">5.0</field>
+        <field name="rate_pn_res">3.0</field>
+        <field name="apply_subtrahend" eval="True" />
+    </record>
+    <!-- 011/012 cubre contratistas y subcontratistas (Decreto 1.808 art. 9 num. 11);
+         062/063 pertenecen a arrendamiento de bienes muebles (PNNR/PJD). -->
+    <record id="islr_concept_servicios" model="l10n.ve.islr.concept">
+        <field
+            name="name"
+        >Ejecución de Obras y Prestación de Servicios (Contratistas y Subcontratistas)</field>
+        <field name="seniat_code_pj">012</field>
+        <field name="seniat_code_pn">011</field>
+        <field name="rate_pj_dom">2.0</field>
+        <field name="rate_pn_res">1.0</field>
+        <field name="apply_subtrahend" eval="False" />
+    </record>
+    <record id="islr_concept_intereses" model="l10n.ve.islr.concept">
+        <field name="name">Intereses de Capitales Tomados en Préstamo</field>
+        <field name="seniat_code_pj">040</field>
+        <field name="seniat_code_pn">039</field>
+        <field name="rate_pj_dom">5.0</field>
+        <field name="rate_pn_res">3.0</field>
+        <field name="apply_subtrahend" eval="True" />
+    </record>
+    <record id="islr_concept_arrendamiento_muebles" model="l10n.ve.islr.concept">
+        <field name="name">Arrendamiento de Bienes Muebles</field>
+        <field name="seniat_code_pj">063</field>
+        <field name="seniat_code_pn">061</field>
+        <field name="rate_pj_dom">5.0</field>
+        <field name="rate_pn_res">3.0</field>
+        <field name="apply_subtrahend" eval="True" />
+    </record>
+    <record id="islr_concept_arrendamiento_inmuebles" model="l10n.ve.islr.concept">
+        <field name="name">Arrendamiento de Bienes Inmuebles</field>
+        <field name="seniat_code_pj">016</field>
+        <field name="seniat_code_pn">015</field>
+        <field name="rate_pj_dom">5.0</field>
+        <field name="rate_pn_res">3.0</field>
+        <field name="apply_subtrahend" eval="True" />
+    </record>
+    <record id="islr_concept_canones_regalias" model="l10n.ve.islr.concept">
+        <field name="name">Cánones y Regalías</field>
+        <field name="seniat_code_pj">020</field>
+        <field name="seniat_code_pn">019</field>
+        <field name="rate_pj_dom">5.0</field>
+        <field name="rate_pn_res">3.0</field>
+        <field name="apply_subtrahend" eval="True" />
+    </record>
+    <record id="islr_concept_fletes" model="l10n.ve.islr.concept">
+        <field name="name">Fletes Nacionales</field>
+        <field name="seniat_code_pj">024</field>
+        <field name="seniat_code_pn">023</field>
+        <field name="rate_pj_dom">3.0</field>
+        <field name="rate_pn_res">1.0</field>
+        <field name="apply_subtrahend" eval="False" />
+    </record>
+    <record id="islr_concept_fletes_internacionales" model="l10n.ve.islr.concept">
+        <field name="name">Fletes Internacionales</field>
+        <field name="seniat_code_pj">026</field>
+        <field name="seniat_code_pn">025</field>
+        <field name="rate_pj_dom">3.0</field>
+        <field name="rate_pn_res">1.0</field>
+        <field name="apply_subtrahend" eval="False" />
+    </record>
+    <record id="islr_concept_publicidad" model="l10n.ve.islr.concept">
+        <field name="name">Publicidad, Propaganda y Venta de Espacios</field>
+        <field name="seniat_code_pj">084</field>
+        <field name="seniat_code_pn">053</field>
+        <field name="rate_pj_dom">5.0</field>
+        <field name="rate_pn_res">3.0</field>
+        <field name="apply_subtrahend" eval="True" />
+    </record>
+    <record id="islr_concept_corredores_seguros" model="l10n.ve.islr.concept">
+        <field name="name">Corredores y Agentes de Seguros</field>
+        <field name="seniat_code_pj">073</field>
+        <field name="seniat_code_pn">072</field>
+        <field name="rate_pj_dom">5.0</field>
+        <field name="rate_pn_res">3.0</field>
+        <field name="apply_subtrahend" eval="True" />
+    </record>
+    <!-- Solo PJ: primas de seguro y reaseguro (035) -->
+    <record id="islr_concept_primas_seguro" model="l10n.ve.islr.concept">
+        <field name="name">Primas de Seguro y Reaseguros</field>
+        <field name="seniat_code_pj">035</field>
+        <field name="rate_pj_dom">3.0</field>
+        <field name="apply_subtrahend" eval="False" />
+    </record>
+    <record id="islr_concept_tarjetas_credito" model="l10n.ve.islr.concept">
+        <field name="name">Pagos de Empresas Emisoras de Tarjetas de Crédito</field>
+        <field name="seniat_code_pj">038</field>
+        <field name="seniat_code_pn">058</field>
+        <field name="rate_pj_dom">5.0</field>
+        <field name="rate_pn_res">3.0</field>
+        <field name="apply_subtrahend" eval="True" />
+    </record>
+    <record id="islr_concept_premios_loterias" model="l10n.ve.islr.concept">
+        <field name="name">Premios de Loterías e Hipódromos</field>
+        <field name="seniat_code_pj">044</field>
+        <field name="seniat_code_pn">043</field>
+        <field name="rate_pj_dom">16.0</field>
+        <field name="rate_pn_res">16.0</field>
+        <field name="apply_subtrahend" eval="False" />
+    </record>
+    <record id="islr_concept_otros_premios" model="l10n.ve.islr.concept">
+        <field name="name">Otros Premios (Juegos y Apuestas)</field>
+        <field name="seniat_code_pj">048</field>
+        <field name="seniat_code_pn">047</field>
+        <field name="rate_pj_dom">34.0</field>
+        <field name="rate_pn_res">34.0</field>
+        <field name="apply_subtrahend" eval="False" />
+    </record>
+    <record id="islr_concept_fondos_comercio" model="l10n.ve.islr.concept">
+        <field name="name">Enajenación de Fondos de Comercio</field>
+        <field name="seniat_code_pj">067</field>
+        <field name="seniat_code_pn">066</field>
+        <field name="rate_pj_dom">5.0</field>
+        <field name="rate_pn_res">3.0</field>
+        <field name="apply_subtrahend" eval="True" />
+    </record>
+    <!-- Solo PJ y solo agentes de retención públicos (080) -->
+    <record id="islr_concept_adquisicion_bienes_publicos" model="l10n.ve.islr.concept">
+        <field name="name">Adquisición de Bienes a PJD (Entes Públicos)</field>
+        <field name="seniat_code_pj">080</field>
+        <field name="rate_pj_dom">2.0</field>
+        <field name="apply_subtrahend" eval="False" />
+        <field name="active" eval="False" />
+    </record>
+</odoo>

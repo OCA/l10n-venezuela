@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Copyright 2026 BWEALTHICS LLC -->
+<odoo noupdate="1">
+    <record id="seq_l10n_ve_iva_wh_voucher" model="ir.sequence">
+        <field name="name">Comprobante de Retención de IVA</field>
+        <field name="code">l10n.ve.iva.wh.voucher</field>
+        <field name="prefix">%(year)s%(month)s</field>
+        <field name="padding">8</field>
+        <field name="implementation">no_gap</field>
+        <field name="use_date_range" eval="True" />
+    </record>
+</odoo>

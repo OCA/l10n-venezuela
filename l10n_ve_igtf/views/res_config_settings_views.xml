@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Copyright 2026 BWEALTHICS LLC
+     License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl). -->
+<odoo>
+    <record id="res_config_settings_view_form" model="ir.ui.view">
+        <field name="name">res.config.settings.form.inherit.l10n.ve.igtf</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="account.res_config_settings_view_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//app[@name='account']" position="inside">
+                <block
+                    title="Venezuela - IGTF"
+                    name="l10n_ve_igtf_settings"
+                    invisible="country_code != 'VE'"
+                >
+                    <setting
+                        id="l10n_ve_igtf_rate_setting"
+                        string="Default IGTF rate"
+                        help="This rate is copied to each payment and can be adjusted before posting."
+                    >
+                        <field name="l10n_ve_igtf_rate" />
+                    </setting>
+                    <setting
+                        id="l10n_ve_igtf_accounts_setting"
+                        string="IGTF accounts"
+                        help="Accounts used for IGTF expense and perception lines."
+                    >
+                        <div class="content-group">
+                            <div class="row mt8">
+                                <label
+                                    for="l10n_ve_igtf_expense_account_id"
+                                    class="col-lg-4 o_light_label"
+                                />
+                                <field name="l10n_ve_igtf_expense_account_id" />
+                            </div>
+                            <div class="row">
+                                <label
+                                    for="l10n_ve_igtf_perception_account_id"
+                                    class="col-lg-4 o_light_label"
+                                />
+                                <field name="l10n_ve_igtf_perception_account_id" />
+                            </div>
+                        </div>
+                    </setting>
+                    <setting
+                        id="l10n_ve_igtf_perception_agent_setting"
+                        string="IGTF perception agent"
+                        help="Enable only when the company has a valid SENIAT designation."
+                    >
+                        <field name="l10n_ve_igtf_perception_agent" />
+                        <div
+                            class="content-group"
+                            invisible="not l10n_ve_igtf_perception_agent"
+                        >
+                            <div class="row mt8">
+                                <label
+                                    for="l10n_ve_igtf_perception_agent_date"
+                                    class="col-lg-4 o_light_label"
+                                />
+                                <field name="l10n_ve_igtf_perception_agent_date" />
+                            </div>
+                        </div>
+                    </setting>
+                </block>
+            </xpath>
+        </field>
+    </record>
+</odoo>
