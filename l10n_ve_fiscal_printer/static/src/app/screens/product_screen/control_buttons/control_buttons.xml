@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- Copyright 2026 BWEALTHICS LLC
+     License LGPL-3.0 or later (https://www.gnu.org/licenses/lgpl). -->
+<templates id="template" xml:space="preserve">
+    <t
+        t-name="l10n_ve_fiscal_printer.ControlButtons"
+        t-inherit="point_of_sale.ControlButtons"
+        t-inherit-mode="extension"
+    >
+        <xpath
+            expr="//t[@t-if='props.showRemainingButtons']/div/button[hasclass('o_pricelist_button')]"
+            position="before"
+        >
+            <button
+                t-if="pos.config.l10n_ve_bridge_url"
+                t-att-class="buttonClass"
+                t-on-click="() => this.clickL10nVeReportX()"
+            >
+                <i class="fa fa-print me-1" />X Report
+            </button>
+            <button
+                t-if="pos.config.l10n_ve_bridge_url"
+                t-att-class="buttonClass"
+                t-on-click="() => this.clickL10nVeReportZ()"
+            >
+                <i class="fa fa-lock me-1" />Z Report
+            </button>
+        </xpath>
+    </t>
+</templates>
