@@ -53,12 +53,32 @@ class AccountMove(models.Model):
             domain = [
                 ("id", "!=", move.id),
                 ("company_id", "=", move.company_id.id),
-                ("move_type", "=", move.move_type),
                 ("nro_ctrl", "=", nro),
                 ("state", "!=", "cancel"),
             ]
-            if move.move_type in ("in_invoice", "in_refund"):
-                domain.append(("partner_id", "=", move.partner_id.id))
+            # One control number series covers invoices, credit and debit
+            # notes of the issuer: the company for sales, each supplier
+            # for purchases.
+            if move.is_sale_document(include_receipts=True):
+                domain.append(
+                    ("move_type", "in", self.get_sale_types(include_receipts=True))
+                )
+            else:
+                domain += [
+                    (
+                        "move_type",
+                        "in",
+                        self.get_purchase_types(include_receipts=True),
+                    ),
+                    # Core books payables and payments on the commercial
+                    # partner; the invoice contact is billing data only, so
+                    # contacts of one supplier are the same issuer.
+                    (
+                        "commercial_partner_id",
+                        "=",
+                        move.commercial_partner_id.id,
+                    ),
+                ]
             if self.search_count(domain):
                 raise ValidationError(
                     self.env._(
