@@ -47,7 +47,7 @@ class TestInvoicePost(L10nVeSetupMixin, AccountTestInvoicingCommon):
         self.assertEqual(move.state, "posted")
         self.assertEqual(move.nro_ctrl, "00-12345678")
 
-    def test_customer_invoice_assigns_control_number(self):
+    def test_customer_invoice_does_not_generate_control_number(self):
         customer = self._create_ve_partner("Cliente Fiscal", "V123456781")
         move = self.env["account.move"].create(
             {
@@ -72,7 +72,9 @@ class TestInvoicePost(L10nVeSetupMixin, AccountTestInvoicingCommon):
             }
         )
         move.action_post()
-        self.assertTrue(move.nro_ctrl)
+        self.assertEqual(move.state, "posted")
+        # Assigned by the printing house or fiscal machine, never by Odoo.
+        self.assertFalse(move.nro_ctrl)
 
     def test_ve_partner_without_vat_rejected(self):
         with self.assertRaises(ValidationError):

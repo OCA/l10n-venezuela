@@ -1,10 +1,7 @@
 # Copyright 2011-2016 Vauxoo
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
-import calendar
-
 from odoo import api, fields, models
-from odoo.exceptions import UserError
 
 from .l10n_ve_account_codes import (
     ACCOUNT_CODE_DIGITS,
@@ -230,56 +227,3 @@ class ResCompany(models.Model):
     def _l10n_ve_default_account_id(self, key):
         account = self.env.company._l10n_ve_account(key)
         return account.id if account else False
-
-    def _l10n_ve_next_nro_ctrl(self, seq_date=None):
-        """Return the next sales control number for this company."""
-        self.ensure_one()
-        seq_date = fields.Date.to_date(seq_date) or fields.Date.context_today(self)
-        sequence = (
-            self.env["ir.sequence"]
-            .sudo()
-            .search(
-                [("code", "=", "l10n.ve.nro.ctrl"), ("company_id", "=", self.id)],
-                limit=1,
-            )
-        )
-        if not sequence:
-            sequence = (
-                self.env["ir.sequence"]
-                .sudo()
-                .create(
-                    {
-                        "name": self.env._("Control Number (%s)", self.name),
-                        "code": "l10n.ve.nro.ctrl",
-                        "padding": 8,
-                        "implementation": "no_gap",
-                        "use_date_range": True,
-                        "company_id": self.id,
-                    }
-                )
-            )
-        range_model = self.env["ir.sequence.date_range"].sudo()
-        if not range_model.search_count(
-            [
-                ("sequence_id", "=", sequence.id),
-                ("date_from", "<=", seq_date),
-                ("date_to", ">=", seq_date),
-            ]
-        ):
-            last_day = calendar.monthrange(seq_date.year, seq_date.month)[1]
-            range_model.create(
-                {
-                    "sequence_id": sequence.id,
-                    "date_from": seq_date.replace(day=1),
-                    "date_to": seq_date.replace(day=last_day),
-                }
-            )
-        number = sequence.next_by_id(sequence_date=seq_date)
-        if not number:
-            raise UserError(
-                self.env._(
-                    "Could not generate a control number for company %s.",
-                    self.display_name,
-                )
-            )
-        return number

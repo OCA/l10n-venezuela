@@ -40,7 +40,8 @@ number. Fiscal printer fields are optional (no hardware driver).
 
 When posting customer invoices or vendor bills:
 
-1. Sales: the control number is assigned automatically if empty.
+1. Sales: Odoo never generates the control number. Type it from the pre-printed form, or
+   let the printing house / fiscal machine connector write it back.
 2. Purchases: enter the pre-printed SENIAT control number.
 3. A Venezuelan partner cannot be saved without identification number. The type (RIF,
    cédula, passport) must match the person type (PNRE/PNNR/PJDO/PJND).

@@ -1,6 +1,8 @@
 When posting customer invoices or vendor bills:
 
-1.  Sales: the control number is assigned automatically if empty.
+1.  Sales: Odoo never generates the control number. Type it from the
+    pre-printed form, or let the printing house / fiscal machine
+    connector write it back.
 2.  Purchases: enter the pre-printed SENIAT control number.
 3.  The partner RIF must be valid when the partner is Venezuelan.
 4.  Invoice total cannot be zero; due date cannot be before the invoice

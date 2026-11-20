@@ -166,10 +166,6 @@ class AccountMove(models.Model):
                 move.date_document = move.invoice_date or fields.Date.context_today(
                     self
                 )
-            if move.move_type in ("out_invoice", "out_refund") and not move.nro_ctrl:
-                move.nro_ctrl = move.company_id._l10n_ve_next_nro_ctrl(
-                    move.invoice_date or move.date
-                )
             if (
                 move.move_type in ("in_invoice", "in_refund")
                 and not (move.nro_ctrl or "").strip()
