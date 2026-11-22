@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Copyright 2026 BWEALTHICS LLC -->
+<odoo>
+    <record id="l10n_ve_ut_view_list" model="ir.ui.view">
+        <field name="name">l10n.ve.ut.view.list</field>
+        <field name="model">l10n.ve.ut</field>
+        <field name="arch" type="xml">
+            <list editable="bottom">
+                <field name="date_from" />
+                <field name="value" />
+                <field name="gaceta" />
+            </list>
+        </field>
+    </record>
+    <record id="l10n_ve_ut_view_form" model="ir.ui.view">
+        <field name="name">l10n.ve.ut.view.form</field>
+        <field name="model">l10n.ve.ut</field>
+        <field name="arch" type="xml">
+            <form string="Unidad Tributaria">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="date_from" />
+                            <field name="value" />
+                        </group>
+                        <group>
+                            <field name="gaceta" />
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="action_l10n_ve_ut" model="ir.actions.act_window">
+        <field name="name">Unidad Tributaria</field>
+        <field name="res_model">l10n.ve.ut</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p
+                class="o_view_nocontent_smiling_face"
+            >Registre el valor de la Unidad Tributaria</p>
+            <p>
+                Cargue cada valor publicado en Gaceta Oficial con su fecha de vigencia.
+                El sustraendo de las retenciones de ISLR usa la UT vigente a la fecha del pago.
+            </p>
+        </field>
+    </record>
+    <menuitem
+        id="menu_l10n_ve_ut"
+        name="Unidad Tributaria"
+        parent="account.menu_finance_configuration"
+        action="action_l10n_ve_ut"
+        sequence="90"
+    />
+</odoo>

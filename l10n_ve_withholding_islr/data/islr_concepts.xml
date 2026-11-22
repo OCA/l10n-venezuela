@@ -1,0 +1,262 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Copyright 2026 BWEALTHICS LLC -->
+<odoo noupdate="1">
+    <!-- Códigos oficiales del Anexo 6.1 del Manual Técnico XML del SENIAT
+         (Decreto 1.808), columnas PN Residente / PJ Domiciliada / PN No
+         Residente / PJ No Domiciliada, con el porcentaje de base imponible
+         (enriquecimiento presunto) de cada columna; 100 cuando no es presunta.
+         El código 000 (Declaración Sin Operaciones) NO se seedea como concepto:
+         lo emite el wizard de export cuando el período no tiene comprobantes.
+         Las columnas sin código en la tabla quedan en el default '000' (el
+         export bloquea comprobantes con ese código). PN no residente: tarifa
+         fija sin sustraendo. PJ no domiciliada: Tarifa N° 2 o tarifa fija,
+         según la tabla. -->
+    <record id="islr_concept_honorarios" model="l10n.ve.islr.concept">
+        <field name="name">Honorarios Profesionales</field>
+        <field name="seniat_code_pj">004</field>
+        <field name="seniat_code_pn">002</field>
+        <field name="rate_pj_dom">5.0</field>
+        <field name="rate_pn_res">3.0</field>
+        <field name="seniat_code_pn_nores">003</field>
+        <field name="rate_pn_nores">34.0</field>
+        <field name="base_pct_pn_nores">90.0</field>
+        <field name="seniat_code_pj_nodom">005</field>
+        <field name="pj_nodom_rate_type">tarifa2</field>
+        <field name="base_pct_pj_nodom">90.0</field>
+        <field name="apply_subtrahend" eval="True" />
+    </record>
+    <record id="islr_concept_comisiones" model="l10n.ve.islr.concept">
+        <field name="name">Comisiones Mercantiles</field>
+        <field name="seniat_code_pj">020</field>
+        <field name="seniat_code_pn">018</field>
+        <field name="rate_pj_dom">5.0</field>
+        <field name="rate_pn_res">3.0</field>
+        <field name="seniat_code_pn_nores">019</field>
+        <field name="rate_pn_nores">34.0</field>
+        <field name="base_pct_pn_nores">100.0</field>
+        <field name="seniat_code_pj_nodom">021</field>
+        <field name="rate_pj_nodom">5.0</field>
+        <field name="base_pct_pj_nodom">100.0</field>
+        <field name="apply_subtrahend" eval="True" />
+    </record>
+    <!-- Contratistas y subcontratistas (Decreto 1.808 art. 9 num. 11): 053 PNR /
+         055 PJD. La tarifa PNR de 1 % también lleva sustraendo (art. 9
+         parágrafo segundo). 011/012 son honorarios de jinetes y clínicas. -->
+    <record id="islr_concept_servicios" model="l10n.ve.islr.concept">
+        <field
+            name="name"
+        >Ejecución de Obras y Prestación de Servicios (Contratistas y Subcontratistas)</field>
+        <field name="seniat_code_pj">055</field>
+        <field name="seniat_code_pn">053</field>
+        <field name="rate_pj_dom">2.0</field>
+        <field name="rate_pn_res">1.0</field>
+        <field name="seniat_code_pn_nores">054</field>
+        <field name="rate_pn_nores">34.0</field>
+        <field name="base_pct_pn_nores">100.0</field>
+        <field name="seniat_code_pj_nodom">056</field>
+        <field name="pj_nodom_rate_type">tarifa2</field>
+        <field name="base_pct_pj_nodom">100.0</field>
+        <field name="apply_subtrahend" eval="True" />
+    </record>
+    <record id="islr_concept_intereses" model="l10n.ve.islr.concept">
+        <field name="name">Intereses de Capitales Tomados en Préstamo</field>
+        <field name="seniat_code_pj">027</field>
+        <field name="seniat_code_pn">025</field>
+        <field name="rate_pj_dom">5.0</field>
+        <field name="rate_pn_res">3.0</field>
+        <field name="seniat_code_pn_nores">026</field>
+        <field name="rate_pn_nores">34.0</field>
+        <field name="base_pct_pn_nores">95.0</field>
+        <field name="seniat_code_pj_nodom">028</field>
+        <field name="pj_nodom_rate_type">tarifa2</field>
+        <field name="base_pct_pj_nodom">95.0</field>
+        <field name="apply_subtrahend" eval="True" />
+    </record>
+    <record id="islr_concept_arrendamiento_muebles" model="l10n.ve.islr.concept">
+        <field name="name">Arrendamiento de Bienes Muebles</field>
+        <field name="seniat_code_pj">063</field>
+        <field name="seniat_code_pn">061</field>
+        <field name="rate_pj_dom">5.0</field>
+        <field name="rate_pn_res">3.0</field>
+        <field name="seniat_code_pn_nores">062</field>
+        <field name="rate_pn_nores">34.0</field>
+        <field name="base_pct_pn_nores">100.0</field>
+        <field name="seniat_code_pj_nodom">064</field>
+        <field name="rate_pj_nodom">5.0</field>
+        <field name="base_pct_pj_nodom">100.0</field>
+        <field name="apply_subtrahend" eval="True" />
+    </record>
+    <record id="islr_concept_arrendamiento_inmuebles" model="l10n.ve.islr.concept">
+        <field name="name">Arrendamiento de Bienes Inmuebles</field>
+        <field name="seniat_code_pj">059</field>
+        <field name="seniat_code_pn">057</field>
+        <field name="rate_pj_dom">5.0</field>
+        <field name="rate_pn_res">3.0</field>
+        <field name="seniat_code_pn_nores">058</field>
+        <field name="rate_pn_nores">34.0</field>
+        <field name="base_pct_pn_nores">100.0</field>
+        <field name="seniat_code_pj_nodom">060</field>
+        <field name="pj_nodom_rate_type">tarifa2</field>
+        <field name="base_pct_pj_nodom">100.0</field>
+        <field name="apply_subtrahend" eval="True" />
+    </record>
+    <!-- Regalías: la tabla del SENIAT solo las define para no residentes
+         (034 PN no residente 34 % y 035 PJ no domiciliada Tarifa N° 2, ambos
+         sobre 90 %). Los cánones de residentes son arrendamiento de muebles
+         (061/063) o de inmuebles (057/059), con concepto propio. -->
+    <record id="islr_concept_canones_regalias" model="l10n.ve.islr.concept">
+        <field name="name">Regalías</field>
+        <field name="seniat_code_pn_nores">034</field>
+        <field name="rate_pn_nores">34.0</field>
+        <field name="base_pct_pn_nores">90.0</field>
+        <field name="seniat_code_pj_nodom">035</field>
+        <field name="pj_nodom_rate_type">tarifa2</field>
+        <field name="base_pct_pj_nodom">90.0</field>
+        <field name="apply_subtrahend" eval="False" />
+    </record>
+    <record id="islr_concept_fletes" model="l10n.ve.islr.concept">
+        <field name="name">Fletes Nacionales</field>
+        <field name="seniat_code_pj">072</field>
+        <field name="seniat_code_pn">071</field>
+        <field name="rate_pj_dom">3.0</field>
+        <field name="rate_pn_res">1.0</field>
+        <field name="apply_subtrahend" eval="True" />
+    </record>
+    <!-- Fletes internacionales: solo PJ no domiciliada, Tarifa N° 2. 030:
+         transporte entre Venezuela y el exterior (ida y vuelta), base presunta
+         5 %. 031: fletes dentro del país de empresas de transporte
+         internacional, base presunta 10 %. Los fletes nacionales de residentes
+         tienen su propio concepto (071/072). -->
+    <record id="islr_concept_fletes_internacionales" model="l10n.ve.islr.concept">
+        <field name="name">Fletes Internacionales</field>
+        <field name="seniat_code_pj_nodom">030</field>
+        <field name="pj_nodom_rate_type">tarifa2</field>
+        <field name="base_pct_pj_nodom">5.0</field>
+        <field name="apply_subtrahend" eval="False" />
+    </record>
+    <record id="islr_concept_fletes_internacionales_pais" model="l10n.ve.islr.concept">
+        <field
+            name="name"
+        >Fletes en el País de Empresas de Transporte Internacional</field>
+        <field name="seniat_code_pj_nodom">031</field>
+        <field name="pj_nodom_rate_type">tarifa2</field>
+        <field name="base_pct_pj_nodom">10.0</field>
+        <field name="apply_subtrahend" eval="False" />
+    </record>
+    <record id="islr_concept_publicidad" model="l10n.ve.islr.concept">
+        <field name="name">Publicidad, Propaganda y Venta de Espacios</field>
+        <field name="seniat_code_pj">084</field>
+        <field name="seniat_code_pn">083</field>
+        <field name="rate_pj_dom">5.0</field>
+        <field name="rate_pn_res">3.0</field>
+        <field name="seniat_code_pj_nodom">085</field>
+        <field name="rate_pj_nodom">5.0</field>
+        <field name="base_pct_pj_nodom">100.0</field>
+        <field name="apply_subtrahend" eval="True" />
+    </record>
+    <record id="islr_concept_corredores_seguros" model="l10n.ve.islr.concept">
+        <field name="name">Corredores y Agentes de Seguros</field>
+        <field name="seniat_code_pj">074</field>
+        <field name="seniat_code_pn">073</field>
+        <field name="rate_pj_dom">5.0</field>
+        <field name="rate_pn_res">3.0</field>
+        <field name="apply_subtrahend" eval="True" />
+    </record>
+    <!-- Primas de seguro: solo PJ no domiciliada (040, 10 % fijo sobre 30 %).
+         Las primas pagadas a aseguradoras domiciliadas no están sujetas a
+         retención de ISLR. -->
+    <record id="islr_concept_primas_seguro" model="l10n.ve.islr.concept">
+        <field name="name">Primas de Seguro y Reaseguros</field>
+        <field name="seniat_code_pj_nodom">040</field>
+        <field name="rate_pj_nodom">10.0</field>
+        <field name="base_pct_pj_nodom">30.0</field>
+        <field name="apply_subtrahend" eval="False" />
+    </record>
+    <record id="islr_concept_tarjetas_credito" model="l10n.ve.islr.concept">
+        <field name="name">Pagos de Empresas Emisoras de Tarjetas de Crédito</field>
+        <field name="seniat_code_pj">067</field>
+        <field name="seniat_code_pn">065</field>
+        <field name="rate_pj_dom">5.0</field>
+        <field name="rate_pn_res">3.0</field>
+        <field name="seniat_code_pn_nores">066</field>
+        <field name="rate_pn_nores">34.0</field>
+        <field name="base_pct_pn_nores">100.0</field>
+        <field name="seniat_code_pj_nodom">068</field>
+        <field name="rate_pj_nodom">5.0</field>
+        <field name="base_pct_pj_nodom">100.0</field>
+        <field name="apply_subtrahend" eval="True" />
+    </record>
+    <record id="islr_concept_premios_loterias" model="l10n.ve.islr.concept">
+        <field name="name">Premios de Loterías e Hipódromos</field>
+        <field name="seniat_code_pj">047</field>
+        <field name="seniat_code_pn">045</field>
+        <field name="rate_pj_dom">16.0</field>
+        <field name="rate_pn_res">16.0</field>
+        <field name="seniat_code_pn_nores">046</field>
+        <field name="rate_pn_nores">16.0</field>
+        <field name="base_pct_pn_nores">100.0</field>
+        <field name="seniat_code_pj_nodom">048</field>
+        <field name="rate_pj_nodom">16.0</field>
+        <field name="base_pct_pj_nodom">100.0</field>
+        <field name="apply_subtrahend" eval="False" />
+    </record>
+    <record id="islr_concept_otros_premios" model="l10n.ve.islr.concept">
+        <field name="name">Otros Premios (Juegos y Apuestas)</field>
+        <field name="seniat_code_pj">043</field>
+        <field name="seniat_code_pn">041</field>
+        <field name="rate_pj_dom">34.0</field>
+        <field name="rate_pn_res">34.0</field>
+        <field name="seniat_code_pn_nores">042</field>
+        <field name="rate_pn_nores">34.0</field>
+        <field name="base_pct_pn_nores">100.0</field>
+        <field name="seniat_code_pj_nodom">044</field>
+        <field name="rate_pj_nodom">34.0</field>
+        <field name="base_pct_pj_nodom">100.0</field>
+        <field name="apply_subtrahend" eval="False" />
+    </record>
+    <record id="islr_concept_fondos_comercio" model="l10n.ve.islr.concept">
+        <field name="name">Enajenación de Fondos de Comercio</field>
+        <field name="seniat_code_pj">081</field>
+        <field name="seniat_code_pn">079</field>
+        <field name="rate_pj_dom">5.0</field>
+        <field name="rate_pn_res">3.0</field>
+        <field name="seniat_code_pn_nores">080</field>
+        <field name="rate_pn_nores">34.0</field>
+        <field name="base_pct_pn_nores">100.0</field>
+        <field name="seniat_code_pj_nodom">082</field>
+        <field name="rate_pj_nodom">5.0</field>
+        <field name="base_pct_pj_nodom">100.0</field>
+        <field name="apply_subtrahend" eval="True" />
+    </record>
+    <!-- Conceptos que la tabla del SENIAT solo define para no residentes o
+         no domiciliados: sin códigos de residentes ('000'). -->
+    <record id="islr_concept_asistencia_tecnica" model="l10n.ve.islr.concept">
+        <field name="name">Asistencia Técnica</field>
+        <field name="seniat_code_pn_nores">036</field>
+        <field name="rate_pn_nores">34.0</field>
+        <field name="base_pct_pn_nores">30.0</field>
+        <field name="seniat_code_pj_nodom">037</field>
+        <field name="pj_nodom_rate_type">tarifa2</field>
+        <field name="base_pct_pj_nodom">30.0</field>
+        <field name="apply_subtrahend" eval="False" />
+    </record>
+    <record id="islr_concept_servicios_tecnologicos" model="l10n.ve.islr.concept">
+        <field name="name">Servicios Tecnológicos</field>
+        <field name="seniat_code_pn_nores">038</field>
+        <field name="rate_pn_nores">34.0</field>
+        <field name="base_pct_pn_nores">50.0</field>
+        <field name="seniat_code_pj_nodom">039</field>
+        <field name="pj_nodom_rate_type">tarifa2</field>
+        <field name="base_pct_pj_nodom">50.0</field>
+        <field name="apply_subtrahend" eval="False" />
+    </record>
+    <record id="islr_concept_intereses_inst_financieras" model="l10n.ve.islr.concept">
+        <field
+            name="name"
+        >Intereses de Préstamos de Instituciones Financieras del Exterior</field>
+        <field name="seniat_code_pj_nodom">024</field>
+        <field name="rate_pj_nodom">4.95</field>
+        <field name="base_pct_pj_nodom">100.0</field>
+        <field name="apply_subtrahend" eval="False" />
+    </record>
+</odoo>

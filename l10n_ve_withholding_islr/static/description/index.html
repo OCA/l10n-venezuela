@@ -1,0 +1,657 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils: https://docutils.sourceforge.io/" />
+<title>README.rst</title>
+<style type="text/css">
+
+/*
+:Author: David Goodger (goodger@python.org)
+:Id: $Id: html4css1.css 9511 2024-01-13 09:50:07Z milde $
+:Copyright: This stylesheet has been placed in the public domain.
+
+Default cascading style sheet for the HTML output of Docutils.
+Despite the name, some widely supported CSS2 features are used.
+
+See https://docutils.sourceforge.io/docs/howto/html-stylesheets.html for how to
+customize this style sheet.
+*/
+
+/* used to remove borders from tables and images */
+.borderless, table.borderless td, table.borderless th {
+  border: 0 }
+
+table.borderless td, table.borderless th {
+  /* Override padding for "table.docutils td" with "! important".
+     The right padding separates the table cells. */
+  padding: 0 0.5em 0 0 ! important }
+
+.first {
+  /* Override more specific margin styles with "! important". */
+  margin-top: 0 ! important }
+
+.last, .with-subtitle {
+  margin-bottom: 0 ! important }
+
+.hidden {
+  display: none }
+
+.subscript {
+  vertical-align: sub;
+  font-size: smaller }
+
+.superscript {
+  vertical-align: super;
+  font-size: smaller }
+
+a.toc-backref {
+  text-decoration: none ;
+  color: black }
+
+blockquote.epigraph {
+  margin: 2em 5em ; }
+
+dl.docutils dd {
+  margin-bottom: 0.5em }
+
+object[type="image/svg+xml"], object[type="application/x-shockwave-flash"] {
+  overflow: hidden;
+}
+
+/* Uncomment (and remove this text!) to get bold-faced definition list terms
+dl.docutils dt {
+  font-weight: bold }
+*/
+
+div.abstract {
+  margin: 2em 5em }
+
+div.abstract p.topic-title {
+  font-weight: bold ;
+  text-align: center }
+
+div.admonition, div.attention, div.caution, div.danger, div.error,
+div.hint, div.important, div.note, div.tip, div.warning {
+  margin: 2em ;
+  border: medium outset ;
+  padding: 1em }
+
+div.admonition p.admonition-title, div.hint p.admonition-title,
+div.important p.admonition-title, div.note p.admonition-title,
+div.tip p.admonition-title {
+  font-weight: bold ;
+  font-family: sans-serif }
+
+div.attention p.admonition-title, div.caution p.admonition-title,
+div.danger p.admonition-title, div.error p.admonition-title,
+div.warning p.admonition-title, .code .error {
+  color: red ;
+  font-weight: bold ;
+  font-family: sans-serif }
+
+/* Uncomment (and remove this text!) to get reduced vertical space in
+   compound paragraphs.
+div.compound .compound-first, div.compound .compound-middle {
+  margin-bottom: 0.5em }
+
+div.compound .compound-last, div.compound .compound-middle {
+  margin-top: 0.5em }
+*/
+
+div.dedication {
+  margin: 2em 5em ;
+  text-align: center ;
+  font-style: italic }
+
+div.dedication p.topic-title {
+  font-weight: bold ;
+  font-style: normal }
+
+div.figure {
+  margin-left: 2em ;
+  margin-right: 2em }
+
+div.footer, div.header {
+  clear: both;
+  font-size: smaller }
+
+div.line-block {
+  display: block ;
+  margin-top: 1em ;
+  margin-bottom: 1em }
+
+div.line-block div.line-block {
+  margin-top: 0 ;
+  margin-bottom: 0 ;
+  margin-left: 1.5em }
+
+div.sidebar {
+  margin: 0 0 0.5em 1em ;
+  border: medium outset ;
+  padding: 1em ;
+  background-color: #ffffee ;
+  width: 40% ;
+  float: right ;
+  clear: right }
+
+div.sidebar p.rubric {
+  font-family: sans-serif ;
+  font-size: medium }
+
+div.system-messages {
+  margin: 5em }
+
+div.system-messages h1 {
+  color: red }
+
+div.system-message {
+  border: medium outset ;
+  padding: 1em }
+
+div.system-message p.system-message-title {
+  color: red ;
+  font-weight: bold }
+
+div.topic {
+  margin: 2em }
+
+h1.section-subtitle, h2.section-subtitle, h3.section-subtitle,
+h4.section-subtitle, h5.section-subtitle, h6.section-subtitle {
+  margin-top: 0.4em }
+
+h1.title {
+  text-align: center }
+
+h2.subtitle {
+  text-align: center }
+
+hr.docutils {
+  width: 75% }
+
+img.align-left, .figure.align-left, object.align-left, table.align-left {
+  clear: left ;
+  float: left ;
+  margin-right: 1em }
+
+img.align-right, .figure.align-right, object.align-right, table.align-right {
+  clear: right ;
+  float: right ;
+  margin-left: 1em }
+
+img.align-center, .figure.align-center, object.align-center {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+table.align-center {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.align-left {
+  text-align: left }
+
+.align-center {
+  clear: both ;
+  text-align: center }
+
+.align-right {
+  text-align: right }
+
+/* reset inner alignment in figures */
+div.align-right {
+  text-align: inherit }
+
+/* div.align-center * { */
+/*   text-align: left } */
+
+.align-top    {
+  vertical-align: top }
+
+.align-middle {
+  vertical-align: middle }
+
+.align-bottom {
+  vertical-align: bottom }
+
+ol.simple, ul.simple {
+  margin-bottom: 1em }
+
+ol.arabic {
+  list-style: decimal }
+
+ol.loweralpha {
+  list-style: lower-alpha }
+
+ol.upperalpha {
+  list-style: upper-alpha }
+
+ol.lowerroman {
+  list-style: lower-roman }
+
+ol.upperroman {
+  list-style: upper-roman }
+
+p.attribution {
+  text-align: right ;
+  margin-left: 50% }
+
+p.caption {
+  font-style: italic }
+
+p.credits {
+  font-style: italic ;
+  font-size: smaller }
+
+p.label {
+  white-space: nowrap }
+
+p.rubric {
+  font-weight: bold ;
+  font-size: larger ;
+  color: maroon ;
+  text-align: center }
+
+p.sidebar-title {
+  font-family: sans-serif ;
+  font-weight: bold ;
+  font-size: larger }
+
+p.sidebar-subtitle {
+  font-family: sans-serif ;
+  font-weight: bold }
+
+p.topic-title {
+  font-weight: bold }
+
+pre.address {
+  margin-bottom: 0 ;
+  margin-top: 0 ;
+  font: inherit }
+
+pre.literal-block, pre.doctest-block, pre.math, pre.code {
+  margin-left: 2em ;
+  margin-right: 2em }
+
+pre.code .ln { color: gray; } /* line numbers */
+pre.code, code { background-color: #eeeeee }
+pre.code .comment, code .comment { color: #5C6576 }
+pre.code .keyword, code .keyword { color: #3B0D06; font-weight: bold }
+pre.code .literal.string, code .literal.string { color: #0C5404 }
+pre.code .name.builtin, code .name.builtin { color: #352B84 }
+pre.code .deleted, code .deleted { background-color: #DEB0A1}
+pre.code .inserted, code .inserted { background-color: #A3D289}
+
+span.classifier {
+  font-family: sans-serif ;
+  font-style: oblique }
+
+span.classifier-delimiter {
+  font-family: sans-serif ;
+  font-weight: bold }
+
+span.interpreted {
+  font-family: sans-serif }
+
+span.option {
+  white-space: nowrap }
+
+span.pre {
+  white-space: pre }
+
+span.problematic, pre.problematic {
+  color: red }
+
+span.section-subtitle {
+  /* font-size relative to parent (h1..h6 element) */
+  font-size: 80% }
+
+table.citation {
+  border-left: solid 1px gray;
+  margin-left: 1px }
+
+table.docinfo {
+  margin: 2em 4em }
+
+table.docutils {
+  margin-top: 0.5em ;
+  margin-bottom: 0.5em }
+
+table.footnote {
+  border-left: solid 1px black;
+  margin-left: 1px }
+
+table.docutils td, table.docutils th,
+table.docinfo td, table.docinfo th {
+  padding-left: 0.5em ;
+  padding-right: 0.5em ;
+  vertical-align: top }
+
+table.docutils th.field-name, table.docinfo th.docinfo-name {
+  font-weight: bold ;
+  text-align: left ;
+  white-space: nowrap ;
+  padding-left: 0 }
+
+/* "booktabs" style (no vertical lines) */
+table.docutils.booktabs {
+  border: 0px;
+  border-top: 2px solid;
+  border-bottom: 2px solid;
+  border-collapse: collapse;
+}
+table.docutils.booktabs * {
+  border: 0px;
+}
+table.docutils.booktabs th {
+  border-bottom: thin solid;
+  text-align: left;
+}
+
+h1 tt.docutils, h2 tt.docutils, h3 tt.docutils,
+h4 tt.docutils, h5 tt.docutils, h6 tt.docutils {
+  font-size: 100% }
+
+ul.auto-toc {
+  list-style-type: none }
+
+</style>
+</head>
+<body>
+<div class="document">
+
+
+<a class="reference external image-reference" href="https://odoo-community.org/get-involved?utm_source=readme">
+<img alt="Odoo Community Association" src="https://odoo-community.org/readme-banner-image" />
+</a>
+<div class="section" id="venezuela-islr-withholding">
+<h1>Venezuela - ISLR Withholding</h1>
+<!-- !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!! This file is generated by oca-gen-addon-readme !!
+!! changes will be overwritten.                   !!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!! source digest: sha256:272f1f4fe31ab82e3d2938e7699c10e7a8ad99f84e09a2bd8fdabf39b0c50e7d
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! -->
+<p><a class="reference external image-reference" href="https://odoo-community.org/page/development-status"><img alt="Beta" src="https://img.shields.io/badge/maturity-Beta-yellow.png" /></a> <a class="reference external image-reference" href="http://www.gnu.org/licenses/lgpl-3.0-standalone.html"><img alt="License: LGPL-3" src="https://img.shields.io/badge/license-LGPL--3-blue.png" /></a> <a class="reference external image-reference" href="https://github.com/OCA/l10n-venezuela/tree/19.0/l10n_ve_withholding_islr"><img alt="OCA/l10n-venezuela" src="https://img.shields.io/badge/github-OCA%2Fl10n--venezuela-lightgray.png?logo=github" /></a> <a class="reference external image-reference" href="https://translation.odoo-community.org/projects/l10n-venezuela-19-0/l10n-venezuela-19-0-l10n_ve_withholding_islr"><img alt="Translate me on Weblate" src="https://img.shields.io/badge/weblate-Translate%20me-F47D42.png" /></a> <a class="reference external image-reference" href="https://runboat.odoo-community.org/builds?repo=OCA/l10n-venezuela&amp;target_branch=19.0"><img alt="Try me on Runboat" src="https://img.shields.io/badge/runboat-Try%20me-875A7B.png" /></a></p>
+<p>This addon manages Venezuelan income tax (ISLR) withholdings under
+Decree 1,808. It provides:</p>
+<ul class="simple">
+<li>The SENIAT withholding concepts, codes, rates, and presumptive-base
+percentages for the four person types of Decree 1,808 art. 9: resident
+and non-resident individuals, domiciled and non-domiciled legal
+entities. A concept applies only to the person types for which the
+SENIAT table gives it a code: royalties, international freight, and
+insurance premiums, for instance, only to non-domiciled or
+non-resident subjects.</li>
+<li>Non-resident individuals: fixed rate (34 % in general) on the
+presumptive base of the concept, without subtrahend. Non-domiciled
+legal entities: either a fixed rate or the progressive Tarifa N° 2 of
+the Income Tax Law (15 % up to 2,000 tax units, 22 % up to 3,000, 34 %
+on the excess), cumulative per vendor and calendar year.</li>
+<li>An optional double taxation treaty rate per non-resident vendor.</li>
+<li>Historical tax unit (Unidad Tributaria) values used to calculate the
+applicable subtrahend.</li>
+<li>A withholding concept on each vendor bill line, defaulted from the
+product or, failing that, from the vendor.</li>
+<li>Automatic withholding when a vendor bill is posted. Decree 1,808 art.
+1 makes the withholding arise on payment or “abono en cuenta”,
+whichever comes first, and posting the bill is the abono en cuenta. A
+posted withholding entry moves the withheld amount from the vendor
+payable to the configured liability account and is reconciled with the
+bill, so the residual is the net to pay.</li>
+<li>One withholding voucher per bill and concept, with a monthly
+company-specific sequence and a printable PDF report. Issued vouchers
+are locked.</li>
+<li>The monthly <tt class="docutils literal">RelacionRetencionesISLR</tt> XML export defined by SENIAT
+technical manual version 3.1, including zero-withholding details and
+declarations with no operations.</li>
+</ul>
+<p>The withholding base is the untaxed amount of the lines of each concept
+(VAT excluded), taken in bolivars from the amounts booked by the bill.
+The withholding is computed and rounded in bolivars and only then
+converted to the bill currency, so vouchers are always expressed in VES.
+Rates, subtrahend, and amounts are snapshotted on each voucher.</p>
+<p>Vendor credit notes never issue a voucher: the SENIAT XML rejects
+negative amounts and has no document type field.</p>
+<p><strong>Table of contents</strong></p>
+<div class="contents local topic" id="contents">
+<ul class="simple">
+<li><a class="reference internal" href="#configuration" id="toc-entry-1">Configuration</a></li>
+<li><a class="reference internal" href="#usage" id="toc-entry-2">Usage</a></li>
+<li><a class="reference internal" href="#known-issues-roadmap" id="toc-entry-3">Known issues / Roadmap</a></li>
+<li><a class="reference internal" href="#bug-tracker" id="toc-entry-4">Bug Tracker</a></li>
+<li><a class="reference internal" href="#credits" id="toc-entry-5">Credits</a><ul>
+<li><a class="reference internal" href="#authors" id="toc-entry-6">Authors</a></li>
+<li><a class="reference internal" href="#contributors" id="toc-entry-7">Contributors</a></li>
+<li><a class="reference internal" href="#maintainers" id="toc-entry-8">Maintainers</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="configuration">
+<h2><a class="toc-backref" href="#toc-entry-1">Configuration</a></h2>
+<ol class="arabic simple">
+<li>In Accounting settings, configure the liability account used for ISLR
+withholdings payable and the miscellaneous journal of the withholding
+entries. Posting a bill subject to withholding fails until both are
+set.</li>
+<li>In Accounting &gt; Configuration &gt; Tax Unit, maintain each official tax
+unit value and its effective date.</li>
+<li>Maintain a VES exchange rate for every withholding and export date
+when neither the company nor the bill currency is VES: posting such a
+bill converts its base to bolivars and fails without the rate.</li>
+<li>On each vendor, select the ISLR person type and, optionally, a
+default withholding concept. A vendor bill with at least one line
+carrying a withholding concept cannot be posted unless the vendor has
+a valid RIF: one letter V, E, J, P, or G, eight digits, and the
+SENIAT modulo-11 check digit (hyphens and spaces are ignored). The
+normalized 10-character value is the one written in <tt class="docutils literal">RifRetenido</tt>.
+Bills without a concept are not checked.</li>
+<li>On products, optionally set the withholding concept; it takes
+precedence over the vendor’s.</li>
+<li>On each concept, maintain the SENIAT code, rate, and taxable base
+percentage of each person type (100 when the base is not presumptive)
+and, for non-domiciled legal entities, whether the concept uses a
+fixed rate or Tarifa N° 2. The Tarifa N° 2 brackets are the
+<tt class="docutils literal">TARIFA2_BRACKETS</tt> constant of <tt class="docutils literal">models/islr_concept.py</tt>, in tax
+units. A concept applies to a person type only when it has a SENIAT
+code for it (not <tt class="docutils literal">000</tt> and not empty); the concept list and form
+show the person types it applies to.</li>
+<li>On a non-resident individual or non-domiciled legal entity covered by
+a double taxation treaty, enable the treaty, set its rate (0 to 100,
+0 allowed) and the reference of the fiscal residence certificate.
+Non-resident vendors need the RIF assigned by SENIAT like any other
+vendor.</li>
+</ol>
+<p>Lines without a withholding concept do not generate an ISLR withholding
+or voucher. Invoicing users can read concepts, tax units, and vouchers,
+and post bills that issue vouchers; only accounting managers can change
+concepts and tax units or manage vouchers.</p>
+</div>
+<div class="section" id="usage">
+<h2><a class="toc-backref" href="#toc-entry-2">Usage</a></h2>
+<p>On a vendor bill, each line shows its ISLR concept, proposed from the
+product or the vendor; change or clear it while the bill is in draft.
+Lines without a concept are not withheld. A bill whose line carries a
+concept that does not apply to the person type of the vendor (no SENIAT
+code for that type, for example royalties on a domiciled company or
+national freight on a non-domiciled one) cannot be posted: the error
+names the concept, the vendor, and the person type. The same check
+applies to the “Crear retención de ISLR” button, to the net voucher
+re-issued by a credit note, and to issuing a manual voucher. Each
+voucher keeps the SENIAT code it was issued with, and the XML declares
+that code even if the concept changes later.</p>
+<p>Posting the bill issues one voucher per concept, dated at the bill
+accounting date. The tax unit and VES rate in force on that date are
+used for the subtrahend of resident individuals. When the withholding is
+positive, a withholding entry is posted in the configured journal and
+reconciled with the bill: registering the payment afterwards pays only
+the net amount. When the withholding is zero (below the subtrahend
+threshold), the voucher is still issued, as required by the SENIAT
+completeness rule, without an entry.</p>
+<p>For non-residents the withholding is computed on the taxable base, the
+untaxed amount times the presumptive-base percentage of the concept for
+the person type (for example 30 % for technical assistance, 50 % for
+technological services, 90 % for royalties):</p>
+<ul class="simple">
+<li>Non-resident individual: the fixed rate of the concept on the taxable
+base, without subtrahend.</li>
+<li>Non-domiciled legal entity, fixed-rate concept (for example commercial
+commissions 5 % or interest paid to foreign financial institutions
+4.95 %): the rate on the taxable base.</li>
+<li>Non-domiciled legal entity, Tarifa N° 2 concept: the withholding of a
+bill is Tarifa N° 2 applied to the year-to-date taxable base of the
+vendor including the bill, minus Tarifa N° 2 applied to the
+year-to-date taxable base before it. The year-to-date base adds the
+issued Tarifa N° 2 vouchers of the same commercial partner and company
+in the calendar year of the bill (cancelled vouchers do not count),
+ordered by date, bill, and concept. Both terms use the tax unit in
+force at the bill date and the difference is rounded to cents in
+bolivars. The voucher stores the taxable base and the effective rate
+(withholding over taxable base), which is the rate reported in the
+XML. Accumulating per vendor and calendar year is an assumption of
+this module: the regulation sets the tariff but not the accumulation
+period.</li>
+<li>Double taxation treaty on the vendor: the treaty rate replaces the
+computed one and applies to the gross amount (no presumptive base, no
+Tarifa N° 2). The voucher records that the treaty was applied and the
+certificate reference. A 0 % treaty issues the voucher without an
+entry.</li>
+</ul>
+<p>When a Tarifa N° 2 voucher is inserted before others of the same vendor
+and month (a backdated bill) or replaced on a net base by a same-month
+credit note, the issued Tarifa N° 2 vouchers of that vendor and month
+that follow it are cancelled and re-issued in order, so the result does
+not depend on the order in which bills and credit notes are posted.
+Vouchers of other months are never recomputed, since they may already be
+declared. Resetting a bill to draft does not recompute the vouchers that
+follow it until the bill is posted again.</p>
+<p>The withholding is computed in bolivars: on a bill in another currency,
+the base is the bolivar amount of its lines (the company currency
+balance when the company currency is VES, or its conversion at the VES
+rate of the bill date otherwise), the withholding is rounded to cents in
+bolivars, and the result is converted to the bill currency for the
+entry. A one-cent difference left in the foreign currency when the bill
+is fully paid is settled by the standard exchange difference; the
+voucher is never adjusted to absorb it.</p>
+<p>Vendor credit notes linked to a bill (created from the bill with “Credit
+Note”) follow these rules:</p>
+<ul class="simple">
+<li>Dated in the same month as the bill voucher: the voucher of each
+concept of the credit note is cancelled (kept for audit, linked to the
+credit note) and its entry undone. If the net base of the concept
+(bill minus credit notes) is still positive, a new voucher is issued
+on the net base, with the rate and subtrahend applied to the net and
+the person type and treaty kept from the cancelled voucher; the XML
+then carries a single row with the bill invoice and control numbers
+and the net base. If the net is zero, nothing is declared. The bill,
+the credit note, and the new withholding entry are reconciled
+together.</li>
+<li>Dated in a later month: the voucher already declared is left untouched
+and no voucher or XML row is issued for the credit note.</li>
+<li>Not linked to a bill, linked to a bill without an issued voucher, or
+linked to a bill of another company or commercial partner: no ISLR
+effect.</li>
+</ul>
+<p>The ISLR concept of a line cannot be changed once its bill or credit
+note is posted; reset the document to draft to change it.</p>
+<p>A credit note that adjusted a voucher cannot be reset to draft or
+cancelled: restoring the previous voucher could reopen a period already
+declared to SENIAT. Register a new vendor bill to correct it. Resetting
+the bill itself to draft and posting it again issues the voucher on the
+net base again.</p>
+<p>Resetting the bill to draft or cancelling it cancels its vouchers (the
+number is kept) and undoes their entries; posting it again issues new
+vouchers. While its voucher is issued, the withholding entry cannot be
+reset to draft, cancelled, reversed, deleted, or unreconciled from the
+bill, whatever the user’s rights; cancel the voucher (or reset the bill)
+instead. Payments of the bill can still be unreconciled as usual. For a
+bill posted before the configuration was complete, or whose voucher was
+cancelled, use the “Crear retención de ISLR” button.</p>
+<p>Manual vouchers are created in draft: their number, state, links to
+bills, credit notes and withholding entries, the SENIAT code, and the
+values the module computes (taxable base and its percentage, Tarifa N°
+2, treaty) cannot be set or changed by users, even in draft; the number
+comes only from the company sequence and issuing goes through the
+“Emitir” button. An issued voucher, manual ones included, never returns
+to draft: the only way out of the issued state is cancelling it, which
+keeps its number. A mistaken voucher is cancelled and a new one issued.
+Only draft vouchers can be deleted.</p>
+<p>Use Accounting &gt; Vendors &gt; Comprobantes ISLR to review and print
+vouchers. Use Accounting &gt; Vendors &gt; XML Retenciones ISLR (SENIAT) to
+export a monthly declaration.</p>
+<p>If another installed addon provides <tt class="docutils literal">l10n_ve_control_number</tt> on vendor
+bills, the export uses that value. Otherwise, it exports <tt class="docutils literal">NA</tt> and does
+not require that optional addon.</p>
+<p>Voucher numbers come from the company sequence (<tt class="docutils literal">AAAAMM</tt> of the issue
+date plus an 8-digit monthly sequence) and cannot be entered or changed,
+with one exception: an accounting manager can register a voucher issued
+outside the system by checking <strong>Emitido fuera del sistema</strong> when
+creating it and entering its own 14-digit number in that format. That
+number does not consume the sequence, must be unique per company, and
+can be corrected only while the voucher is a draft.</p>
+<p>The printed voucher shows the vendor email and the date it was delivered
+to the vendor. Set <strong>Fecha de Entrega al Proveedor</strong> on the voucher,
+even after it is issued; it is the only field that stays editable.
+Without it, the printed voucher leaves a blank space to fill in by hand.
+The voucher form warns when the vendor has no email; posting the bill is
+not blocked.</p>
+</div>
+<div class="section" id="known-issues-roadmap">
+<h2><a class="toc-backref" href="#toc-entry-3">Known issues / Roadmap</a></h2>
+<ul class="simple">
+<li>Withholding territoriality is not inferred: a bill line is withheld
+only when it carries a concept, so the user decides which payments to
+non-residents are Venezuelan-source income.</li>
+<li>Gross-up (tax assumed by the payer) is not supported.</li>
+<li>Tarifa N° 2 vouchers of later months are not recomputed when an
+earlier bill of the same vendor changes; correct them manually if
+needed.</li>
+<li>Providencia Administrativa SNAT/2026/00093 sets a unified digital
+regime for withholding vouchers starting 19 April 2027; it is not
+implemented yet.</li>
+</ul>
+</div>
+<div class="section" id="bug-tracker">
+<h2><a class="toc-backref" href="#toc-entry-4">Bug Tracker</a></h2>
+<p>Bugs are tracked on <a class="reference external" href="https://github.com/OCA/l10n-venezuela/issues">GitHub Issues</a>.
+In case of trouble, please check there if your issue has already been reported.
+If you spotted it first, help us to smash it by providing a detailed and welcomed
+<a class="reference external" href="https://github.com/OCA/l10n-venezuela/issues/new?body=module:%20l10n_ve_withholding_islr%0Aversion:%2019.0%0A%0A**Steps%20to%20reproduce**%0A-%20...%0A%0A**Current%20behavior**%0A%0A**Expected%20behavior**">feedback</a>.</p>
+<p>Do not contact contributors directly about support or help with technical issues.</p>
+</div>
+<div class="section" id="credits">
+<h2><a class="toc-backref" href="#toc-entry-5">Credits</a></h2>
+<div class="section" id="authors">
+<h3><a class="toc-backref" href="#toc-entry-6">Authors</a></h3>
+<ul class="simple">
+<li>BWEALTHICS LLC</li>
+</ul>
+</div>
+<div class="section" id="contributors">
+<h3><a class="toc-backref" href="#toc-entry-7">Contributors</a></h3>
+<ul class="simple">
+<li>Alejandro Fernandez <a class="reference external" href="mailto:aef&#64;bwealthics.com">aef&#64;bwealthics.com</a></li>
+</ul>
+</div>
+<div class="section" id="maintainers">
+<h3><a class="toc-backref" href="#toc-entry-8">Maintainers</a></h3>
+<p>This module is maintained by the OCA.</p>
+<a class="reference external image-reference" href="https://odoo-community.org">
+<img alt="Odoo Community Association" src="https://odoo-community.org/logo.png" />
+</a>
+<p>OCA, or the Odoo Community Association, is a nonprofit organization whose
+mission is to support the collaborative development of Odoo features and
+promote its widespread use.</p>
+<p>Current <a class="reference external" href="https://odoo-community.org/page/maintainer-role">maintainer</a>:</p>
+<p><a class="reference external image-reference" href="https://github.com/bwealthics"><img alt="bwealthics" src="https://github.com/bwealthics.png?size=40px" /></a></p>
+<p>This module is part of the <a class="reference external" href="https://github.com/OCA/l10n-venezuela/tree/19.0/l10n_ve_withholding_islr">OCA/l10n-venezuela</a> project on GitHub.</p>
+<p>You are welcome to contribute. To learn how please visit <a class="reference external" href="https://odoo-community.org/page/Contribute">https://odoo-community.org/page/Contribute</a>.</p>
+</div>
+</div>
+</div>
+</div>
+</body>
+</html>
