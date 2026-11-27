@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="view_partner_bank_form_ve" model="ir.ui.view">
+        <field name="name">res.partner.bank.form.ve</field>
+        <field name="model">res.partner.bank</field>
+        <field name="inherit_id" ref="base.view_partner_bank_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='bank_id']" position="after">
+                <field name="l10n_ve_bank_country_code" invisible="1" />
+                <field
+                    name="l10n_ve_acc_type"
+                    invisible="l10n_ve_bank_country_code != 'VE'"
+                />
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_partner_bank_list_ve" model="ir.ui.view">
+        <field name="name">res.partner.bank.list.ve</field>
+        <field name="model">res.partner.bank</field>
+        <field name="inherit_id" ref="base.view_partner_bank_tree" />
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='acc_number']" position="after">
+                <field name="l10n_ve_acc_type" optional="show" />
+            </xpath>
+        </field>
+    </record>
+</odoo>

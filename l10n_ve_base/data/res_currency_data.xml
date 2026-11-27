@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <!-- Official Odoo still ties Venezuela to obsolete VEF (Bs.F). Current bolívar is VES. -->
+    <record id="base.VES" model="res.currency">
+        <field name="name">VES</field>
+        <field name="full_name">Venezuelan bolívar soberano</field>
+        <field name="symbol">Bs</field>
+        <field name="position">after</field>
+        <field name="rounding">0.01</field>
+        <field name="active" eval="True" />
+        <field name="currency_unit_label" />
+        <field name="currency_subunit_label" />
+    </record>
+    <record id="base.ve" model="res.country">
+        <field name="currency_id" ref="base.VES" />
+    </record>
+    <function model="res.company" name="_l10n_ve_setup_bolivar_currency" />
+</odoo>

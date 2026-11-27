@@ -1,0 +1,914 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+#	* l10n_ve_base
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 14.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-08-28 16:10+0000\n"
+"PO-Revision-Date: 2026-08-28 16:10+0000\n"
+"Last-Translator: Xavier Orlov <166637850+xavikveg@users.noreply.github.com>\n"
+"Language-Team: Spanish (es_VE)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: es_VE\n"
+"X-Generator: Poedit 2.3\n"
+
+#. module: l10n_ve_base
+msgid "Accounting Entry"
+msgstr "Asiento Contable"
+
+#. module: l10n_ve_base
+msgid "Aliquot Type"
+msgstr "Tipo de Alícuota"
+
+#. module: l10n_ve_base
+#: model:ir.model.fields,field_description:l10n_ve_base.field_l10n_ut__amount
+msgid "Amount"
+msgstr "Monto"
+
+#. module: l10n_ve_base
+msgid "Amount of the tax unit in Bs"
+msgstr "Monto de la unidad tributaria en Bs."
+
+#. module: l10n_ve_base
+msgid "Amount to Write Off"
+msgstr "Monto a Desincorporar"
+
+#. module: l10n_ve_base
+#: model_terms:ir.ui.view,arch_db:l10n_ve_base.view_wizard_invoice_nro_ctrl_form
+msgid "Assign"
+msgstr "Asignar"
+
+#. module: l10n_ve_base
+#: model:ir.model,name:l10n_ve_base.model_wizard_invoice_nro_ctrl
+#: model_terms:ir.ui.view,arch_db:l10n_ve_base.view_wizard_invoice_nro_ctrl_form
+msgid "Assign Control Number"
+msgstr "Asignar Número de Control"
+
+#. module: l10n_ve_base
+msgid "Base Additional (31%)"
+msgstr "Base Imponible Adicional (31%)"
+
+#. module: l10n_ve_base
+msgid "Base Amount"
+msgstr "Monto Base"
+
+#. module: l10n_ve_base
+msgid "Base General (16%)"
+msgstr "Base Imponible General (16%)"
+
+#. module: l10n_ve_base
+msgid "Base Percentage (%)"
+msgstr "Porcentaje Base (%)"
+
+#. module: l10n_ve_base
+msgid "Base Reduced (8%)"
+msgstr "Base Imponible Reducida (8%)"
+
+#. module: l10n_ve_base
+msgid "Book Type"
+msgstr "Tipo de Libro"
+
+#. module: l10n_ve_base
+#: model_terms:ir.ui.view,arch_db:l10n_ve_base.view_search_info_partner_seniat_form
+#: model_terms:ir.ui.view,arch_db:l10n_ve_base.view_wizard_invoice_nro_ctrl_form
+msgid "Cancel"
+msgstr "Cancelar"
+
+#. module: l10n_ve_base
+msgid "Cancelled"
+msgstr "Cancelado"
+
+#. module: l10n_ve_base
+msgid "Close"
+msgstr "Cerrar"
+
+#. module: l10n_ve_base
+msgid "Company"
+msgstr "Compañía"
+
+#. module: l10n_ve_base
+msgid "Concept Code"
+msgstr "Código del Concepto"
+
+#. module: l10n_ve_base
+msgid "Concept Name"
+msgstr "Nombre del Concepto"
+
+#. module: l10n_ve_base
+msgid "Confirm"
+msgstr "Confirmar"
+
+#. module: l10n_ve_base
+msgid "Confirmed"
+msgstr "Confirmado"
+
+#. module: l10n_ve_base
+#: model_terms:ir.ui.view,arch_db:l10n_ve_base.view_search_info_partner_seniat_form
+msgid "Consult & Save"
+msgstr "Consultar y Guardar"
+
+#. module: l10n_ve_base
+#: model:ir.ui.menu,name:l10n_ve_base.menu_search_seniat_partner
+#: model_terms:ir.ui.view,arch_db:l10n_ve_base.view_search_info_partner_seniat_form
+msgid "Consult Partner in SENIAT"
+msgstr "Consultar Contribuyente en el SENIAT"
+
+#. module: l10n_ve_base
+#: model:ir.model.fields,field_description:l10n_ve_base.field_wizard_invoice_nro_ctrl__nro_ctrl
+msgid "Control Number"
+msgstr "Número de Control"
+
+#. module: l10n_ve_base
+msgid "Currency"
+msgstr "Moneda"
+
+#. module: l10n_ve_base
+msgid "Customer ISLR Withholdings"
+msgstr "Retenciones de ISLR de Clientes"
+
+#. module: l10n_ve_base
+msgid "Customer Invoice"
+msgstr "Factura de Cliente"
+
+#. module: l10n_ve_base
+msgid "Customer Refund"
+msgstr "Nota de Crédito de Cliente"
+
+#. module: l10n_ve_base
+msgid "Customer VAT Withholdings"
+msgstr "Retenciones de IVA de Clientes"
+
+#. module: l10n_ve_base
+msgid "Customs Declarations"
+msgstr "Declaraciones de Aduanas"
+
+#. module: l10n_ve_base
+msgid "Customs Office Code"
+msgstr "Código de Aduana"
+
+#. module: l10n_ve_base
+#: model_terms:ir.ui.view,arch_db:l10n_ve_base.view_company_form_inherit_ve
+msgid "Damaged Invoices"
+msgstr "Facturas Anuladas/Dañadas"
+
+#. module: l10n_ve_base
+msgid "Damaged Invoices Account"
+msgstr "Cuenta de Facturas Anuladas/Dañadas"
+
+#. module: l10n_ve_base
+msgid "Damaged Invoices Journal"
+msgstr "Diario de Facturas Anuladas/Dañadas"
+
+#. module: l10n_ve_base
+msgid "Date of Voucher"
+msgstr "Fecha del Comprobante"
+
+#. module: l10n_ve_base
+msgid "Date on which goes into effect the new Tax Unit"
+msgstr "Fecha de entrada en vigencia de la nueva Unidad Tributaria"
+
+#. module: l10n_ve_base
+msgid "Declaration Date"
+msgstr "Fecha de Declaración"
+
+#. module: l10n_ve_base
+msgid "Declaration Number (DUA)"
+msgstr "Número de Declaración (DUA)"
+
+#. module: l10n_ve_base
+msgid "Default ISLR Concept"
+msgstr "Concepto de ISLR por Defecto"
+
+#. module: l10n_ve_base
+msgid "Default ISLR Withholding Account"
+msgstr "Cuenta de Retenciones de ISLR por Defecto"
+
+#. module: l10n_ve_base
+msgid "Default ISLR Withholding Journal"
+msgstr "Diario de Retenciones de ISLR por Defecto"
+
+#. module: l10n_ve_base
+msgid "Default VAT Withholding Account"
+msgstr "Cuenta de Retenciones de IVA por Defecto"
+
+#. module: l10n_ve_base
+msgid "Default VAT Withholding Journal"
+msgstr "Diario de Retenciones de IVA por Defecto"
+
+#. module: l10n_ve_base
+msgid "Document Date"
+msgstr "Fecha del Documento"
+
+#. module: l10n_ve_base
+msgid "Draft"
+msgstr "Borrador"
+
+#. module: l10n_ve_base
+msgid "End Date"
+msgstr "Fecha de Fin"
+
+#. module: l10n_ve_base
+msgid "Exclude from Fiscal Book"
+msgstr "Excluir del Libro Fiscal"
+
+#. module: l10n_ve_base
+msgid "Exempt"
+msgstr "Exento"
+
+#. module: l10n_ve_base
+msgid "Fiscal Book"
+msgstr "Libro Fiscal"
+
+#. module: l10n_ve_base
+msgid "Fiscal Book Line"
+msgstr "Línea de Libro Fiscal"
+
+#. module: l10n_ve_base
+msgid "Fiscal Book Tax Summary"
+msgstr "Resumen de Impuestos de Libro Fiscal"
+
+#. module: l10n_ve_base
+msgid "Fiscal Books"
+msgstr "Libros Fiscales"
+
+#. module: l10n_ve_base
+msgid "Fiscal Operations"
+msgstr "Operaciones Fiscales"
+
+#. module: l10n_ve_base
+msgid "Fiscal Period Date"
+msgstr "Fecha del Período Fiscal"
+
+#. module: l10n_ve_base
+#: model_terms:ir.ui.view,arch_db:l10n_ve_base.view_move_form_inherit_ve
+msgid "Fiscal Printer Info"
+msgstr "Información de Impresora Fiscal"
+
+#. module: l10n_ve_base
+msgid "Fiscal Printer Invoice Number"
+msgstr "Número de Factura de Impresora Fiscal"
+
+#. module: l10n_ve_base
+msgid "Fiscal Printer Serial"
+msgstr "Serial de Impresora Fiscal"
+
+#. module: l10n_ve_base
+#: model_terms:ir.ui.view,arch_db:l10n_ve_base.view_company_form_inherit_ve
+msgid "Fiscal Printers"
+msgstr "Impresoras Fiscales"
+
+#. module: l10n_ve_base
+msgid "General + Additional Aliquot"
+msgstr "Alícuota General + Adicional"
+
+#. module: l10n_ve_base
+msgid "General Aliquot"
+msgstr "Alícuota General"
+
+#. module: l10n_ve_base
+msgid "Generate Book"
+msgstr "Generar Libro"
+
+#. module: l10n_ve_base
+msgid "Generate Fiscal Book"
+msgstr "Generar Libro Fiscal"
+
+#. module: l10n_ve_base
+msgid "Generate Fiscal Book Wizard"
+msgstr "Asistente para Generar Libro Fiscal"
+
+#. module: l10n_ve_base
+msgid "Generate ISLR Retention"
+msgstr "Generar Retención de ISLR"
+
+#. module: l10n_ve_base
+msgid "Generate TXT"
+msgstr "Generar TXT"
+
+#. module: l10n_ve_base
+msgid "Generate TXT SENIAT (IVA)"
+msgstr "Generar TXT SENIAT (IVA)"
+
+#. module: l10n_ve_base
+msgid "Generate VAT Retention"
+msgstr "Generar Retención de IVA"
+
+#. module: l10n_ve_base
+msgid "Generate XML"
+msgstr "Generar XML"
+
+#. module: l10n_ve_base
+msgid "Generate XML SENIAT (ISLR)"
+msgstr "Generar XML SENIAT (ISLR)"
+
+#. module: l10n_ve_base
+msgid "Goods / Sales"
+msgstr "Bienes / Ventas"
+
+#. module: l10n_ve_base
+msgid "ISLR Concepts & Rates"
+msgstr "Conceptos y Tarifas de ISLR"
+
+#. module: l10n_ve_base
+msgid "ISLR Withholding Configuration"
+msgstr "Configuración de Retención de ISLR"
+
+#. module: l10n_ve_base
+msgid "ISLR Withholdings"
+msgstr "Retenciones de ISLR"
+
+#. module: l10n_ve_base
+#: model:ir.model.fields,field_description:l10n_ve_base.field_res_partner__wh_iva_rate
+msgid "IVA Retention Rate (%)"
+msgstr "Porcentaje de Retención IVA (%)"
+
+#. module: l10n_ve_base
+msgid "Invoice"
+msgstr "Factura"
+
+#. module: l10n_ve_base
+msgid "Invoice / Move"
+msgstr "Factura / Asiento"
+
+#. module: l10n_ve_base
+msgid "Invoice Number"
+msgstr "Número de Factura"
+
+#. module: l10n_ve_base
+msgid "Journal"
+msgstr "Diario"
+
+#. module: l10n_ve_base
+msgid "Leasing / Rentals"
+msgstr "Arrendamiento / Alquileres"
+
+#. module: l10n_ve_base
+#: model:ir.model.fields.selection,name:l10n_ve_base.selection__res_partner__person_type__pjdo
+msgid "Legal Entity Domiciled (PJDO)"
+msgstr "Persona Jurídica Domiciliada (PJDO)"
+
+#. module: l10n_ve_base
+#: model:ir.model.fields.selection,name:l10n_ve_base.selection__res_partner__person_type__pjnd
+msgid "Legal Entity Non Domiciled (PJND)"
+msgstr "Persona Jurídica No Domiciliada (PJND)"
+
+#. module: l10n_ve_base
+#: model:ir.model.fields,field_description:l10n_ve_base.field_account_journal__printer_fiscal
+msgid "Manages Fiscal Printer"
+msgstr "Maneja Impresora Fiscal"
+
+#. module: l10n_ve_base
+msgid "Municipal Withholdings"
+msgstr "Retenciones Municipales"
+
+#. module: l10n_ve_base
+#: model:ir.model.fields.selection,name:l10n_ve_base.selection__res_partner__person_type__pnnr
+msgid "Natural Person Non Resident (PNNR)"
+msgstr "Persona Natural No Residente (PNNR)"
+
+#. module: l10n_ve_base
+#: model:ir.model.fields.selection,name:l10n_ve_base.selection__res_partner__person_type__pnre
+msgid "Natural Person Resident (PNRE)"
+msgstr "Persona Natural Residente (PNRE)"
+
+#. module: l10n_ve_base
+msgid "Nature"
+msgstr "Naturaleza"
+
+#. module: l10n_ve_base
+msgid "Not Withheld"
+msgstr "No Retenido"
+
+#. module: l10n_ve_base
+msgid "Not entitled to tax credit (SDCF)"
+msgstr "Sin Derecho a Crédito Fiscal (SDCF)"
+
+#. module: l10n_ve_base
+msgid "Operation N°"
+msgstr "Operación N°"
+
+#. module: l10n_ve_base
+msgid "Partially Withheld"
+msgstr "Parcialmente Retenido"
+
+#. module: l10n_ve_base
+msgid "Partner"
+msgstr "Empresa / Contacto"
+
+#. module: l10n_ve_base
+#: model:l10n_latam.identification.type,name:l10n_ve_base.it_cedula_e
+msgid "Cédula Extranjera"
+msgstr "Cédula Extranjera"
+
+#. module: l10n_ve_base
+#: model:l10n_latam.identification.type,name:l10n_ve_base.it_cedula_v
+msgid "Cédula Venezolano"
+msgstr "Cédula Venezolano"
+
+#. module: l10n_ve_base
+msgid "A Venezuelan partner requires an identification number."
+msgstr "Un contacto venezolano requiere número de identificación."
+
+#. module: l10n_ve_base
+msgid "A Venezuelan partner requires an identification type."
+msgstr "Un contacto venezolano requiere tipo de identificación."
+
+#. module: l10n_ve_base
+msgid "A Venezuelan partner requires a person type."
+msgstr "Un contacto venezolano requiere tipo de persona."
+
+#. module: l10n_ve_base
+msgid "The foreign ID %s is not valid. Use E plus 6 to 8 digits (e.g. E12345678)."
+msgstr "La cédula extranjera %s no es válida. Use E y 6 a 8 dígitos (ej. E12345678)."
+
+#. module: l10n_ve_base
+msgid "The identification type %(type)s and number %(vat)s are not compatible with person type %(person)s. Expected: %(expected)s."
+msgstr "El tipo de identificación %(type)s y el número %(vat)s no son compatibles con el tipo de persona %(person)s. Se espera: %(expected)s."
+
+#. module: l10n_ve_base
+msgid "The passport %s is not valid. Enter at least 4 characters."
+msgstr "El pasaporte %s no es válido. Indique al menos 4 caracteres."
+
+#. module: l10n_ve_base
+msgid "The identification of %s is not valid for a Venezuelan fiscal invoice."
+msgstr "La identificación de %s no es válida para una factura fiscal venezolana."
+
+#. module: l10n_ve_base
+msgid "The RIF %s is not valid. Use V/E/J/P/G/C, 8 digits and the SENIAT check digit (e.g. J123456784)."
+msgstr "El RIF %s no es válido. Use V/E/J/P/G/C, 8 dígitos y el dígito verificador del SENIAT (ej. J123456784)."
+
+#. module: l10n_ve_base
+msgid "The identification number %(number)s is already assigned to %(partner)s."
+msgstr "El número de identificación %(number)s ya está asignado a %(partner)s."
+
+#. module: l10n_ve_base
+msgid "The Venezuelan ID %s is not valid. Use V plus 6 to 8 digits (e.g. V12345678)."
+msgstr "La cédula venezolana %s no es válida. Use V y 6 a 8 dígitos (ej. V12345678)."
+
+#. module: l10n_ve_base
+#: model:l10n_latam.identification.type,name:l10n_ve_base.it_pass
+msgid "Pasaporte"
+msgstr "Pasaporte"
+
+#. module: l10n_ve_base
+#: model:l10n_latam.identification.type,name:l10n_ve_base.it_rif
+msgid "RIF"
+msgstr "RIF"
+
+#. module: l10n_ve_base
+#: model:ir.model.fields,field_description:l10n_ve_base.field_res_partner__person_type
+msgid "Person Type"
+msgstr "Tipo de Persona"
+
+#. module: l10n_ve_base
+msgid "Post Accounting"
+msgstr "Generar Asiento Contable"
+
+#. module: l10n_ve_base
+msgid "Posted"
+msgstr "Publicado"
+
+#. module: l10n_ve_base
+msgid "Pre-printed invoice control number required by SENIAT"
+msgstr "Número de control preimpreso exigido por el SENIAT"
+
+#. module: l10n_ve_base
+msgid "Professional Fees"
+msgstr "Honorarios Profesionales"
+
+#. module: l10n_ve_base
+msgid "Purchase Book"
+msgstr "Libro de Compras"
+
+#. module: l10n_ve_base
+msgid "Purchase Fiscal Books"
+msgstr "Libros de Compras Fiscales"
+
+#. module: l10n_ve_base
+msgid "Rates Breakdown"
+msgstr "Desglose de Tarifas"
+
+#. module: l10n_ve_base
+msgid "Reason"
+msgstr "Motivo"
+
+#. module: l10n_ve_base
+msgid "Reduced Aliquot"
+msgstr "Alícuota Reducida"
+
+#. module: l10n_ve_base
+msgid "Reference Number"
+msgstr "Número de Referencia"
+
+#. module: l10n_ve_base
+#: model:ir.model.fields,field_description:l10n_ve_base.field_l10n_ut__name
+msgid "Reference number"
+msgstr "Número de Referencia"
+
+#. module: l10n_ve_base
+msgid "Report Z"
+msgstr "Reporte Z"
+
+#. module: l10n_ve_base
+msgid "Retention Percentage (%)"
+msgstr "Porcentaje de Retención (%)"
+
+#. module: l10n_ve_base
+msgid "Retention Rate (%)"
+msgstr "Porcentaje de Retención (%)"
+
+#. module: l10n_ve_base
+#: model:ir.model,name:l10n_ve_base.model_seniat_url
+msgid "SENIAT Config URL"
+msgstr "Configuración de URLs del SENIAT"
+
+#. module: l10n_ve_base
+#: model:ir.actions.act_window,name:l10n_ve_base.action_seniat_url
+#: model:ir.ui.menu,name:l10n_ve_base.menu_seniat_url
+#: model_terms:ir.ui.view,arch_db:l10n_ve_base.view_seniat_url_tree
+msgid "SENIAT URLs"
+msgstr "URLs del SENIAT"
+
+#. module: l10n_ve_base
+msgid "SRC Withholdings"
+msgstr "Retenciones de Responsabilidad Social (SRC)"
+
+#. module: l10n_ve_base
+msgid "Sale Book"
+msgstr "Libro de Ventas"
+
+#. module: l10n_ve_base
+msgid "Sale Fiscal Books"
+msgstr "Libros de Ventas Fiscales"
+
+#. module: l10n_ve_base
+msgid "Salesman"
+msgstr "Responsable"
+
+#. module: l10n_ve_base
+msgid "Save"
+msgstr "Guardar"
+
+#. module: l10n_ve_base
+#: model:ir.model.fields,field_description:l10n_ve_base.field_res_partner__seniat_updated
+msgid "Seniat Updated"
+msgstr "Actualizado desde SENIAT"
+
+#. module: l10n_ve_base
+msgid "Services"
+msgstr "Servicios"
+
+#. module: l10n_ve_base
+msgid "Set to Draft"
+msgstr "Cambiar a Borrador"
+
+#. module: l10n_ve_base
+msgid "Split Parent Invoice"
+msgstr "Factura Matriz Dividida"
+
+#. module: l10n_ve_base
+msgid "Start Date"
+msgstr "Fecha de Inicio"
+
+#. module: l10n_ve_base
+msgid "State"
+msgstr "Estado"
+
+#. module: l10n_ve_base
+msgid "Subtraction Amount"
+msgstr "Monto del Sustraendo"
+
+#. module: l10n_ve_base
+msgid "Subtraction in UT"
+msgstr "Sustraendo en UT"
+
+#. module: l10n_ve_base
+msgid "Supplier Invoice Number"
+msgstr "Número de Factura del Proveedor"
+
+#. module: l10n_ve_base
+msgid "TXT File"
+msgstr "Archivo TXT"
+
+#. module: l10n_ve_base
+msgid "Tax Additional (31%)"
+msgstr "IVA Adicional (31%)"
+
+#. module: l10n_ve_base
+msgid "Tax Amount"
+msgstr "Monto del Impuesto"
+
+#. module: l10n_ve_base
+msgid "Tax General (16%)"
+msgstr "IVA General (16%)"
+
+#. module: l10n_ve_base
+msgid "Tax Reduced (8%)"
+msgstr "IVA Reducido (8%)"
+
+#. module: l10n_ve_base
+#: model_terms:ir.ui.view,arch_db:l10n_ve_base.view_l10n_ut_form
+msgid "Tax Unit"
+msgstr "Unidad Tributaria"
+
+#. module: l10n_ve_base
+#: model:ir.model,name:l10n_ve_base.model_l10n_ut
+msgid "Tax Unit (Unidad Tributaria)"
+msgstr "Unidad Tributaria (UT)"
+
+#. module: l10n_ve_base
+#: model:ir.actions.act_window,name:l10n_ve_base.action_l10n_ut
+#: model:ir.ui.menu,name:l10n_ve_base.menu_l10n_ut
+msgid "Tax Units (UT)"
+msgstr "Unidades Tributarias (UT)"
+
+#. module: l10n_ve_base
+#: model:ir.actions.act_window,name:l10n_ve_base.action_l10n_ve_identification_type
+#: model:ir.ui.menu,name:l10n_ve_base.menu_l10n_ve_identification_type
+msgid "Identification Types"
+msgstr "Tipos de Identificación"
+
+#. module: l10n_ve_base
+#: model:ir.ui.menu,name:l10n_ve_base.menu_l10n_ve_territorial_municipality
+msgid "Municipalities"
+msgstr "Municipios"
+
+#. module: l10n_ve_base
+#: model:ir.ui.menu,name:l10n_ve_base.menu_l10n_ve_territorial_parish
+msgid "Parishes"
+msgstr "Parroquias"
+
+#. module: l10n_ve_base
+#: model:ir.model.fields,field_description:l10n_ve_base.field_l10n_ve_responsibility_type__code
+#: model:ir.model.fields,field_description:l10n_ve_base.field_res_country_state_municipality__code
+#: model:ir.model.fields,field_description:l10n_ve_base.field_res_country_state_municipality_parish__code
+msgid "Code"
+msgstr "Código"
+
+#. module: l10n_ve_base
+#: model:ir.model.fields,field_description:l10n_ve_base.field_l10n_ut__date
+msgid "Date"
+msgstr "Fecha"
+
+#. module: l10n_ve_base
+#: model:ir.model.fields,field_description:l10n_ve_base.field_res_country_state_municipality__name
+#: model:ir.model.fields,field_description:l10n_ve_base.field_res_country_state_municipality_parish__municipality_id
+#: model:ir.model.fields,field_description:l10n_ve_base.field_res_partner__municipality_id
+#: model:ir.model.fields,field_description:l10n_ve_base.field_res_users__municipality_id
+msgid "Municipality"
+msgstr "Municipio"
+
+#. module: l10n_ve_base
+#: model:ir.model.fields,field_description:l10n_ve_base.field_res_country__nationality
+msgid "Nationality"
+msgstr "Nacionalidad"
+
+#. module: l10n_ve_base
+#: model:ir.model.fields,field_description:l10n_ve_base.field_res_country_state_municipality_parish__name
+#: model:ir.model.fields,field_description:l10n_ve_base.field_res_partner__parish_id
+#: model:ir.model.fields,field_description:l10n_ve_base.field_res_users__parish_id
+msgid "Parish"
+msgstr "Parroquia"
+
+#. module: l10n_ve_base
+#: model:ir.model.fields,field_description:l10n_ve_base.field_res_partner__vat
+#: model:ir.model.fields,field_description:l10n_ve_base.field_res_users__vat
+#: model_terms:ir.ui.view,arch_db:l10n_ve_base.view_partner_form_inherit_ve_latam_label
+msgid "Número de Identificación"
+msgstr "Número de Identificación"
+
+#. module: l10n_ve_base
+msgid "Taxes Breakdown"
+msgstr "Desglose de Impuestos"
+
+#. module: l10n_ve_base
+msgid "Total Base"
+msgstr "Total Base Imponible"
+
+#. module: l10n_ve_base
+msgid "Total Base Tax"
+msgstr "Total Base Imponible"
+
+#. module: l10n_ve_base
+msgid "Total Exempt"
+msgstr "Total Exento"
+
+#. module: l10n_ve_base
+msgid "Total ISLR Retained"
+msgstr "Total ISLR Retenido"
+
+#. module: l10n_ve_base
+msgid "Total Operations"
+msgstr "Total Operaciones"
+
+#. module: l10n_ve_base
+msgid "Total Retained Amount"
+msgstr "Total Monto Retenido"
+
+#. module: l10n_ve_base
+msgid "Total VAT Withheld"
+msgstr "Total IVA Retenido"
+
+#. module: l10n_ve_base
+msgid "Type"
+msgstr "Tipo"
+
+#. module: l10n_ve_base
+#: model:ir.model.fields,field_description:l10n_ve_base.field_seniat_url__url_seniat2
+msgid "URL Seniat for CI/Passport"
+msgstr "URL del SENIAT para C.I./Pasaporte"
+
+#. module: l10n_ve_base
+#: model:ir.model.fields,field_description:l10n_ve_base.field_seniat_url__name
+msgid "URL Seniat for Partner Information"
+msgstr "URL del SENIAT para Datos de Contribuyente"
+
+#. module: l10n_ve_base
+#: model:ir.model.fields,field_description:l10n_ve_base.field_seniat_url__url_seniat
+msgid "URL Seniat for Retention Rate"
+msgstr "URL del SENIAT para Tasa de Retención"
+
+#. module: l10n_ve_base
+msgid "Update Book Data"
+msgstr "Actualizar Datos del Libro"
+
+#. module: l10n_ve_base
+#: model:ir.model.fields,field_description:l10n_ve_base.field_search_info_partner_seniat__vat
+msgid "VAT / RIF"
+msgstr "RIF / Cédula"
+
+#. module: l10n_ve_base
+msgid "VAT Withholding Configuration"
+msgstr "Configuración de Retención de IVA"
+
+#. module: l10n_ve_base
+msgid "VAT Withholdings"
+msgstr "Retenciones de IVA"
+
+#. module: l10n_ve_base
+msgid "VAT Write Offs"
+msgstr "Ajustes de Crédito Fiscal"
+
+#. module: l10n_ve_base
+msgid "Vendor Bill"
+msgstr "Factura de Proveedor"
+
+#. module: l10n_ve_base
+msgid "Vendor ISLR Withholdings"
+msgstr "Retenciones de ISLR de Proveedores"
+
+#. module: l10n_ve_base
+msgid "Vendor Refund"
+msgstr "Nota de Crédito de Proveedor"
+
+#. module: l10n_ve_base
+msgid "Vendor VAT Withholdings"
+msgstr "Retenciones de IVA de Proveedores"
+
+#. module: l10n_ve_base
+#: model:ir.ui.menu,name:l10n_ve_base.menu_venezuela_localization_root
+#: model_terms:ir.ui.view,arch_db:l10n_ve_base.view_company_form_inherit_ve
+#: model_terms:ir.ui.view,arch_db:l10n_ve_base.view_partner_property_form_inherit_ve
+msgid "Venezuelan Localization"
+msgstr "Localización Venezolana"
+
+#. module: l10n_ve_base
+msgid "Voucher Number"
+msgstr "Número de Comprobante"
+
+#. module: l10n_ve_base
+#: model:ir.model.fields,field_description:l10n_ve_base.field_res_partner__wh_iva_agent
+msgid "Wh. IVA Agent"
+msgstr "Agente de Retención IVA"
+
+#. module: l10n_ve_base
+msgid "Withheld"
+msgstr "Retenido"
+
+#. module: l10n_ve_base
+msgid "Withheld Amount"
+msgstr "Monto Retenido"
+
+#. module: l10n_ve_base
+msgid "Withheld ISLR"
+msgstr "ISLR Retenido"
+
+#. module: l10n_ve_base
+msgid "Withholding Lines"
+msgstr "Líneas de Retención"
+
+#. module: l10n_ve_base
+msgid "Withholding State"
+msgstr "Estado de Retención"
+
+#. module: l10n_ve_base
+msgid "XML File"
+msgstr "Archivo XML"
+
+#. module: l10n_ve_base
+#: model_terms:ir.ui.view,arch_db:l10n_ve_base.view_partner_form_inherit_ve
+msgid "Consult SENIAT"
+msgstr "Consultar SENIAT"
+
+#. module: l10n_ve_base
+#: model:ir.model.fields,field_description:l10n_ve_base.field_res_partner__vat_subjected
+msgid "VAT Subject"
+msgstr "Sujeto de IVA"
+
+#. module: l10n_ve_base
+#: model_terms:ir.ui.view,arch_db:l10n_ve_base.view_partner_property_form_inherit_ve
+msgid "VAT Withholding"
+msgstr "Retención de IVA"
+
+#. module: l10n_ve_base
+#: model_terms:ir.ui.view,arch_db:l10n_ve_base.view_partner_property_form_inherit_ve
+msgid "SENIAT"
+msgstr "SENIAT"
+
+#. module: l10n_ve_base
+#: model:ir.model.fields,field_description:l10n_ve_base.field_res_partner__l10n_ve_responsibility_type_id
+#: model:ir.model,name:l10n_ve_base.model_l10n_ve_responsibility_type
+msgid "SENIAT Taxpayer Type"
+msgstr "Tipo de Contribuyente SENIAT"
+
+#. module: l10n_ve_base
+#: model:ir.actions.act_window,name:l10n_ve_base.action_l10n_ve_responsibility_type
+#: model:ir.ui.menu,name:l10n_ve_base.menu_l10n_ve_responsibility_type
+msgid "SENIAT Taxpayer Types"
+msgstr "Tipos de Contribuyente SENIAT"
+
+#. module: l10n_ve_base
+#: model:ir.model.fields,field_description:l10n_ve_base.field_res_partner_bank__l10n_ve_acc_type
+msgid "Account Type"
+msgstr "Tipo de Cuenta"
+
+#. module: l10n_ve_base
+#: model:ir.model.fields.selection,name:l10n_ve_base.selection__res_partner_bank__l10n_ve_acc_type__corriente
+msgid "Checking Account"
+msgstr "Cuenta Corriente"
+
+#. module: l10n_ve_base
+#: model:ir.model.fields.selection,name:l10n_ve_base.selection__res_partner_bank__l10n_ve_acc_type__ahorro
+msgid "Savings Account"
+msgstr "Cuenta de Ahorro"
+
+#. module: l10n_ve_base
+#: model:ir.model.fields.selection,name:l10n_ve_base.selection__res_partner_bank__l10n_ve_acc_type__fideicomiso
+msgid "Trust Account"
+msgstr "Cuenta de Fideicomiso"
+
+#. module: l10n_ve_base
+msgid "The responsibility type name must be unique."
+msgstr "El nombre del tipo de contribuyente debe ser único."
+
+#. module: l10n_ve_base
+msgid "The responsibility type code must be unique."
+msgstr "El código del tipo de contribuyente debe ser único."
+
+#. module: l10n_ve_base
+msgid "Nro. de Control"
+msgstr "Nro. de Control"
+
+#. module: l10n_ve_base
+msgid "RIF Emisor"
+msgstr "RIF Emisor"
+
+#. module: l10n_ve_base
+#: model_terms:ir.ui.view,arch_db:l10n_ve_base.view_company_form_inherit_ve
+msgid "Chart of Accounts (VEN-NIF)"
+msgstr "Plan de Cuentas (VEN-NIF)"
+
+#. module: l10n_ve_base
+#: model:ir.model.fields,field_description:l10n_ve_base.field_res_company__l10n_ve_account_code_digits
+msgid "Account Code Digits"
+msgstr "Dígitos del Código de Cuenta"
+
+#. module: l10n_ve_base
+msgid "There is no exchange rate to convert %(currency)s to VES on %(date)s. Load the BCV rate before generating fiscal documents."
+msgstr "No hay tasa de cambio para convertir %(currency)s a VES el %(date)s. Cargue la tasa del BCV antes de generar documentos fiscales."
+
+#. module: l10n_ve_base
+#: model:ir.model.fields,field_description:l10n_ve_base.field_res_partner__l10n_ve_identification_locked
+msgid "Identification Locked"
+msgstr "Identificación Bloqueada"
+
+#. module: l10n_ve_base
+#: model:ir.model.fields,help:l10n_ve_base.field_res_partner__l10n_ve_identification_locked
+msgid "VAT, identification type and person type cannot change after invoices, sales, purchases, payments or an open balance."
+msgstr "El número, el tipo de identificación y el tipo de persona no pueden cambiar si el contacto ya tiene facturas, ventas, compras, pagos o un saldo pendiente."
+
+#. module: l10n_ve_base
+msgid "The identification number of %s cannot be changed because the partner already has invoices, sales, purchases, payments or an open balance."
+msgstr "No se puede cambiar el número de identificación de %s porque el contacto ya tiene facturas, ventas, compras, pagos o un saldo pendiente."
+
+#. module: l10n_ve_base
+msgid "The identification type of %s cannot be changed because the partner already has invoices, sales, purchases, payments or an open balance."
+msgstr "No se puede cambiar el tipo de identificación de %s porque el contacto ya tiene facturas, ventas, compras, pagos o un saldo pendiente."
+
+#. module: l10n_ve_base
+msgid "The person type of %s cannot be changed because the partner already has invoices, sales, purchases, payments or an open balance."
+msgstr "No se puede cambiar el tipo de persona de %s porque el contacto ya tiene facturas, ventas, compras, pagos o un saldo pendiente."

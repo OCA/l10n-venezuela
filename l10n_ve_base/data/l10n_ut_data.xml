@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo noupdate="1">
+    <record id="ut_2025_06_02" model="l10n.ut">
+        <field name="name">Gaceta Oficial 43.140</field>
+        <field name="date">2025-06-02</field>
+        <field name="amount">43.00</field>
+    </record>
+</odoo>

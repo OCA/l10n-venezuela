@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <!-- Official l10n_ve taxes have no appl_type. Reload on -u until odoo#285425. -->
+    <function model="account.tax" name="_l10n_ve_assign_appl_type" />
+</odoo>

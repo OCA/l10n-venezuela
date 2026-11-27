@@ -1,0 +1,17 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_l10n_ut_user,l10n.ut.user,model_l10n_ut,account.group_account_invoice,1,0,0,0
+access_l10n_ut_manager,l10n.ut.manager,model_l10n_ut,account.group_account_manager,1,1,1,1
+access_seniat_url_user,seniat.url.user,model_seniat_url,account.group_account_invoice,1,0,0,0
+access_seniat_url_manager,seniat.url.manager,model_seniat_url,account.group_account_manager,1,1,1,1
+access_search_info_partner_seniat,search.info.partner.seniat,model_search_info_partner_seniat,account.group_account_invoice,1,1,1,1
+access_wizard_invoice_nro_ctrl,wizard.invoice.nro.ctrl,model_wizard_invoice_nro_ctrl,account.group_account_invoice,1,1,1,1
+access_responsibility_type_user,l10n_ve.responsibility.type.user,model_l10n_ve_responsibility_type,account.group_account_invoice,1,0,0,0
+access_responsibility_type_manager,l10n_ve.responsibility.type.manager,model_l10n_ve_responsibility_type,account.group_account_manager,1,1,1,1
+access_municipality_all,res.country.state.municipality.public,model_res_country_state_municipality,base.group_public,1,0,0,0
+access_municipality_portal,res.country.state.municipality.portal,model_res_country_state_municipality,base.group_portal,1,0,0,0
+access_municipality_user,res.country.state.municipality.user,model_res_country_state_municipality,base.group_user,1,0,0,0
+access_parish_all,res.country.state.municipality.parish.public,model_res_country_state_municipality_parish,base.group_public,1,0,0,0
+access_parish_portal,res.country.state.municipality.parish.portal,model_res_country_state_municipality_parish,base.group_portal,1,0,0,0
+access_parish_user,res.country.state.municipality.parish.user,model_res_country_state_municipality_parish,base.group_user,1,0,0,0
+access_municipality_manager,res.country.state.municipality.manager,model_res_country_state_municipality,base.group_system,1,1,1,1
+access_parish_manager,res.country.state.municipality.parish.manager,model_res_country_state_municipality_parish,base.group_system,1,1,1,1

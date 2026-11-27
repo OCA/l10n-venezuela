@@ -1,0 +1,26 @@
+Taken from l10n_ve_base 19.0 of MASTERCORE SAS / SINAPSYS GLOBAL SA
+https://github.com/odoo-mastercore/odoo-venezuela/tree/19.0/l10n_ve_base
+Local reference: version 19.0.1.0.3
+Adapted to this addon by Guillermo Montoya.
+
+Original file notice on that module, unchanged:
+  Author: SINAPSYS GLOBAL SA || MASTERCORE SAS
+  Copyleft: 2025-Present.
+  License: LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl.html).
+
+Data and models taken from that l10n_ve_base 19.0:
+  data/res.country.state.csv
+  data/res.country.state.municipality.csv
+  data/res.country.state.municipality.parish.csv
+  data/res_bank.xml
+  data/l10n_ve_responsibility_type_data.xml
+  models/res_country.py
+  models/res_partner_bank.py
+  models/l10n_ve_responsibility_type.py
+
+The CSV files have no copyright line: Odoo reads the first row as
+column names. This file is their attribution.
+
+Those files keep LGPL-3.0 and the copyleft 2025-Present.
+This addon's __manifest__.py stays AGPL-3. That manifest license
+does not replace the LGPL-3 notice on the files above.

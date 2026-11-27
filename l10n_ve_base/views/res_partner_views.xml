@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="view_partner_form_inherit_ve_latam_label" model="ir.ui.view">
+        <field name="name">res.partner.form.inherit.ve.latam.label</field>
+        <field name="model">res.partner</field>
+        <field name="priority">99</field>
+        <field name="inherit_id" ref="l10n_latam_base.view_partner_latam_form" />
+        <field name="arch" type="xml">
+            <!-- Do not xpath label[@for='vat']: LATAM already replaced it. NIF is
+                 stripped in res.partner._get_view (Tax ID / country vat_label). -->
+            <xpath expr="//span[hasclass('oe_read_only')]" position="replace" />
+            <xpath expr="//field[@name='vat']" position="replace" />
+            <xpath
+                expr="//label[@for='l10n_latam_identification_type_id']"
+                position="replace"
+            >
+                <label
+                    for="l10n_latam_identification_type_id"
+                    string="Número de Identificación"
+                />
+            </xpath>
+            <xpath
+                expr="//field[@name='l10n_latam_identification_type_id']"
+                position="replace"
+            >
+                <div class="o_row" name="l10n_ve_id_number">
+                    <field name="country_code" invisible="1" />
+                    <field name="l10n_ve_identification_locked" invisible="1" />
+                    <field
+                        name="l10n_latam_identification_type_id"
+                        options="{'no_open': True, 'no_create': True}"
+                        placeholder="Type"
+                        nolabel="1"
+                        domain="country_id and ['|', ('country_id', '=', False), ('country_id', '=', country_id)] or []"
+                        required="not parent_id and country_code == 'VE'"
+                        readonly="parent_id or l10n_ve_identification_locked"
+                    />
+                    <field
+                        name="vat"
+                        placeholder="Number"
+                        string="Número de Identificación"
+                        nolabel="1"
+                        readonly="parent_id or l10n_ve_identification_locked"
+                        required="not parent_id and country_code == 'VE'"
+                    />
+                </div>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_partner_form_inherit_ve" model="ir.ui.view">
+        <field name="name">res.partner.form.inherit.ve</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base_vat.view_partner_base_vat_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='vat_vies_container']" position="after">
+                <field name="country_code" invisible="1" />
+                <field name="l10n_ve_identification_locked" invisible="1" />
+                <field
+                    name="person_type"
+                    required="not parent_id and country_code == 'VE'"
+                    readonly="parent_id or l10n_ve_identification_locked"
+                />
+                <field
+                    name="l10n_ve_responsibility_type_id"
+                    invisible="country_code != 'VE'"
+                />
+                <button
+                    name="action_update_from_seniat"
+                    string="Consult SENIAT"
+                    type="object"
+                    class="oe_link"
+                    icon="fa-refresh"
+                    invisible="not vat or l10n_ve_identification_locked"
+                />
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_res_country_state_search_tree" model="ir.ui.view">
+        <field name="name">res.country.state.list.contact.address</field>
+        <field name="model">res.country.state</field>
+        <field name="priority" eval="99" />
+        <field name="arch" type="xml">
+            <list create="false" edit="false" delete="false">
+                <field name="name" />
+                <field name="code" />
+                <field name="country_id" />
+            </list>
+        </field>
+    </record>
+    <record id="view_municipality_search_tree" model="ir.ui.view">
+        <field name="name">res.country.state.municipality.list.contact.address</field>
+        <field name="model">res.country.state.municipality</field>
+        <field name="priority" eval="99" />
+        <field name="arch" type="xml">
+            <list create="false" edit="false" delete="false">
+                <field name="name" />
+                <field name="code" />
+                <field name="state_id" />
+            </list>
+        </field>
+    </record>
+    <record id="view_parish_search_tree" model="ir.ui.view">
+        <field
+            name="name"
+        >res.country.state.municipality.parish.list.contact.address</field>
+        <field name="model">res.country.state.municipality.parish</field>
+        <field name="priority" eval="99" />
+        <field name="arch" type="xml">
+            <list create="false" edit="false" delete="false">
+                <field name="name" />
+                <field name="code" />
+                <field name="municipality_id" />
+            </list>
+        </field>
+    </record>
+
+    <record id="view_partner_form_inherit_address_ve" model="ir.ui.view">
+        <field name="name">res.partner.form.inherit.address.ve</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form" />
+        <field name="arch" type="xml">
+            <xpath
+                expr="//div[hasclass('o_address_format')]/field[@name='state_id']"
+                position="attributes"
+            >
+                <attribute
+                    name="options"
+                >{'no_open': True, 'no_create': True, 'no_create_edit': True, 'no_quick_create': True}</attribute>
+                <attribute
+                    name="context"
+                >{'country_id': country_id, 'default_country_id': country_id, 'zip': zip, 'list_view_ref': 'l10n_ve_base.view_res_country_state_search_tree'}</attribute>
+            </xpath>
+            <xpath
+                expr="//div[hasclass('o_address_format')]/field[@name='state_id']"
+                position="after"
+            >
+                <field name="country_code" invisible="1" />
+                <field
+                    name="municipality_id"
+                    placeholder="Municipality"
+                    options="{'no_open': True, 'no_create': True, 'no_create_edit': True, 'no_quick_create': True}"
+                    domain="[('state_id', '=', state_id)]"
+                    context="{'list_view_ref': 'l10n_ve_base.view_municipality_search_tree'}"
+                    invisible="country_code != 'VE'"
+                />
+                <field
+                    name="parish_id"
+                    placeholder="Parish"
+                    options="{'no_open': True, 'no_create': True, 'no_create_edit': True, 'no_quick_create': True}"
+                    domain="[('municipality_id', '=', municipality_id)]"
+                    context="{'list_view_ref': 'l10n_ve_base.view_parish_search_tree'}"
+                    invisible="country_code != 'VE'"
+                />
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_partner_property_form_inherit_ve" model="ir.ui.view">
+        <field name="name">res.partner.property.form.inherit.ve</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="account.view_partner_property_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='accounting']" position="inside">
+                <group name="l10n_ve_seniat" string="Venezuelan Localization">
+                    <group string="SENIAT">
+                        <field name="vat_subjected" />
+                        <field name="seniat_updated" />
+                    </group>
+                    <group string="VAT Withholding">
+                        <field name="wh_iva_agent" />
+                        <field name="wh_iva_rate" invisible="not wh_iva_agent" />
+                    </group>
+                </group>
+            </xpath>
+        </field>
+    </record>
+</odoo>

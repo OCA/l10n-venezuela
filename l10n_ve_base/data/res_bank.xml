@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo noupdate="1">
+    <!-- Venezuelan SUDEBAN banks. Catalog taken from l10n_ve_base 19.0
+         (odoo-mastercore/odoo-venezuela), SINAPSYS GLOBAL SA / MASTERCORE SAS. -->
+    <record id="bank_0156" model="res.bank">
+        <field name="name">100% BANCO</field>
+        <field name="bic">0156</field>
+        <field name="city">Caracas</field>
+        <field name="country" ref="base.ve" />
+        <field name="phone">0212-2775444</field>
+        <field name="email">atencionalcliente@100x100banco.com</field>
+    </record>
+    <record id="bank_0172" model="res.bank">
+        <field name="name">BANCAMIGA BANCO MICROFINANCIERO, C.A.</field>
+        <field name="bic">0172</field>
+        <field name="city">Caracas</field>
+        <field name="country" ref="base.ve" />
+    </record>
+    <record id="bank_0171" model="res.bank">
+        <field name="name">BANCO ACTIVO BANCO COMERCIAL, C.A.</field>
+        <field name="bic">0171</field>
+        <field name="city">Caracas</field>
+        <field name="country" ref="base.ve" />
+    </record>
+    <record id="bank_0166" model="res.bank">
+        <field name="name">BANCO AGRÍCOLA DE VENEZUELA, C.A.</field>
+        <field name="bic">0166</field>
+        <field name="city">Caracas</field>
+        <field name="country" ref="base.ve" />
+    </record>
+    <record id="bank_0175" model="res.bank">
+        <field name="name">BANCO DIGITAL DE LOS TRABAJADORES</field>
+        <field name="bic">0175</field>
+        <field name="city">Caracas</field>
+        <field name="country" ref="base.ve" />
+    </record>
+    <record id="bank_0128" model="res.bank">
+        <field name="name">BANCO CARONÍ, BANCO UNIVERSAL</field>
+        <field name="bic">0128</field>
+        <field name="city">Caracas</field>
+        <field name="country" ref="base.ve" />
+    </record>
+    <record id="bank_0102" model="res.bank">
+        <field name="name">BANCO DE VENEZUELA S.A.C.A.</field>
+        <field name="bic">0102</field>
+        <field name="city">Caracas</field>
+        <field name="country" ref="base.ve" />
+    </record>
+    <record id="bank_0114" model="res.bank">
+        <field name="name">BANCARIBE C.A.</field>
+        <field name="bic">0114</field>
+        <field name="city">Caracas</field>
+        <field name="country" ref="base.ve" />
+    </record>
+    <record id="bank_0163" model="res.bank">
+        <field name="name">BANCO DEL TESORO</field>
+        <field name="bic">0163</field>
+        <field name="city">Caracas</field>
+        <field name="country" ref="base.ve" />
+    </record>
+    <record id="bank_0105" model="res.bank">
+        <field name="name">BANCO MERCANTIL C.A.</field>
+        <field name="bic">0105</field>
+        <field name="city">Caracas</field>
+        <field name="country" ref="base.ve" />
+    </record>
+    <record id="bank_0191" model="res.bank">
+        <field name="name">BANCO NACIONAL DE CRÉDITO</field>
+        <field name="bic">0191</field>
+        <field name="city">Caracas</field>
+        <field name="country" ref="base.ve" />
+    </record>
+    <record id="bank_0138" model="res.bank">
+        <field name="name">BANCO PLAZA</field>
+        <field name="bic">0138</field>
+        <field name="city">Caracas</field>
+        <field name="country" ref="base.ve" />
+    </record>
+    <record id="bank_0108" model="res.bank">
+        <field name="name">BANCO PROVINCIAL BBVA</field>
+        <field name="bic">0108</field>
+        <field name="city">Caracas</field>
+        <field name="country" ref="base.ve" />
+    </record>
+    <record id="bank_0104" model="res.bank">
+        <field name="name">BANCO VENEZOLANO DE CRÉDITO S.A.</field>
+        <field name="bic">0104</field>
+        <field name="city">Caracas</field>
+        <field name="country" ref="base.ve" />
+    </record>
+    <record id="bank_0168" model="res.bank">
+        <field name="name">BANCRECER S.A. BANCO DE DESARROLLO</field>
+        <field name="bic">0168</field>
+        <field name="city">Caracas</field>
+        <field name="country" ref="base.ve" />
+    </record>
+    <record id="bank_0134" model="res.bank">
+        <field name="name">BANESCO BANCO UNIVERSAL</field>
+        <field name="bic">0134</field>
+        <field name="city">Caracas</field>
+        <field name="country" ref="base.ve" />
+    </record>
+    <record id="bank_0177" model="res.bank">
+        <field name="name">BANFANB</field>
+        <field name="bic">0177</field>
+        <field name="city">Caracas</field>
+        <field name="country" ref="base.ve" />
+    </record>
+    <record id="bank_0174" model="res.bank">
+        <field name="name">BANPLUS BANCO COMERCIAL C.A.</field>
+        <field name="bic">0174</field>
+        <field name="city">Caracas</field>
+        <field name="country" ref="base.ve" />
+    </record>
+    <record id="bank_0157" model="res.bank">
+        <field name="name">DELSUR BANCO UNIVERSAL</field>
+        <field name="bic">0157</field>
+        <field name="city">Ciudad Guayana</field>
+        <field name="country" ref="base.ve" />
+    </record>
+    <record id="bank_0151" model="res.bank">
+        <field name="name">BANCO FONDO COMÚN</field>
+        <field name="bic">0151</field>
+        <field name="city">Caracas</field>
+        <field name="country" ref="base.ve" />
+    </record>
+    <record id="bank_0169" model="res.bank">
+        <field name="name">MIBANCO BANCO DE DESARROLLO, C.A.</field>
+        <field name="bic">0169</field>
+        <field name="city">Caracas</field>
+        <field name="country" ref="base.ve" />
+    </record>
+    <record id="bank_0137" model="res.bank">
+        <field name="name">SOFITASA</field>
+        <field name="bic">0137</field>
+        <field name="city">San Cristóbal</field>
+        <field name="country" ref="base.ve" />
+    </record>
+</odoo>

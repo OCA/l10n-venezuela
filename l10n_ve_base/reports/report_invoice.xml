@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <template
+        id="report_invoice_document_ve"
+        inherit_id="account.report_invoice_document"
+    >
+        <xpath expr="//div[@id='informations']" position="inside">
+            <t
+                t-if="o.company_id.account_fiscal_country_id.code == 'VE' or o.company_id.country_id.code == 'VE'"
+            >
+                <div class="col" t-if="o.nro_ctrl" name="nro_ctrl">
+                    <strong>Nro. de Control</strong>
+                    <div t-field="o.nro_ctrl" />
+                </div>
+                <div class="col" t-if="o.partner_id.vat" name="partner_rif">
+                    <strong>RIF</strong>
+                    <div t-esc="o.partner_id.vat" />
+                </div>
+                <div class="col" t-if="o.company_id.partner_id.vat" name="company_rif">
+                    <strong>RIF Emisor</strong>
+                    <div t-esc="o.company_id.partner_id.vat" />
+                </div>
+                <div
+                    class="col"
+                    t-if="o.partner_id.municipality_id"
+                    name="partner_municipality"
+                >
+                    <strong>Municipio</strong>
+                    <div t-field="o.partner_id.municipality_id" />
+                </div>
+                <div class="col" t-if="o.partner_id.parish_id" name="partner_parish">
+                    <strong>Parroquia</strong>
+                    <div t-field="o.partner_id.parish_id" />
+                </div>
+            </t>
+        </xpath>
+    </template>
+</odoo>
